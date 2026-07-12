@@ -1,5 +1,9 @@
 # Lumen
 
+<p align="center">
+  <img src="assets/Lumen_Header.png" alt="Lumen — assistant IA de bureau local-first" width="700">
+</p>
+
 **Un assistant IA de bureau local-first — une barre de chat vivante, privée et agentique.**
 
 Lumen tourne en local via [Ollama](https://ollama.com) (le modèle, l'inférence et les données restent sur votre machine), peut utiliser les modèles d'Apple, ou se connecter à une API compatible OpenAI quand un modèle cloud est plus adapté. Au-delà du chat : un bureau complet (Lumen OS) avec fenêtres, widgets, 30+ apps, agents autonomes, workflows visuels Fluxo, mémoire cognitive et connaissances (RAG).
