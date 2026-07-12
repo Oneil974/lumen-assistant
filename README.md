@@ -5,6 +5,7 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/statut-b%C3%AAta-ff9e6b" alt="Statut : bêta">
   <a href="https://github.com/Oneil974/lumen-app/releases/latest"><img src="https://img.shields.io/github/v/release/Oneil974/lumen-app?label=version&color=9961ff" alt="Dernière version"></a>
   <img src="https://img.shields.io/badge/plateformes-macOS%20·%20Windows%20·%20Linux%20·%20Raspberry%20Pi-47a3ff" alt="Plateformes">
   <img src="https://img.shields.io/badge/IA-100%25%20locale%20possible-61f2c7" alt="Local-first">
@@ -18,6 +19,9 @@
 Lumen tourne en local via [Ollama](https://ollama.com) (le modèle, l'inférence et les données restent sur votre machine), peut utiliser les modèles d'Apple, ou se connecter à une API compatible OpenAI quand un modèle cloud est plus adapté.
 
 ➡️ **[Télécharger la dernière version](https://github.com/Oneil974/lumen-app/releases/latest)** · 🌐 **[Site de présentation](https://Oneil974.github.io/lumen-app/)**
+
+> [!NOTE]
+> **Lumen est en bêta, en développement actif.** Les fonctionnalités évoluent vite d'une version à l'autre et des bugs peuvent subsister. Vos retours sont bienvenus via les [issues](https://github.com/Oneil974/lumen-app/issues).
 
 ---
 
