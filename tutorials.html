@@ -3,876 +3,484 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lumen — Tutoriels Fluxo</title>
-  <meta name="description" content="Tutoriels Fluxo pour creer des workflows simples et utiles dans Lumen : resume, notifications, fichiers, IA locale et automatisations." />
-  <style>
-    :root {
-      --bg: #0e1014;
-      --bg-2: #14171d;
-      --panel: rgba(255, 255, 255, 0.03);
-      --panel-2: rgba(255, 255, 255, 0.05);
-      --border: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.14);
-      --text: #eef1f6;
-      --text-muted: rgba(238, 241, 246, 0.55);
-      --accent: #6c8cff;
-      --accent-2: #a86bff;
-      --ok: #3ddc97;
-      --err: #ff5d6c;
-      --radius: 14px;
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      min-height: 100vh;
-      background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(108, 140, 255, 0.14), transparent 60%),
-        radial-gradient(1000px 500px at 100% 0%, rgba(168, 107, 255, 0.12), transparent 55%),
-        var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; }
-    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
-
-    nav {
-      position: sticky; top: 0; z-index: 20;
-      background: rgba(14, 16, 20, 0.78);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(18px) saturate(160%);
-      -webkit-backdrop-filter: blur(18px) saturate(160%);
-    }
-    nav .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: 16px; }
-    .logo {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-decoration: none;
-    }
-    .nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-    .btn, .btn-ghost {
-      font-family: var(--font);
-      font-size: 13px;
-      color: var(--text);
-      border: 1px solid var(--border);
-      background: var(--panel-2);
-      border-radius: 10px;
-      padding: 8px 14px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.18s;
-    }
-    .btn:hover, .btn-ghost:hover { background: var(--border); }
-    .btn.primary {
-      border: none;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      font-weight: 600;
-    }
-    .btn-ghost { background: transparent; }
-
-    header { padding: 88px 0 42px; }
-    .kicker {
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-    h1 {
-      max-width: 840px;
-      font-size: clamp(40px, 7vw, 72px);
-      line-height: 0.98;
-      letter-spacing: -0.045em;
-      margin-bottom: 22px;
-    }
-    .grad {
-      background: linear-gradient(120deg, #ff54a3, var(--accent-2) 36%, #47a3ff 72%, #61f2c7);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .lead {
-      max-width: 760px;
-      color: var(--text-muted);
-      font-size: 18px;
-      line-height: 1.65;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 360px;
-      gap: 28px;
-      align-items: start;
-      margin-top: 34px;
-    }
-    @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-    }
-    .quick-list { display: grid; gap: 10px; }
-    .quick-list a {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 11px;
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      text-decoration: none;
-      font-size: 13px;
-    }
-    .quick-list span { color: var(--text-muted); }
-
-    .tutorial {
-      display: grid;
-      grid-template-columns: 350px minmax(0, 1fr);
-      gap: 28px;
-      align-items: start;
-      padding: 54px 0;
-      border-top: 1px solid var(--border);
-    }
-    @media (max-width: 980px) { .tutorial { grid-template-columns: 1fr; } }
-    .tutorial h2 {
-      font-size: clamp(26px, 4vw, 42px);
-      letter-spacing: -0.03em;
-      line-height: 1.05;
-      margin-bottom: 12px;
-    }
-    .tutorial p { color: var(--text-muted); line-height: 1.65; font-size: 15px; }
-    .recipe-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
-    .tag {
-      font-size: 11px;
-      color: var(--text);
-      background: rgba(108, 140, 255, 0.12);
-      border: 1px solid rgba(108, 140, 255, 0.25);
-      border-radius: 999px;
-      padding: 4px 9px;
-    }
-    .steps-text { list-style: none; display: grid; gap: 9px; margin-top: 18px; }
-    .steps-text li {
-      position: relative;
-      padding-left: 28px;
-      color: var(--text-muted);
-      font-size: 14px;
-      line-height: 1.55;
-    }
-    .steps-text li::before {
-      content: counter(step);
-      counter-increment: step;
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 18px;
-      height: 18px;
-      display: grid;
-      place-items: center;
-      border-radius: 999px;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 700;
-    }
-    .steps-text { counter-reset: step; }
-
-    /* Reprise visuelle des blocs Fluxo */
-    .canvas {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-width: 720px;
-      width: 100%;
-    }
-    .var-legend {
-      margin: 0 0 12px;
-      padding: 7px 11px;
-      font-size: 11.5px;
-      line-height: 1.6;
-      color: var(--text-muted);
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-    .var-legend code {
-      color: var(--accent);
-      font-family: ui-monospace, monospace;
-      font-size: 11px;
-    }
-    .step-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px 14px;
-      transition: border-color 0.15s;
-      position: relative;
-    }
-    .step-card:hover { border-color: var(--border-strong); }
-    .step-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .step-drag {
-      cursor: default;
-      color: var(--text-muted);
-      font-size: 15px;
-      user-select: none;
-      display: flex;
-    }
-    .step-ic {
-      font-size: 17px;
-      color: var(--accent);
-      display: flex;
-      width: 20px;
-      justify-content: center;
-    }
-    .step-title { font-size: 14px; font-weight: 600; flex: 1; }
-    .step-var {
-      font-size: 11px;
-      color: var(--accent);
-      background: rgba(108, 140, 255, 0.12);
-      border: 1px solid rgba(108, 140, 255, 0.25);
-      border-radius: 6px;
-      padding: 2px 7px;
-      font-family: ui-monospace, monospace;
-    }
-    .step-var-last {
-      color: var(--accent-2) !important;
-      background: rgba(168, 107, 255, 0.12) !important;
-      border-color: rgba(168, 107, 255, 0.25) !important;
-    }
-    .step-params {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-      margin-top: 11px;
-    }
-    .param-row { display: flex; flex-direction: column; gap: 4px; }
-    .param-label { font-size: 11.5px; color: var(--text-muted); }
-    .param-input, .param-textarea, .param-select {
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 13px;
-      padding: 8px 10px;
-      outline: none;
-    }
-    .param-textarea { resize: none; min-height: 56px; line-height: 1.5; }
-    .param-bool { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 13px; }
-    .param-bool input { width: 16px; height: 16px; accent-color: var(--accent); }
-    .step-card:not(:last-child)::after {
-      content: "";
-      display: block;
-      width: 2px;
-      height: 10px;
-      background: var(--border);
-      margin: 0 auto;
-      position: relative;
-      top: 12px;
-    }
-    .step-card.control {
-      background: linear-gradient(180deg, rgba(108,140,255,0.09), rgba(108,140,255,0.03));
-      border-color: rgba(108, 140, 255, 0.28);
-    }
-    .step-card.control .step-ic { color: var(--accent-2); }
-    .marker-card {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--text-muted);
-      padding: 7px 12px;
-      border: 1px dashed var(--border-strong);
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.015);
-    }
-    .marker-ic { display: flex; color: var(--accent-2); opacity: 0.8; }
-    .run-log {
-      margin-top: 14px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-    .run-log-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .run-log-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
-    .log-step {
-      display: flex;
-      gap: 9px;
-      font-size: 12.5px;
-      padding: 8px 10px;
-      border-radius: 9px;
-      background: var(--bg-2);
-      border-left: 2px solid var(--ok);
-    }
-    .log-dot { color: var(--ok); }
-    .log-name { font-weight: 600; }
-    .log-out { color: var(--text-muted); white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, monospace; font-size: 11.5px; }
-
-    .note {
-      margin-top: 16px;
-      padding: 12px 14px;
-      border: 1px solid rgba(97, 242, 199, 0.22);
-      background: rgba(97, 242, 199, 0.06);
-      border-radius: 12px;
-      color: rgba(238, 241, 246, 0.76);
-      font-size: 13px;
-      line-height: 1.55;
-    }
-    code {
-      color: var(--accent);
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.92em;
-    }
-    footer {
-      padding: 40px 0 54px;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border);
-      font-size: 13px;
-    }
-  </style>
+  <title>Lumen — Tutoriels</title>
+  <meta name="description" content="Tutoriels Lumen : premiers pas avec un modèle local, workflows Fluxo prêts à recopier, agents planifiés, connecteurs MCP et matériel." data-en-content="Lumen tutorials: getting started with a local model, ready-to-copy Fluxo workflows, scheduled agents, MCP connectors and hardware." />
+  <link rel="stylesheet" href="assets/site.css" />
 </head>
 <body>
-  <nav>
-    <div class="wrap">
-      <a class="logo" href="index.html">Fluxo Tutorials</a>
-      <div class="nav-actions">
-        <a class="btn-ghost" href="index.html">Site Lumen</a>
-        <a class="btn primary" href="#workflow-summary">Commencer</a>
+
+<nav class="nav">
+  <div class="container">
+    <a class="brand" href="index.html">
+      <span class="av-orb" style="--size:22px;--blur:2px;" aria-hidden="true"><span class="av-core"></span><span class="av-shell"></span><span class="av-eyes"><i></i><i></i></span></span>
+      Lumen
+    </a>
+    <div class="nav-links">
+      <a href="index.html#assistant" data-en="Assistant">Assistant</a>
+      <a href="index.html#moteurs" data-en="Engines">Moteurs</a>
+      <a href="index.html#os">Lumen OS</a>
+      <a href="index.html#materiel" data-en="Hardware">Matériel</a>
+      <a href="changelog.html" data-en="What's new">Nouveautés</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" data-theme-toggle type="button" aria-label="Changer de thème" data-en-aria-label="Switch theme">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="icon-btn" data-lang-toggle type="button" aria-label="Switch to English">EN</button>
+      <a class="btn sm" href="index.html#telecharger" data-en="Download">Télécharger</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" style="padding:64px 0 36px;text-align:left;">
+  <div class="container narrow">
+    <span class="eyebrow" data-en="Tutorials">Tutoriels</span>
+    <h1 style="font-size:clamp(32px,5vw,46px);max-width:22ch;margin:0 0 16px;" data-en="Get something running in ten minutes">Faire tourner quelque chose en dix minutes</h1>
+    <p class="lead" data-en="Each tutorial is written against the version 1.1 of Lumen: real block names, real parameter fields, real menu paths. Copy them as they are — they work.">Chaque tutoriel est écrit pour la version 1.1 de Lumen : vrais noms de blocs, vrais champs de paramètres, vrais chemins de menus. Recopiez-les tels quels, ils fonctionnent.</p>
+  </div>
+</header>
+
+<div class="tuto-nav">
+  <div class="container">
+    <a href="#demarrer" data-en="Getting started">Démarrer</a>
+    <a href="#reperes" data-en="Fluxo basics">Repères Fluxo</a>
+    <a href="#t1" data-en="1 · Summarize the clipboard">1 · Résumer le presse-papier</a>
+    <a href="#t2" data-en="2 · Daily brief">2 · Brief quotidien</a>
+    <a href="#t3" data-en="3 · Dictated note">3 · Note dictée</a>
+    <a href="#t4" data-en="4 · RFID tag">4 · Badge RFID</a>
+    <a href="#t5" data-en="5 · Workflow as a tool">5 · Workflow comme outil</a>
+    <a href="#agent" data-en="6 · Scheduled agent">6 · Agent planifié</a>
+    <a href="#mcp" data-en="7 · MCP connector">7 · Connecteur MCP</a>
+    <a href="#depannage" data-en="Troubleshooting">Dépannage</a>
+  </div>
+</div>
+
+<section class="tuto" id="demarrer">
+  <div class="container">
+    <div class="tuto-head"><span class="tuto-num">00</span><h2 data-en="Before anything else: a model that answers">Avant tout : un modèle qui répond</h2></div>
+    <p class="lead" data-en="Every tutorial below needs a working engine. The quickest path is the bundled llama.cpp — nothing to install besides Lumen.">Tous les tutoriels qui suivent ont besoin d'un moteur qui répond. Le chemin le plus court est le llama.cpp intégré — rien à installer en dehors de Lumen.</p>
+    <div class="tuto-cols">
+      <ol class="howto">
+        <li data-en="Open the bar with <b>⌥ Space</b> (Super+Space or Ctrl+Alt+Space on Linux and Windows).">Ouvrez la barre avec <b>⌥ Espace</b> (Super+Espace ou Ctrl+Alt+Espace sous Linux et Windows).</li>
+        <li data-en="Click the <b>model pill</b> on the right of the input field, then choose the source <b>llama.cpp</b>.">Cliquez sur la <b>pastille du modèle</b>, à droite du champ de saisie, puis choisissez la source <b>llama.cpp</b>.</li>
+        <li data-en="In the catalogue, pick a model sized for your machine. <b>LFM2.5 1.2B</b> (731 MB) is a good first choice; <b>LFM2.5 2.6B</b> if you have 8 GB of RAM to spare. Lumen checks the free disk space before downloading.">Dans le catalogue, choisissez un modèle à la taille de votre machine. <b>LFM2.5 1.2B</b> (731 Mo) est un bon premier choix ; <b>LFM2.5 2.6B</b> si vous avez 8 Go de mémoire disponible. Lumen vérifie la place libre avant de télécharger.</li>
+        <li data-en="Type a question. The server starts on the first prompt — the first answer takes a few seconds longer, the next ones do not.">Tapez une question. Le serveur démarre au premier message — la première réponse prend quelques secondes de plus, pas les suivantes.</li>
+      </ol>
+      <div class="flow">
+        <span class="flow-label" data-en="What you should see">Ce que vous devez voir</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">●</span><span class="flow-name" data-en="Status dot, green">Pastille d'état, verte</span></div>
+          <div class="flow-params">
+            <div><span class="k" data-en="Tooltip">Infobulle</span><span class="v">llama-server : LFM2.5 1.2B</span></div>
+            <div><span class="k" data-en="Model pill">Pastille modèle</span><span class="v">LFM2.5-1.2B-Instruct-Q4_K_M</span></div>
+          </div>
+        </div>
       </div>
     </div>
-  </nav>
+    <div class="tuto-check">
+      <b data-en="Prefer Ollama?">Vous préférez Ollama ?</b>
+      <p data-en="Install it from ollama.com, pull a model (<span class='inline-code'>ollama pull qwen3:4b</span>), then pick the <b>Ollama</b> source in the same panel. Each engine keeps its own model, so switching back and forth is safe.">Installez-le depuis ollama.com, récupérez un modèle (<span class="inline-code">ollama pull qwen3:4b</span>), puis choisissez la source <b>Ollama</b> dans le même panneau. Chaque moteur retient son propre modèle : l'aller-retour est sans risque.</p>
+    </div>
+  </div>
+</section>
 
-  <header>
-    <div class="wrap">
-      <div class="kicker">Tutoriels Fluxo</div>
-      <h1>Des workflows <span class="grad">simples, utiles, modifiables.</span></h1>
-      <p class="lead">Fluxo assemble des blocs de haut en bas. Chaque bloc produit une sortie, que le bloc suivant peut lire avec <code>{{last}}</code>. Ces exemples sont volontairement basiques : ils servent de socle pour vos propres automatisations.</p>
-      <div class="hero-grid">
-        <div class="panel">
-          <p class="var-legend">Variables : <code>{{input}}</code> = entrée du workflow · <code>{{last}}</code> = sortie du bloc précédent · <code>{{model}}</code> et <code>{{ollama_url}}</code> = configuration Lumen.</p>
-          <div class="canvas">
-            <div class="step-card">
-              <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">✦</span><span class="step-title">Créer un workflow</span><span class="step-var">manuel</span></div>
-            </div>
-            <div class="step-card">
-              <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">⚙</span><span class="step-title">Ajouter des blocs</span><span class="step-var step-var-last">{{last}}</span></div>
-            </div>
-            <div class="step-card">
-              <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▶</span><span class="step-title">Tester puis enregistrer</span></div>
-            </div>
-          </div>
-        </div>
-        <aside class="panel">
-          <div class="kicker">Exemples</div>
-          <div class="quick-list">
-            <a href="#workflow-summary">Résumé rapide <span>IA + notification</span></a>
-            <a href="#workflow-file">Créer une note <span>texte + fichier</span></a>
-            <a href="#workflow-clean">Nettoyer un texte <span>remplacement + casse</span></a>
-            <a href="#workflow-daily">Brief quotidien <span>CRON + IA</span></a>
-            <a href="#workflow-api">API vers résumé <span>HTTP + IA</span></a>
-            <a href="#workflow-heartbeat">Heartbeat agent <span>mémoire + agent</span></a>
-            <a href="#workflow-router">Routeur Lumen <span>progression + IA</span></a>
-            <a href="#workflow-rss">News RSS <span>flux + synthèse</span></a>
-          </div>
-        </aside>
+<section class="tuto" id="reperes">
+  <div class="container">
+    <div class="tuto-head"><span class="tuto-num">01</span><h2 data-en="Fluxo in three ideas">Fluxo en trois idées</h2></div>
+    <p class="lead" data-en="A workflow is a list of blocks executed from top to bottom. Nothing else to learn before starting.">Un workflow est une liste de blocs exécutés de haut en bas. Il n'y a rien d'autre à comprendre avant de commencer.</p>
+    <div class="grid c3">
+      <div class="card">
+        <h3 data-en="Blocks pass their output on">Les blocs se passent leur sortie</h3>
+        <p data-en="Each block produces a value. The next one reads it with <span class='inline-code'>{{last}}</span>. The workflow's own input is <span class='inline-code'>{{input}}</span>.">Chaque bloc produit une valeur. Le suivant la lit avec <span class="inline-code">{{last}}</span>. L'entrée du workflow, elle, est <span class="inline-code">{{input}}</span>.</p>
+      </div>
+      <div class="card">
+        <h3 data-en="Name a block, reuse it later">Nommez un bloc, réutilisez-le</h3>
+        <p data-en="Give a block an id and any later block can read it by name: <span class='inline-code'>{{resume}}</span>, or a field inside it with <span class='inline-code'>{{resume.title}}</span>.">Donnez un identifiant à un bloc et n'importe quel bloc suivant le relit par son nom : <span class="inline-code">{{resume}}</span>, ou un champ à l'intérieur avec <span class="inline-code">{{resume.titre}}</span>.</p>
+      </div>
+      <div class="card">
+        <h3 data-en="The trigger decides when">Le déclencheur décide du quand</h3>
+        <p data-en="Manual, CRON, interval, file change, RFID tag or webhook. You change it at the top of the designer, at any time.">Manuel, CRON, intervalle, changement de fichier, badge RFID ou webhook. Il se change en haut du designer, à tout moment.</p>
       </div>
     </div>
-  </header>
-
-  <main class="wrap">
-    <section class="tutorial" id="workflow-summary">
-      <div>
-        <div class="kicker">Workflow 01</div>
-        <h2>Résumer un texte et afficher le résultat</h2>
-        <p>Collez un texte en entrée, demandez à Ollama de produire un résumé clair, puis affichez-le dans une notification Lumen. C'est le workflow de base pour comprendre <code>{{input}}</code> et <code>{{last}}</code>.</p>
-        <div class="recipe-meta">
-          <span class="tag">5 minutes</span><span class="tag">Ollama</span><span class="tag">Notification</span>
-        </div>
-        <ol class="steps-text">
-          <li>Créez un nouveau workflow et laissez le déclencheur sur <strong>Manuel</strong>.</li>
-          <li>Ajoutez un bloc <strong>Progression Lumen</strong> pour voir que l'exécution commence.</li>
-          <li>Ajoutez <strong>Ollama (génération)</strong> et utilisez <code>{{input}}</code> dans le champ Invite.</li>
-          <li>Terminez par <strong>Notification Lumen</strong> avec <code>{{last}}</code> comme message.</li>
-        </ol>
-      </div>
-      <div>
-        <p class="var-legend">Entrée de test : un article, une note longue ou un email.</p>
-        <div class="canvas">
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">◌</span><span class="step-title">Progression Lumen</span><span class="step-var">step</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Message</span><input class="param-input" value="Résumé en cours…" readonly /></label>
-              <label class="param-row"><span class="param-label">Catégorie</span><select class="param-select"><option>step</option></select></label>
-              <label class="param-row"><span class="param-label">Run (auto)</span><input class="param-input" value="{{run_id}}" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▣</span><span class="step-title">Ollama (génération)</span><span class="step-var">{{input}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Invite</span><textarea class="param-textarea" readonly>Résume ce texte en 5 points actionnables :
-{{input}}</textarea></label>
-              <label class="param-row"><span class="param-label">Consigne système</span><textarea class="param-textarea" readonly>Réponds en français, de façon concise.</textarea></label>
-              <label class="param-row"><span class="param-label">Modèle</span><input class="param-input" value="{{model}}" readonly /></label>
-              <label class="param-row"><span class="param-label">URL Ollama</span><input class="param-input" value="{{ollama_url}}" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">◇</span><span class="step-title">Notification Lumen</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Type</span><select class="param-select"><option>success</option></select></label>
-              <label class="param-row"><span class="param-label">Titre</span><input class="param-input" value="Résumé prêt" readonly /></label>
-              <label class="param-row"><span class="param-label">Message</span><textarea class="param-textarea" readonly>{{last}}</textarea></label>
-              <label class="param-row"><span class="param-label">Icône (option)</span><input class="param-input" value="sparkles" readonly /></label>
-              <label class="param-row"><span class="param-label">Couleur (option)</span><input class="param-input" value="#9961ff" readonly /></label>
-              <label class="param-row"><span class="param-label">Choix (une option par ligne)</span><textarea class="param-textarea" readonly></textarea></label>
-              <label class="param-row"><span class="param-label">Durée d'affichage (ms, option)</span><input class="param-input" value="0" readonly /></label>
-            </div>
-          </div>
-        </div>
-        <div class="run-log">
-          <div class="run-log-head"><span>Résultat attendu</span><span>OK</span></div>
-          <div class="run-log-body">
-            <div class="log-step"><span class="log-dot">●</span><span><span class="log-name">Notification</span><br><span class="log-out">Une synthèse courte, prête à lire ou copier.</span></span></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="tutorial" id="workflow-file">
-      <div>
-        <div class="kicker">Workflow 02</div>
-        <h2>Créer une note Markdown dans une sandbox</h2>
-        <p>Ce workflow transforme une idée brute en note structurée, puis l'écrit dans un fichier Markdown. Utile pour capturer des idées, préparer un brief ou archiver une réponse IA.</p>
-        <div class="recipe-meta">
-          <span class="tag">Fichiers</span><span class="tag">Sandbox</span><span class="tag">Markdown</span>
-        </div>
-        <ol class="steps-text">
-          <li>Créez ou choisissez une sandbox, par exemple <strong>Notes</strong>.</li>
-          <li>Demandez à Ollama de structurer l'entrée en titre, résumé et actions.</li>
-          <li>Écrivez le résultat dans <code>notes/idee-du-jour.md</code>.</li>
-          <li>Ajoutez une notification finale pour confirmer la création.</li>
-        </ol>
-      </div>
-      <div>
-        <p class="var-legend">Astuce : remplacez le chemin par un nom dynamique quand votre workflow sera stable.</p>
-        <div class="canvas">
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▣</span><span class="step-title">Ollama (génération)</span><span class="step-var">{{input}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Invite</span><textarea class="param-textarea" readonly>Transforme cette idée en note Markdown :
-- titre court
-- résumé
-- 3 prochaines actions
-
-Idée :
-{{input}}</textarea></label>
-              <label class="param-row"><span class="param-label">Consigne système</span><textarea class="param-textarea" readonly>Structure la réponse en Markdown propre.</textarea></label>
-              <label class="param-row"><span class="param-label">Modèle</span><input class="param-input" value="{{model}}" readonly /></label>
-              <label class="param-row"><span class="param-label">URL Ollama</span><input class="param-input" value="{{ollama_url}}" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▤</span><span class="step-title">Écrire un fichier</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Chemin</span><input class="param-input" value="notes/idee-du-jour.md" readonly /></label>
-              <label class="param-row"><span class="param-label">Contenu</span><textarea class="param-textarea" readonly>{{last}}</textarea></label>
-              <label class="param-row"><span class="param-label">Sandbox (nom)</span><input class="param-input" value="Notes" readonly /></label>
-              <label class="param-bool"><input type="checkbox" disabled /> Confiner à la sandbox</label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">◇</span><span class="step-title">Notification Lumen</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Type</span><select class="param-select"><option>success</option></select></label>
-              <label class="param-row"><span class="param-label">Titre</span><input class="param-input" value="Note créée" readonly /></label>
-              <label class="param-row"><span class="param-label">Message</span><input class="param-input" value="Note créée dans la sandbox Notes." readonly /></label>
-              <label class="param-row"><span class="param-label">Icône (option)</span><input class="param-input" value="check" readonly /></label>
-              <label class="param-row"><span class="param-label">Couleur (option)</span><input class="param-input" value="#3ddc97" readonly /></label>
-              <label class="param-row"><span class="param-label">Choix (une option par ligne)</span><textarea class="param-textarea" readonly></textarea></label>
-              <label class="param-row"><span class="param-label">Durée d'affichage (ms, option)</span><input class="param-input" value="0" readonly /></label>
-            </div>
-          </div>
-        </div>
-        <div class="note">Si vous utilisez ce workflow avec un agent, cochez l'écriture confinée à sa sandbox plutôt que de cibler une sandbox par nom.</div>
-      </div>
-    </section>
-
-    <section class="tutorial" id="workflow-clean">
-      <div>
-        <div class="kicker">Workflow 03</div>
-        <h2>Nettoyer un texte avant de le copier</h2>
-        <p>Un workflow sans IA, rapide et fiable : il nettoie un texte copié depuis le web, remplace les doubles espaces, harmonise la casse et place le résultat dans le presse-papier.</p>
-        <div class="recipe-meta">
-          <span class="tag">Sans IA</span><span class="tag">Presse-papier</span><span class="tag">Texte</span>
-        </div>
-        <ol class="steps-text">
-          <li>Utilisez <code>{{input}}</code> comme texte source.</li>
-          <li>Remplacez les caractères ou espaces indésirables.</li>
-          <li>Appliquez une casse si nécessaire.</li>
-          <li>Copiez le résultat dans le presse-papier.</li>
-        </ol>
-      </div>
-      <div>
-        <div class="canvas">
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">T</span><span class="step-title">Remplacer le texte</span><span class="step-var">{{input}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Texte</span><textarea class="param-textarea" readonly>{{input}}</textarea></label>
-              <label class="param-row"><span class="param-label">Rechercher</span><input class="param-input" value="  " readonly /></label>
-              <label class="param-row"><span class="param-label">Remplacer par</span><input class="param-input" value=" " readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">Aa</span><span class="step-title">Changer la casse</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Texte</span><input class="param-input" value="{{last}}" readonly /></label>
-              <label class="param-row"><span class="param-label">Casse</span><select class="param-select"><option>Capitaliser</option></select></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▣</span><span class="step-title">Copier dans le presse-papier</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Texte</span><textarea class="param-textarea" readonly>{{last}}</textarea></label>
-            </div>
-          </div>
-        </div>
-        <div class="note">Ce type de workflow est idéal en raccourci clavier ou depuis le mode action : il est instantané et ne dépend d'aucun modèle.</div>
-      </div>
-    </section>
-
-    <section class="tutorial" id="workflow-daily">
-      <div>
-        <div class="kicker">Workflow 04</div>
-        <h2>Recevoir un brief quotidien</h2>
-        <p>Planifiez un workflow qui prépare un court brief chaque matin. Il peut être aussi simple qu'un prompt statique, ou devenir plus avancé en lisant des fichiers de notes, une todo list ou des données externes.</p>
-        <div class="recipe-meta">
-          <span class="tag">CRON</span><span class="tag">Routine</span><span class="tag">IA</span>
-        </div>
-        <ol class="steps-text">
-          <li>Dans le déclencheur, choisissez <strong>Programmé (CRON)</strong>.</li>
-          <li>Utilisez par exemple <code>0 8 * * *</code> pour lancer à 8h chaque jour.</li>
-          <li>Ajoutez un bloc Texte qui contient votre contexte du matin.</li>
-          <li>Demandez à Ollama un brief court et affichez-le.</li>
-        </ol>
-      </div>
-      <div>
-        <p class="var-legend">Déclencheur : <code>0 8 * * *</code> · tous les jours à 8h.</p>
-        <div class="canvas">
-          <div class="step-card control">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">◷</span><span class="step-title">Déclencheur programmé</span><span class="step-var">CRON</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Expression</span><input class="param-input" value="0 8 * * *" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">T</span><span class="step-title">Texte</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Texte</span><textarea class="param-textarea" readonly>Prépare mon brief du jour :
-- priorités
-- points de vigilance
-- première action à faire</textarea></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▣</span><span class="step-title">Ollama (génération)</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Invite</span><textarea class="param-textarea" readonly>{{last}}
-
-Réponds en moins de 8 lignes.</textarea></label>
-              <label class="param-row"><span class="param-label">Consigne système</span><textarea class="param-textarea" readonly>Priorise les actions concrètes et garde un ton direct.</textarea></label>
-              <label class="param-row"><span class="param-label">Modèle</span><input class="param-input" value="{{model}}" readonly /></label>
-              <label class="param-row"><span class="param-label">URL Ollama</span><input class="param-input" value="{{ollama_url}}" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">◇</span><span class="step-title">Notification Lumen</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Type</span><select class="param-select"><option>info</option></select></label>
-              <label class="param-row"><span class="param-label">Titre</span><input class="param-input" value="Brief du jour" readonly /></label>
-              <label class="param-row"><span class="param-label">Message</span><textarea class="param-textarea" readonly>{{last}}</textarea></label>
-              <label class="param-row"><span class="param-label">Icône (option)</span><input class="param-input" value="bell" readonly /></label>
-              <label class="param-row"><span class="param-label">Couleur (option)</span><input class="param-input" value="" readonly /></label>
-              <label class="param-row"><span class="param-label">Choix (une option par ligne)</span><textarea class="param-textarea" readonly></textarea></label>
-              <label class="param-row"><span class="param-label">Durée d'affichage (ms, option)</span><input class="param-input" value="0" readonly /></label>
-            </div>
-          </div>
-        </div>
-        <div class="note">Le déclencheur n'est pas un bloc dans Fluxo : il se règle dans la barre "Déclencheur" au-dessus du canvas. Il est représenté ici pour rendre le tutoriel lisible.</div>
-      </div>
-    </section>
-
-    <section class="tutorial" id="workflow-api">
-      <div>
-        <div class="kicker">Workflow 05</div>
-        <h2>Appeler une API puis résumer la réponse</h2>
-        <p>Ce workflow montre la passerelle entre automatisation classique et IA. Il récupère une URL, envoie le résultat au modèle, puis garde une trace dans un fichier.</p>
-        <div class="recipe-meta">
-          <span class="tag">HTTP</span><span class="tag">API</span><span class="tag">Résumé</span>
-        </div>
-        <ol class="steps-text">
-          <li>Ajoutez un bloc <strong>Requête HTTP (GET)</strong> avec l'URL de votre API.</li>
-          <li>Envoyez <code>{{last}}</code> dans Ollama avec une consigne de synthèse.</li>
-          <li>Écrivez le résumé dans un fichier de log.</li>
-          <li>Affichez une progression pour suivre l'exécution en direct.</li>
-        </ol>
-      </div>
-      <div>
-        <div class="canvas">
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">↗</span><span class="step-title">Requête HTTP (GET)</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">URL</span><input class="param-input" value="https://api.exemple.local/status" readonly /></label>
-              <label class="param-row"><span class="param-label">Headers</span><textarea class="param-textarea" readonly>Authorization: Bearer {{token}}
-Accept: application/json</textarea></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▣</span><span class="step-title">Ollama (génération)</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Invite</span><textarea class="param-textarea" readonly>Analyse cette réponse API et donne :
-- état général
-- anomalie éventuelle
-- action recommandée
-
-{{last}}</textarea></label>
-              <label class="param-row"><span class="param-label">Consigne système</span><textarea class="param-textarea" readonly>Réponds en français avec une synthèse opérationnelle.</textarea></label>
-              <label class="param-row"><span class="param-label">Modèle</span><input class="param-input" value="{{model}}" readonly /></label>
-              <label class="param-row"><span class="param-label">URL Ollama</span><input class="param-input" value="{{ollama_url}}" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▤</span><span class="step-title">Écrire un fichier</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Chemin</span><input class="param-input" value="logs/status-api.md" readonly /></label>
-              <label class="param-row"><span class="param-label">Contenu</span><textarea class="param-textarea" readonly>{{last}}</textarea></label>
-              <label class="param-row"><span class="param-label">Sandbox (nom)</span><input class="param-input" value="Logs" readonly /></label>
-              <label class="param-bool"><input type="checkbox" disabled /> Confiner à la sandbox</label>
-            </div>
-          </div>
-        </div>
-        <div class="note">Le champ Headers accepte une ligne par header, par exemple <code>Authorization: Bearer {{token}}</code>, ou un objet JSON si le workflow génère les headers dynamiquement.</div>
-      </div>
-    </section>
-
-    <section class="tutorial" id="workflow-heartbeat">
-      <div>
-        <div class="kicker">Workflow 06</div>
-        <h2>Heartbeat : lancer un agent de veille</h2>
-        <p>Ce workflow est fait pour être appelé par le Heartbeat de Lumen. À chaque tick, il lit un contexte partagé, ajoute une tâche à un agent, lance l'agent, puis dépose une trace dans la messagerie du workspace.</p>
-        <div class="recipe-meta">
-          <span class="tag">Heartbeat</span><span class="tag">Agent</span><span class="tag">Mémoire</span><span class="tag">Workspace</span>
-        </div>
-        <ol class="steps-text">
-          <li>Créez un workflow nommé par exemple <strong>Heartbeat veille</strong>.</li>
-          <li>Dans les paramètres Lumen, activez Heartbeat et mettez ce nom de workflow comme cible.</li>
-          <li>Utilisez une fréquence raisonnable, par exemple <code>0 */30 * * * *</code>.</li>
-          <li>Laissez l'agent faire son travail dans sa sandbox, puis suivez le résultat dans la messagerie.</li>
-        </ol>
-      </div>
-      <div>
-        <p class="var-legend">Réglage Heartbeat : cible <code>Heartbeat veille</code> · CRON <code>0 */30 * * * *</code>.</p>
-        <div class="canvas">
-          <div class="step-card control">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">♡</span><span class="step-title">Heartbeat Lumen</span><span class="step-var">réglage</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Workflow cible</span><input class="param-input" value="Heartbeat veille" readonly /></label>
-              <label class="param-row"><span class="param-label">CRON</span><input class="param-input" value="0 */30 * * * *" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">◌</span><span class="step-title">Progression Lumen</span><span class="step-var">step</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Message</span><input class="param-input" value="Heartbeat : préparation de la veille…" readonly /></label>
-              <label class="param-row"><span class="param-label">Catégorie</span><select class="param-select"><option>step</option></select></label>
-              <label class="param-row"><span class="param-label">Run (auto)</span><input class="param-input" value="{{run_id}}" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▤</span><span class="step-title">Mémoire : lire</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Clé</span><input class="param-input" value="veille/contexte" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">☷</span><span class="step-title">Ajouter une tâche à un agent</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Agent (nom)</span><input class="param-input" value="Veille" readonly /></label>
-              <label class="param-row"><span class="param-label">Tâche</span><textarea class="param-textarea" readonly>Analyse le contexte de veille et prépare un point court.
-
-Contexte :
-{{last}}</textarea></label>
-              <label class="param-row"><span class="param-label">Date d'exécution (epoch secondes)</span><input class="param-input" value="" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▣</span><span class="step-title">Lancer un agent</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Agent (nom)</span><input class="param-input" value="Veille" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">✉</span><span class="step-title">Messagerie : écrire un message</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Expéditeur</span><input class="param-input" value="Heartbeat Fluxo" readonly /></label>
-              <label class="param-row"><span class="param-label">Id expéditeur (optionnel)</span><input class="param-input" value="heartbeat-veille" readonly /></label>
-              <label class="param-row"><span class="param-label">Sujet</span><input class="param-input" value="Agent de veille lancé" readonly /></label>
-              <label class="param-row"><span class="param-label">Message</span><textarea class="param-textarea" readonly>{{last}}</textarea></label>
-              <label class="param-row"><span class="param-label">Contexte JSON (optionnel)</span><textarea class="param-textarea" readonly>{"source":"heartbeat","workflow":"Heartbeat veille"}</textarea></label>
-            </div>
-          </div>
-        </div>
-        <div class="note">Le Heartbeat n'est pas un bloc Fluxo : il exécute périodiquement un workflow nommé depuis les paramètres Lumen. La première carte est donc un rappel de configuration, pas un bloc à ajouter au canvas.</div>
-      </div>
-    </section>
-
-    <section class="tutorial" id="workflow-router">
-      <div>
-        <div class="kicker">Workflow 07</div>
-        <h2>Routeur : classifier une demande et répondre</h2>
-        <p>Le mode Routeur de Lumen appelle le workflow Fluxo <strong>default router</strong>. Ce tutoriel reprend sa base : afficher une progression, envoyer la demande au modèle avec une consigne de routage, puis retourner une réponse actionnable.</p>
-        <div class="recipe-meta">
-          <span class="tag">Routeur</span><span class="tag">default router</span><span class="tag">Ollama</span>
-        </div>
-        <ol class="steps-text">
-          <li>Ouvrez Fluxo et sélectionnez <strong>default router</strong>.</li>
-          <li>Gardez le bloc de progression pour que la conversation affiche l'état du routage.</li>
-          <li>Adaptez uniquement la consigne système si vous voulez router vers vos propres habitudes.</li>
-          <li>Testez depuis le mode Routeur de la barre Lumen avec une demande courte.</li>
-        </ol>
-      </div>
-      <div>
-        <p class="var-legend">Entrée routeur : <code>{{input}}</code> = message utilisateur dans la barre Lumen.</p>
-        <div class="canvas">
-          <div class="step-card control">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">⚡</span><span class="step-title">Mode Routeur Lumen</span><span class="step-var">default router</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Workflow appelé</span><input class="param-input" value="default router" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">◌</span><span class="step-title">Progression Lumen</span><span class="step-var">step</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Message</span><input class="param-input" value="Routage de la demande via {{model}}…" readonly /></label>
-              <label class="param-row"><span class="param-label">Catégorie</span><select class="param-select"><option>step</option></select></label>
-              <label class="param-row"><span class="param-label">Run (auto)</span><input class="param-input" value="{{run_id}}" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▣</span><span class="step-title">Ollama (génération)</span><span class="step-var">{{input}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Invite</span><textarea class="param-textarea" readonly>{{input}}</textarea></label>
-              <label class="param-row"><span class="param-label">Consigne système</span><textarea class="param-textarea" readonly>Tu es le routeur d'actions de Lumen, un agent local et privé. Analyse la demande et réponds de façon concise, claire et actionnable, dans la langue de la demande.</textarea></label>
-              <label class="param-row"><span class="param-label">Modèle</span><input class="param-input" value="{{model}}" readonly /></label>
-              <label class="param-row"><span class="param-label">URL Ollama</span><input class="param-input" value="{{ollama_url}}" readonly /></label>
-            </div>
-          </div>
-        </div>
-        <div class="run-log">
-          <div class="run-log-head"><span>Résultat attendu</span><span>Routeur</span></div>
-          <div class="run-log-body">
-            <div class="log-step"><span class="log-dot">●</span><span><span class="log-name">Réponse finale</span><br><span class="log-out">Une réponse courte qui explique l'action à faire, ou le workflow/agent à utiliser.</span></span></div>
-          </div>
-        </div>
-        <div class="note">Le mode Routeur n'est pas un bloc : il sélectionne automatiquement le workflow <code>default router</code>. Le workflow reste éditable et peut être restauré depuis le bouton Réinitialiser dans Fluxo.</div>
-      </div>
-    </section>
-
-    <section class="tutorial" id="workflow-rss">
-      <div>
-        <div class="kicker">Workflow 08</div>
-        <h2>Lire un flux RSS et recevoir les news utiles</h2>
-        <p>Ce workflow récupère un flux RSS public, extrait les titres importants avec Ollama, puis affiche un résumé court dans Lumen. Il est pratique en lancement manuel, en workflow Heartbeat, ou comme sous-workflow appelé par un agent de veille.</p>
-        <div class="recipe-meta">
-          <span class="tag">RSS</span><span class="tag">HTTP</span><span class="tag">Ollama</span><span class="tag">Notification</span>
-        </div>
-        <ol class="steps-text">
-          <li>Ajoutez une <strong>Requête HTTP (GET)</strong> vers l'URL du flux RSS.</li>
-          <li>Envoyez le XML récupéré dans <strong>Ollama (génération)</strong>.</li>
-          <li>Demandez au modèle de garder seulement les news utiles et les liens.</li>
-          <li>Affichez le résultat dans une notification ou envoyez-le dans la messagerie.</li>
-        </ol>
-      </div>
-      <div>
-        <p class="var-legend">Entrée de test : laissez vide, le flux RSS vient directement de l'URL.</p>
-        <div class="canvas">
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">◌</span><span class="step-title">Progression Lumen</span><span class="step-var">step</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Message</span><input class="param-input" value="Lecture du flux RSS…" readonly /></label>
-              <label class="param-row"><span class="param-label">Catégorie</span><select class="param-select"><option>step</option></select></label>
-              <label class="param-row"><span class="param-label">Run (auto)</span><input class="param-input" value="{{run_id}}" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">↗</span><span class="step-title">Requête HTTP (GET)</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">URL</span><input class="param-input" value="https://hnrss.org/frontpage" readonly /></label>
-              <label class="param-row"><span class="param-label">Headers</span><textarea class="param-textarea" readonly>Accept: application/rss+xml, application/xml, text/xml</textarea></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">▣</span><span class="step-title">Ollama (génération)</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Invite</span><textarea class="param-textarea" readonly>Voici un flux RSS/XML brut.
-
-Extrais les 5 nouvelles les plus utiles.
-Pour chaque nouvelle, donne :
-- titre
-- lien
-- pourquoi c'est intéressant en une phrase
-
-Flux :
-{{last}}</textarea></label>
-              <label class="param-row"><span class="param-label">Consigne système</span><textarea class="param-textarea" readonly>Tu lis des flux RSS. Réponds en français, sans inventer de lien, et ignore les entrées publicitaires ou répétées.</textarea></label>
-              <label class="param-row"><span class="param-label">Modèle</span><input class="param-input" value="{{model}}" readonly /></label>
-              <label class="param-row"><span class="param-label">URL Ollama</span><input class="param-input" value="{{ollama_url}}" readonly /></label>
-            </div>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-drag">⋮⋮</span><span class="step-ic">◇</span><span class="step-title">Notification Lumen</span><span class="step-var step-var-last">{{last}}</span></div>
-            <div class="step-params">
-              <label class="param-row"><span class="param-label">Type</span><select class="param-select"><option>info</option></select></label>
-              <label class="param-row"><span class="param-label">Titre</span><input class="param-input" value="News RSS" readonly /></label>
-              <label class="param-row"><span class="param-label">Message</span><textarea class="param-textarea" readonly>{{last}}</textarea></label>
-              <label class="param-row"><span class="param-label">Icône (option)</span><input class="param-input" value="bell" readonly /></label>
-              <label class="param-row"><span class="param-label">Couleur (option)</span><input class="param-input" value="" readonly /></label>
-              <label class="param-row"><span class="param-label">Choix (une option par ligne)</span><textarea class="param-textarea" readonly></textarea></label>
-              <label class="param-row"><span class="param-label">Durée d'affichage (ms, option)</span><input class="param-input" value="0" readonly /></label>
-            </div>
-          </div>
-        </div>
-        <div class="note">Fluxo n'a pas encore de bloc parseur RSS/XML dédié : ici, le XML est récupéré par HTTP puis filtré par le modèle. Pour un workflow critique, ajoutez plus tard un bloc RSS natif ou un proxy qui transforme le flux en JSON propre.</div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap">
-      <p>Lumen · Fluxo Tutorials · Workflows locaux par défaut, API quand vous en avez besoin.</p>
+    <div class="tuto-check">
+      <b data-en="Where the designer lives">Où se trouve le designer</b>
+      <p data-en="Lumen OS → start menu → hub <b>Fluxo</b> → tab <b>Designer</b>. The <b>Automations</b> tab, next to it, lists your workflows and their runs.">Lumen OS → menu démarrer → hub <b>Fluxo</b> → onglet <b>Designer</b>. L'onglet <b>Automatisations</b>, juste à côté, liste vos workflows et leurs exécutions.</p>
     </div>
-  </footer>
+  </div>
+</section>
+
+<section class="tuto" id="t1">
+  <div class="container">
+    <div class="tuto-head"><span class="tuto-num">02</span><h2 data-en="Summarize the clipboard, out loud">Résumer le presse-papier, à voix haute</h2></div>
+    <p class="lead" data-en="Copy any text, run the workflow, get a three-line summary spoken and shown as a notification. The one to start with: four blocks, no configuration outside the designer.">Copiez n'importe quel texte, lancez le workflow, obtenez un résumé en trois lignes énoncé à voix haute et affiché en notification. Celui par lequel commencer : quatre blocs, aucune configuration en dehors du designer.</p>
+    <div class="tuto-cols">
+      <div>
+        <ol class="howto">
+          <li data-en="In the designer, click <b>New workflow</b> and name it <span class='inline-code'>Résumer</span>. Leave the trigger on <b>Manual</b>.">Dans le designer, cliquez sur <b>Créer un workflow</b> et nommez-le <span class="inline-code">Résumer</span>. Laissez le déclencheur sur <b>Manuel</b>.</li>
+          <li data-en="Add the four blocks on the right, in that order, from the block list on the left (search by name).">Ajoutez les quatre blocs ci-contre, dans cet ordre, depuis la liste de blocs à gauche (cherchez-les par leur nom).</li>
+          <li data-en="Fill the parameters exactly as shown. <span class='inline-code'>{{last}}</span> always means “what the block just above produced”.">Remplissez les paramètres exactement comme indiqué. <span class="inline-code">{{last}}</span> signifie toujours « ce que le bloc juste au-dessus a produit ».</li>
+          <li data-en="Copy a paragraph from anywhere, then hit <b>Run</b>. The execution log shows each block turning green.">Copiez un paragraphe depuis n'importe où, puis cliquez sur <b>Exécuter</b>. Le journal d'exécution montre chaque bloc passer au vert.</li>
+        </ol>
+        <div class="tuto-check">
+          <b data-en="It works when…">C'est bon quand…</b>
+          <p data-en="Lumen speaks the summary and a notification appears with the same text. If the voice stays silent, check Settings → Voice: a voice must be selected.">Lumen énonce le résumé et une notification affiche le même texte. Si la voix reste muette, vérifiez Réglages → Voix : une voix doit être sélectionnée.</p>
+        </div>
+      </div>
+      <div class="flow">
+        <span class="flow-label" data-en="The workflow">Le workflow</span>
+        <div class="flow-step trigger"><div class="flow-head"><span class="flow-ic">◷</span><span class="flow-name" data-en="Trigger · Manual">Déclencheur · Manuel</span></div></div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">⌘</span><span class="flow-name">Lire le presse-papier</span><span class="flow-var">{{last}}</span></div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">IA</span><span class="flow-name">Inférence LLM</span><span class="flow-var">{{last}}</span></div>
+          <div class="flow-params">
+            <div><span class="k">Invite</span><span class="v">{{last}}</span></div>
+            <div><span class="k" data-en="System prompt">Consigne système</span><span class="v" data-en="Summarize in three short bullet points, in the language of the text. No preamble.">Résume en trois puces courtes, dans la langue du texte. Aucun préambule.</span></div>
+            <div><span class="k">Backend</span><span class="v">auto</span></div>
+          </div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">♪</span><span class="flow-name">Énoncer le texte</span></div>
+          <div class="flow-params"><div><span class="k">Texte</span><span class="v">{{last}}</span></div></div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">◇</span><span class="flow-name">Notification Lumen</span></div>
+          <div class="flow-params">
+            <div><span class="k">Type</span><span class="v">info</span></div>
+            <div><span class="k">Titre</span><span class="v" data-en="Summary">Résumé</span></div>
+            <div><span class="k">Message</span><span class="v">{{last}}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tuto" id="t2">
+  <div class="container">
+    <div class="tuto-head"><span class="tuto-num">03</span><h2 data-en="A daily brief, at 8:30, in your feed">Un brief quotidien, à 8 h 30, dans votre fil</h2></div>
+    <p class="lead" data-en="Every weekday morning, Lumen reads your indexed documents, writes a short brief and posts it to the agent feed — where you can reply to turn it into a task.">Chaque matin de semaine, Lumen relit vos documents indexés, rédige un brief court et le dépose dans le fil des agents — où répondre à un message crée une tâche.</p>
+    <div class="tuto-cols">
+      <div>
+        <ol class="howto">
+          <li data-en="Index a few documents first: hub <b>Corpus</b> → <b>Library</b> → drop your files in. Without that, the search block returns nothing.">Indexez d'abord quelques documents : hub <b>Corpus</b> → <b>Bibliothèque</b> → déposez vos fichiers. Sans cela, le bloc de recherche ne renvoie rien.</li>
+          <li data-en="Create a workflow named <span class='inline-code'>Brief matinal</span> and set its trigger to <b>CRON</b> with the expression <span class='inline-code'>30 8 * * 1-5</span> — 8:30, Monday to Friday.">Créez un workflow nommé <span class="inline-code">Brief matinal</span> et réglez son déclencheur sur <b>CRON</b> avec l'expression <span class="inline-code">30 8 * * 1-5</span> — 8 h 30, du lundi au vendredi.</li>
+          <li data-en="Chain the four blocks opposite. The progress block is what makes the run visible in the bar while it happens.">Enchaînez les quatre blocs ci-contre. Le bloc de progression est ce qui rend l'exécution visible dans la barre pendant qu'elle a lieu.</li>
+          <li data-en="Test it before waiting for tomorrow: <b>Run</b> executes it immediately, whatever the trigger says.">Testez sans attendre demain : <b>Exécuter</b> le lance immédiatement, quel que soit le déclencheur.</li>
+        </ol>
+        <div class="tuto-check">
+          <b data-en="It works when…">C'est bon quand…</b>
+          <p data-en="A message signed “Brief” appears in the Crew hub → Feed, and the notification centre shows a badge. The run is listed under Fluxo → Automations with its duration.">Un message signé « Brief » apparaît dans le hub Équipage → Fil, et le centre de notifications affiche une pastille. L'exécution est listée dans Fluxo → Automatisations, avec sa durée.</p>
+        </div>
+      </div>
+      <div class="flow">
+        <span class="flow-label" data-en="The workflow">Le workflow</span>
+        <div class="flow-step trigger"><div class="flow-head"><span class="flow-ic">◷</span><span class="flow-name">Déclencheur · CRON</span><span class="flow-var">30 8 * * 1-5</span></div></div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">◌</span><span class="flow-name">Progression Lumen</span></div>
+          <div class="flow-params">
+            <div><span class="k">Message</span><span class="v" data-en="Writing the brief…">Rédaction du brief…</span></div>
+            <div><span class="k" data-en="Category">Catégorie</span><span class="v">step</span></div>
+          </div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">⌕</span><span class="flow-name">Rechercher dans les connaissances</span><span class="flow-var">{{last}}</span></div>
+          <div class="flow-params">
+            <div><span class="k">Recherche</span><span class="v" data-en="deadlines, decisions, current projects">échéances, décisions, projets en cours</span></div>
+            <div><span class="k" data-en="Excerpts">Nombre d'extraits</span><span class="v">6</span></div>
+          </div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">IA</span><span class="flow-name">Inférence LLM</span><span class="flow-var">{{last}}</span></div>
+          <div class="flow-params">
+            <div><span class="k">Invite</span><span class="v">{{last}}</span></div>
+            <div><span class="k" data-en="System prompt">Consigne système</span><span class="v" data-en="From these excerpts, write a five-line morning brief: what is due today, what is waiting for a decision. No filler.">À partir de ces extraits, rédige un brief matinal de cinq lignes : ce qui est dû aujourd'hui, ce qui attend une décision. Sans remplissage.</span></div>
+            <div><span class="k">Backend</span><span class="v">auto</span></div>
+          </div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">✉</span><span class="flow-name">Messagerie : écrire un message</span></div>
+          <div class="flow-params">
+            <div><span class="k" data-en="Sender">Expéditeur</span><span class="v">Brief</span></div>
+            <div><span class="k" data-en="Subject">Sujet</span><span class="v" data-en="Morning brief">Brief matinal</span></div>
+            <div><span class="k">Message</span><span class="v">{{last}}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tuto" id="t3">
+  <div class="container">
+    <div class="tuto-head"><span class="tuto-num">04</span><h2 data-en="Turn a dictated idea into a filed note">Transformer une idée dictée en note classée</h2></div>
+    <p class="lead" data-en="You dictate a rough idea into the bar, Lumen rewrites it as a clean Markdown note and files it in a sandbox, dated. Nothing leaves the machine.">Vous dictez une idée en vrac dans la barre, Lumen la réécrit en note Markdown propre et la classe dans une sandbox, datée. Rien ne sort de la machine.</p>
+    <div class="tuto-cols">
+      <div>
+        <ol class="howto">
+          <li data-en="Create a sandbox to file the notes in: Lumen OS → <b>Files</b> → <b>New sandbox</b>, named <span class='inline-code'>notes</span>.">Créez la sandbox qui recevra les notes : Lumen OS → <b>Fichiers</b> → <b>Nouvelle sandbox</b>, nommée <span class="inline-code">notes</span>.</li>
+          <li data-en="Create a workflow named <span class='inline-code'>Note</span>, trigger <b>Manual</b>, with the three blocks opposite.">Créez un workflow nommé <span class="inline-code">Note</span>, déclencheur <b>Manuel</b>, avec les trois blocs ci-contre.</li>
+          <li data-en="Run it from the bar rather than the designer: set the bar's mode to <b>Workflow</b> and choose <span class='inline-code'>Note</span>. What you type — or dictate with the microphone — becomes <span class='inline-code'>{{input}}</span>.">Lancez-le depuis la barre plutôt que le designer : réglez le mode de la barre sur <b>Workflow</b> et choisissez <span class="inline-code">Note</span>. Ce que vous tapez — ou dictez au microphone — devient <span class="inline-code">{{input}}</span>.</li>
+          <li data-en="Keep <b>Confine to sandbox</b> enabled on the write block. It is what guarantees the AI cannot write anywhere else on your disk.">Laissez <b>Confiner à la sandbox</b> activé sur le bloc d'écriture. C'est ce qui garantit que l'IA ne peut rien écrire ailleurs sur votre disque.</li>
+        </ol>
+        <div class="tuto-check">
+          <b data-en="It works when…">C'est bon quand…</b>
+          <p data-en="A .md file appears in the <span class='inline-code'>notes</span> sandbox, and opening it shows a title, a summary and your idea rewritten in full sentences.">Un fichier .md apparaît dans la sandbox <span class="inline-code">notes</span>, et son ouverture montre un titre, un résumé et votre idée réécrite en phrases complètes.</p>
+        </div>
+      </div>
+      <div class="flow">
+        <span class="flow-label" data-en="The workflow">Le workflow</span>
+        <div class="flow-step trigger"><div class="flow-head"><span class="flow-ic">◷</span><span class="flow-name" data-en="Trigger · Manual">Déclencheur · Manuel</span><span class="flow-var">{{input}}</span></div></div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">IA</span><span class="flow-name">Inférence LLM</span><span class="flow-var">{{last}}</span></div>
+          <div class="flow-params">
+            <div><span class="k">Invite</span><span class="v">{{input}}</span></div>
+            <div><span class="k" data-en="System prompt">Consigne système</span><span class="v" data-en="Rewrite this idea as a Markdown note: an H1 title, a one-line summary, then the details as bullet points. Markdown only.">Réécris cette idée en note Markdown : un titre H1, un résumé d'une ligne, puis les détails en puces. Uniquement du Markdown.</span></div>
+            <div><span class="k">Backend</span><span class="v">auto</span></div>
+          </div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">▤</span><span class="flow-name">Écrire un fichier</span></div>
+          <div class="flow-params">
+            <div><span class="k" data-en="Path">Chemin</span><span class="v">note.md</span></div>
+            <div><span class="k" data-en="Content">Contenu</span><span class="v">{{last}}</span></div>
+            <div><span class="k">Sandbox</span><span class="v">notes</span></div>
+            <div><span class="k" data-en="Confine">Confiner</span><span class="v" data-en="enabled">activé</span></div>
+          </div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">◇</span><span class="flow-name">Notification Lumen</span></div>
+          <div class="flow-params">
+            <div><span class="k">Type</span><span class="v">success</span></div>
+            <div><span class="k">Titre</span><span class="v" data-en="Note filed">Note classée</span></div>
+            <div><span class="k">Message</span><span class="v">notes/note.md</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tuto" id="t4">
+  <div class="container">
+    <div class="tuto-head"><span class="tuto-num">05</span><h2 data-en="One RFID tag, one task handed to an agent">Un badge RFID, une tâche confiée à un agent</h2></div>
+    <p class="lead" data-en="Tap a tag on the Lumen Controller and a workflow fires. Here: it hands a recurring job to an agent and confirms out loud — no screen, no keyboard.">Passez un badge sur le Lumen Controller et un workflow part. Ici : il confie une tâche récurrente à un agent et le confirme à voix haute — sans écran, sans clavier.</p>
+    <div class="tuto-cols">
+      <div>
+        <ol class="howto">
+          <li data-en="Pair the controller first: Lumen OS → start menu → <b>Lumen Controller</b>. The board announces itself on the local network.">Appairez d'abord le contrôleur : Lumen OS → menu démarrer → <b>Lumen Controller</b>. La carte s'annonce sur le réseau local.</li>
+          <li data-en="Tap the tag once with the app open: its UID appears in the bindings list. Copy it.">Passez le badge une fois, app ouverte : son UID apparaît dans la liste des associations. Copiez-le.</li>
+          <li data-en="Create a workflow, set the trigger to <b>RFID tag</b> and paste the UID (hexadecimal, no separators).">Créez un workflow, réglez le déclencheur sur <b>Badge RFID</b> et collez l'UID (hexadécimal, sans séparateurs).</li>
+          <li data-en="Add the two blocks opposite. The agent name must match one that exists in Crew → Team.">Ajoutez les deux blocs ci-contre. Le nom de l'agent doit correspondre à un agent existant dans Équipage → Équipe.</li>
+        </ol>
+        <div class="tuto-check">
+          <b data-en="Also possible with the same trigger">Possible aussi avec le même déclencheur</b>
+          <p data-en="Switch profile and unlock the session, start a scheduled agent, run a scene at home, or open the workspace on a shared screen. The tag is just a trigger like any other.">Changer de profil et déverrouiller la session, démarrer un agent planifié, lancer une scène domotique, ou ouvrir l'espace de travail sur un écran partagé. Le badge est un déclencheur comme un autre.</p>
+        </div>
+      </div>
+      <div class="flow">
+        <span class="flow-label" data-en="The workflow">Le workflow</span>
+        <div class="flow-step trigger"><div class="flow-head"><span class="flow-ic">((•))</span><span class="flow-name">Déclencheur · Badge RFID</span><span class="flow-var">04A2BC91</span></div></div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">☰</span><span class="flow-name">Ajouter une tâche à un agent</span></div>
+          <div class="flow-params">
+            <div><span class="k">Agent</span><span class="v" data-en="Archivist">Archiviste</span></div>
+            <div><span class="k" data-en="Task">Tâche</span><span class="v" data-en="Sort today's files and report back">Trier les fichiers du jour et faire un compte rendu</span></div>
+          </div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">♪</span><span class="flow-name">Énoncer le texte</span></div>
+          <div class="flow-params"><div><span class="k">Texte</span><span class="v" data-en="Task handed to the archivist.">Tâche confiée à l'archiviste.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tuto" id="t5">
+  <div class="container">
+    <div class="tuto-head"><span class="tuto-num">06</span><h2 data-en="Let the model call your workflow">Laisser le modèle appeler votre workflow</h2></div>
+    <p class="lead" data-en="This is what turns Lumen from a chat into an assistant: a workflow exposed as a tool, that the model decides to call on its own when your sentence calls for it.">C'est ce qui fait passer Lumen du chat à l'assistant : un workflow exposé comme outil, que le modèle décide d'appeler lui-même quand votre phrase le demande.</p>
+    <div class="tuto-cols">
+      <div>
+        <ol class="howto">
+          <li data-en="Open one of the workflows above in the designer and turn on <b>Expose to function calling</b>. Its name and description become what the model sees.">Ouvrez l'un des workflows précédents dans le designer et activez <b>Exposer au function calling</b>. Son nom et sa description deviennent ce que le modèle voit.</li>
+          <li data-en="Write the description as an instruction, not a label: “Files an idea as a Markdown note in the notes sandbox” beats “Note workflow”. That sentence is the entire basis on which the model chooses.">Rédigez la description comme une instruction, pas comme une étiquette : « Classe une idée en note Markdown dans la sandbox notes » vaut mieux que « Workflow note ». Cette phrase est tout ce sur quoi le modèle s'appuie pour choisir.</li>
+          <li data-en="Set the bar's mode to <b>Tools</b>, then type a normal sentence: “note that idea: switch the demo to a local model”.">Réglez le mode de la barre sur <b>Outils</b>, puis tapez une phrase normale : « note cette idée : passer la démo sur un modèle local ».</li>
+          <li data-en="The bar shows the call it decided to make, its arguments and its result, before answering you.">La barre affiche l'appel qu'elle a décidé de faire, ses arguments et son résultat, avant de vous répondre.</li>
+        </ol>
+        <div class="tuto-check">
+          <b data-en="If the model never calls it">Si le modèle ne l'appelle jamais</b>
+          <p data-en="Prefer a model trained for tool calling — the LFM2.5 family and Qwen3 are reliable at this — and keep the number of exposed tools small. Twenty vague tools produce worse choices than four precise ones.">Préférez un modèle entraîné pour l'appel d'outils — la famille LFM2.5 et Qwen3 sont fiables là-dessus — et gardez peu d'outils exposés. Vingt outils vagues donnent de moins bons choix que quatre outils précis.</p>
+        </div>
+      </div>
+      <div class="flow">
+        <span class="flow-label" data-en="What the model receives">Ce que reçoit le modèle</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">{ }</span><span class="flow-name" data-en="Tool definition">Définition de l'outil</span></div>
+          <div class="flow-params">
+            <div><span class="k" data-en="name">nom</span><span class="v">note</span></div>
+            <div><span class="k">description</span><span class="v" data-en="Files an idea as a Markdown note in the notes sandbox">Classe une idée en note Markdown dans la sandbox notes</span></div>
+            <div><span class="k" data-en="argument">argument</span><span class="v">input</span></div>
+          </div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">→</span><span class="flow-name" data-en="Call decided by the model">Appel décidé par le modèle</span></div>
+          <div class="flow-params">
+            <div><span class="k">note</span><span class="v" data-en="{ input: "switch the demo to a local model" }">{ input : « passer la démo sur un modèle local » }</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tuto" id="agent">
+  <div class="container">
+    <div class="tuto-head"><span class="tuto-num">07</span><h2 data-en="An agent that works while you are away">Un agent qui travaille pendant votre absence</h2></div>
+    <p class="lead" data-en="An agent is not a workflow: it has a goal, its own sandbox, its own skills, and it decides its own steps. Give it a narrow job and a schedule.">Un agent n'est pas un workflow : il a un objectif, sa propre sandbox, ses propres skills, et il décide lui-même de ses étapes. Donnez-lui un travail étroit et un horaire.</p>
+    <div class="tuto-cols">
+      <div>
+        <ol class="howto">
+          <li data-en="Hub <b>Crew</b> → <b>Team</b> → <b>New agent</b>. Name it after its job, not after a persona: <span class='inline-code'>Veille</span>, <span class='inline-code'>Archiviste</span>.">Hub <b>Équipage</b> → <b>Équipe</b> → <b>Nouvel agent</b>. Nommez-le d'après son travail, pas d'après un personnage : <span class="inline-code">Veille</span>, <span class="inline-code">Archiviste</span>.</li>
+          <li data-en="Write the goal as a deliverable with a stopping condition: “Each evening, read the notes written today and produce a one-page summary in the sandbox. Stop when the file is written.”">Écrivez l'objectif comme un livrable avec une condition d'arrêt : « Chaque soir, relire les notes écrites dans la journée et produire une synthèse d'une page dans la sandbox. S'arrêter quand le fichier est écrit. »</li>
+          <li data-en="Give it only the tools it needs. An agent with access to everything wanders; an agent with three tools finishes.">Ne lui donnez que les outils nécessaires. Un agent qui a accès à tout se disperse ; un agent qui a trois outils termine.</li>
+          <li data-en="Schedule it (CRON) and set its budget: maximum iterations and token ceiling. When the budget runs out, the agent escalates instead of looping — you get a message, not a runaway.">Planifiez-le (CRON) et fixez son budget : nombre d'itérations et plafond de tokens. Budget épuisé, l'agent escalade au lieu de boucler — vous recevez un message, pas un emballement.</li>
+          <li data-en="Follow it live in <b>Workshop</b>, read what it did in <b>Feed</b>, and inspect every model call in <b>Traces</b>.">Suivez-le en direct dans <b>Atelier</b>, lisez ce qu'il a fait dans <b>Fil</b>, et inspectez chaque appel de modèle dans <b>Traces</b>.</li>
+        </ol>
+      </div>
+      <div class="flow">
+        <span class="flow-label" data-en="A sound configuration">Une configuration saine</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">☺</span><span class="flow-name" data-en="Agent · Nightly digest">Agent · Synthèse du soir</span></div>
+          <div class="flow-params">
+            <div><span class="k" data-en="Schedule">Planification</span><span class="v">0 19 * * 1-5</span></div>
+            <div><span class="k">Sandbox</span><span class="v">notes</span></div>
+            <div><span class="k" data-en="Tools">Outils</span><span class="v" data-en="read file, write file, knowledge search">lire fichier, écrire fichier, recherche connaissances</span></div>
+            <div><span class="k" data-en="Iterations">Itérations</span><span class="v">12</span></div>
+            <div><span class="k" data-en="Report">Compte rendu</span><span class="v" data-en="feed + notification">fil + notification</span></div>
+          </div>
+        </div>
+        <div class="tuto-check" style="margin-top:14px;">
+          <b data-en="Sub-agents">Sous-agents</b>
+          <p data-en="For a broader job, let the orchestrator split it: it delegates each part to a specialised sub-agent with its own budget, and assembles the result. Useful above roughly ten steps — below that, a single agent is faster.">Pour un travail plus large, laissez l'orchestrateur le découper : il délègue chaque partie à un sous-agent spécialisé avec son propre budget, puis assemble le résultat. Utile au-delà d'une dizaine d'étapes — en dessous, un agent seul va plus vite.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tuto" id="mcp">
+  <div class="container">
+    <div class="tuto-head"><span class="tuto-num">08</span><h2 data-en="Plug in an MCP connector">Brancher un connecteur MCP</h2></div>
+    <p class="lead" data-en="MCP gives the model tools it did not have: a remote service exposes its functions, Lumen lists them, your workflows and your agents can call them.">MCP donne au modèle des outils qu'il n'avait pas : un service distant expose ses fonctions, Lumen les liste, vos workflows et vos agents peuvent les appeler.</p>
+    <div class="tuto-cols">
+      <div>
+        <ol class="howto">
+          <li data-en="Open the MCP catalogue in the settings and pick a connector. Lumen only offers <b>official remote servers</b> — HTTPS with a token in a header. Nothing is downloaded, nothing runs locally.">Ouvrez le catalogue MCP dans les réglages et choisissez un connecteur. Lumen ne propose que des <b>serveurs distants officiels</b> — HTTPS avec un jeton en en-tête. Rien n'est téléchargé, rien ne tourne en local.</li>
+          <li data-en="Paste your token. It is stored by the Rust backend and never reaches the interface.">Collez votre jeton. Il est conservé par le backend Rust et n'atteint jamais l'interface.</li>
+          <li data-en="Check what you actually got: add an <b>MCP connector tools</b> block, run it, and read the list of tools with their arguments.">Vérifiez ce que vous avez réellement obtenu : ajoutez un bloc <b>Outils d'un connecteur MCP</b>, exécutez-le, et lisez la liste des outils avec leurs arguments.</li>
+          <li data-en="Then call one with the <b>MCP tool</b> block, or expose the whole thing to the model in Tools mode.">Appelez-en un ensuite avec le bloc <b>Outil MCP</b>, ou exposez l'ensemble au modèle en mode Outils.</li>
+        </ol>
+        <div class="tuto-check">
+          <b data-en="Read what comes back">Lisez ce qui revient</b>
+          <p data-en="An MCP server's answer is data, never an instruction. Treat a tool result the same way you would treat a web page: something to read, not something to obey.">La réponse d'un serveur MCP est une donnée, jamais une consigne. Traitez un résultat d'outil comme une page web : quelque chose à lire, pas à exécuter aveuglément.</p>
+        </div>
+      </div>
+      <div class="flow">
+        <span class="flow-label" data-en="Calling a tool">Appeler un outil</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">⊞</span><span class="flow-name">Outil MCP</span><span class="flow-var">{{last}}</span></div>
+          <div class="flow-params">
+            <div><span class="k" data-en="Connector">Connecteur</span><span class="v" data-en="the one you added">celui que vous avez ajouté</span></div>
+            <div><span class="k">Outil</span><span class="v" data-en="the tool's exact name">le nom exact de l'outil</span></div>
+            <div><span class="k">Arguments JSON</span><span class="v">{"query": "{{input}}"}</span></div>
+          </div>
+        </div>
+        <span class="flow-arrow">↓</span>
+        <div class="flow-step">
+          <div class="flow-head"><span class="flow-ic">IA</span><span class="flow-name">Inférence LLM</span></div>
+          <div class="flow-params">
+            <div><span class="k">Invite</span><span class="v">{{last}}</span></div>
+            <div><span class="k" data-en="System prompt">Consigne système</span><span class="v" data-en="Summarize this result in three lines, in plain language.">Résume ce résultat en trois lignes, en langage clair.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tuto" id="depannage">
+  <div class="container">
+    <div class="tuto-head"><span class="tuto-num">09</span><h2 data-en="When something does not work">Quand ça ne marche pas</h2></div>
+    <div class="grid c3">
+      <div class="card">
+        <h3 data-en="The workflow ends immediately">Le workflow se termine aussitôt</h3>
+        <p data-en="Open Fluxo → Automations and read the run log: the failing block is red, with its error. Nine times out of ten it is an empty variable — a <span class='inline-code'>{{last}}</span> placed after a block that returns nothing.">Ouvrez Fluxo → Automatisations et lisez le journal d'exécution : le bloc en échec est rouge, avec son erreur. Neuf fois sur dix, c'est une variable vide — un <span class="inline-code">{{last}}</span> placé après un bloc qui ne renvoie rien.</p>
+      </div>
+      <div class="card">
+        <h3 data-en="The model answers nonsense">Le modèle répond à côté</h3>
+        <p data-en="Open the Profiler: it shows how full the context was, what the model actually received and how many tokens it produced. A saturated context is the usual culprit before the model itself.">Ouvrez le Profiler : il montre le remplissage du contexte, ce que le modèle a réellement reçu et combien de tokens il a produits. Un contexte saturé est le coupable habituel, avant le modèle lui-même.</p>
+      </div>
+      <div class="card">
+        <h3 data-en="The first answer takes forever">La première réponse est très longue</h3>
+        <p data-en="With llama.cpp, the server starts on the first prompt and loads the model into memory. Use the preload button in the bar to get that out of the way before a demo.">Avec llama.cpp, le serveur démarre au premier message et charge le modèle en mémoire. Utilisez le bouton de préchargement de la barre pour en finir avant une démonstration.</p>
+      </div>
+      <div class="card">
+        <h3 data-en="An agent runs in circles">Un agent tourne en rond</h3>
+        <p data-en="Lower its iteration budget and narrow its goal. An objective without a stopping condition has no reason to end — say what the deliverable is and when it is done.">Baissez son budget d'itérations et resserrez son objectif. Un objectif sans condition d'arrêt n'a aucune raison de finir — dites quel est le livrable et quand il est terminé.</p>
+      </div>
+      <div class="card">
+        <h3 data-en="Nothing is written to disk">Rien ne s'écrit sur le disque</h3>
+        <p data-en="That is the design. The AI writes inside sandboxes only. Check the sandbox name in the write block — a name that does not exist is created empty, elsewhere.">C'est voulu. L'IA n'écrit que dans les sandboxes. Vérifiez le nom de la sandbox dans le bloc d'écriture — un nom qui n'existe pas est créé vide, ailleurs.</p>
+      </div>
+      <div class="card">
+        <h3 data-en="Still stuck">Toujours bloqué</h3>
+        <p data-en="The in-app documentation covers every app screen by screen: start menu → System → Documentation. It ships with the version you are running, so it never lags behind.">La documentation intégrée couvre chaque app écran par écran : menu démarrer → Système → Documentation. Elle est livrée avec la version que vous utilisez, elle n'est donc jamais en retard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div>
+        <div class="brand" style="margin-bottom:8px;">
+          <span class="av-orb" style="--size:20px;--blur:2px;" aria-hidden="true"><span class="av-core"></span><span class="av-shell"></span><span class="av-eyes"><i></i><i></i></span></span>
+          Lumen
+        </div>
+        <p class="muted" style="font-size:13.5px;max-width:34ch;" data-en="A local, private and agentic AI assistant.">Un assistant IA local, privé et agentique.</p>
+      </div>
+      <div class="foot-links">
+        <a href="index.html" data-en="Home">Accueil</a>
+        <a href="index.html#telecharger" data-en="Download">Télécharger</a>
+        <a href="changelog.html" data-en="Changelog">Changelog</a>
+        <a href="https://github.com/Oneil974/lumen-app/releases">GitHub</a>
+      </div>
+    </div>
+    <div class="foot-legal">
+      <p>© <span id="year"></span> Oneil974 — <span data-en="All rights reserved.">Tous droits réservés.</span></p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site.js"></script>
 </body>
 </html>
