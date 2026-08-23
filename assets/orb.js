@@ -1,11 +1,17 @@
 // Lumen companion orb — a thin glass sphere with animated color blobs.
 // Exposes window.LumenOrb: setState, setColors, setSize, setEnabled.
 import * as THREE from './lib/three.module.js';
+import { GLTFLoader } from './lib/loaders/GLTFLoader.js?v=2';
+import { envelopeLevel, syntheticLevel, mouthScale, mouthOpacity, mouthSizeFromEye, MOUTH_FALLBACK } from './lib/voice-mouth.js?v=4';
 
 (function () {
   const container = document.getElementById('orb-container');
   const orbWrap = document.getElementById('orb-wrap');
   const canvas = document.getElementById('orb-canvas');
+  const eyesEl = document.getElementById('orb-eyes');
+  const frostEl = container?.querySelector('.orb-frost');
+  const shadowEl = orbWrap?.querySelector('.orb-shadow');
+  const ambientGlowEl = document.querySelector('.glowing-orb');
   if (!container || !canvas) return;
 
   const DEFAULT_COLORS = ['#ff54a3', '#9961ff', '#47a3ff', '#61f2c7', '#ff9e6b'];
@@ -35,6 +41,105 @@ import * as THREE from './lib/three.module.js';
   let orbPulseStrength = parseFloat(localStorage.getItem('orbPulseStrength') || '100') / 100;
   let orbPulseSpeed = parseFloat(localStorage.getItem('orbPulseSpeed') || '100') / 100;
 
+  // ---- Bouche animée (option) ---------------------------------------------
+  //
+  // Une barre horizontale taillée comme les yeux, qui s'ouvre au rythme de la
+  // voix. Elle est créée ICI et non dans le HTML : les quatre surfaces qui
+  // affichent l'orbe (barre, bureau, compagnon, compagnon IA) l'obtiennent sans
+  // qu'on touche à leur balisage, et ses dimensions suivent la taille de l'orbe
+  // au lieu d'être recopiées dans quatre feuilles de style.
+  //
+  // Le niveau vient, par ordre de préférence :
+  //   1. de l'enveloppe RÉELLE de la voix, calculée par le backend sur le WAV
+  //      qu'il s'apprête à lire et envoyée avec l'événement `tts-playing` ;
+  //   2. à défaut (voix système, Raccourcis macOS : aucun échantillon
+  //      disponible), de l'enveloppe synthétique qui anime déjà le cœur.
+  let orbMouth = localStorage.getItem('orbMouth') === 'true';
+  let mouthEl = null;
+  let mouthLevel = 0;
+  let voiceEnvelopeData = null;
+  let voiceEnvelopeFrameMs = 40;
+  let voiceEnvelopeStart = 0;
+
+  function layoutMouth() {
+    if (!mouthEl) return;
+    // La bouche se cale sur les yeux réellement affichés (leur taille vient du
+    // CSS de chaque surface et ne suit pas le diamètre de l'orbe), avec un repli
+    // proportionnel quand ils ne sont pas encore mesurables.
+    const eye = eyesEl?.querySelector('span');
+    const box = eye ? { width: eye.offsetWidth, height: eye.offsetHeight } : null;
+    const size = box && box.width > 0
+      ? mouthSizeFromEye(box)
+      : {
+          width: Math.max(8, Math.round(orbSize * MOUTH_FALLBACK.width)),
+          height: Math.max(3, Math.round(orbSize * MOUTH_FALLBACK.height)),
+          offsetY: Math.round(orbSize * MOUTH_FALLBACK.offsetY),
+        };
+    Object.assign(mouthEl.style, {
+      width: `${size.width}px`,
+      height: `${size.height}px`,
+      marginLeft: `${-size.width / 2}px`,
+      // Les yeux sont remontés de 4 px par leur CSS : la bouche part du même axe.
+      top: `${Math.round(orbSize / 2 - 4 + size.offsetY - size.height / 2)}px`,
+      boxShadow: `0 0 ${Math.max(3, Math.round(size.height * 0.9))}px rgba(255, 255, 255, 0.8)`,
+    });
+  }
+
+  function ensureMouth() {
+    if (mouthEl) return;
+    mouthEl = document.createElement('div');
+    mouthEl.className = 'orb-mouth';
+    mouthEl.setAttribute('aria-hidden', 'true');
+    Object.assign(mouthEl.style, {
+      position: 'absolute', left: '50%', zIndex: '2',
+      borderRadius: '99px', background: '#ffffff',
+      pointerEvents: 'none', transformOrigin: 'center', opacity: '0',
+    });
+    container.appendChild(mouthEl);
+    layoutMouth();
+  }
+
+  function setMouth(on) {
+    orbMouth = !!on;
+    if (orbMouth) ensureMouth();
+    if (mouthEl) mouthEl.style.display = orbMouth ? '' : 'none';
+  }
+
+  /// Niveau de bouche à cet instant : 0 = fermée, 1 = grande ouverte.
+  function mouthLevelNow(t) {
+    if (voiceEnvelopeData) {
+      const level = envelopeLevel(
+        voiceEnvelopeData, voiceEnvelopeFrameMs, performance.now() - voiceEnvelopeStart);
+      if (level != null) return level;
+      voiceEnvelopeData = null;   // lecture terminée
+    }
+    return state === 'speaking' ? syntheticLevel(t) * 0.92 : 0;
+  }
+
+  /**
+   * Rejoue une enveloppe de voix sur la bouche. `payload` = { envelope, frame_ms }
+   * — un niveau 0–255 par tranche de `frame_ms`. Passer une valeur vide coupe
+   * l'enveloppe et rend la main à l'animation synthétique.
+   */
+  function playVoiceEnvelope(payload) {
+    const data = Array.isArray(payload?.envelope) ? payload.envelope : null;
+    if (!data || !data.length) { voiceEnvelopeData = null; return; }
+    voiceEnvelopeData = data;
+    voiceEnvelopeFrameMs = Number(payload.frame_ms) || 40;
+    voiceEnvelopeStart = performance.now();
+  }
+
+  // Enveloppe réelle : le backend l'émet au moment où le son démarre, ce qui
+  // permet d'aligner l'ouverture de la bouche sur la voix et non sur le début
+  // de la synthèse. Sans Tauri (page de démonstration du site), rien à écouter.
+  {
+    const evt = window.__TAURI__?.event;
+    evt?.listen?.('tts-playing', (event) => playVoiceEnvelope(event?.payload));
+    const clear = () => { voiceEnvelopeData = null; };
+    evt?.listen?.('tts-ended', clear);
+    evt?.listen?.('tts-error', clear);
+  }
+
   const renderer = new THREE.WebGLRenderer({
     canvas, alpha: true, antialias: true, premultipliedAlpha: false,
   });
@@ -44,6 +149,168 @@ import * as THREE from './lib/three.module.js';
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
   camera.position.set(0, 0, 3.4);
+
+  // ---- Avatar GLB personnalisé ------------------------------------------
+  // Contrat Blender ↔ Lumen. Les clips sont validés par le backend à
+  // l'import ; ici on ne fait que relier la machine d'états au bon clip.
+  const CUSTOM_CLIPS = {
+    idle: 'Lumen_Idle',
+    thinking: 'Lumen_Thinking',
+    speaking: 'Lumen_Speaking',
+    action: 'Lumen_Action',
+    heartbeat: 'Lumen_Heartbeat',
+  };
+  const gltfLoader = new GLTFLoader();
+  const customAvatarGroup = new THREE.Group();
+  scene.add(customAvatarGroup);
+  const customAmbientLight = new THREE.HemisphereLight(0xffffff, 0x445066, 0.8);
+  scene.add(customAmbientLight);
+  const customKeyLight = new THREE.DirectionalLight(0xffffff, 1.35);
+  customKeyLight.position.set(2.5, 3.5, 4);
+  scene.add(customKeyLight);
+  const customRimLight = new THREE.DirectionalLight(0x7aa7ff, 0.55);
+  customRimLight.position.set(-3, 1, -2);
+  scene.add(customRimLight);
+  let avatarMode = localStorage.getItem('orbAvatarMode') || 'orb';
+  let customAvatar = null;
+  let customMixer = null;
+  let customActions = new Map();
+  let customAction = null;
+  let customLoadGeneration = 0;
+  function ambientCoefficient(value) {
+    const raw = Number(value);
+    if (!Number.isFinite(raw)) return 1;
+    // Migration des anciennes valeurs en pourcentage (100 → 1.0).
+    return Math.max(0, Math.min(8, raw > 10 ? raw / 100 : raw));
+  }
+  let customAmbientCoefficient = ambientCoefficient(localStorage.getItem('avatarGlbAmbientLight') || '1');
+
+  function setCustomAmbientLight(pct) {
+    customAmbientCoefficient = ambientCoefficient(pct);
+    customAmbientLight.intensity = customAmbientCoefficient;
+  }
+  // Initialise l’éclairage GLB avec le coefficient migré (et non l’ancien
+  // nom de variable en pourcentage, qui empêchait orb.js de démarrer).
+  setCustomAmbientLight(customAmbientCoefficient);
+
+  function tauriInvoke() {
+    try {
+      return window.__TAURI__?.core?.invoke
+        || (window.parent !== window ? window.parent.__TAURI__?.core?.invoke : null);
+    } catch (_) { return null; }
+  }
+
+  function base64ToArrayBuffer(value) {
+    const binary = atob(value);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    return bytes.buffer;
+  }
+
+  function disposeCustomAvatar() {
+    customMixer?.stopAllAction();
+    if (customAvatar) {
+      customAvatar.traverse((node) => {
+        node.geometry?.dispose?.();
+        const materials = Array.isArray(node.material) ? node.material : [node.material];
+        materials.filter(Boolean).forEach((material) => {
+          Object.values(material).forEach((value) => value?.isTexture && value.dispose());
+          material.dispose?.();
+        });
+      });
+      customAvatarGroup.remove(customAvatar);
+    }
+    customAvatar = null;
+    customMixer = null;
+    customActions = new Map();
+    customAction = null;
+  }
+
+  function showBuiltinAvatar(show) {
+    core.visible = show;
+    shell.visible = show;
+    iconGroup.visible = show;
+    if (eyesEl) eyesEl.style.visibility = show ? '' : 'hidden';
+    if (mouthEl) mouthEl.style.visibility = show ? '' : 'hidden';
+    if (frostEl) frostEl.style.display = show ? '' : 'none';
+    if (shadowEl) shadowEl.style.display = show ? '' : 'none';
+    if (ambientGlowEl) ambientGlowEl.style.display = show ? '' : 'none';
+    container.dataset.avatarMode = show ? 'orb' : 'custom';
+    if (orbWrap) orbWrap.dataset.avatarMode = show ? 'orb' : 'custom';
+    document.body.classList.toggle('avatar-custom', !show);
+    customAmbientLight.visible = !show;
+    customKeyLight.visible = !show;
+    customRimLight.visible = !show;
+    if (show) container.style.removeProperty('--orb-bob');
+    else container.style.setProperty('--orb-bob', '0px');
+    customAvatarGroup.visible = !show && !!customAvatar;
+  }
+
+  function playCustomClip(name, { once = false } = {}) {
+    const next = customActions.get(name);
+    if (!next || next === customAction) return;
+    next.enabled = true;
+    next.reset();
+    next.setLoop(once ? THREE.LoopOnce : THREE.LoopRepeat, once ? 1 : Infinity);
+    next.clampWhenFinished = once;
+    next.fadeIn(0.22).play();
+    if (customAction) customAction.fadeOut(0.22);
+    customAction = next;
+  }
+
+  function fitCustomAvatar(object) {
+    object.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(object);
+    if (box.isEmpty()) throw new Error('Le GLB ne contient aucun objet 3D visible.');
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const largest = Math.max(size.x, size.y, size.z);
+    const scale = 1.8 / Math.max(largest, 0.001);
+    object.scale.setScalar(scale);
+    object.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+  }
+
+  async function loadCustomAvatar() {
+    const invoke = tauriInvoke();
+    if (!invoke) return false;
+    const generation = ++customLoadGeneration;
+    try {
+      const payload = await invoke('avatar_glb_load');
+      if (generation !== customLoadGeneration || !payload?.data) return false;
+      const gltf = await new Promise((resolve, reject) => {
+        gltfLoader.parse(base64ToArrayBuffer(payload.data), '', resolve, reject);
+      });
+      if (generation !== customLoadGeneration) return false;
+      disposeCustomAvatar();
+      customAvatar = gltf.scene;
+      fitCustomAvatar(customAvatar);
+      customAvatarGroup.add(customAvatar);
+      customMixer = new THREE.AnimationMixer(customAvatar);
+      customActions = new Map(gltf.animations.map((clip) => [clip.name, customMixer.clipAction(clip)]));
+      showBuiltinAvatar(false);
+      playCustomClip(actionExecuting ? CUSTOM_CLIPS.action : CUSTOM_CLIPS[state]);
+      return true;
+    } catch (error) {
+      console.warn('Avatar GLB Lumen indisponible :', error);
+      avatarMode = 'orb';
+      showBuiltinAvatar(true);
+      return false;
+    }
+  }
+
+  function setAvatarMode(mode) {
+    const nextMode = mode === 'custom' ? 'custom' : 'orb';
+    const changed = nextMode !== avatarMode;
+    avatarMode = nextMode;
+    if (avatarMode === 'custom') {
+      if (changed || !customAvatar) loadCustomAvatar();
+      else showBuiltinAvatar(false);
+    }
+    else {
+      customLoadGeneration += 1;
+      showBuiltinAvatar(true);
+    }
+  }
 
   // ---- Color core ----
   const cols = readColors().map((h) => new THREE.Color(h));
@@ -326,6 +593,7 @@ import * as THREE from './lib/three.module.js';
     orbSize = px;
     container.style.width = px + 'px';
     container.style.height = px + 'px';
+    layoutMouth();
     if (orbWrap) orbWrap.style.height = (px + 12) + 'px';
     resize();
   }
@@ -349,6 +617,8 @@ import * as THREE from './lib/three.module.js';
     else if (next === 'speaking') { targets.speed = 0.7; targets.intensity = 1.18; }
     else { targets.speed = 0.30; targets.intensity = 1.0; }
     container.dataset.state = next;
+    if (avatarMode === 'custom' && !actionExecuting) playCustomClip(CUSTOM_CLIPS[next] || CUSTOM_CLIPS.idle);
+    try { window.OrbBridge && window.OrbBridge.pushMode(next); } catch (e) {}
   }
 
   // The amber/"lightning" color of the Action-mode toolbar button. While the
@@ -385,6 +655,7 @@ import * as THREE from './lib/three.module.js';
       container.dataset.action = 'executing';
       targets.speed = 1.35;
       targets.intensity = 1.28;
+      if (avatarMode === 'custom') playCustomClip(CUSTOM_CLIPS.action);
     } else {
       applyPalette(activePalette);
       delete container.dataset.action;
@@ -416,6 +687,14 @@ import * as THREE from './lib/three.module.js';
   function pulseDuration() { return 1.6 / orbPulseSpeed; }
   function pulseHeart() {
     if (!orbHeartbeat || !orbEnabled) return;
+    if (avatarMode === 'custom' && customActions.has(CUSTOM_CLIPS.heartbeat)) {
+      playCustomClip(CUSTOM_CLIPS.heartbeat, { once: true });
+      const duration = customActions.get(CUSTOM_CLIPS.heartbeat).getClip().duration || 1;
+      window.setTimeout(() => {
+        if (avatarMode === 'custom') playCustomClip(actionExecuting ? CUSTOM_CLIPS.action : CUSTOM_CLIPS[state]);
+      }, duration * 1000);
+      return;
+    }
     pulseStart = clock.elapsedTime;
     pulseActive = true;
   }
@@ -426,14 +705,59 @@ import * as THREE from './lib/three.module.js';
     if (on) { resize(); start(); } else { stop(); }
   }
 
+  // Partie « orbe » des thèmes d'avatar (couleurs/verre/cœur). La teinte de la
+  // barre (bodyClass, accent) reste dans main.js (ORB_THEMES) : ici on ne garde
+  // que ce qu'il faut pour que le thème s'applique dans TOUTES les fenêtres qui
+  // embarquent l'orbe (barre, bureau Lumen OS). Garder aligné avec main.js.
+  const ORB_THEME_VISUALS = {
+    rubis: { colors: ['#ff1a2b', '#e60012', '#ff4d4d', '#c20010', '#ff6b6b'], heart: '#ff1a2b', glass: 'crystal' },
+    dark: { colors: ['#c4c9d2', '#a7adb8', '#8b919d', '#d0d5dd', '#9ba1ad'], heart: '#c8cdd6', glass: 'crystal' },
+    violet: { colors: ['#a855f7', '#7c3aed', '#c084fc', '#6d28d9', '#9333ea'], heart: '#c084fc', glass: 'crystal' },
+    rose: { colors: ['#ffd6e4', '#ffc2d6', '#ffb7c5', '#ffcdda', '#ffaec4'], heart: '#ff9ec0', glass: 'crystal' },
+    ice: { colors: ['#ffffff', '#eef4fb', '#dbe7f5', '#ffffff', '#e8f0fa'], heart: '#7aa7d4', glass: 'crystal' },
+    sky: { colors: ['#38bdf8', '#0ea5e9', '#7dd3fc', '#0284c7', '#5cc6ff'], heart: '#bae6fd', glass: 'crystal' },
+    amber: { colors: ['#ffb020', '#ff8c00', '#ffd34d', '#f59e0b', '#ffa733'], heart: '#ff8c00', glass: 'crystal' },
+  };
+
+  // Applique l'apparence de l'avatar (thème compris) depuis un payload de
+  // réglages (settings-draft/updated) avec repli sur localStorage. `keepSize`
+  // laisse la taille intacte (le bureau gère la sienne, par sandbox). La
+  // visibilité (orbEnabled) reste pilotée par chaque fenêtre.
+  function applyAppearance(payload = {}, { keepSize = false } = {}) {
+    const read = (k, d) => (payload[k] != null ? String(payload[k]) : (localStorage.getItem(k) ?? d));
+    const theme = ORB_THEME_VISUALS[read('orbTheme', 'default')] || null;
+    let colors = null;
+    try {
+      const c = JSON.parse(read('orbColors', 'null'));
+      if (Array.isArray(c) && c.length === 5) colors = c;
+    } catch (e) {}
+    setColors(theme ? theme.colors : (colors || DEFAULT_COLORS.slice()));
+    setGlassType(theme ? theme.glass : read('orbGlassType', 'thin'));
+    setHeartColor(theme ? theme.heart : read('orbHeartColor', '#ff4d6d'));
+    setCoreScale(parseInt(read('orbCoreScale', '82'), 10) || 82);
+    setPulse(parseFloat(read('orbPulse', '100')) || 100);
+    setHeartbeat(read('orbHeartbeat', 'true') !== 'false');
+    setPulseStrength(parseFloat(read('orbPulseStrength', '100')) || 100);
+    setPulseSpeed(parseFloat(read('orbPulseSpeed', '100')) || 100);
+    setCustomAmbientLight(read('avatarGlbAmbientLight', '1'));
+    setMouth(read('orbMouth', 'false') === 'true');
+    if (!keepSize) setSize(parseInt(read('orbSize', '116'), 10) || 116);
+    setAvatarMode(read('orbAvatarMode', 'orb'));
+    try { window.OrbBridge && window.OrbBridge.pushTheme(read('orbTheme', 'default')); } catch (e) {}
+  }
+  // À l'init, honore aussi `orbTheme` (avant, seul main.js l'appliquait : les
+  // autres fenêtres — bureau — ne voyaient que la palette personnalisée).
+  applyAppearance({}, { keepSize: true });
+
   window.LumenOrb = {
     setState, setColors, setActionExecuting, setSize, setCoreScale, setGlassType, setPulse, setEnabled,
     setHeartbeat, setHeartColor, setPulseStrength, setPulseSpeed, pulseHeart, setInnerIcons,
+    applyAppearance, setAvatarMode, setCustomAmbientLight, reloadCustomAvatar: loadCustomAvatar,
+    setMouth, playVoiceEnvelope,
     DEFAULT_COLORS, GLASS_TYPES,
   };
 
   // ---- Eyes follow the cursor (centered while speaking) ----
-  const eyesEl = document.getElementById('orb-eyes');
   const eyeTarget = { x: 0, y: 0 };
   const eyeNow = { x: 0, y: 0 };
   window.addEventListener('mousemove', (e) => {
@@ -453,29 +777,23 @@ import * as THREE from './lib/three.module.js';
   let colorTime = 0;
   let audioLevel = 0;
 
-  function voiceEnvelope(t) {
-    let a = Math.abs(Math.sin(t * 8.5));
-    a *= 0.55 + 0.45 * Math.sin(t * 3.1 + 1.0);
-    a *= 0.6 + 0.4 * Math.sin(t * 1.6 + 0.5);
-    a += 0.12 * Math.sin(t * 21.0);
-    return Math.max(0, Math.min(1, a));
-  }
-
   function animate() {
     raf = requestAnimationFrame(animate);
     const dt = Math.min(clock.getDelta(), 0.05);
     const t = clock.elapsedTime;
+    customMixer?.update(dt);
 
     coreUniforms.uSpeed.value += (targets.speed - coreUniforms.uSpeed.value) * 0.05;
     coreUniforms.uIntensity.value += (targets.intensity - coreUniforms.uIntensity.value) * 0.06;
 
     let audioTarget;
-    if (state === 'speaking') audioTarget = 0.40 + 0.60 * voiceEnvelope(t);
+    if (state === 'speaking') audioTarget = 0.40 + 0.60 * syntheticLevel(t);
     else if (state === 'thinking') audioTarget = 0.40 + 0.12 * (0.5 + 0.5 * Math.sin(t * 2.0));
     else audioTarget = 0.05 + 0.05 * (0.5 + 0.5 * Math.sin(t * 0.8));
     const k = state === 'speaking' ? 0.35 : 0.06;
     audioLevel += (audioTarget - audioLevel) * k;
     coreUniforms.uAudio.value = audioLevel;
+    try { window.OrbBridge && window.OrbBridge.pushLevel(audioLevel, state); } catch (e) {}
 
     colorTime += dt * coreUniforms.uSpeed.value * 3.0;
     coreUniforms.uTime.value = colorTime;
@@ -506,7 +824,9 @@ import * as THREE from './lib/three.module.js';
     const scale = 1.0 + (state === 'speaking' ? audioLevel * 0.05 * orbPulse : Math.sin(t * 1.0) * 0.012);
     core.scale.setScalar(scale * coreBaseScale);
     shell.scale.setScalar(scale);
-    container.style.setProperty('--orb-bob', `${Math.sin(t * 1.1) * 4}px`);
+    // Le flottement appartient à l'orbe. Un avatar GLB conserve exactement
+    // la position issue de son animation Blender, sans rebond ajouté par Lumen.
+    container.style.setProperty('--orb-bob', avatarMode === 'custom' ? '0px' : `${Math.sin(t * 1.1) * 4}px`);
 
     // eyes: track cursor, but stay centered while speaking
     const speaking = state === 'speaking';
@@ -515,6 +835,18 @@ import * as THREE from './lib/three.module.js';
     eyeNow.x += (tx - eyeNow.x) * 0.12;
     eyeNow.y += (ty - eyeNow.y) * 0.12;
     if (eyesEl) eyesEl.style.transform = `translate(${eyeNow.x}px, ${eyeNow.y - 4}px)`;
+
+    // Bouche : s'ouvre en hauteur avec le niveau de voix et se resserre
+    // légèrement en largeur, comme une vraie bouche qui s'arrondit. Au repos
+    // elle reste une fine barre fermée, dans l'axe du regard.
+    if (mouthEl && orbMouth) {
+      mouthLevel += (mouthLevelNow(t) - mouthLevel) * 0.38;
+      const s = mouthScale(mouthLevel);
+      mouthEl.style.transform =
+        `translate(${eyeNow.x}px, ${eyeNow.y}px) scale(${s.x.toFixed(3)}, ${s.y.toFixed(3)})`;
+      // Invisible tant que Lumen ne parle pas : la bouche naît de la voix.
+      mouthEl.style.opacity = mouthOpacity(mouthLevel).toFixed(3);
+    }
 
     renderer.render(scene, camera);
   }
