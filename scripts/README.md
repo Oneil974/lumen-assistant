@@ -1,6 +1,6 @@
 # Scripts d'installation Lumen
 
-Scripts **runtime** pour préparer une machine à faire tourner Lumen : moteur LLM local (Ollama), voix neuronales locales (Piper, Kokoro) et dictée locale (whisper.cpp). Aucun outil de build n'est requis — vous utilisez l'application téléchargée depuis les [Releases](https://github.com/Oneil974/lumen-app/releases/latest).
+**Depuis la version 0.2, rien n'est requis pour utiliser Lumen** : le moteur llama.cpp, les voix Piper (Linux, Windows, Raspberry Pi) et le moteur d'images Bonsai sont livrés avec l'application ou téléchargés par elle depuis le Catalogue. Les scripts de ce dossier n'installent que des **compléments optionnels** : [Ollama](https://ollama.com) comme moteur alternatif, et — sous Linux et Raspberry Pi seulement — les voix **Kokoro** et la dictée locale **whisper.cpp**. Aucun outil de build n'est requis.
 
 ## Installation « tout-en-un »
 
@@ -11,7 +11,7 @@ Lancez le script correspondant à votre système, **sans `sudo`** (il demande le
 ./setup-macos.sh          # interactif
 ./setup-macos.sh --yes    # installe tout sans confirmation
 ```
-Installe **Ollama** + un modèle par défaut. La voix et la dictée sont gérées nativement par macOS — rien à installer côté voix.
+Installe **Ollama** + un modèle par défaut, uniquement si vous préférez Ollama au moteur intégré. La voix et la dictée sont gérées nativement par macOS — rien à installer côté voix.
 
 ### Linux (Debian/Ubuntu x86_64)
 ```bash
@@ -31,7 +31,7 @@ Comme Linux, avec des modèles adaptés au Pi. Sur 4 Go de RAM, privilégiez les
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\setup-windows.ps1
 ```
-Installe **Ollama** (via winget) + un modèle par défaut. La voix utilise les voix système Windows.
+Installe **Ollama** (via winget) + un modèle par défaut, uniquement si vous préférez Ollama au moteur intégré. Les voix Piper sont déjà dans l'application ; la dictée utilise la reconnaissance vocale de Windows.
 
 ### Choisir le modèle
 ```bash
@@ -51,8 +51,8 @@ Les scripts « tout-en-un » les appellent déjà. Pour les (ré)installer sépa
 | **Kokoro** | `sudo ./kokoro/install.sh` | Synthèse vocale haute qualité (Apache 2.0, venv dédié) |
 | **whisper.cpp** | `sudo ./whisper/install.sh [base\|small\|tiny]` | Dictée locale hors-ligne (MIT) |
 
-> Les **fichiers de voix** (modèles `.onnx`) se téléchargent ensuite depuis **Lumen → Réglages → Synthèse vocale**.
+> Piper est déjà livré dans l'application : son script ne sert qu'à une installation système séparée. Les **fichiers de voix** (modèles `.onnx`) se téléchargent depuis le **Catalogue** de Lumen.
 
 ## Prérequis minimal
 
-Seul **[Ollama](https://ollama.com)** est indispensable pour l'inférence 100 % locale. Tout le reste (voix, dictée) est optionnel. En mode local, aucune donnée ne quitte votre machine.
+Aucun. Le moteur d'inférence est intégré ; Ollama, Kokoro et whisper.cpp sont des compléments. En mode local, aucune donnée ne quitte votre machine.

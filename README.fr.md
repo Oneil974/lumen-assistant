@@ -74,9 +74,17 @@ Un environnement de travail complet dans une fenêtre : session multi-profils, f
 - **Recherche web activable** — désactivée par défaut ; rien ne part en ligne tant que vous ne l'allumez pas. L'extraction des pages et des documents est plus fiable en 0.2.
 - **Profiler** — ce que chaque appel consomme vraiment : contexte, outils, mémoire, débit.
 
-## 🎨 Une trentaine d'apps, regroupées en hubs
+## 🎨 Une quarantaine d'apps, chacune dans sa fenêtre
 
-**Corpus** (documents indexés, enquêtes sourcées) · **Prisme** (tables, analyse, atelier ML avec scikit-learn) · **Muse** (notes, cartes mentales, planches, canvas génératif) · **Opus & Calc** (documents, présentations, tableur) · **Tempo** (tâches, kanban, agenda avec prompts IA, tâches planifiées) · **Écho** (podcast IA, studio de voix) · **Forge** (studio d'apps, éditeur de code, Python) · **Arcade** (jeux, aventure générée, compagnon) · plus Navigateur, Photos, Budget, Studio d'images, Studio musical, Domotique et Mémoire.
+Chaque app est un paquet que vous installez, mettez à jour ou retirez depuis le Catalogue, et qui s'ouvre dans sa propre fenêtre — plusieurs à la fois si vous voulez.
+
+- **Créer** — Notes, Carte mentale, Planche, Canevas créatif, Photos, Studio d'images
+- **Organiser** — Agenda (avec prompts IA), Tableau kanban, Tâches planifiées, Budget
+- **Explorer** — Corpus (documents indexés), Enquête (rapports sourcés), Bases de données, Analyse de données, Atelier ML (scikit-learn), Navigateur
+- **Son & voix** — Podcast IA, Voix, Studio musical
+- **Labo** — Éditeur de code, Python, Domotique
+- **Jouer** — Jeux, Aventure générée, Compagnon, Village
+- **Intégrées** — Opus & Calc (documents, présentations, tableur), Designer Fluxo, Automatisations, Équipe d'agents, Fil, Traces LLM, Profiler, Mémoire, Clés, Stockage, Réglages
 
 **Génération d'images** — PrismML **Bonsai Image** tourne en local (Apple Silicon, GPU NVIDIA) et se télécharge à la demande ; Apple Image Playground sur macOS 27 ; Ollama et les API compatibles OpenAI derrière la même interface.
 
@@ -109,20 +117,24 @@ Un build dédié Raspberry Pi : blocs Fluxo **GPIO** (pigpiod) pour piloter du m
 
 ## Prérequis & installation
 
-**Aucun prérequis pour démarrer** : le moteur llama.cpp est embarqué, et Lumen télécharge lui-même le modèle choisi à la première ouverture. L'assistant de premier démarrage propose aussi de choisir votre voix de synthèse.
+**Rien à installer** : téléchargez, ouvrez, choisissez un modèle. La pile IA est livrée dans l'application :
 
-Lumen se met à jour tout seul : les versions sont signées et l'application vérifie une fois par jour s'il en existe une nouvelle (les installations `.dmg` et `.deb` sont des formats de premier téléchargement ; la mise à jour automatique s'applique aux installations `.app`, `-setup.exe`/`.msi` et `.AppImage`).
+- **Inférence** — le moteur llama.cpp est embarqué ; le modèle choisi dans l'assistant de premier démarrage (ou le Catalogue) est téléchargé par Lumen lui-même. Sur Raspberry Pi, LiteRT avec Gemma 4 E2B joue le même rôle sur une carte sans GPU.
+- **Voix** — Piper est livré dans l'app sous Linux, Windows et Raspberry Pi ; macOS utilise les voix du système. Les voix se téléchargent depuis le Catalogue, et l'assistant de premier démarrage propose d'en choisir une.
+- **Images** — Bonsai Image et ses modèles se téléchargent à la demande depuis le Catalogue.
+- **Dictée** — native sur macOS et Windows.
 
-Les scripts « tout-en-un » restent là pour qui préfère **Ollama** comme moteur, et (sous Linux/Pi) pour les voix **Kokoro** et la dictée **whisper.cpp** :
+Lumen se met à jour tout seul : les versions sont signées et l'application vérifie une fois par jour s'il en existe une nouvelle (`.dmg` et `.deb` sont des formats de premier téléchargement ; la mise à jour automatique s'applique aux installations `.app`, `-setup.exe`/`.msi` et `.AppImage`).
 
-| Système | Commande (dans `scripts/`) |
-|---|---|
-| macOS | `./setup-macos.sh` |
-| Linux (Debian/Ubuntu) | `./setup-linux.sh` |
-| Raspberry Pi OS | `./setup-pi.sh` |
-| Windows | `powershell -ExecutionPolicy Bypass -File .\setup-windows.ps1` |
+**Compléments optionnels** — seulement si vous en voulez :
 
-Détails, options et installation séparée des voix : **[scripts/README.md](scripts/README.md)**.
+| Quoi | Où | Comment |
+|---|---|---|
+| **Ollama** comme moteur alternatif | toutes plateformes | installez-le depuis [ollama.com](https://ollama.com) ; Lumen le détecte et liste ses modèles |
+| Voix **Kokoro** (meilleure qualité, plus lentes) | Linux, Raspberry Pi | `scripts/setup-linux.sh` ou `scripts/setup-pi.sh` |
+| Dictée locale **whisper.cpp** | Linux, Raspberry Pi | mêmes scripts |
+
+Détails : **[scripts/README.md](scripts/README.md)**.
 
 ## Confidentialité
 
