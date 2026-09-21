@@ -100,7 +100,7 @@ A single binary: Pro features unlock with an offline licence key. **Relia** (AI-
 
 ## 🍓 Lumen Pi
 
-A dedicated Raspberry Pi build: **GPIO** Fluxo blocks (pigpiod) to drive real hardware, local voices, floating bar and full-screen mode — a fully local voice and home-automation assistant on a Pi. **LiteRT with Gemma 4 E2B** brings lightweight local inference to a board without a GPU.
+A dedicated Raspberry Pi build: **GPIO** Fluxo blocks (pigpiod) to drive real hardware, local voices, floating bar and full-screen mode — a fully local voice and home-automation assistant on a Pi.
 
 <p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
 
@@ -119,7 +119,7 @@ A dedicated Raspberry Pi build: **GPIO** Fluxo blocks (pigpiod) to drive real ha
 
 **Nothing to install**: download, open, pick a model. The AI stack ships inside the application:
 
-- **Inference** — the llama.cpp engine is built in; the model you choose in the first-run assistant (or the Catalogue) is downloaded by Lumen itself. On a Raspberry Pi, LiteRT with Gemma 4 E2B does the same job on a board without a GPU.
+- **Inference** — the llama.cpp engine is built in; the model you choose in the first-run assistant (or the Catalogue) is downloaded by Lumen itself.
 - **Voices** — Piper ships inside the app on Linux, Windows and Raspberry Pi; macOS uses the system voices. Voices are downloaded from the Catalogue, and the first-run assistant lets you pick one.
 - **Images** — Bonsai Image and its models are downloaded on demand from the Catalogue.
 - **Dictation** — native on macOS and Windows.

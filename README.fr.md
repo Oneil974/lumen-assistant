@@ -100,7 +100,7 @@ Un seul binaire : les fonctions Pro se débloquent avec une clé de licence hors
 
 ## 🍓 Lumen Pi
 
-Un build dédié Raspberry Pi : blocs Fluxo **GPIO** (pigpiod) pour piloter du matériel, voix locales, barre flottante et mode plein écran — un assistant vocal et domotique 100 % local sur un Pi. **LiteRT avec Gemma 4 E2B** apporte une inférence locale allégée sur une carte sans GPU.
+Un build dédié Raspberry Pi : blocs Fluxo **GPIO** (pigpiod) pour piloter du matériel, voix locales, barre flottante et mode plein écran — un assistant vocal et domotique 100 % local sur un Pi.
 
 <p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
 
@@ -119,7 +119,7 @@ Un build dédié Raspberry Pi : blocs Fluxo **GPIO** (pigpiod) pour piloter du m
 
 **Rien à installer** : téléchargez, ouvrez, choisissez un modèle. La pile IA est livrée dans l'application :
 
-- **Inférence** — le moteur llama.cpp est embarqué ; le modèle choisi dans l'assistant de premier démarrage (ou le Catalogue) est téléchargé par Lumen lui-même. Sur Raspberry Pi, LiteRT avec Gemma 4 E2B joue le même rôle sur une carte sans GPU.
+- **Inférence** — le moteur llama.cpp est embarqué ; le modèle choisi dans l'assistant de premier démarrage (ou le Catalogue) est téléchargé par Lumen lui-même.
 - **Voix** — Piper est livré dans l'app sous Linux, Windows et Raspberry Pi ; macOS utilise les voix du système. Les voix se téléchargent depuis le Catalogue, et l'assistant de premier démarrage propose d'en choisir une.
 - **Images** — Bonsai Image et ses modèles se téléchargent à la demande depuis le Catalogue.
 - **Dictée** — native sur macOS et Windows.
