@@ -31,7 +31,7 @@ Lumen ships its own inference engine: **nothing to install** before you can talk
 
 A floating chat capsule, always within reach, with an **animated orb** that breathes, listens and reacts.
 
-- **Four engines** — built-in llama.cpp (nothing to install), local Ollama, Apple models, or an OpenAI-compatible API. Switch source in one click; each one comes back with its own model.
+- **Four engines** — built-in llama.cpp (nothing to install), local Ollama, Apple models — on macOS 27, the **Apple Foundation Models** on-device model with tool calling, nothing to download — or an OpenAI-compatible API. Switch source in one click; each one comes back with its own model.
 - **Orb or avatar** — the WebGL glass orb, or your own **animated GLB model** whose animations follow the assistant's states.
 - **Chat modes** — plain chat, **Documents** (your indexed files), action router, tool calling, or one specific workflow.
 - **Understand this screen** — Lumen captures the real screen, or just the region you select, and has the active vision model describe it.
