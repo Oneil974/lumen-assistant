@@ -3,7 +3,7 @@
 [English](README.md) · **Français**
 
 <p align="center">
-  <img src="assets/Lumen_Header.png" alt="Lumen — assistant IA de bureau local-first" width="700">
+  <img src="assets/Lumen_screen_win.png" alt="Lumen sous Windows — la barre flottante, l’orbe et une conversation avec un modèle local (llama.cpp, Gemma)" width="690">
 </p>
 
 <p align="center">
@@ -48,9 +48,9 @@ Une capsule de chat flottante, toujours à portée de main, avec un **orbe anim�
 Un environnement de travail complet dans une fenêtre : session multi-profils, fenêtres, widgets, Spotlight (⌘K), centre de notifications, thèmes clair/sombre — et, depuis la 0.2, **un noyau allégé avec des apps en paquets installables**.
 
 <p align="center">
-  <img src="assets/Lumen_Desktop_Pi.png" alt="Lumen Desktop — launcher d'applications, Designer Fluxo (GPIO) et Assistant IA, ici sur Raspberry Pi" width="700">
+  <img src="assets/Lumen_Desktop_0.2.0.png" alt="Lumen Desktop 0.2 sous Windows — launcher, Catalogue, sandboxes, Python, Documents et Notes côte à côte" width="700">
   <br>
-  <sub><em>Lumen Desktop tournant sur un Raspberry Pi : launcher, Designer Fluxo (blocs GPIO) et Assistant IA en local.</em></sub>
+  <sub><em>Lumen Desktop 0.2 sous Windows : le launcher et ses catégories, le Catalogue (modèles, voix, workflows, avatars), un explorateur de sandbox, l'app Python, Documents et Notes — plusieurs apps ouvertes à la fois, chacune dans sa fenêtre.</em></sub>
 </p>
 
 - **Catalogue** — un seul écran pour installer les apps (paquets `.lumenapp` servis par un dépôt signé), les modèles GGUF, les voix, les workflows Fluxo et les avatars. Chaque app déclare ses capacités ; vous les accordez une à une.

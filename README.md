@@ -3,7 +3,7 @@
 **English** · [Français](README.fr.md)
 
 <p align="center">
-  <img src="assets/Lumen_Header.png" alt="Lumen — local-first desktop AI assistant" width="700">
+  <img src="assets/Lumen_screen_win.png" alt="Lumen on Windows — the floating bar, the orb and a conversation with a local model (llama.cpp, Gemma)" width="690">
 </p>
 
 <p align="center">
@@ -48,9 +48,9 @@ A floating chat capsule, always within reach, with an **animated orb** that brea
 A complete working environment inside one window: multi-profile sessions, windows, widgets, Spotlight (⌘K), notification centre, light and dark themes — and, since 0.2, **a lighter core with apps as installable packages**.
 
 <p align="center">
-  <img src="assets/Lumen_Desktop_Pi.png" alt="Lumen Desktop — app launcher, Fluxo Designer (GPIO) and AI Assistant, here on a Raspberry Pi" width="700">
+  <img src="assets/Lumen_Desktop_0.2.0.png" alt="Lumen Desktop 0.2 on Windows — launcher, Catalogue, sandboxes, Python, Documents and Notes side by side" width="700">
   <br>
-  <sub><em>Lumen Desktop running on a Raspberry Pi: launcher, Fluxo Designer (GPIO blocks) and the AI Assistant, all local.</em></sub>
+  <sub><em>Lumen Desktop 0.2 on Windows: the launcher and its categories, the Catalogue (models, voices, workflows, avatars), a sandbox explorer, the Python app, Documents and Notes — several apps open at once, each in its own window.</em></sub>
 </p>
 
 - **Catalogue** — one screen to install apps (`.lumenapp` packages from a signed repository), GGUF models, voices, Fluxo workflows and avatars. Each app declares its capabilities; you grant them one by one.
