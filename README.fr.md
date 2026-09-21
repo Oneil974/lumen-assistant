@@ -31,7 +31,7 @@ Lumen embarque son propre moteur d'inférence : **rien à installer** pour comme
 
 Une capsule de chat flottante, toujours à portée de main, avec un **orbe animé** qui respire, écoute et réagit.
 
-- **Quatre moteurs** — llama.cpp embarqué (rien à installer), Ollama local, modèles Apple, ou API compatible OpenAI. On change de source en un clic, chacune retrouvant son modèle.
+- **Quatre moteurs** — llama.cpp embarqué (rien à installer), Ollama local, modèles Apple — sur macOS 27, le modèle sur l'appareil des **Apple Foundation Models**, appels d'outils compris, rien à télécharger — ou API compatible OpenAI. On change de source en un clic, chacune retrouvant son modèle.
 - **Orbe ou avatar** — l'orbe de verre WebGL, ou votre propre modèle **GLB animé** dont les animations suivent les états de l'assistant.
 - **Modes de discussion** — chat direct, **Documents** (vos fichiers indexés), routeur d'actions, tool calling, ou un workflow précis.
 - **Comprendre cet écran** — Lumen capture l'écran réel, ou seulement la zone que vous sélectionnez, et le fait décrire par le modèle vision actif.
