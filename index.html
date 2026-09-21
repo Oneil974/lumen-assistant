@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lumen — L'assistant IA local, privé et agentique pour macOS, Windows, Linux et Raspberry Pi</title>
-  <meta name="description" content="Lumen est un assistant IA de bureau 100 % local : Ollama, llama.cpp, MCP, agents autonomes, automatisations Fluxo et Lumen OS, un bureau complet de plus de 40 apps pilotées par l'IA. Vos données ne quittent jamais votre machine." data-en-content="Lumen is a 100% local desktop AI assistant: Ollama, llama.cpp, MCP, autonomous agents, Fluxo automations and Lumen OS — a full desktop with 40+ AI-driven apps. Your data never leaves your machine." />
+  <meta name="description" content="Lumen est un assistant IA de bureau 100 % local : Ollama, llama.cpp, MCP, agents autonomes, automatisations Fluxo et Lumen Desktop, un bureau complet de plus de 40 apps pilotées par l'IA. Vos données ne quittent jamais votre machine." data-en-content="Lumen is a 100% local desktop AI assistant: Ollama, llama.cpp, MCP, autonomous agents, Fluxo automations and Lumen Desktop — a full desktop with 40+ AI-driven apps. Your data never leaves your machine." />
   <meta property="og:title" content="Lumen — Assistant IA local, privé et agentique" />
   <meta property="og:description" content="Un assistant IA vivant sur votre bureau. Local-first, privé par conception, sans cloud ni compte. macOS, Windows, Linux, Raspberry Pi." />
   <meta property="og:type" content="website" />
@@ -23,7 +23,8 @@
       <a href="#assistant" data-en="Assistant">Assistant</a>
       <a href="#moteurs" data-en="Engines">Moteurs</a>
       <a href="#agents" data-en="Agents">Agents</a>
-      <a href="#os">Lumen OS</a>
+      <a href="#os">Desktop</a>
+      <a href="#store" data-en="Catalogue">Catalogue</a>
       <a href="#materiel" data-en="Hardware">Matériel</a>
       <a href="changelog.html" data-en="What's new">Nouveautés</a>
       <a href="tutorials.html" data-en="Tutorials">Tutoriels</a>
@@ -41,9 +42,9 @@
 
 <header class="hero">
   <div class="container">
-    <span class="badge accent"><span class="dot"></span><span data-en="Version 0.1.1 — llama.cpp, MCP, GLB avatar, Automation mode">Version 0.1.1 — llama.cpp, MCP, avatar GLB, mode Automation</span></span>
+    <span class="badge accent"><span class="dot"></span><span data-en="Version 0.2 — a lighter core, installable apps, the Catalogue, projects in the assistant">Version 0.2 — noyau allégé, apps installables, Catalogue, projets dans l'assistant</span></span>
     <h1 data-en="The AI assistant that lives on your machine.">L'assistant IA qui vit sur votre machine.</h1>
-    <p class="lead" data-en="Lumen is a desktop AI assistant for macOS, Windows, Linux and Raspberry Pi. It runs your models <strong>locally</strong> — with its built-in llama.cpp or your own Ollama — automates your work with agents, and opens into <strong>Lumen OS</strong>, a full desktop of 40+ AI-driven apps. No cloud, no account, nothing to sign up for.">Lumen est un assistant IA de bureau pour macOS, Windows, Linux et Raspberry Pi. Il fait tourner vos modèles <strong>en local</strong> — avec son llama.cpp intégré ou votre Ollama —, automatise votre travail avec des agents, et s'ouvre sur <strong>Lumen OS</strong>, un bureau complet de plus de 40 apps pilotées par l'IA. Sans cloud, sans compte, sans inscription.</p>
+    <p class="lead" data-en="Lumen is a desktop AI assistant for macOS, Windows, Linux and Raspberry Pi. It runs your models <strong>locally</strong> — with its built-in llama.cpp or your own Ollama — automates your work with agents, and opens into <strong>Lumen Desktop</strong>, a full desktop of 40+ AI-driven apps. No cloud, no account, nothing to sign up for.">Lumen est un assistant IA de bureau pour macOS, Windows, Linux et Raspberry Pi. Il fait tourner vos modèles <strong>en local</strong> — avec son llama.cpp intégré ou votre Ollama —, automatise votre travail avec des agents, et s'ouvre sur <strong>Lumen Desktop</strong>, un bureau complet de plus de 40 apps pilotées par l'IA. Sans cloud, sans compte, sans inscription.</p>
     <div class="hero-cta">
       <a class="btn lg accent" href="#telecharger" data-en="Download Lumen">Télécharger Lumen</a>
       <a class="btn lg outline" href="tutorials.html" data-en="Tutorials">Tutoriels</a>
@@ -117,13 +118,14 @@
       </div>
       <div class="card pillar">
         <div class="card-ic" style="--c:#30d158;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></div>
-        <h3>Lumen OS</h3>
-        <p data-en="A complete desktop inside the app: windows, dock, widgets, global search — and more than 40 apps built around the same context.">Un bureau complet dans l'application : fenêtres, dock, widgets, recherche globale — et plus de 40 apps construites autour du même contexte.</p>
+        <h3>Lumen Desktop</h3>
+        <p data-en="A complete desktop inside the app: windows, dock, widgets, session with profiles, a catalogue of installable apps — more than 40 today, all built around the same context.">Un bureau complet dans l'application : fenêtres, dock, widgets, session avec profils, un catalogue d'apps installables — plus de 40 aujourd'hui, toutes construites autour du même contexte.</p>
         <ul>
           <li data-en="Confined sandbox: the AI never touches the rest of your disk">Sandbox confinée : l'IA ne touche jamais au reste de votre disque</li>
-          <li data-en="Shared memory, RAG library and local databases">Mémoire partagée, bibliothèque RAG et bases locales</li>
-          <li data-en="Consultation mode for touch and shared screens">Mode consultation pour écrans tactiles et partagés</li>
+          <li data-en="Apps as signed packages, with per-capability permissions">Apps en paquets signés, permissions capacité par capacité</li>
+          <li data-en="Profiles, mobile companion, backup in one archive">Profils, compagnon mobile, sauvegarde en une archive</li>
         </ul>
+        <p style="margin-top:14px;"><a href="#os" data-en="Discover the desktop ↓">Découvrir le bureau ↓</a></p>
       </div>
     </div>
   </div>
@@ -204,7 +206,17 @@
         <h3>Profiler<span class="tag-new" data-en="new">nouveau</span></h3>
         <p data-en="Context occupancy, memory recall, tokens per second and the exact transcript behind every answer.">Occupation du contexte, rappel mémoire, tokens par seconde et le transcript exact derrière chaque réponse.</p>
       </div>
-    </div>
+          <div class="card">
+        <div class="card-ic" style="--c:#ff54a3;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+        <h3 data-en='Image generation<span class="tag-new">new</span>'>Génération d'images<span class="tag-new">nouveau</span></h3>
+        <p data-en="PrismML Bonsai Image runs locally (Apple Silicon, NVIDIA GPU) and downloads on demand; Apple Image Playground on macOS 27; Ollama and OpenAI-compatible APIs behind the same interface.">PrismML Bonsai Image tourne en local (Apple Silicon, GPU NVIDIA) et se télécharge à la demande ; Apple Image Playground sur macOS 27 ; Ollama et les API compatibles OpenAI derrière la même interface.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#c51a4a;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg></div>
+        <h3 data-en='LiteRT on Raspberry Pi<span class="tag-new">new</span>'>LiteRT sur Raspberry Pi<span class="tag-new">nouveau</span></h3>
+        <p data-en="A lightweight inference engine for the Pi with Gemma 4 E2B: a small model that answers locally on a board without a GPU.">Un moteur d'inférence allégé pour le Pi avec Gemma 4 E2B : un petit modèle qui répond en local sur une carte sans GPU.</p>
+      </div>
+</div>
   </div>
 </section>
 
@@ -229,7 +241,7 @@
       <div class="card">
         <div class="card-ic" style="--c:#19c3ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/><path d="m8 11 2.5 2.5L15 9"/></svg></div>
         <h3 data-en='Understand this screen<span class="tag-new">new</span>'>Comprendre cet écran<span class="tag-new">nouveau</span></h3>
-        <p data-en="Lumen captures the real screen — native windows included — and has the active vision model describe it: what is shown, what matters, what to do next.">Lumen capture l'écran réel — fenêtres natives comprises — et le fait décrire par le modèle vision actif : ce qui est affiché, l'information importante, la prochaine action.</p>
+        <p data-en="Lumen captures the real screen — native windows included — or just the region you select, and has the active vision model describe it: what is shown, what matters, what to do next.">Lumen capture l'écran réel — fenêtres natives comprises — ou seulement la zone que vous sélectionnez, et le fait décrire par le modèle vision actif : ce qui est affiché, l'information importante, la prochaine action.</p>
       </div>
       <div class="card">
         <div class="card-ic" style="--c:#0a84ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="8" rx="4"/><circle cx="7" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="17" cy="12" r="1.6"/></svg></div>
@@ -262,9 +274,29 @@
         <p data-en="Talk to your assistant from your phone. Outbound polling only, a paired allow-list, and tool calls visible right in the thread.">Parlez à votre assistant depuis votre téléphone. Uniquement du sortant, une liste blanche appairée, et les appels d'outils visibles dans le fil.</p>
       </div>
       <div class="card">
+        <div class="card-ic" style="--c:#19c3ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6M12 4v16"/></svg></div>
+        <h3 data-en='Floating prompt &amp; context menu<span class="tag-new">new</span>'>Prompt flottant &amp; menu contextuel<span class="tag-new">nouveau</span></h3>
+        <p data-en="Select text in any application: proofread, rewrite, summarise or translate from the context menu, or open a floating prompt sheet right there — without switching windows.">Sélectionnez du texte dans n'importe quelle application : relisez, réécrivez, résumez ou traduisez depuis le menu contextuel, ou ouvrez une feuille de prompt flottante sur place — sans changer de fenêtre.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#ffb340;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+        <h3 data-en='Folders, pins &amp; PDF<span class="tag-new">new</span>'>Dossiers, épingles &amp; PDF<span class="tag-new">nouveau</span></h3>
+        <p data-en="Sort conversations into folders (AI summaries land there too), pin the important ones on a Pinterest-style board, and export any thread to PDF — from the menu or by asking the model.">Rangez vos conversations en dossiers (les résumés IA s'y déposent aussi), épinglez les importantes sur un tableau façon Pinterest, et exportez n'importe quel fil en PDF — depuis le menu ou en le demandant au modèle.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#30d158;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="20" height="6" rx="3"/><circle cx="8" cy="12" r="1.5"/><path d="M12 12h6"/></svg></div>
+        <h3 data-en='Halo capsule<span class="tag-new">new</span>'>Capsule Halo<span class="tag-new">nouveau</span></h3>
+        <p data-en="A persistent capsule at the top of the screen: agents at work and their steps, notifications, weather and scores as rich cards, the time — a glance is enough.">Une capsule persistante en haut de l'écran : les agents en cours et leurs étapes, les notifications, météo et scores en cartes riches, l'heure — un coup d'œil suffit.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#5e5ce6;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 3v9l6-3"/></svg></div>
+        <h3 data-en='Agent wizard<span class="tag-new">new</span>'>Assistant de création d'agent<span class="tag-new">nouveau</span></h3>
+        <p data-en="A guided path to define a personal agent: its role, the tools it may use, its budgets and guardrails — ready to run or to schedule.">Un parcours guidé pour définir un agent personnel : son rôle, les outils qu'il peut utiliser, ses budgets et ses garde-fous — prêt à lancer ou à planifier.</p>
+      </div>
+      <div class="card">
         <div class="card-ic" style="--c:#94a3ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2.5"/><line x1="10" y1="18" x2="14" y2="18"/></svg></div>
-        <h3 data-en="iPhone companion">Compagnon iPhone</h3>
-        <p data-en="A companion app on your local network: send a prompt, watch the orb, get the answer read out loud — without touching the computer.">Une app compagnon sur votre réseau local : envoyez un prompt, regardez l'orbe, écoutez la réponse — sans toucher à l'ordinateur.</p>
+        <h3 data-en='Mobile companion &amp; PWA<span class="tag-new">improved</span>'>Compagnon mobile &amp; PWA<span class="tag-new">amélioré</span></h3>
+        <p data-en="A progressive web app you install on your phone's home screen: multi-user with a TOTP code per profile, camera capture for the vision model, agent approvals and push notifications — Lumen from anywhere on your network.">Une progressive web app à installer sur l'écran d'accueil du téléphone : multi-utilisateur avec un code TOTP par profil, capture photo pour le modèle vision, approbation des agents et notifications push — Lumen depuis n'importe où sur votre réseau.</p>
       </div>
     </div>
   </div>
@@ -327,58 +359,100 @@
   </div>
 </section>
 
-<section id="os" class="alt">
+<!-- ═══════════════════════ SECONDE PARTIE : LUMEN DESKTOP (OS) ═══════════════════════ -->
+<section id="os" class="os-intro">
   <div class="container">
     <div class="section-head center">
-      <span class="eyebrow">Lumen OS</span>
-      <h2 data-en="A desktop designed around the model">Un bureau conçu autour du modèle</h2>
-      <p class="lead" data-en="Windows, dock, widgets, global search — and shared subsystems every app plugs into: files, memory, knowledge, databases.">Fenêtres, dock, widgets, recherche globale — et des sous-systèmes partagés auxquels chaque app se branche : fichiers, mémoire, connaissances, bases de données.</p>
+      <span class="eyebrow" data-en="Part two">Seconde partie</span>
+      <h2 data-en="Lumen Desktop: an operating system for local AI">Lumen Desktop : un système d'exploitation pour l'IA locale</h2>
+      <p class="lead" data-en="Beyond the bar, Lumen opens into a complete desktop: windows, a dock, widgets, a session with profiles, a catalogue of installable apps — and one model, one memory, one sandbox shared by all of them. Everything below runs on your machine.">Au-delà de la barre, Lumen s'ouvre sur un bureau complet : des fenêtres, un dock, des widgets, une session avec des profils, un catalogue d'apps installables — et un seul modèle, une seule mémoire, une seule sandbox partagés par toutes. Tout ce qui suit tourne sur votre machine.</p>
     </div>
-    <div class="grid c3 reveal">
+
+    <div class="desk-mock reveal" aria-hidden="true">
+      <div class="dm-widgets">
+        <div class="dm-widget"><b data-en="Active model">Modèle actif</b><span>LFM2.5-VL-3B · llama.cpp</span><i style="width:70%"></i></div>
+        <div class="dm-widget"><b data-en="Today's tokens">Tokens du jour</b><span>36 701</span></div>
+        <div class="dm-widget"><b data-en="Storage">Stockage</b><span>156 Mo / 200 Mo</span><i style="width:78%"></i></div>
+      </div>
+      <div class="dm-window">
+        <div class="dm-titlebar"><span></span><span></span><span></span><em data-en="AI assistant · Project « Thesis »">Assistant IA · Projet « Thèse »</em></div>
+        <div class="dm-body">
+          <div class="dm-side"><div class="dm-line w60"></div><div class="dm-line w40"></div><div class="dm-line w70"></div><div class="dm-line w50"></div></div>
+          <div class="dm-main"><div class="dm-bubble user" data-en="Compare PERC and TOPCon efficiency from the IEA report">Compare le rendement PERC et TOPCon d'après le rapport IEA</div><div class="dm-bubble ai" data-en="TOPCon cells reach 24.5% vs 23% for PERC (source 1)…">Les cellules TOPCon atteignent 24,5 % contre 23 % pour le PERC (source 1)…</div></div>
+          <div class="dm-side kb"><div class="dm-line w70"></div><div class="dm-file"></div><div class="dm-file"></div><div class="dm-file"></div></div>
+        </div>
+      </div>
+      <div class="dm-window small">
+        <div class="dm-titlebar"><span></span><span></span><span></span><em data-en="Photos">Photos</em></div>
+        <div class="dm-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="dm-orb"><span></span></div>
+      <div class="dm-chat"><span data-en="Ask Lumen…">Demander à Lumen…</span><b>@</b></div>
+      <div class="dm-dock"><i></i><i></i><i></i><i></i><i></i><i class="sep"></i><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="grid c3 reveal" style="margin-top:40px;">
       <div class="card">
         <div class="card-ic" style="--c:#c75cff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 20h8"/></svg></div>
-        <h3 data-en="Full desktop">Bureau complet</h3>
-        <p data-en="Draggable windows, taskbar or macOS-style dock, widgets on the wallpaper, ⌘K search, keyboard-driven window switcher.">Fenêtres déplaçables, barre des tâches ou dock façon macOS, widgets sur le fond d'écran, recherche ⌘K, sélecteur de fenêtres au clavier.</p>
+        <h3 data-en="A real desktop">Un vrai bureau</h3>
+        <p data-en="Draggable, resizable windows, a taskbar or a macOS-style dock, widgets on the wallpaper (model, tokens, storage, agents), ⌘K global search, a keyboard window switcher, notification centre and sounds.">Fenêtres déplaçables et redimensionnables, barre des tâches ou dock façon macOS, widgets sur le fond d'écran (modèle, tokens, stockage, agents), recherche globale ⌘K, sélecteur de fenêtres au clavier, centre de notifications et sons.</p>
       </div>
       <div class="card">
-        <div class="card-ic" style="--c:#ffb340;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
-        <h3 data-en="Confined sandbox">Sandbox confinée</h3>
-        <p data-en="The AI writes, reads and analyses inside isolated file spaces. It has no path to the rest of your disk — that is enforced in the Rust backend, not by a prompt.">L'IA écrit, lit et analyse dans des espaces de fichiers isolés. Elle n'a aucun chemin vers le reste de votre disque — c'est le backend Rust qui l'impose, pas une consigne dans un prompt.</p>
+        <div class="card-ic" style="--c:#9961ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <h3 data-en="The assistant, everywhere">L'assistant, partout</h3>
+        <p data-en="A chat bar at the bottom of the desktop, the orb at its side, and the Halo capsule that shows agents at work, tool results (weather, scores) and notifications. Mention a tool with @ or a document with # from any window.">Une barre de chat au bas du bureau, l'orbe à côté, et la capsule Halo qui montre les agents au travail, les résultats d'outils (météo, scores) et les notifications. Mentionnez un outil avec @ ou un document avec # depuis n'importe quelle fenêtre.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#0a84ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+        <h3 data-en="Projects in the assistant">Des projets dans l'assistant</h3>
+        <p data-en="Group conversations in a project with its own instructions and knowledge base (documents indexed locally, images described by the vision model). Summarise or compact a long thread on demand, branch it to start clean, let the model read the project's other conversations when asked.">Regroupez vos discussions dans un projet avec ses instructions et sa base de connaissances (documents indexés en local, images décrites par le modèle vision). Résumez ou compactez un long fil à la demande, créez une branche pour repartir au propre, laissez le modèle relire les autres discussions du projet quand vous le lui demandez.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#ffb340;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3 data-en="Confined sandboxes">Sandboxes confinées</h3>
+        <p data-en="Every file the AI reads, writes or analyses lives in an isolated space with a size quota. There is no path to the rest of your disk: the Rust backend enforces it, not a line in a prompt. The file explorer, Photos and every app browse these sandboxes.">Chaque fichier que l'IA lit, écrit ou analyse vit dans un espace isolé avec un quota. Il n'y a aucun chemin vers le reste de votre disque : c'est le backend Rust qui l'impose, pas une ligne de prompt. L'explorateur, Photos et toutes les apps parcourent ces sandboxes.</p>
       </div>
       <div class="card">
         <div class="card-ic" style="--c:#bf5af2;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 0 0-5 5c0 1-.4 1.9-1 2.6A5 5 0 0 0 9 19h6a5 5 0 0 0 3-9.4c-.6-.7-1-1.6-1-2.6a5 5 0 0 0-5-4z"/></svg></div>
-        <h3 data-en="Cognitive memory">Mémoire cognitive</h3>
-        <p data-en="Eight kinds of memory (facts, preferences, episodes, procedures…) with per-app access policies. The Memory app shows exactly what Lumen knows about you.">Huit types de souvenirs (faits, préférences, épisodes, procédures…) avec des politiques d'accès par app. L'app Mémoire montre exactement ce que Lumen sait de vous.</p>
-      </div>
-      <div class="card">
-        <div class="card-ic" style="--c:#37a87a;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M9 8h7"/></svg></div>
-        <h3 data-en="Knowledge (RAG)">Connaissances (RAG)</h3>
-        <p data-en="Index your documents locally — embeddings and vector search included — then question them in plain language. The assistant and the research agent both use it.">Indexez vos documents en local — embeddings et recherche vectorielle inclus — puis interrogez-les en langage naturel. L'assistant et l'agent d'enquête s'en servent tous les deux.</p>
-      </div>
-      <div class="card">
-        <div class="card-ic" style="--c:#168f82;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
-        <h3 data-en="Local databases">Bases de données</h3>
-        <p data-en="Spreadsheet-like SQLite tables the AI queries in natural language (read-only SQL), wired into analysis, machine learning, Fluxo and your mini-apps.">Des tables SQLite façon tableur que l'IA interroge en langage naturel (SQL en lecture seule), branchées sur l'analyse, l'apprentissage, Fluxo et vos mini-apps.</p>
-      </div>
-      <div class="card">
-        <div class="card-ic" style="--c:#47a3ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
-        <h3 data-en="Mini-apps &amp; Forge">Mini-apps &amp; Forge</h3>
-        <p data-en="Describe an app, Forge generates it, the code editor refines it, the desktop runs it — with an API onto your tables and sandbox.">Décrivez une app, Forge la génère, l'éditeur la retouche, le bureau la lance — avec une API vers vos tables et votre sandbox.</p>
+        <h3 data-en="Shared subsystems">Des sous-systèmes partagés</h3>
+        <p data-en="Cognitive memory (eight kinds of memories, access policies per app), a local knowledge base with embeddings, SQLite databases queried in plain language, and a “Send to…” bus between apps. One context, reused by everything.">Mémoire cognitive (huit types de souvenirs, politiques d'accès par app), base de connaissances locale avec embeddings, bases SQLite interrogées en langage naturel, et un bus « Envoyer vers… » entre les apps. Un seul contexte, réutilisé par tout.</p>
       </div>
       <div class="card">
         <div class="card-ic" style="--c:#d98a00;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><circle cx="7.5" cy="6.5" r=".6" fill="currentColor"/></svg></div>
         <h3 data-en='Consultation mode<span class="tag-new tag-alpha">alpha</span>'>Mode consultation<span class="tag-new tag-alpha">alpha</span></h3>
-        <p data-en="A calm, touch-first reading interface for a shared screen or a tablet: home, connected home, assistant, calendar, projects.">Une interface de consultation apaisée, pensée pour le tactile, sur un écran partagé ou une tablette : accueil, maison connectée, assistant, agenda, projets.</p>
+        <p data-en="A calm, touch-first reading interface for a shared screen or a tablet: home, connected home, assistant, calendar, projects. The same Lumen, on the kitchen wall.">Une interface de consultation apaisée, pensée pour le tactile, sur un écran partagé ou une tablette : accueil, maison connectée, assistant, agenda, projets. Le même Lumen, sur le mur de la cuisine.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="store" class="alt">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow" data-en="Catalogue">Catalogue</span>
+      <h2 data-en="A small core, apps you install">Un noyau réduit, des apps que vous installez</h2>
+      <p class="lead" data-en="Since 0.2 the desktop ships light: the assistant, the sandbox, the crew, Fluxo, memory and settings. Everything else is a package — a <span class='mono'>.lumenapp</span> you install, update or remove from the Catalogue, like on a phone.">Depuis la 0.2, le bureau est livré léger : l'assistant, la sandbox, l'équipage, Fluxo, la mémoire et les réglages. Tout le reste est un paquet — un <span class="mono">.lumenapp</span> que vous installez, mettez à jour ou retirez depuis le Catalogue, comme sur un téléphone.</p>
+    </div>
+    <div class="grid c2 reveal">
+      <div class="card">
+        <div class="card-ic" style="--c:#30d158;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12l3 6H3z"/><path d="M3 8v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8"/><path d="M9 12h6"/></svg></div>
+        <h3 data-en="The Catalogue">Le Catalogue</h3>
+        <p data-en="One screen to install apps, GGUF models, voices, Fluxo workflows and avatars. Packages come from a signed repository (Ed25519): a version that does not verify does not install. Updates are per app, not per Lumen.">Un seul écran pour installer des apps, des modèles GGUF, des voix, des workflows Fluxo et des avatars. Les paquets viennent d'un dépôt signé (Ed25519) : une version qui ne vérifie pas ne s'installe pas. Les mises à jour se font app par app, pas Lumen entier.</p>
       </div>
       <div class="card">
-        <div class="card-ic" style="--c:#0a84ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
-        <h3 data-en="Sessions &amp; profiles">Sessions &amp; profils</h3>
-        <p data-en="A login screen, several profiles with their own data, and an RFID tag to switch profile without typing anything.">Un écran de connexion, plusieurs profils avec leurs propres données, et un badge RFID pour changer de profil sans rien taper.</p>
+        <div class="card-ic" style="--c:#ffb340;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3 data-en="Permissions, capability by capability">Des permissions, capacité par capacité</h3>
+        <p data-en="Each package declares what it needs — AI, storage, files, memory, notifications, talking to another app. You grant or refuse each one in Settings, and a third-party app never gets raw system access: it only sees the AppKit SDK.">Chaque paquet déclare ce dont il a besoin — IA, stockage, fichiers, mémoire, notifications, dialogue avec une autre app. Vous accordez ou refusez chacune dans les Réglages, et une app tierce n'a jamais d'accès brut au système : elle ne voit que le SDK AppKit.</p>
       </div>
       <div class="card">
-        <div class="card-ic" style="--c:#30d158;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/></svg></div>
-        <h3 data-en="Interop &amp; backup">Interop &amp; sauvegarde</h3>
-        <p data-en="A “Send to…” bus between apps, and a single archive that backs up your whole Lumen — sandboxes, memory, agents, settings.">Un bus « Envoyer vers… » entre les apps, et une archive unique qui sauvegarde tout votre Lumen — sandboxes, mémoire, agents, réglages.</p>
+        <div class="card-ic" style="--c:#0a84ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4 2 7-6.5-4.5L5.5 20l2-7L2 9h7z"/></svg></div>
+        <h3 data-en="App Intents">App Intents</h3>
+        <p data-en="Apps promote actions to the assistant: “create a note”, “schedule a task”, “run this Python”. The model can call them even when the app is closed — Lumen opens it and hands over the intent.">Les apps promeuvent des actions à l'assistant : « créer une note », « planifier une tâche », « exécuter ce Python ». Le modèle peut les appeler même app fermée — Lumen l'ouvre et lui remet l'intention.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#9961ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+        <h3 data-en="Build your own">Fabriquez les vôtres</h3>
+        <p data-en="Forge generates a mini-app from a description, the code editor refines it, and the same packaging tools that build the official apps turn it into a <span class='mono'>.lumenapp</span>. Pro apps (CRM, meetings, DB Studio, reporting) unlock with an offline licence key.">Forge génère une mini-app à partir d'une description, l'éditeur de code la retouche, et les mêmes outils d'empaquetage que les apps officielles en font un <span class="mono">.lumenapp</span>. Les apps Pro (CRM, réunions, DB Studio, reporting) se débloquent avec une clé de licence hors ligne.</p>
       </div>
     </div>
   </div>
@@ -388,67 +462,125 @@
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow" data-en="Applications">Applications</span>
-      <h2 data-en="More than 40 apps, grouped by intent">Plus de 40 apps, regroupées par usage</h2>
-      <p class="lead" data-en="Tools that deal with the same subject live in one window with tabs — a hub. Every app shares the active sandbox and the current engine.">Les outils qui traitent du même sujet vivent dans une seule fenêtre à onglets — un hub. Chaque app partage la sandbox active et le moteur du moment.</p>
+      <h2 data-en="More than 40 apps, each in its own window">Plus de 40 apps, chacune dans sa fenêtre</h2>
+      <p class="lead" data-en="Every app shares the active sandbox, the current engine and the memory — and most carry the same built-in assistant panel, so you can ask instead of clicking.">Chaque app partage la sandbox active, le moteur du moment et la mémoire — et la plupart embarquent le même volet d'assistant, pour demander au lieu de cliquer.</p>
     </div>
     <div class="grid c3 reveal">
-      <div class="card">
-        <div class="card-ic" style="--c:#16b8a6;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-        <h3 data-en="Crew &amp; Fluxo">Équipage &amp; Fluxo</h3>
-        <ul class="applist">
-          <li><b data-en="Team">Équipe</b> — <span data-en="create, configure and schedule your agents.">créer, régler et planifier vos agents.</span></li>
-          <li><b data-en="Workshop">Atelier</b> — <span data-en="your agents at work, live.">vos agents au travail, en direct.</span></li>
-          <li><b>Fil</b> — <span data-en="agent messages; reply to create a task.">messages des agents ; répondez pour créer une tâche.</span></li>
-          <li><b>Traces</b> + <b>Profiler</b> — <span data-en="model calls, tools, escalations and cost.">appels de modèles, outils, escalades et coût.</span></li>
-          <li><b data-en="Designer">Designer</b> + <b data-en="Automations">Automatisations</b> — <span data-en="build workflows and follow their runs.">composer les workflows et suivre leurs exécutions.</span></li>
-        </ul>
-      </div>
       <div class="card">
         <div class="card-ic" style="--c:#5ac8fa;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"/><path d="M7 3h7l5 5v13H7z"/></svg></div>
         <h3 data-en="Create">Créer</h3>
         <ul class="applist">
-          <li><b>Opus</b> — <span data-en="documents and slides in one editor, switchable format.">documents et présentations dans un même éditeur, format commutable.</span></li>
-          <li><b>Calc</b> — <span data-en="spreadsheet with formulas and charts, wired to your tables.">tableur avec formules et graphiques, branché sur vos tables.</span></li>
-          <li><b>Muse</b> — <span data-en="notes, mind maps, mood boards, generative canvas.">notes, cartes mentales, planches, canvas génératif.</span></li>
-          <li><b data-en="Image studio">Studio d'images</b> — <span data-en="fully local generation with Bonsai.">génération 100 % locale avec Bonsai.</span></li>
-        </ul>
-      </div>
-      <div class="card">
-        <div class="card-ic" style="--c:#168f82;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
-        <h3 data-en="Prisme &amp; Corpus">Prisme &amp; Corpus</h3>
-        <ul class="applist">
-          <li><b>Tables</b> — <span data-en="local databases queried in plain language.">bases locales interrogées en langage naturel.</span></li>
-          <li><b data-en="Analysis">Analyse</b> — <span data-en="explore, cross-reference, dashboards with ECharts.">explorer, croiser, tableaux de bord ECharts.</span></li>
-          <li><b data-en="Models">Modèles</b> — <span data-en="train a small model locally, in the browser.">entraîner un petit modèle localement, dans le navigateur.</span></li>
-          <li><b data-en="Library">Bibliothèque</b> + <b data-en="Inquiry">Enquête</b> — <span data-en="your indexed documents, and a sourced report from an agent.">vos documents indexés, et un rapport sourcé rendu par un agent.</span></li>
+          <li><b>Opus</b> + <b>Calc</b> — <span data-en="documents, slides and a spreadsheet wired to your tables.">documents, présentations et un tableur branché sur vos tables.</span></li>
+          <li><b>Notes</b>, <b data-en="Mind map">Carte mentale</b>, <b data-en="Board">Planche</b>, <b data-en="Canvas">Canevas</b> — <span data-en="write, branch ideas, assemble, generate by lineage.">écrire, ramifier, assembler, générer par filiation.</span></li>
+          <li><b data-en="Image studio">Studio d'images</b> — <span data-en="local generation (Bonsai, Ollama, Apple Image Playground).">génération locale (Bonsai, Ollama, Apple Image Playground).</span></li>
+          <li><b>Photos</b><span class="tag-new" data-en="new">nouveau</span> — <span data-en="every image in your sandboxes, by sandbox and by month.">toutes les images de vos sandboxes, par sandbox et par mois.</span></li>
         </ul>
       </div>
       <div class="card">
         <div class="card-ic" style="--c:#7867d8;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div>
         <h3 data-en="Organise">Organiser</h3>
         <ul class="applist">
-          <li><b>Tempo</b> — <span data-en="one task flow, two views: board and calendar.">un seul flux de tâches, deux vues : tableau et agenda.</span></li>
-          <li><b>Finance</b><span class="tag-new" data-en="new">nouveau</span> — <span data-en="budgets, goals, cash flow and AI advice, on local data.">budgets, objectifs, trésorerie et conseils IA, sur des données locales.</span></li>
+          <li><b data-en="Board">Tableau</b> + <b data-en="Calendar">Agenda</b> — <span data-en="cards, deadlines and reminders that notify you.">cartes, échéances et rappels qui vous préviennent.</span></li>
+          <li><b data-en="Scheduled tasks">Tâches planifiées</b><span class="tag-new" data-en="new">nouveau</span> — <span data-en="everything that runs at a set time: AI requests, workflows, agents, reminders — with a run log.">tout ce qui s'exécute à heure fixe : demandes à l'IA, workflows, agents, rappels — avec journal.</span></li>
+          <li><b>Budget</b> — <span data-en="budgets, goals, cash flow and AI advice on local data.">budgets, objectifs, trésorerie et conseils IA sur des données locales.</span></li>
           <li><b data-en="Memory">Mémoire</b> — <span data-en="what Lumen remembers, and who may read it.">ce dont Lumen se souvient, et qui peut le lire.</span></li>
         </ul>
       </div>
       <div class="card">
-        <div class="card-ic" style="--c:#ff6a3d;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h2l2-6 3 14 3-11 2 5h6"/></svg></div>
-        <h3 data-en="Sound &amp; voice">Son &amp; voix</h3>
+        <div class="card-ic" style="--c:#168f82;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
+        <h3 data-en="Explore">Explorer</h3>
         <ul class="applist">
-          <li><b data-en="Podcast">Podcast</b> — <span data-en="your documents turned into a two-voice conversation.">vos documents transformés en discussion à deux voix.</span></li>
-          <li><b data-en="Voices">Voix</b> — <span data-en="try and manage local neural voices (Piper, Kokoro).">essayer et gérer les voix neuronales locales (Piper, Kokoro).</span></li>
-          <li><b data-en="Music studio">Studio musical</b> — <span data-en="generative Web Audio: presets, sequencer, WAV export.">Web Audio génératif : presets, séquenceur, export WAV.</span></li>
+          <li><b data-en="Databases">Bases de données</b> + <b data-en="Analysis">Analyse</b> — <span data-en="local tables in plain language, ECharts dashboards.">tables locales en langage naturel, tableaux de bord ECharts.</span></li>
+          <li><b data-en="ML workshop">Atelier ML</b> — <span data-en="train tabular, text and scikit-learn models in the browser, export to ONNX or a Raspberry Pi.">entraîner des modèles tabulaires, texte et scikit-learn dans le navigateur, exporter en ONNX ou vers un Raspberry Pi.</span></li>
+          <li><b>Corpus</b> + <b data-en="Inquiry">Enquête</b> — <span data-en="your indexed documents, and a sourced report from an agent.">vos documents indexés, et un rapport sourcé rendu par un agent.</span></li>
+          <li><b data-en="Browser">Navigateur</b> — <span data-en="browse with an AI panel: summarise, translate, index.">naviguer avec un volet IA : résumer, traduire, indexer.</span></li>
         </ul>
       </div>
       <div class="card">
-        <div class="card-ic" style="--c:#2f9fe8;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></svg></div>
-        <h3 data-en="Explore &amp; play">Explorer &amp; souffler</h3>
+        <div class="card-ic" style="--c:#16b8a6;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <h3 data-en="Crew &amp; Fluxo">Équipage &amp; Fluxo</h3>
         <ul class="applist">
-          <li><b data-en="Browser">Navigateur</b> — <span data-en="browse with an AI panel: summarise, translate, index.">naviguer avec un volet IA : résumer, traduire, indexer.</span></li>
-          <li><b data-en="Home automation">Domotique</b> — <span data-en="your connected objects and their firmware.">vos objets connectés et leurs firmwares.</span></li>
-          <li><b>Arcade</b> — <span data-en="mini-games, illustrated text adventure, AI companion.">mini-jeux, aventure textuelle illustrée, compagnon IA.</span></li>
+          <li><b data-en="Team">Équipe</b>, <b data-en="Workshop">Atelier</b>, <b>Fil</b> — <span data-en="create, schedule and follow your agents; reply to a message to create a task.">créer, planifier et suivre vos agents ; répondre à un message crée une tâche.</span></li>
+          <li><b>Traces</b> + <b>Profiler</b> — <span data-en="every model call, tool, escalation and cost.">chaque appel de modèle, outil, escalade et coût.</span></li>
+          <li><b>Designer</b> + <b data-en="Automations">Automatisations</b> + <b data-en="Data flows">Flux de données</b> — <span data-en="workflows, node-based automations and a visual ETL.">workflows, automatisations à nœuds et ETL visuel.</span></li>
         </ul>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#ff6a3d;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h2l2-6 3 14 3-11 2 5h6"/></svg></div>
+        <h3 data-en="Sound, lab &amp; play">Son, labo &amp; jeu</h3>
+        <ul class="applist">
+          <li><b>Podcast</b>, <b data-en="Voices">Voix</b>, <b data-en="Music studio">Studio musical</b> — <span data-en="two-voice shows from your documents, local neural voices, generative Web Audio.">émissions à deux voix depuis vos documents, voix neuronales locales, Web Audio génératif.</span></li>
+          <li><b data-en="Code editor">Éditeur de code</b>, <b>Python</b>, <b data-en="Home automation">Domotique</b> — <span data-en="edit, run CPython in the browser, drive your ESP32 objects.">éditer, exécuter CPython dans le navigateur, piloter vos objets ESP32.</span></li>
+          <li><b data-en="Games">Jeux</b>, <b data-en="Adventure">Aventure</b>, <b data-en="Companion">Compagnon</b>, <b>Village</b> — <span data-en="mini-games, illustrated text adventure, a tamagotchi, your agents as villagers.">mini-jeux, aventure textuelle illustrée, un tamagotchi, vos agents en villageois.</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#d98a00;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+        <h3>Pro</h3>
+        <ul class="applist">
+          <li><b>Relia</b> — <span data-en="CRM, quotes and Factur-X invoices on a local database.">CRM, devis et factures Factur-X sur une base locale.</span></li>
+          <li><b data-en="Meeting">Réunion</b> — <span data-en="LAN video calls, local Whisper transcription, minutes.">visio sur le réseau local, transcription Whisper locale, comptes rendus.</span></li>
+          <li><b>DB Studio</b>, <b>Reporting</b>, <b data-en="Data sources">Sources</b>, <b data-en="Directory">Annuaire</b>, <b data-en="Team messaging">Messagerie</b> — <span data-en="for a small team on a Lumen Server.">pour une petite équipe sur un Lumen Server.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="personnalisation" class="alt">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow" data-en="Personalisation">Personnalisation</span>
+      <h2 data-en="Your desktop, your assistant">Votre bureau, votre assistant</h2>
+      <p class="lead" data-en="Light or dark, an accent colour, a wallpaper, a dock or a taskbar, an orb or a 3D avatar — and, deeper, the prompts and tools that shape how the model behaves.">Clair ou sombre, une couleur d'accent, un fond d'écran, un dock ou une barre des tâches, un orbe ou un avatar 3D — et, plus en profondeur, les prompts et les outils qui façonnent le comportement du modèle.</p>
+    </div>
+    <div class="grid c4 reveal">
+      <div class="card flat">
+        <div class="card-ic" style="--c:#ff5e8a;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none" opacity=".35"/></svg></div>
+        <h3 data-en="Appearance">Apparence</h3>
+        <p data-en="Light, dark or system; accent colours; wallpapers; the whole interface follows one design system across every app.">Clair, sombre ou système ; couleurs d'accent ; fonds d'écran ; toute l'interface suit un seul système de conception, dans chaque app.</p>
+      </div>
+      <div class="card flat">
+        <div class="card-ic" style="--c:#9961ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="9.5" cy="11" r="1" fill="currentColor"/><circle cx="14.5" cy="11" r="1" fill="currentColor"/></svg></div>
+        <h3 data-en="Orb or avatar">Orbe ou avatar</h3>
+        <p data-en="Choose the orb's colours and themes — shared between the bar and the desktop — or replace it with a GLB avatar of your own.">Choisissez les couleurs et les thèmes de l'orbe — partagés entre la barre et le bureau — ou remplacez-le par un avatar GLB à vous.</p>
+      </div>
+      <div class="card flat">
+        <div class="card-ic" style="--c:#30d158;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="15" width="18" height="6" rx="2"/><path d="M7 18h.01M11 18h.01M15 18h.01"/></svg></div>
+        <h3 data-en="Dock or taskbar">Dock ou barre des tâches</h3>
+        <p data-en="A macOS-style dock with active-app dots and an integrated status bar, or a classic taskbar. Widgets are yours to place.">Un dock façon macOS avec pastilles d'app active et barre d'état intégrée, ou une barre des tâches classique. Les widgets se placent où vous voulez.</p>
+      </div>
+      <div class="card flat">
+        <div class="card-ic" style="--c:#0a84ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/></svg></div>
+        <h3 data-en="Prompts &amp; toolbox">Prompts &amp; boîte à outils</h3>
+        <p data-en="A profile, a custom system prompt, every internal prompt editable in a catalogue, and a toolbox where you decide which tools the model may see.">Un profil, un prompt système personnalisé, chaque prompt interne modifiable dans un catalogue, et une boîte à outils où vous décidez quels outils le modèle peut voir.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="session">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow" data-en="Session">Session</span>
+      <h2 data-en="Several people, one machine, separate lives">Plusieurs personnes, une machine, des vies séparées</h2>
+      <p class="lead" data-en="Lumen Desktop opens on a login screen. Each profile has its own sandboxes, memory, conversations, agents and settings — and can be reached from a phone.">Lumen Desktop s'ouvre sur un écran de connexion. Chaque profil a ses sandboxes, sa mémoire, ses discussions, ses agents et ses réglages — et se retrouve depuis un téléphone.</p>
+    </div>
+    <div class="grid c3 reveal">
+      <div class="card">
+        <div class="card-ic" style="--c:#0a84ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3 data-en="Profiles &amp; login">Profils &amp; connexion</h3>
+        <p data-en="Password-protected profiles, a lock screen, a guided tour on first login — and an RFID tag on the Lumen Controller to switch profile without typing.">Profils protégés par mot de passe, écran de verrouillage, visite guidée à la première connexion — et un badge RFID sur le Lumen Controller pour changer de profil sans rien taper.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#30d158;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div>
+        <h3 data-en="Mobile companion">Compagnon mobile</h3>
+        <p data-en="A web app on your phone, paired per profile with a TOTP code: chat with the same model, take a photo for the vision model, approve an agent's escalation, get push notifications.">Une app web sur votre téléphone, appairée par profil avec un code TOTP : discuter avec le même modèle, prendre une photo pour le modèle vision, approuver l'escalade d'un agent, recevoir des notifications.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#ffb340;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg></div>
+        <h3 data-en="Backup &amp; updates">Sauvegarde &amp; mises à jour</h3>
+        <p data-en="One archive backs up your whole Lumen — sandboxes, memory, agents, settings — and restores it on another machine. Updates are signed and delivered in-app.">Une archive unique sauvegarde tout votre Lumen — sandboxes, mémoire, agents, réglages — et le restaure sur une autre machine. Les mises à jour sont signées et livrées dans l'app.</p>
       </div>
     </div>
   </div>
@@ -526,20 +658,20 @@
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow" data-en="Download">Téléchargement</span>
-      <h2 data-en="Install Lumen 0.1.1">Installer Lumen 0.1.1</h2>
+      <h2 data-en="Install Lumen 0.2">Installer Lumen 0.2</h2>
       <p class="lead" data-en="One installer per platform. Updates are signed and delivered in-app — you will be told when a new version is ready.">Un installeur par plateforme. Les mises à jour sont signées et livrées dans l'app — vous serez prévenu quand une nouvelle version sera prête.</p>
     </div>
     <div class="dl-grid reveal">
-      <a class="dl" href="https://github.com/Oneil974/lumen-app/releases/latest">
+      <a class="dl" href="https://github.com/Oneil974/lumen-assistant/releases/latest">
         <b>macOS</b><span data-en="Apple Silicon &amp; Intel">Apple Silicon &amp; Intel</span><span class="fmt">.dmg</span>
       </a>
-      <a class="dl" href="https://github.com/Oneil974/lumen-app/releases/latest">
+      <a class="dl" href="https://github.com/Oneil974/lumen-assistant/releases/latest">
         <b>Windows</b><span data-en="Windows 10 and 11">Windows 10 et 11</span><span class="fmt">.exe · .msi</span>
       </a>
-      <a class="dl" href="https://github.com/Oneil974/lumen-app/releases/latest">
+      <a class="dl" href="https://github.com/Oneil974/lumen-assistant/releases/latest">
         <b>Linux</b><span data-en="Debian, Ubuntu and derivatives">Debian, Ubuntu et dérivés</span><span class="fmt">.deb · .AppImage</span>
       </a>
-      <a class="dl" href="https://github.com/Oneil974/lumen-app/releases/latest">
+      <a class="dl" href="https://github.com/Oneil974/lumen-assistant/releases/latest">
         <b>Raspberry Pi</b><span data-en="Pi 4 and Pi 5, 64-bit">Pi 4 et Pi 5, 64 bits</span><span class="fmt">.deb · .AppImage</span>
       </a>
     </div>
@@ -548,7 +680,7 @@
       <p data-en="<b>First run:</b> the setup assistant walks you through it — pick an engine, download a model, choose a voice. With the bundled llama.cpp you need nothing else; with Ollama, install it first from ollama.com."><b>Première ouverture :</b> l'assistant de configuration vous guide — choisir un moteur, télécharger un modèle, choisir une voix. Avec le llama.cpp intégré, vous n'avez besoin de rien d'autre ; avec Ollama, installez-le d'abord depuis ollama.com.</p>
     </div>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:26px;flex-wrap:wrap;">
-      <a class="btn outline" href="changelog.html" data-en="Read the 0.1.1 changelog">Lire le changelog 0.1.1</a>
+      <a class="btn outline" href="changelog.html" data-en="Read the 0.2 changelog">Lire le changelog 0.2</a>
       <a class="btn ghost" href="tutorials.html" data-en="Read the tutorials">Lire les tutoriels</a>
     </div>
   </div>
@@ -566,11 +698,12 @@
       </div>
       <div class="foot-links">
         <a href="#assistant" data-en="Assistant">Assistant</a>
-        <a href="#os">Lumen OS</a>
+        <a href="#os">Lumen Desktop</a>
+        <a href="#store" data-en="Catalogue">Catalogue</a>
         <a href="#materiel" data-en="Hardware">Matériel</a>
         <a href="changelog.html" data-en="Changelog">Changelog</a>
         <a href="tutorials.html" data-en="Tutorials">Tutoriels</a>
-        <a href="https://github.com/Oneil974/lumen-app/releases">GitHub</a>
+        <a href="https://github.com/Oneil974/lumen-assistant/releases">GitHub</a>
       </div>
     </div>
     <div class="foot-legal">
