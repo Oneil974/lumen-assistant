@@ -74,9 +74,17 @@ A complete working environment inside one window: multi-profile sessions, window
 - **Opt-in web search** — off by default; nothing goes online until you turn it on. Page and document extraction is more reliable in 0.2.
 - **Profiler** — what each call actually costs: context, tools, memory, throughput.
 
-## 🎨 Thirty-odd apps, grouped into hubs
+## 🎨 Forty-odd apps, each in its own window
 
-**Corpus** (indexed documents, sourced research) · **Prisme** (tables, analysis, ML workshop with scikit-learn) · **Muse** (notes, mind maps, mood boards, generative canvas) · **Opus & Calc** (documents, presentations, spreadsheet) · **Tempo** (tasks, kanban, calendar with AI prompts, scheduled tasks) · **Écho** (AI podcast, voice studio) · **Forge** (app studio, code editor, Python) · **Arcade** (games, generated adventure, companion) · plus Browser, Photos, Budget, Image Studio, Music Studio, Home Automation and Memory.
+Every app is a package you install, update or remove from the Catalogue, and opens in its own window — several at once if you like.
+
+- **Create** — Notes, Mind map, Mood board, Creative canvas, Photos, Image studio
+- **Organise** — Calendar (with AI prompts), Kanban board, Scheduled tasks, Budget
+- **Explore** — Corpus (indexed documents), Research (sourced reports), Databases, Data analysis, ML workshop (scikit-learn), Browser
+- **Sound & voice** — AI podcast, Voice lab, Music studio
+- **Lab** — Code editor, Python, Home automation
+- **Play** — Games, generated Adventure, Companion, Village
+- **Built in** — Opus & Calc (documents, presentations, spreadsheet), Fluxo Designer, Automations, agents team, inbox, LLM traces, Profiler, Memory, Keys, Storage, Settings
 
 **Image generation** — PrismML **Bonsai Image** runs locally (Apple Silicon, NVIDIA GPU) and downloads on demand; Apple Image Playground on macOS 27; Ollama and OpenAI-compatible APIs behind the same interface.
 
@@ -109,20 +117,24 @@ A dedicated Raspberry Pi build: **GPIO** Fluxo blocks (pigpiod) to drive real ha
 
 ## Requirements & installation
 
-**Nothing is required to get started**: the llama.cpp engine is built in, and Lumen downloads the model you pick the first time you open it. The first-run assistant also lets you choose your synthesis voice.
+**Nothing to install**: download, open, pick a model. The AI stack ships inside the application:
 
-Lumen updates itself: releases are signed, and the app checks for a new version once a day (`.dmg` and `.deb` installs are first-download formats; automatic updates apply to the `.app`, `-setup.exe`/`.msi` and `.AppImage` installs).
+- **Inference** — the llama.cpp engine is built in; the model you choose in the first-run assistant (or the Catalogue) is downloaded by Lumen itself. On a Raspberry Pi, LiteRT with Gemma 4 E2B does the same job on a board without a GPU.
+- **Voices** — Piper ships inside the app on Linux, Windows and Raspberry Pi; macOS uses the system voices. Voices are downloaded from the Catalogue, and the first-run assistant lets you pick one.
+- **Images** — Bonsai Image and its models are downloaded on demand from the Catalogue.
+- **Dictation** — native on macOS and Windows.
 
-The all-in-one scripts are still there for anyone who prefers **Ollama** as the engine, and (on Linux/Pi) for **Kokoro** voices and **whisper.cpp** dictation:
+Lumen updates itself: releases are signed and the app checks for a new version once a day (`.dmg` and `.deb` are first-download formats; automatic updates apply to the `.app`, `-setup.exe`/`.msi` and `.AppImage` installs).
 
-| System | Command (from `scripts/`) |
-|---|---|
-| macOS | `./setup-macos.sh` |
-| Linux (Debian/Ubuntu) | `./setup-linux.sh` |
-| Raspberry Pi OS | `./setup-pi.sh` |
-| Windows | `powershell -ExecutionPolicy Bypass -File .\setup-windows.ps1` |
+**Optional extras** — only if you want them:
 
-Details, options and installing the voices separately: **[scripts/README.md](scripts/README.md)**.
+| What | Where | How |
+|---|---|---|
+| **Ollama** as an alternative engine | any platform | install it from [ollama.com](https://ollama.com); Lumen detects it and lists its models |
+| **Kokoro** voices (higher quality, slower) | Linux, Raspberry Pi | `scripts/setup-linux.sh` or `scripts/setup-pi.sh` |
+| **whisper.cpp** local dictation | Linux, Raspberry Pi | same scripts |
+
+Details: **[scripts/README.md](scripts/README.md)**.
 
 ## Privacy
 
