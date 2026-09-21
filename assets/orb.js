@@ -708,7 +708,7 @@ import { envelopeLevel, syntheticLevel, mouthScale, mouthOpacity, mouthSizeFromE
   // Partie « orbe » des thèmes d'avatar (couleurs/verre/cœur). La teinte de la
   // barre (bodyClass, accent) reste dans main.js (ORB_THEMES) : ici on ne garde
   // que ce qu'il faut pour que le thème s'applique dans TOUTES les fenêtres qui
-  // embarquent l'orbe (barre, bureau Lumen OS). Garder aligné avec main.js.
+  // embarquent l'orbe (barre, bureau Lumen Desktop). Garder aligné avec main.js.
   const ORB_THEME_VISUALS = {
     rubis: { colors: ['#ff1a2b', '#e60012', '#ff4d4d', '#c20010', '#ff6b6b'], heart: '#ff1a2b', glass: 'crystal' },
     dark: { colors: ['#c4c9d2', '#a7adb8', '#8b919d', '#d0d5dd', '#9ba1ad'], heart: '#c8cdd6', glass: 'crystal' },

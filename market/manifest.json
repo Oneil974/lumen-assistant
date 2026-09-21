@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "updated": "2026-09-03",
+  "workflows": [
+    {
+      "id": "translate-clipboard",
+      "category": "Productivité",
+      "title": "Traduire le presse-papier en anglais",
+      "description": "Traduit le texte copié en anglais, le remet dans le presse-papier et affiche le résultat.",
+      "needs": ["Un modèle local ou une clé API"],
+      "workflow": {
+        "name": "Traduire le presse-papier",
+        "description": "Traduit en anglais le texte présent dans le presse-papier.",
+        "available_as_tool": true,
+        "trigger": { "type": "manual" },
+        "steps": [
+          { "id": "get_clipboard1", "action": "get_clipboard", "params": {}, "name": null },
+          {
+            "id": "llm_infer1",
+            "action": "llm_infer",
+            "params": {
+              "prompt": { "type": "text", "value": "Traduis ce texte en anglais. Rends uniquement la traduction :\n\n{{get_clipboard1}}" },
+              "system": { "type": "text", "value": "Tu es un traducteur. Tu ne commentes jamais." },
+              "backend": { "type": "text", "value": "auto" },
+              "model": { "type": "text", "value": "" },
+              "think": { "type": "bool", "value": false },
+              "context_size": { "type": "number", "value": 0 }
+            },
+            "name": null
+          },
+          {
+            "id": "copy_clipboard1",
+            "action": "copy_clipboard",
+            "params": { "text": { "type": "text", "value": "{{llm_infer1}}" } },
+            "name": null
+          },
+          {
+            "id": "lumen_notification1",
+            "action": "lumen_notification",
+            "params": {
+              "kind": { "type": "text", "value": "success" },
+              "title": { "type": "text", "value": "Traduction copiée" },
+              "body": { "type": "text", "value": "{{llm_infer1}}" },
+              "icon": { "type": "text", "value": "" },
+              "color": { "type": "text", "value": "" },
+              "actions": { "type": "text", "value": "" },
+              "timeout": { "type": "number", "value": 0 }
+            },
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "meeting-minutes",
+      "category": "Productivité",
+      "title": "Compte rendu de réunion",
+      "description": "Transforme des notes brutes en compte rendu structuré (décisions, actions) et le dépose dans la messagerie de Lumen.",
+      "needs": ["Un modèle local ou une clé API"],
+      "workflow": {
+        "name": "Compte rendu de réunion",
+        "description": "Structure des notes de réunion et les envoie dans la messagerie.",
+        "available_as_tool": true,
+        "trigger": { "type": "manual" },
+        "steps": [
+          {
+            "id": "llm_infer1",
+            "action": "llm_infer",
+            "params": {
+              "prompt": { "type": "text", "value": "Voici des notes de réunion brutes. Rends un compte rendu en trois sections : Décisions, Actions (avec le responsable si mentionné), Points en suspens.\n\n{{input}}" },
+              "system": { "type": "text", "value": "Tu es un assistant précis et concis. Réponds en français, sans préambule." },
+              "backend": { "type": "text", "value": "auto" },
+              "model": { "type": "text", "value": "" },
+              "think": { "type": "bool", "value": false },
+              "context_size": { "type": "number", "value": 0 }
+            },
+            "name": null
+          },
+          {
+            "id": "inbox_post_message1",
+            "action": "inbox_post_message",
+            "params": {
+              "from": { "type": "text", "value": "Market" },
+              "from_id": { "type": "text", "value": "market-meeting-minutes" },
+              "subject": { "type": "text", "value": "Compte rendu de réunion" },
+              "body": { "type": "text", "value": "{{llm_infer1}}" },
+              "task": { "type": "text", "value": "" }
+            },
+            "name": null
+          }
+        ]
+      }
+    }
+  ],
+  "avatars": []
+}

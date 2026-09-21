@@ -1,116 +1,118 @@
-# Lumen
+# Lumen Assistant
+
+**English** · [Français](README.fr.md)
 
 <p align="center">
-  <img src="assets/Lumen_Header.png" alt="Lumen — assistant IA de bureau local-first" width="700">
+  <img src="assets/Lumen_Header.png" alt="Lumen — local-first desktop AI assistant" width="700">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/statut-b%C3%AAta-ff9e6b" alt="Statut : bêta">
-  <a href="https://github.com/Oneil974/lumen-app/releases/latest"><img src="https://img.shields.io/github/v/release/Oneil974/lumen-app?label=version&color=9961ff" alt="Dernière version"></a>
-  <img src="https://img.shields.io/badge/plateformes-macOS%20·%20Windows%20·%20Linux%20·%20Raspberry%20Pi-47a3ff" alt="Plateformes">
-  <img src="https://img.shields.io/badge/IA-100%25%20locale%20possible-61f2c7" alt="Local-first">
-  <img src="https://img.shields.io/badge/donn%C3%A9es-sur%20votre%20machine-ff54a3" alt="Données privées">
+  <img src="https://img.shields.io/badge/status-beta-ff9e6b" alt="Status: beta">
+  <a href="https://github.com/Oneil974/lumen-assistant/releases/latest"><img src="https://img.shields.io/github/v/release/Oneil974/lumen-assistant?label=version&color=9961ff" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/platforms-macOS%20·%20Windows%20·%20Linux%20·%20Raspberry%20Pi-47a3ff" alt="Platforms">
+  <img src="https://img.shields.io/badge/AI-can%20run%20100%25%20locally-61f2c7" alt="Local-first">
+  <img src="https://img.shields.io/badge/your%20data-stays%20on%20your%20machine-ff54a3" alt="Private by default">
 </p>
 
 <p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
 
-**Un assistant IA de bureau local-first — une barre de chat vivante, privée et agentique, qui grandit jusqu'à devenir un bureau complet.**
+**A local-first desktop AI assistant — a living, private, agentic chat bar that grows into a full desktop.**
 
-Lumen embarque désormais son propre moteur d'inférence : **rien à installer** pour commencer à parler à un modèle local. Il sait aussi utiliser [Ollama](https://ollama.com), les modèles d'Apple, ou une API compatible OpenAI quand un modèle cloud est plus adapté — chaque source gardant son propre modèle.
+Lumen now ships its own inference engine: **nothing to install** before you can talk to a local model. It can also drive [Ollama](https://ollama.com), Apple's on-device models, or any OpenAI-compatible API when a cloud model is the better tool — each source remembering its own model.
 
-➡️ **[Télécharger la dernière version](https://github.com/Oneil974/lumen-app/releases/latest)** · 🌐 **[Site de présentation](https://Oneil974.github.io/lumen-app/)** · 📝 **[Journal des versions](https://Oneil974.github.io/lumen-app/changelog.html)**
+➡️ **[Download the latest release](https://github.com/Oneil974/lumen-assistant/releases/latest)** · 🌐 **[Website](https://Oneil974.github.io/lumen-assistant/)** · 📝 **[Changelog](https://Oneil974.github.io/lumen-assistant/changelog.html)**
 
 > [!NOTE]
-> **Lumen est en bêta, en développement actif.** Les fonctionnalités évoluent vite d'une version à l'autre et des bugs peuvent subsister. Vos retours sont bienvenus via les [issues](https://github.com/Oneil974/lumen-app/issues).
+> **Lumen is in beta and under active development.** Features move fast from one release to the next, and bugs are still around. Feedback is welcome through the [issues](https://github.com/Oneil974/lumen-assistant/issues).
 
 ---
 
-## ✨ Une barre vivante
+## ✨ A living bar
 
-Une capsule de chat flottante, toujours à portée de main, avec un **orbe animé** qui respire, écoute et réagit.
+A floating chat capsule, always within reach, with an **animated orb** that breathes, listens and reacts.
 
-- **Quatre moteurs** — llama.cpp embarqué (rien à installer), Ollama local, modèles Apple, ou API compatible OpenAI. On change de source en un clic, chacune retrouvant son modèle.
-- **Orbe ou avatar** — l'orbe de verre WebGL, ou votre propre modèle **GLB animé** dont les animations suivent les états de l'assistant.
-- **Modes de discussion** — chat direct, **Documents** (vos fichiers indexés), routeur d'actions, tool calling, ou un workflow précis.
-- **Comprendre cet écran** — Lumen capture l'écran réel et le fait décrire par le modèle vision actif.
-- **Voix & dictée** — **Piper est livré dans l'application** (Linux, Windows), plus Kokoro, les voix système et la dictée whisper.cpp. 100 % hors-ligne possible.
-- **Mémoire** — huit types de souvenirs, rappel avant de répondre, politique d'accès cloisonnée appliquée côté backend.
-- **Notifications audio & visuelles** — chaque type d'événement a son son et son signal sur l'orbe.
-- **Compagnon iPhone & Telegram** — la session en miroir sur votre téléphone, ou l'assistant joignable depuis Telegram sans ouvrir un seul port.
+- **Four engines** — built-in llama.cpp (nothing to install), local Ollama, Apple models, or an OpenAI-compatible API. Switch source in one click; each one comes back with its own model.
+- **Orb or avatar** — the WebGL glass orb, or your own **animated GLB model** whose animations follow the assistant's states.
+- **Chat modes** — plain chat, **Documents** (your indexed files), action router, tool calling, or one specific workflow.
+- **Understand this screen** — Lumen captures the real screen and has the active vision model describe it. Draw a rectangle to ask about one area instead of the whole display.
+- **Voice & dictation** — **Piper ships inside the app** (Linux, Windows), plus Kokoro, system voices and whisper.cpp dictation. Fully offline if you want it.
+- **Memory** — eight kinds of recollection, recalled before answering, under a compartmented access policy enforced in the backend.
+- **Audible and visible notifications** — every kind of event has its own sound and its own signal on the orb.
+- **iPhone companion & Telegram** — your session mirrored on your phone, or the assistant reachable from Telegram without opening a single port.
 
-## 🖥️ Lumen OS — le bureau immersif
+## 🖥️ Lumen OS — the immersive desktop
 
-Un environnement de travail complet dans une fenêtre : session multi-profils, fenêtres, widgets, Spotlight (⌘K), centre de notifications, thèmes clair/sombre.
+A complete working environment inside one window: multi-profile sessions, windows, widgets, Spotlight (⌘K), notification centre, light and dark themes.
 
 <p align="center">
-  <img src="assets/Lumen_Desktop_Pi.png" alt="Lumen OS — launcher d'applications, Designer Fluxo (GPIO) et Assistant IA, ici sur Raspberry Pi" width="700">
+  <img src="assets/Lumen_Desktop_Pi.png" alt="Lumen OS — app launcher, Fluxo Designer (GPIO) and AI Assistant, here on a Raspberry Pi" width="700">
   <br>
-  <sub><em>Lumen OS tournant sur un Raspberry Pi : launcher, Designer Fluxo (blocs GPIO) et Assistant IA en local.</em></sub>
+  <sub><em>Lumen OS running on a Raspberry Pi: launcher, Fluxo Designer (GPIO blocks) and the AI Assistant, all local.</em></sub>
 </p>
 
-- **Nouvelle barre d'icônes & launcher** — une barre compacte qui s'efface, un launcher plein écran, et un menu d'apps que vous rangez vous-même.
-- **Sandbox IA** — des espaces fichiers isolés où les agents lisent, écrivent et exécutent sans toucher au reste de la machine.
-- **Corpus (RAG)** — indexez vos documents, interrogez-les en langage naturel, et voyez les passages sur lesquels repose chaque réponse, avec leur score.
-- **Bases de données** — tables SQLite façon Baserow, requêtes en langage naturel (lecture seule), intégrées aux autres apps.
-- **Mode consultation** *(alpha)* — une interface apaisée, pensée pour le tactile, sur écran partagé ou tablette.
-- **Forge** — décrivez une app, Lumen la génère, vous la codez — sans changer de fenêtre.
+- **New icon dock & launcher** — a compact bar that gets out of the way, a full-screen launcher, and an app menu you arrange yourself.
+- **AI sandbox** — isolated file spaces where agents read, write and run things without touching the rest of your machine.
+- **Corpus (RAG)** — index your documents, question them in plain language, and see the passages each answer rests on, with their score.
+- **Databases** — Baserow-style SQLite tables, plain-language queries (read-only), wired into the other apps.
+- **Consultation mode** *(alpha)* — a calmer interface, built for touch, on a shared screen or a tablet.
+- **Forge** — describe an app, Lumen generates it, you take over the code — without leaving the window.
 
 ## 🤖 Agents, Fluxo & Skills
 
-- **Orchestrateur & sous-agents** — un agent principal découpe une demande et délègue à des spécialistes, avec budgets de tokens et d'itérations, et escalade au lieu de boucler.
-- **Mode Automation** — une version à base de nœuds de Fluxo pour les automatisations planifiées et déclenchées par événement, avec leur historique d'exécution.
-- **Designer Fluxo** — éditeur visuel de workflows : déclencheurs, actions système, blocs IA, notifications.
-- **Connecteurs MCP** — les serveurs Model Context Protocol se branchent en un clic (distants officiels, HTTPS avec jeton en en-tête).
-- **Boîte à outils** — vous choisissez les outils publiés au modèle, un par un : un outil inutile coûte du contexte avant même votre question.
-- **Recherche web activable** — désactivée par défaut ; rien ne part en ligne tant que vous ne l'allumez pas.
-- **Profiler** — ce que chaque appel consomme vraiment : contexte, outils, mémoire, débit.
+- **Orchestrator & sub-agents** — a lead agent splits a request and delegates to specialists, with token and iteration budgets, and escalates instead of looping.
+- **Automation mode** — a node-based flavour of Fluxo for scheduled and event-driven automations, with their run history.
+- **Fluxo Designer** — a visual workflow editor: triggers, system actions, AI blocks, notifications.
+- **MCP connectors** — Model Context Protocol servers plug in with one click (official remote servers, HTTPS with a header token).
+- **Toolbox** — you choose which tools are exposed to the model, one by one: a tool you don't need costs context before you've even asked your question.
+- **Opt-in web search** — off by default; nothing goes online until you turn it on.
+- **Profiler** — what each call actually costs: context, tools, memory, throughput.
 
-## 🎨 Une trentaine d'apps, regroupées en hubs
+## 🎨 Thirty-odd apps, grouped into hubs
 
-**Corpus** (documents indexés, enquêtes sourcées) · **Prisme** (tables, analyse, modèles ML) · **Muse** (notes, cartes mentales, planches, canvas génératif) · **Opus & Calc** (documents, présentations, tableur) · **Tempo** (tâches, kanban, agenda) · **Écho** (podcast IA, studio de voix) · **Forge** (studio d'apps, éditeur de code) · **Arcade** (jeux, aventure générée, compagnon) · plus Navigateur, Finance, Studio d'images, Studio musical, Domotique et Mémoire.
+**Corpus** (indexed documents, sourced research) · **Prisme** (tables, analysis, ML models) · **Muse** (notes, mind maps, mood boards, generative canvas) · **Opus & Calc** (documents, presentations, spreadsheet) · **Tempo** (tasks, kanban, calendar) · **Écho** (AI podcast, voice studio) · **Forge** (app studio, code editor) · **Arcade** (games, generated adventure, companion) · plus Browser, Finance, Image Studio, Music Studio, Home Automation and Memory.
 
-## 🔌 Matériel
+## 🔌 Hardware
 
-- **Lumen Controller** — un compagnon physique sur votre réseau local : des boutons associés à des workflows, des agents ou des prompts, et un potentiomètre qui règle le volume système.
-- **Support RFID** — passez un badge pour lancer un workflow, réveiller un agent, ou changer de profil et déverrouiller votre session sans mot de passe.
-- **Firmwares ESP32** — générez, flashez et pilotez des firmwares MicroPython (capteurs, matrices LED, relais, servos) et un avatar-orbe physique sur écran rond.
+- **Lumen Controller** — a physical companion on your local network: buttons bound to workflows, agents or prompts, and a knob that drives system volume.
+- **RFID support** — tap a badge to fire a workflow, wake an agent, or switch profile and unlock your session without a password.
+- **ESP32 firmware** — generate, flash and drive MicroPython firmware (sensors, LED matrices, relays, servos) and a physical orb avatar on a round display.
 
 ## 🍓 Lumen Pi
 
-Un build dédié Raspberry Pi : blocs Fluxo **GPIO** (pigpiod) pour piloter du matériel, voix locales, barre flottante et mode plein écran — un assistant vocal et domotique 100 % local sur un Pi.
+A dedicated Raspberry Pi build: **GPIO** Fluxo blocks (pigpiod) to drive real hardware, local voices, floating bar and full-screen mode — a fully local voice and home-automation assistant on a Pi.
 
 <p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
 
-## Télécharger
+## Download
 
-➡️ **[Dernière version — page de téléchargement](https://github.com/Oneil974/lumen-app/releases/latest)**
+➡️ **[Latest release — download page](https://github.com/Oneil974/lumen-assistant/releases/latest)**
 
-| Plateforme | Fichier |
+| Platform | File |
 |---|---|
 | macOS (Apple Silicon) | `.dmg` |
-| Windows | `.exe` (installeur) ou `.msi` |
-| Linux (Debian/Ubuntu, x86_64) | `.deb` ou `.AppImage` |
-| Raspberry Pi / arm64 | `.deb` ou `.AppImage` |
+| Windows | `.exe` (installer) or `.msi` |
+| Linux (Debian/Ubuntu, x86_64) | `.deb` or `.AppImage` |
+| Raspberry Pi / arm64 | `.deb` or `.AppImage` |
 
-## Prérequis & installation
+## Requirements & installation
 
-**Aucun prérequis pour démarrer** : le moteur llama.cpp est embarqué, et Lumen télécharge lui-même le modèle choisi à la première ouverture.
+**Nothing is required to get started**: the llama.cpp engine is built in, and Lumen downloads the model you pick the first time you open it.
 
-Les scripts « tout-en-un » restent là pour qui préfère **Ollama** comme moteur, et (sous Linux/Pi) pour les voix **Kokoro** et la dictée **whisper.cpp** :
+The all-in-one scripts are still there for anyone who prefers **Ollama** as the engine, and (on Linux/Pi) for **Kokoro** voices and **whisper.cpp** dictation:
 
-| Système | Commande (dans `scripts/`) |
+| System | Command (from `scripts/`) |
 |---|---|
 | macOS | `./setup-macos.sh` |
 | Linux (Debian/Ubuntu) | `./setup-linux.sh` |
 | Raspberry Pi OS | `./setup-pi.sh` |
 | Windows | `powershell -ExecutionPolicy Bypass -File .\setup-windows.ps1` |
 
-Détails, options et installation séparée des voix : **[scripts/README.md](scripts/README.md)**.
+Details, options and installing the voices separately: **[scripts/README.md](scripts/README.md)**.
 
-## Confidentialité
+## Privacy
 
-En mode local, **aucune donnée ne quitte votre machine** : modèle, inférence, mémoire, documents et bases restent sur votre disque. La recherche web et le mode API cloud sont optionnels et désactivés par défaut ; la clé API, quand il y en a une, ne quitte jamais le backend.
+In local mode, **no data leaves your machine**: model, inference, memory, documents and databases all stay on your disk. Web search and cloud API mode are optional and off by default; the API key, when there is one, never leaves the backend.
 
 <p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
 
-Ce dépôt héberge la page de présentation et les binaires de l'application (via *Releases*). Le code source n'est pas publié ici.
+This repository hosts the landing page and the application binaries (via *Releases*). The source code is not published here.

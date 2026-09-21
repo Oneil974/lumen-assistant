@@ -18,7 +18,7 @@
     <div class="nav-links">
       <a href="index.html#assistant" data-en="Assistant">Assistant</a>
       <a href="index.html#moteurs" data-en="Engines">Moteurs</a>
-      <a href="index.html#os">Lumen OS</a>
+      <a href="index.html#os">Lumen Desktop</a>
       <a href="index.html#materiel" data-en="Hardware">Matériel</a>
       <a href="tutorials.html" data-en="Tutorials">Tutoriels</a>
     </div>
@@ -46,9 +46,77 @@
 
     <article class="release">
       <div class="release-meta">
+        <h2>0.2.0</h2>
+        <time datetime="2026-09" data-en="September 2026">Septembre 2026</time>
+        <span class="badge accent"><span class="dot"></span><span data-en="Current release">Version actuelle</span></span>
+      </div>
+      <div class="release-body">
+        <p class="lead" style="margin-bottom:28px;" data-en="The release that turns Lumen Desktop into a system: a lighter core, apps as installable packages from a Catalogue, an assistant that works in projects — and a presence on mobile and Raspberry Pi.">La version qui fait de Lumen Desktop un système : un noyau allégé, des apps en paquets installables depuis un Catalogue, un assistant qui travaille en projets — et une présence sur mobile et Raspberry Pi.</p>
+
+        <div class="change-group">
+          <h3 data-en="Desktop &amp; apps">Bureau &amp; apps</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Apps as packages">Des apps en paquets</b><p data-en="Twenty-plus apps leave the core and become .lumenapp packages installed, updated and removed from the Catalogue, served from a signed repository. Each declares its capabilities; you grant them one by one. Third-party apps only ever see the AppKit SDK.">Plus de vingt apps quittent le noyau et deviennent des paquets .lumenapp installés, mis à jour et retirés depuis le Catalogue, servis par un dépôt signé. Chacune déclare ses capacités ; vous les accordez une à une. Une app tierce ne voit jamais que le SDK AppKit.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b>App Intents</b><p data-en="Apps promote actions to the assistant (create a note, schedule a task, run Python): the model can call them even when the app is closed.">Les apps promeuvent des actions à l'assistant (créer une note, planifier une tâche, exécuter du Python) : le modèle peut les appeler même app fermée.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Photos, Scheduled tasks, Python">Photos, Tâches planifiées, Python</b><p data-en="A library of every image in your sandboxes; one view on everything that runs at a set time (AI requests, workflows, agents, reminders) with a run log; CPython in the browser with your sandbox as the project.">Une bibliothèque de toutes les images de vos sandboxes ; une vue unique sur tout ce qui s'exécute à heure fixe (demandes à l'IA, workflows, agents, rappels) avec journal ; CPython dans le navigateur avec votre sandbox comme projet.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="ML workshop">Atelier ML</b><p data-en="A scikit-learn tab running in the browser: CSV datasets, nine algorithms, metrics and confusion matrix, named models, a Raspberry Pi kit and SSH deployment.">Un onglet scikit-learn qui tourne dans le navigateur : datasets CSV, neuf algorithmes, métriques et matrice de confusion, modèles nommés, kit Raspberry Pi et déploiement SSH.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Data flows">Flux de données</b><p data-en="The ETL is now a node canvas: 56 operations, connectors to your tables, files and sources, live preview at every block.">L'ETL est désormais un canevas à nœuds : 56 opérations, connecteurs vers vos tables, fichiers et sources, aperçu en direct à chaque bloc.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="One design system">Un seul système de conception</b><p data-en="A flat, shadcn-style skin across the bar, the desktop and every app; light and dark unified; accent colours drawn from the orb.">Une peau plate façon shadcn sur la barre, le bureau et chaque app ; clair et sombre unifiés ; couleurs d'accent tirées de l'orbe.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Catalogue">Catalogue</b><p data-en="One screen to install models, Fluxo workflows, avatars, voices and applications.">Un seul écran pour installer modèles, workflows Fluxo, avatars, voix et applications.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Halo capsule">Capsule Halo</b><p data-en="A persistent capsule shows running agents and their steps, notifications and the time.">Une capsule persistante affiche les agents en cours et leurs étapes, les notifications et l'heure.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Web search">Recherche web</b><p data-en="More reliable extraction of pages and documents.">Extraction plus fiable des pages et des documents.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Assistant">Assistant</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Projects">Projets</b><p data-en="Group conversations in a project with instructions and a knowledge base (documents indexed locally, images described by the vision model). The model can read the project's other conversations on request.">Regroupez vos discussions dans un projet avec des instructions et une base de connaissances (documents indexés en local, images décrites par le modèle vision). Le modèle peut relire les autres discussions du projet à la demande.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Summary, compaction, branches">Résumé, compaction, branches</b><p data-en="Summarise a long thread on demand (the summary is then sent with every turn, and editable), compact it, or branch from any message to start clean.">Résumez un long fil à la demande (le résumé part ensuite à chaque tour, et se corrige), compactez-le, ou créez une branche depuis n'importe quel message pour repartir au propre.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Apple Foundation Models">Apple Foundation Models</b><p data-en="On macOS 27, the on-device Apple model becomes an engine like the others, tool calling included.">Sur macOS 27, le modèle Apple sur l'appareil devient un moteur comme les autres, tool calling compris.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="@ mentions">Mentions @</b><p data-en="Mentioning a tool now forces its call on the first turn, whatever the engine — small local models and the Apple model included.">Mentionner un outil force désormais son appel au premier tour, quel que soit le moteur — petits modèles locaux et modèle Apple compris.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Folders and pinned conversations">Dossiers et conversations épinglées</b><p data-en="Sort conversations into folders (AI summaries land there too) and pin the important ones on a Pinterest-style board.">Rangez vos conversations en dossiers (les résumés IA s'y déposent aussi) et épinglez les importantes sur un tableau façon Pinterest.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="PDF export">Export PDF</b><p data-en="Any conversation exports to PDF, from the menu or through a tool call the model can make itself.">Une conversation s'exporte en PDF depuis le menu, ou par un appel d'outil que le modèle fait lui-même.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Floating prompt and context menu">Fenêtre de prompt flottante et menu contextuel</b><p data-en="Select text in any application: proofread, rewrite, summarise or translate from the context menu, or open a floating prompt sheet on the spot.">Sélectionnez du texte dans n'importe quelle application : relisez, réécrivez, résumez ou traduisez depuis le menu contextuel, ou ouvrez une feuille de prompt flottante sur place.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Understand this screen">Comprendre cet écran</b><p data-en="Select a region of the screen and have the vision model analyse just that, in addition to the full capture.">Sélectionnez une région de l'écran et faites-la analyser par le modèle vision, en plus de la capture complète.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Agent wizard">Assistant de création d'agent</b><p data-en="A guided path to define a personal agent: role, tools, budgets and guardrails.">Un parcours guidé pour définir un agent personnel : rôle, outils, budgets et garde-fous.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="AI Assistant app and in-app assistant">App Assistant IA et boîte d'assistant</b><p data-en="The AI Assistant app is redesigned, and an assistant box is built into several apps (Calendar with AI prompts, Notes, boards…).">L'app Assistant IA est revue, et une boîte d'assistant s'intègre dans plusieurs apps (Calendrier avec prompts IA, Notes, tableaux…).</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Voices">Voix</b><p data-en="Choose the synthesis voice (Piper and others) right from the first-run assistant.">Choix de la voix de synthèse (Piper et autres) dès l'assistant de premier démarrage.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Engines &amp; models">Moteurs &amp; modèles</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Bonsai Image">Bonsai Image</b><p data-en="The PrismML image generation engine is built in and downloads on demand (Apple Silicon, NVIDIA GPU).">Le moteur de génération d'images PrismML est intégré et se télécharge à la demande (Apple Silicon, GPU NVIDIA).</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Apple Image Playground">Apple Image Playground</b><p data-en="Image generation through the system service on macOS 27.">Génération d'images via le service système sur macOS 27.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="LiteRT and Gemma 4 E2B">LiteRT et Gemma 4 E2B</b><p data-en="Lightweight local inference for Raspberry Pi.">Inférence locale allégée pour Raspberry Pi.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Session &amp; Pro">Session &amp; Pro</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Pro edition (in preparation)">Édition Pro (en préparation)</b><p data-en="A single binary: Pro features unlock with an offline Ed25519 licence key. Relia (AI-assisted CRM, Factur-X quotes and invoices), Meetings (LAN video and team chat with AI minutes), DB Studio, Data flows (visual ETL), Reporting, Data sources, Directory and end-to-end encrypted Team messaging — plus an optional Lumen Server with roles and permissions and a shared AI source.">Un seul binaire : les fonctions Pro se débloquent avec une clé de licence Ed25519 hors ligne. Relia (CRM assisté par l'IA, devis et factures Factur-X), Réunion (visio et chat d'équipe sur le LAN avec compte rendu IA), DB Studio, Flux de données (ETL visuel), Reporting, Sources de données, Annuaire et Messagerie d'équipe chiffrée de bout en bout — plus un Lumen Server optionnel avec rôles, permissions et source d'IA partagée.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Mobile companion and PWA">Compagnon mobile et PWA</b><p data-en="Lumen installs as a progressive web app on your phone: multi-user with a TOTP code per profile, camera capture for the vision model, agent tracking and approvals, push notifications.">Lumen s'installe en progressive web app sur le téléphone : multi-utilisateur avec un code TOTP par profil, capture photo pour le modèle vision, suivi et approbation des agents, notifications push.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Fixes">Corrections</h3>
+          <ul class="changes">
+            <li><span class="kind fix" data-en="fixed">corrigé</span><div><b>Windows</b><p data-en="CUDA libraries missing when llama-server started are now bundled; CPU fallback when they are absent.">Les bibliothèques CUDA manquantes au lancement de llama-server sont désormais embarquées ; repli CPU si elles sont absentes.</p></div></li>
+            <li><span class="kind fix" data-en="fixed">corrigé</span><div><b>Linux</b><p data-en="CUDA fixes and graphics rendering (WebKitGTK transparency and blur).">Correctifs CUDA et rendu graphique (transparence et flou WebKitGTK).</p></div></li>
+            <li><span class="kind fix" data-en="fixed">corrigé</span><div><b data-en="Assistant">Assistant</b><p data-en="More reliable inference backend detection.">Détection du backend d'inférence fiabilisée.</p></div></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <article class="release">
+      <div class="release-meta">
         <h2>0.1.1</h2>
         <time datetime="2026-08" data-en="August 2026">Août 2026</time>
-        <span class="badge accent"><span class="dot"></span><span data-en="Current release">Version actuelle</span></span>
       </div>
       <div class="release-body">
         <p class="lead" style="margin-bottom:28px;" data-en="The release that makes Lumen self-sufficient: its own inference engine, its own voices, its own hardware — and agents that delegate instead of grinding through everything alone.">La version qui rend Lumen autonome : son propre moteur d'inférence, ses propres voix, son propre matériel — et des agents qui délèguent au lieu de tout encaisser seuls.</p>
@@ -125,6 +193,8 @@
           <h3 data-en="Apps">Apps</h3>
           <ul class="changes">
             <li><span class="kind add" data-en="new">nouveau</span><div><b>Finance</b><p data-en="Budgets, goals, cash flow and category breakdowns, with AI advice computed on data that stays local.">Budgets, objectifs, trésorerie et répartition par catégorie, avec des conseils IA calculés sur des données qui restent locales.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Relia — AI-assisted CRM with Factur-X">Relia — CRM assisté par l'IA, avec Factur-X</b><p data-en="Items and stock, customers, quotes and invoices, all stored in the local SQLite database so Prisme, Fluxo and the agents can read them. An accepted quote becomes an invoice in one click, drawing down the stock and tracing every movement. Invoices are exported as Factur-X (PDF with the CII XML embedded) or as CII XML alone, with the mandatory statements of the French mandate checked before export. Tags with autocomplete and stackable filters on every list, autocompleted item categories, and the 8.5 % overseas VAT rate.">Articles et stock, clients, devis et factures, stockés dans la base SQLite locale : Prisme, Fluxo et les agents les lisent nativement. Un devis accepté devient une facture en un clic, ce qui débite le stock et trace chaque mouvement. Les factures s'exportent en Factur-X (PDF avec XML CII embarqué) ou en XML CII seul, les mentions obligatoires françaises étant contrôlées avant l'export. Tags avec autocomplétion et filtres cumulables sur toutes les listes, catégories d'articles autocomplétées, et taux de TVA d'outre-mer à 8,5 %.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Assistant panel in every app">Volet Assistant dans chaque app</b><p data-en="A side Assistant button on the right edge of every desktop app (Notes, Board, Tables, Calendar, Memory, Finance and more) opens a conversation that acts through the tools that app declares, with ⌘/Ctrl+J to toggle it. Its turns are now counted in the daily token counter, the Profiler and the LLM log.">Un bouton latéral Assistant, au bord droit de chaque app du bureau (Notes, Tableau, Tables, Agenda, Mémoire, Finance et d'autres), ouvre une conversation qui agit par les outils déclarés par l'app, avec ⌘/Ctrl+J pour l'ouvrir ou la replier. Ses tours sont désormais comptabilisés dans le compteur de jetons du jour, le Profiler et le journal LLM.</p></div></li>
           </ul>
         </div>
 
@@ -145,9 +215,9 @@
           <h3 data-en="First public release">Première version publique</h3>
           <ul class="changes">
             <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="The assistant bar">La barre d'assistant</b><p data-en="A floating bar with a living WebGL orb, local chat through Ollama, Apple models via Shortcuts, an OpenAI-compatible cloud option, speech and dictation.">Une barre flottante avec un orbe WebGL vivant, chat local via Ollama, modèles Apple via Raccourcis, option cloud compatible OpenAI, énonciation et dictée.</p></div></li>
-            <li><span class="kind add" data-en="new">nouveau</span><div><b>Lumen OS</b><p data-en="A full desktop inside the app: windows, taskbar, widgets, confined sandbox, cognitive memory, RAG library, local databases and more than thirty apps.">Un bureau complet dans l'app : fenêtres, barre des tâches, widgets, sandbox confinée, mémoire cognitive, bibliothèque RAG, bases de données locales et plus de trente apps.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b>Lumen Desktop</b><p data-en="A full desktop inside the app: windows, taskbar, widgets, confined sandbox, cognitive memory, RAG library, local databases and more than thirty apps.">Un bureau complet dans l'app : fenêtres, barre des tâches, widgets, sandbox confinée, mémoire cognitive, bibliothèque RAG, bases de données locales et plus de trente apps.</p></div></li>
             <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Agents and Fluxo">Agents et Fluxo</b><p data-en="Scheduled agents with their own sandbox and skills, the visual Fluxo designer, and workflows the model can call as tools.">Agents planifiés avec leur propre sandbox et leurs skills, le designer visuel Fluxo, et des workflows que le modèle appelle comme des outils.</p></div></li>
-            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Four platforms">Quatre plateformes</b><p data-en="macOS, Windows, Linux and a dedicated Raspberry Pi build, plus an iPhone companion app on the local network.">macOS, Windows, Linux et une build Raspberry Pi dédiée, avec une app compagnon iPhone sur le réseau local.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Four platforms">Quatre plateformes</b><p data-en="macOS, Windows, Linux and a dedicated Raspberry Pi build, plus a mobile companion app on the local network.">macOS, Windows, Linux et une build Raspberry Pi dédiée, avec une app compagnon mobile sur le réseau local.</p></div></li>
           </ul>
         </div>
       </div>
@@ -167,7 +237,7 @@
         <a href="index.html" data-en="Home">Accueil</a>
         <a href="index.html#telecharger" data-en="Download">Télécharger</a>
         <a href="tutorials.html" data-en="Tutorials">Tutoriels</a>
-        <a href="https://github.com/Oneil974/lumen-app/releases">GitHub</a>
+        <a href="https://github.com/Oneil974/lumen-assistant/releases">GitHub</a>
       </div>
     </div>
     <div class="foot-legal">
