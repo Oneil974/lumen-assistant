@@ -18,7 +18,7 @@
 
 **A local-first desktop AI assistant — a living, private, agentic chat bar that grows into a full desktop.**
 
-Lumen ships its own inference engine: **nothing to install** before you can talk to a local model. It can also drive [Ollama](https://ollama.com), Apple's on-device models, or any OpenAI-compatible API when a cloud model is the better tool — each source remembering its own model. Version **0.2** turns Lumen Desktop into a system: a lighter core, apps as installable packages from a Catalogue, an assistant that works in projects, and a presence on your phone and on Raspberry Pi.
+Lumen ships its own inference engine: **nothing to install** before you can talk to a local model. It can also drive [Ollama](https://ollama.com), Apple's on-device models, or any OpenAI-compatible API when a cloud model is the better tool — each source remembering its own model. Version **0.3** adds a third way to use it — the **Application** mode — and a small **decision model** that routes every request (direct answer, tools or orchestration), with an optional escalation to an API model that only happens if you agree.
 
 ➡️ **[Download the latest release](https://github.com/Oneil974/lumen-assistant/releases/latest)** · 🌐 **[Website](https://Oneil974.github.io/lumen-assistant/)** · 📝 **[Changelog](https://Oneil974.github.io/lumen-assistant/changelog.html)**
 
@@ -42,6 +42,20 @@ A floating chat capsule, always within reach, with an **animated orb** that brea
 - **Memory** — eight kinds of recollection, recalled before answering, under a compartmented access policy enforced in the backend.
 - **Halo capsule & notifications** — a persistent capsule shows running agents and their steps, notifications, weather and scores; every kind of event has its own sound and its own signal on the orb.
 - **Mobile companion (PWA) & Telegram** — install Lumen on your phone's home screen: multi-user with a TOTP code per profile, camera capture for the vision model, agent approvals and push notifications. Or reach the assistant from Telegram without opening a single port.
+
+## 🧭 Three ways to use Lumen
+
+Pick at launch — Lumen remembers. The same conversations, files, memory and model behind all three.
+
+- **Bar** — a floating bar with its living orb, above whatever you are doing.
+- **Application** *(new in 0.3)* — a classic chat-app window: your conversations on the left, your apps (Messages, Library, Calendar, Mail, Agents…) opening in place from a two-level sidebar.
+- **Desktop** — Lumen Desktop, a complete AI desktop with windows, dock and widgets (below).
+
+## 🧠 An assistant that chooses before it answers *(0.3)*
+
+- **Decision-model router** — a small specialised local model (Tev1, Laya, Clef Flash or LiquidAI Open d1) reads every request first and picks the path in a few hundred milliseconds: direct answer, tools, or orchestration. When it is unsure, Lumen falls back to its rules.
+- **Orchestration & harness** — complex requests are split into visible steps (analysis, tools, data, writing, verification) with time and token budgets that keep small models on track.
+- **Hybrid mode** — if the local model fails, Lumen *offers* to retry with your API model. Nothing leaves without your consent.
 
 ## 🖥️ Lumen Desktop — the immersive desktop
 
@@ -87,10 +101,6 @@ Every app is a package you install, update or remove from the Catalogue, and ope
 - **Built in** — Opus & Calc (documents, presentations, spreadsheet), Fluxo Designer, Automations, agents team, inbox, LLM traces, Profiler, Memory, Keys, Storage, Settings
 
 **Image generation** — PrismML **Bonsai Image** runs locally (Apple Silicon, NVIDIA GPU) and downloads on demand; Apple Image Playground on macOS 27; Ollama and OpenAI-compatible APIs behind the same interface.
-
-### Pro edition (in preparation)
-
-A single binary: Pro features unlock with an offline licence key. **Relia** (AI-assisted CRM, Factur-X quotes and invoices), **Meetings** (LAN video and team chat with AI minutes), **DB Studio**, **Data flows** (visual ETL), **Reporting**, **Data sources**, **Directory** and end-to-end encrypted **Team messaging** — plus an optional **Lumen Server** with roles, permissions and a shared AI source.
 
 ## 🔌 Hardware
 

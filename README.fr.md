@@ -18,7 +18,7 @@
 
 **Un assistant IA de bureau local-first — une barre de chat vivante, privée et agentique, qui grandit jusqu'à devenir un bureau complet.**
 
-Lumen embarque son propre moteur d'inférence : **rien à installer** pour commencer à parler à un modèle local. Il sait aussi utiliser [Ollama](https://ollama.com), les modèles d'Apple, ou une API compatible OpenAI quand un modèle cloud est plus adapté — chaque source gardant son propre modèle. La version **0.2** fait de Lumen Desktop un système : un noyau allégé, des apps en paquets installables depuis un Catalogue, un assistant qui travaille en projets, et une présence sur votre téléphone et sur Raspberry Pi.
+Lumen embarque son propre moteur d'inférence : **rien à installer** pour commencer à parler à un modèle local. Il sait aussi utiliser [Ollama](https://ollama.com), les modèles d'Apple, ou une API compatible OpenAI quand un modèle cloud est plus adapté — chaque source gardant son propre modèle. La version **0.3** ajoute une troisième façon de l'utiliser — le mode **Application** — et un petit **modèle de décision** qui aiguille chaque demande (réponse directe, outils ou orchestration), avec une escalade facultative vers un modèle API qui n'a lieu qu'avec votre accord.
 
 ➡️ **[Télécharger la dernière version](https://github.com/Oneil974/lumen-assistant/releases/latest)** · 🌐 **[Site de présentation](https://Oneil974.github.io/lumen-assistant/)** · 📝 **[Journal des versions](https://Oneil974.github.io/lumen-assistant/changelog.html)**
 
@@ -42,6 +42,20 @@ Une capsule de chat flottante, toujours à portée de main, avec un **orbe anim�
 - **Mémoire** — huit types de souvenirs, rappel avant de répondre, politique d'accès cloisonnée appliquée côté backend.
 - **Capsule Halo & notifications** — une capsule persistante affiche les agents en cours et leurs étapes, les notifications, la météo et les scores ; chaque type d'événement a son son et son signal sur l'orbe.
 - **Compagnon mobile (PWA) & Telegram** — installez Lumen sur l'écran d'accueil du téléphone : multi-utilisateur avec un code TOTP par profil, capture photo pour le modèle vision, approbation des agents et notifications push. Ou joignez l'assistant depuis Telegram sans ouvrir un seul port.
+
+## 🧭 Trois façons d'utiliser Lumen
+
+Choisissez au lancement — Lumen s'en souvient. Les mêmes discussions, fichiers, mémoire et modèle derrière les trois.
+
+- **Barre** — une barre flottante avec son orbe vivant, au-dessus de ce que vous faites.
+- **Application** *(nouveau en 0.3)* — une fenêtre classique façon application de chat : vos discussions à gauche, vos apps (Messages, Bibliothèque, Agenda, Mail, Agents…) qui s'ouvrent sur place depuis une barre latérale à deux niveaux.
+- **Bureau** — Lumen Desktop, un bureau IA complet avec fenêtres, dock et widgets (ci-dessous).
+
+## 🧠 Un assistant qui choisit avant de répondre *(0.3)*
+
+- **Routeur par modèle de décision** — un petit modèle local spécialisé (Tev1, Laya, Clef Flash ou LiquidAI Open d1) lit chaque demande en premier et choisit le chemin en quelques centaines de millisecondes : réponse directe, outils ou orchestration. S'il hésite, Lumen retombe sur ses règles.
+- **Orchestration et harnais** — les demandes complexes sont découpées en étapes visibles (analyse, outils, données, rédaction, vérification), avec des budgets de temps et de jetons qui gardent les petits modèles sur les rails.
+- **Mode hybride** — si le modèle local échoue, Lumen *propose* de réessayer avec votre modèle API. Rien ne part sans votre accord.
 
 ## 🖥️ Lumen Desktop — le bureau immersif
 
@@ -87,10 +101,6 @@ Chaque app est un paquet que vous installez, mettez à jour ou retirez depuis le
 - **Intégrées** — Opus & Calc (documents, présentations, tableur), Designer Fluxo, Automatisations, Équipe d'agents, Fil, Traces LLM, Profiler, Mémoire, Clés, Stockage, Réglages
 
 **Génération d'images** — PrismML **Bonsai Image** tourne en local (Apple Silicon, GPU NVIDIA) et se télécharge à la demande ; Apple Image Playground sur macOS 27 ; Ollama et les API compatibles OpenAI derrière la même interface.
-
-### Édition Pro (en préparation)
-
-Un seul binaire : les fonctions Pro se débloquent avec une clé de licence hors ligne. **Relia** (CRM assisté par l'IA, devis et factures Factur-X), **Réunion** (visio et chat d'équipe sur le LAN avec compte rendu IA), **DB Studio**, **Flux de données** (ETL visuel), **Reporting**, **Sources de données**, **Annuaire** et **Messagerie d'équipe** chiffrée de bout en bout — plus un **Lumen Server** optionnel avec rôles, permissions et source d'IA partagée.
 
 ## 🔌 Matériel
 
