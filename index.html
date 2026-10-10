@@ -10,6 +10,7 @@
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#0a0a0a" />
   <link rel="stylesheet" href="assets/site.css" />
+  <link rel="stylesheet" href="assets/soft-orb.css" />
 </head>
 <body>
 
@@ -20,6 +21,8 @@
       Lumen
     </a>
     <div class="nav-links">
+      <a href="#modes" data-en="Modes">Modes</a>
+      <a href="#intelligence" data-en="Intelligence">Intelligence</a>
       <a href="#assistant" data-en="Assistant">Assistant</a>
       <a href="#moteurs" data-en="Engines">Moteurs</a>
       <a href="#agents" data-en="Agents">Agents</a>
@@ -42,7 +45,7 @@
 
 <header class="hero">
   <div class="container">
-    <span class="badge accent"><span class="dot"></span><span data-en="Version 0.2 — a lighter core, installable apps, the Catalogue, projects in the assistant">Version 0.2 — noyau allégé, apps installables, Catalogue, projets dans l'assistant</span></span>
+    <span class="badge accent"><span class="dot"></span><span data-en="Version 0.3 — Application mode, decision-model routing, orchestration, hybrid mode">Version 0.3 — mode Application, aiguillage par modèle de décision, orchestration, mode hybride</span></span>
     <h1 data-en="The AI assistant that lives on your machine.">L'assistant IA qui vit sur votre machine.</h1>
     <p class="lead" data-en="Lumen is a desktop AI assistant for macOS, Windows, Linux and Raspberry Pi. It runs your models <strong>locally</strong> — with its built-in llama.cpp or your own Ollama — automates your work with agents, and opens into <strong>Lumen Desktop</strong>, a full desktop of 40+ AI-driven apps. No cloud, no account, nothing to sign up for.">Lumen est un assistant IA de bureau pour macOS, Windows, Linux et Raspberry Pi. Il fait tourner vos modèles <strong>en local</strong> — avec son llama.cpp intégré ou votre Ollama —, automatise votre travail avec des agents, et s'ouvre sur <strong>Lumen Desktop</strong>, un bureau complet de plus de 40 apps pilotées par l'IA. Sans cloud, sans compte, sans inscription.</p>
     <div class="hero-cta">
@@ -52,22 +55,16 @@
     <p class="hero-note" data-en="Free · Open engines · Works fully offline">Gratuit · Moteurs ouverts · Fonctionne entièrement hors-ligne</p>
 
     <div class="orb-wrap" id="orb-wrap">
-      <!-- Mêmes couches que dans l'application (cf. src/index.html) : lueur
-           ambiante, ombre au sol, disque de verre dépoli, canevas three.js,
-           yeux. assets/orb.js est le fichier de l'app, à l'identique. -->
+      <!-- Personnage coloré de Lumen (soft-sky, le bleu), même rendu que dans
+           l'application (assets/soft-orb.css, copie de l'app) : CSS seul, pas
+           de WebGL — il s'affiche partout, y compris en file://. -->
       <div class="glowing-orb"></div>
       <div class="orb-shadow"></div>
-      <div class="orb-container" id="orb-container" data-state="idle">
-        <div class="orb-frost"></div>
-        <canvas id="orb-canvas"></canvas>
-        <div class="orb-eyes" id="orb-eyes"><span></span><span></span></div>
+      <div class="hero-soft" data-orb-renderer="soft" data-state="idle">
+        <div class="lumen-soft" aria-hidden="true" style="--soft-color:#a9ddff;--soft-shade:#4396d4;--soft-eyes:#11253a;--soft-tempo:5s;--soft-tilt:2deg;">
+          <div class="lumen-soft-pose"><div class="lumen-soft-body"><span class="lumen-soft-shine"></span><span class="lumen-soft-blush"></span><div class="lumen-soft-face"><i></i><i></i></div><span class="lumen-soft-mouth"></span></div></div>
+        </div>
       </div>
-      <!-- Repli CSS : visible tant que l'orbe three.js n'a pas démarré, masqué
-           par assets/site.js dès qu'il rend. -->
-      <span class="av-orb hero-orb-fallback" style="--size:240px;--blur:16px;" aria-hidden="true">
-        <span class="av-core"></span><span class="av-shell"></span>
-        <span class="av-eyes"><i></i><i></i></span>
-      </span>
     </div>
 
     <div class="barmock">
@@ -126,6 +123,87 @@
           <li data-en="Profiles, mobile companion, backup in one archive">Profils, compagnon mobile, sauvegarde en une archive</li>
         </ul>
         <p style="margin-top:14px;"><a href="#os" data-en="Discover the desktop ↓">Découvrir le bureau ↓</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="modes" class="alt">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow" data-en="New in 0.3 · Display modes">Nouveau en 0.3 · Modes d'affichage</span>
+      <h2 data-en="Three ways to use Lumen">Trois façons d'utiliser Lumen</h2>
+      <p class="lead" data-en="Pick at launch — Lumen remembers. The same conversations, files, memory and model behind all three.">Choisissez au lancement — Lumen s'en souvient. Les mêmes discussions, fichiers, mémoire et modèle derrière les trois.</p>
+    </div>
+    <div class="grid c3 reveal">
+      <div class="card pillar mode-card">
+        <div class="mode-mock bar" aria-hidden="true"><i class="o"></i><span></span><b></b></div>
+        <h3 data-en="Bar">Barre</h3>
+        <p data-en="A floating bar with its living orb, above whatever you are doing. One shortcut, one question, and it gets out of the way.">Une barre flottante avec son orbe vivant, au-dessus de ce que vous faites. Un raccourci, une question, et elle s'efface.</p>
+      </div>
+      <div class="card pillar mode-card featured">
+        <div class="mode-mock app" aria-hidden="true">
+          <div class="rail"><i></i><i></i><i></i><i></i></div>
+          <div class="side"><span></span><span></span><span></span><span></span></div>
+          <div class="main"><span class="u"></span><span class="a"></span><span class="a s"></span><b></b></div>
+        </div>
+        <h3 data-en='Application<span class="tag-new">new</span>'>Application<span class="tag-new">nouveau</span></h3>
+        <p data-en="A classic window, like a chat app: your conversations on the left, your apps one click away — Messages, Library, Calendar, Mail, Agents — each opening in place, without leaving the window.">Une fenêtre classique, comme une application de chat : vos discussions à gauche, vos apps à un clic — Messages, Bibliothèque, Agenda, Mail, Agents — qui s'ouvrent sur place, sans quitter la fenêtre.</p>
+        <ul>
+          <li data-en="Two-level sidebar: spaces, then their apps">Barre latérale à deux niveaux : espaces, puis leurs apps</li>
+          <li data-en="Installed apps open as views that stay alive">Les apps installées s'ouvrent en vues qui restent vivantes</li>
+          <li data-en="Same composer, @ mentions and voice as the bar">Même compositeur, mentions @ et voix que la barre</li>
+        </ul>
+      </div>
+      <div class="card pillar mode-card">
+        <div class="mode-mock desk" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+        <h3>Desktop</h3>
+        <p data-en="Lumen Desktop: a complete AI desktop with windows, dock, widgets and profiles — for when Lumen is the whole workspace.">Lumen Desktop : un bureau IA complet avec fenêtres, dock, widgets et profils — quand Lumen devient tout l'espace de travail.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="intelligence">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow" data-en="New in 0.3 · Routing">Nouveau en 0.3 · Aiguillage</span>
+      <h2 data-en="An assistant that chooses before it answers">Un assistant qui choisit avant de répondre</h2>
+      <p class="lead" data-en="A small local model specialised in decisions reads every request first, and picks the right path in a few hundred milliseconds. The big model only works where it is needed.">Un petit modèle local, spécialisé dans la décision, lit chaque demande en premier et choisit le bon chemin en quelques centaines de millisecondes. Le grand modèle ne travaille que là où il est utile.</p>
+    </div>
+    <div class="route-diagram reveal" aria-label="Schéma d'aiguillage" data-en-aria-label="Routing diagram">
+      <div class="rd-node q" data-en="Your request">Votre demande</div>
+      <div class="rd-arrow"></div>
+      <div class="rd-node d"><b data-en="Decision model">Modèle de décision</b><small>Tev1 · Laya · Clef Flash · Open d1</small></div>
+      <div class="rd-arrow"></div>
+      <div class="rd-paths">
+        <div class="rd-node p"><b data-en="Direct answer">Réponse directe</b><small data-en="greetings, knowledge, rewriting">salutations, connaissances, reformulation</small></div>
+        <div class="rd-node p"><b data-en="Tools">Outils</b><small data-en="weather, files, mail, calendar, web…">météo, fichiers, mail, agenda, web…</small></div>
+        <div class="rd-node p"><b data-en="Orchestration">Orchestration</b><small data-en="several steps, verified">plusieurs étapes, vérifiées</small></div>
+      </div>
+      <div class="rd-arrow"></div>
+      <div class="rd-node h"><b data-en="Hybrid mode (optional)">Mode hybride (facultatif)</b><small data-en="local model failed? Lumen asks before escalating to an API model">le modèle local échoue ? Lumen demande avant d'escalader vers un modèle API</small></div>
+    </div>
+    <div class="grid c4 reveal" style="margin-top:22px;">
+      <div class="card">
+        <div class="card-ic" style="--c:#9961ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></div>
+        <h3 data-en='Decision models<span class="tag-new">new</span>'>Modèles de décision<span class="tag-new">nouveau</span></h3>
+        <p data-en="Tev1, Laya, Clef Flash or LiquidAI Open d1, with a constrained one-letter output and a confidence score. Below the threshold, Lumen abstains and falls back to its rules — no confident guess.">Tev1, Laya, Clef Flash ou LiquidAI Open d1, avec une sortie contrainte à une lettre et un score de confiance. Sous le seuil, Lumen s'abstient et retombe sur ses règles — pas de pari hasardeux.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#0a84ff;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <h3 data-en='More than routing<span class="tag-new">new</span>'>Plus qu'un aiguillage<span class="tag-new">nouveau</span></h3>
+        <p data-en="The same models answer small typed questions elsewhere: which tool fits, is this answer grounded, does this agent action need your approval, is this e-mail urgent.">Les mêmes modèles répondent ailleurs à de petites questions typées : quel outil convient, cette réponse est-elle fondée, cette action d'agent doit-elle être approuvée, cet e-mail est-il urgent.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#16b8a6;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg></div>
+        <h3 data-en='Orchestration &amp; harness<span class="tag-new">new</span>'>Orchestration &amp; harnais<span class="tag-new">nouveau</span></h3>
+        <p data-en="Analysis, validated tool calls, data, writing, verification and revision — each step shown live, with time and token budgets that keep small models on track.">Analyse, appels d'outils validés, données, rédaction, vérification et révision — chaque étape affichée en direct, avec des budgets de temps et de jetons qui gardent les petits modèles sur les rails.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic" style="--c:#f59f35;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></div>
+        <h3 data-en='Hybrid mode<span class="tag-new">new</span>'>Mode hybride<span class="tag-new">nouveau</span></h3>
+        <p data-en="Local first, always. When the local answer fails, Lumen offers to retry with your API model — once, for that question, only if you say yes.">Le local d'abord, toujours. Quand la réponse locale échoue, Lumen propose de réessayer avec votre modèle API — une fois, pour cette question, seulement si vous dites oui.</p>
       </div>
     </div>
   </div>
@@ -653,7 +731,7 @@
   <div class="container">
     <div class="section-head center">
       <span class="eyebrow" data-en="Download">Téléchargement</span>
-      <h2 data-en="Install Lumen 0.2">Installer Lumen 0.2</h2>
+      <h2 data-en="Install Lumen 0.3">Installer Lumen 0.3</h2>
       <p class="lead" data-en="One installer per platform. Updates are signed and delivered in-app — you will be told when a new version is ready.">Un installeur par plateforme. Les mises à jour sont signées et livrées dans l'app — vous serez prévenu quand une nouvelle version sera prête.</p>
     </div>
     <div class="dl-grid reveal">
@@ -675,7 +753,7 @@
       <p data-en="<b>First run:</b> the setup assistant walks you through it — pick an engine, download a model, choose a voice. With the bundled llama.cpp you need nothing else; with Ollama, install it first from ollama.com."><b>Première ouverture :</b> l'assistant de configuration vous guide — choisir un moteur, télécharger un modèle, choisir une voix. Avec le llama.cpp intégré, vous n'avez besoin de rien d'autre ; avec Ollama, installez-le d'abord depuis ollama.com.</p>
     </div>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:26px;flex-wrap:wrap;">
-      <a class="btn outline" href="changelog.html" data-en="Read the 0.2 changelog">Lire le changelog 0.2</a>
+      <a class="btn outline" href="changelog.html" data-en="Read the 0.3 changelog">Lire le changelog 0.3</a>
       <a class="btn ghost" href="tutorials.html" data-en="Read the tutorials">Lire les tutoriels</a>
     </div>
   </div>
@@ -709,6 +787,5 @@
 </footer>
 
 <script src="assets/site.js"></script>
-<script type="module" src="assets/orb.js"></script>
 </body>
 </html>

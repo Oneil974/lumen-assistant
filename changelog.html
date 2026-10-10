@@ -46,9 +46,71 @@
 
     <article class="release">
       <div class="release-meta">
+        <h2>0.3.0</h2>
+        <time datetime="2026-10" data-en="October 2026">Octobre 2026</time>
+        <span class="badge accent"><span class="dot"></span><span data-en="Current release">Version actuelle</span></span>
+      </div>
+      <div class="release-body">
+        <p class="lead" style="margin-bottom:28px;" data-en="The release where Lumen learns to choose: a new Application display mode, a decision model that routes every request, orchestration for complex tasks and an optional escalation to an API model.">La version où Lumen apprend à choisir : un nouveau mode d'affichage Application, un modèle de décision qui aiguille chaque demande, l'orchestration des tâches complexes et une escalade facultative vers un modèle API.</p>
+
+        <div class="change-group">
+          <h3 data-en="Display modes &amp; intelligence">Modes d'affichage &amp; intelligence</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Application mode">Mode Application</b><p data-en="A third way to use Lumen, between the floating bar and the desktop: a classic chat-app window, with your conversations and your apps (Messages, Library, Calendar, Mail…) in a sidebar. The mode is picked at launch and remembered.">Une troisième façon d'utiliser Lumen, entre la barre flottante et le bureau : une fenêtre classique façon application de chat, avec vos discussions et vos apps (Messages, Bibliothèque, Agenda, Mail…) dans une barre latérale. Le mode se choisit au lancement et se mémorise.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Decision-model router">Routeur par modèle de décision</b><p data-en="Before every answer, a small specialised local model decides in a few hundred milliseconds whether to answer directly, call tools or orchestrate several steps. Pick the model: Tev1, Laya, Clef Flash or LiquidAI Open d1; when it hesitates, Lumen falls back to its rules.">Avant chaque réponse, un petit modèle local spécialisé décide en quelques centaines de millisecondes s'il faut répondre directement, appeler des outils ou orchestrer plusieurs étapes. Modèle au choix : Tev1, Laya, Clef Flash ou LiquidAI Open d1 ; s'il hésite, Lumen retombe sur ses règles.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Orchestration and harness">Orchestration et harnais</b><p data-en="Complex requests are split into visible steps — analysis, tools, data, writing, verification — with guardrails that keep small models on track.">Les demandes complexes sont découpées en étapes visibles — analyse, outils, données, rédaction, vérification — avec des garde-fous qui gardent les petits modèles sur les rails.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Hybrid mode">Mode hybride</b><p data-en="If the local model fails, Lumen offers to hand the question to an API model. Nothing leaves without your consent.">Si le modèle local échoue, Lumen propose de passer la question à un modèle API. Rien ne part sans votre accord.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="New models and llama.cpp update">Nouveaux modèles et llama.cpp à jour</b><p data-en="New models in the catalogue, grouped by family, and a newer llama.cpp.">De nouveaux modèles au catalogue, groupés par famille, et un llama.cpp plus récent.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Model and backend picker">Sélecteur de modèles et de backends</b><p data-en="Clearer, and every engine keeps its own model.">Plus clair, et chaque moteur garde son propre modèle.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Voice control">Commande vocale</b><p data-en="Drive the desktop with your voice.">Pilotez le bureau à la voix.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Agents">Agents</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Instant messaging">Messagerie instantanée</b><p data-en="Chat with your agents like in a messenger, with a voice mode.">Échangez avec vos agents comme dans une messagerie, avec un mode vocal.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Slack">Slack</b><p data-en="Your agents also answer in Slack.">Vos agents répondent aussi dans Slack.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Agent design">Design des agents</b><p data-en="Animated characters wherever an agent shows up.">Des personnages animés, partout où un agent apparaît.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Applications">Applications</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Browser, Calculator, Studies (beta), PDF editor">Navigateur, Calculatrice, Études (bêta), éditeur de PDF</b><p data-en="Four new applications, plus note-taking right on PDFs.">Quatre nouvelles applications, et la prise de notes directement sur les PDF.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Contacts, E-mail and morning view">Carnet d'adresses, E-mail et vue du matin</b><p data-en="Your contacts in one place, a safe e-mail client (sanitised HTML, images on demand) and a morning screen that sums up the day.">Vos contacts réunis, un client e-mail sûr (HTML assaini, images au choix) et un écran du matin qui résume la journée.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Documents and Presentations">Documents et Présentations</b><p data-en="More complete, with new templates.">Plus complets, avec de nouveaux modèles.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Data analysis and ML workshop">Analyse de données et Atelier ML</b><p data-en="Two significantly richer applications.">Deux applications nettement enrichies.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="RPI Robot Studio">RPI Robot Studio</b><p data-en="Program a Raspberry Pi robot with blocks and deploy it over SSH.">Programmez un robot Raspberry Pi par blocs et déployez-le en SSH.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Widgets and diagnostics">Widgets et diagnostic</b><p data-en="New desktop widgets, and an installation diagnostic.">De nouveaux widgets pour le bureau, et un diagnostic de l'installation.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="“Send to…”">« Envoyer vers… »</b><p data-en="Sharing between apps is more reliable, images included.">Le partage entre applications est plus fiable, images comprises.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Interface &amp; platforms">Interface &amp; plateformes</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Coloured orbs">Orbes colorés</b><p data-en="New hues and a more expressive orb.">De nouvelles teintes et un orbe plus expressif.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Augmented reality">Réalité augmentée</b><p data-en="Lumen in augmented reality, tested on the Meta Quest 3S headset.">Lumen en réalité augmentée, testé sur casque Meta Quest 3S.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="EN/FR translation">Traduction EN/FR</b><p data-en="A better-translated interface in both languages.">Une interface mieux traduite dans les deux langues.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Fixes">Corrections</h3>
+          <ul class="changes">
+            <li><span class="kind fix" data-en="fixed">corrigé</span><div><b data-en="Many fixes">Nombreuses corrections</b><p data-en="Including sending images to apps, performance on Windows and the PDF export layout.">Dont l'envoi d'images vers les applications, les performances sous Windows et l'affichage de l'export PDF.</p></div></li>
+          </ul>
+        </div>
+
+      </div>
+    </article>
+
+    <article class="release">
+      <div class="release-meta">
         <h2>0.2.0</h2>
         <time datetime="2026-09" data-en="September 2026">Septembre 2026</time>
-        <span class="badge accent"><span class="dot"></span><span data-en="Current release">Version actuelle</span></span>
       </div>
       <div class="release-body">
         <p class="lead" style="margin-bottom:28px;" data-en="The release that turns Lumen Desktop into a system: a lighter core, apps as installable packages from a Catalogue, an assistant that works in projects — and a presence on mobile and Raspberry Pi.">La version qui fait de Lumen Desktop un système : un noyau allégé, des apps en paquets installables depuis un Catalogue, un assistant qui travaille en projets — et une présence sur mobile et Raspberry Pi.</p>

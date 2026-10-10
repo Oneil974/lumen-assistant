@@ -648,3 +648,49 @@ html.js .reveal:not(.in) { opacity: 0; transform: translateY(14px); }
   .dm-chat { width: calc(100% - 120px); }
 }
 @media (max-width: 560px) { .dm-body { grid-template-columns: 1fr; } .dm-side { display: none; } .dm-orb { display: none; } .dm-chat { left: 16px; right: 16px; width: auto; transform: none; } }
+
+/* ── 0.3 : modes d'affichage ─────────────────────────────────────────── */
+.mode-card { position: relative; }
+.mode-card.featured { border-color: color-mix(in oklab, var(--accent-primary) 45%, var(--border)); }
+.mode-card > .badge { position: absolute; top: 18px; right: 18px; }
+.mode-mock { height: 120px; border-radius: 12px; margin-bottom: 20px; background: var(--muted); border: 1px solid var(--border); position: relative; overflow: hidden; }
+.mode-mock.bar { display: flex; align-items: center; gap: 10px; padding: 0 16px; }
+.mode-mock.bar::before { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, color-mix(in oklab, var(--accent-primary) 10%, transparent), transparent 60%); }
+.mode-mock.bar .o { width: 34px; height: 34px; border-radius: 50%; flex: none; background: radial-gradient(circle at 35% 35%, #fff, #c9a8ff 40%, var(--accent-primary)); box-shadow: 0 6px 18px color-mix(in oklab, var(--accent-primary) 40%, transparent); position: relative; }
+.mode-mock.bar span { flex: 1; height: 38px; border-radius: 999px; background: var(--card); border: 1px solid var(--border); position: relative; }
+.mode-mock.bar b { width: 26px; height: 26px; border-radius: 50%; background: var(--foreground); position: absolute; right: 22px; }
+.mode-mock.app { display: grid; grid-template-columns: 18px 64px 1fr; background: var(--card); }
+.mode-mock.app .rail { background: var(--muted); display: grid; align-content: start; gap: 7px; padding: 10px 4px; border-right: 1px solid var(--border); }
+.mode-mock.app .rail i { height: 10px; border-radius: 3px; background: color-mix(in oklab, var(--foreground) 18%, transparent); }
+.mode-mock.app .rail i:first-child { background: var(--accent-primary); }
+.mode-mock.app .side { display: grid; align-content: start; gap: 6px; padding: 10px 7px; border-right: 1px solid var(--border); }
+.mode-mock.app .side span { height: 9px; border-radius: 3px; background: var(--muted); }
+.mode-mock.app .side span:first-child { background: color-mix(in oklab, var(--accent-primary) 22%, transparent); }
+.mode-mock.app .main { position: relative; padding: 10px; display: grid; align-content: start; gap: 7px; }
+.mode-mock.app .main .u { justify-self: end; width: 46%; height: 13px; border-radius: 7px; background: var(--foreground); opacity: .85; }
+.mode-mock.app .main .a { width: 80%; height: 9px; border-radius: 4px; background: var(--muted); }
+.mode-mock.app .main .a.s { width: 58%; }
+.mode-mock.app .main b { position: absolute; left: 10px; right: 10px; bottom: 9px; height: 18px; border-radius: 9px; border: 1px solid var(--border); background: var(--background); }
+.mode-mock.desk { background: linear-gradient(160deg, color-mix(in oklab, var(--accent-primary) 30%, #1b1b2e), #101018); }
+.mode-mock.desk i { position: absolute; border-radius: 6px; background: color-mix(in oklab, #fff 88%, transparent); box-shadow: 0 6px 16px rgba(0,0,0,.3); }
+.mode-mock.desk i:nth-child(1) { left: 12%; top: 14%; width: 42%; height: 46%; }
+.mode-mock.desk i:nth-child(2) { left: 46%; top: 26%; width: 38%; height: 40%; opacity: .92; }
+.mode-mock.desk i:nth-child(3) { left: 76%; top: 10%; width: 14%; height: 18%; border-radius: 4px; opacity: .7; }
+.mode-mock.desk b { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); width: 46%; height: 14px; border-radius: 7px; background: color-mix(in oklab, #fff 30%, transparent); }
+
+/* ── 0.3 : schéma d'aiguillage ──────────────────────────────────────── */
+.route-diagram { display: grid; justify-items: center; gap: 8px; max-width: 820px; margin: 0 auto; }
+.rd-node { border: 1px solid var(--border); background: var(--card); border-radius: 14px; padding: 12px 18px; text-align: center; display: grid; gap: 2px; font-size: 14.5px; }
+.rd-node small { color: var(--muted-foreground); font-size: 12.5px; }
+.rd-node.q { border-radius: 999px; font-weight: 600; }
+.rd-node.d { border-color: color-mix(in oklab, var(--accent-primary) 55%, var(--border)); background: color-mix(in oklab, var(--accent-primary) 8%, var(--card)); min-width: 260px; }
+.rd-node.d b { color: var(--accent-primary); }
+.rd-node.h { border-style: dashed; max-width: 520px; }
+.rd-paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
+.rd-arrow { width: 2px; height: 20px; background: var(--border); position: relative; }
+.rd-arrow::after { content: ""; position: absolute; left: 50%; bottom: -1px; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--border); border-bottom: 0; }
+@media (max-width: 640px) { .rd-paths { grid-template-columns: 1fr; } }
+
+/* ── Héro : personnage coloré (soft-sky) à la place de l'orbe de verre ── */
+#orb-wrap .hero-soft { position: relative; z-index: 1; width: 240px; height: 240px; }
+#orb-wrap .hero-soft .lumen-soft { inset: 0; }
