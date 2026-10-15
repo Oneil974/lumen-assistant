@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!-- Canvas génératif de Lumen. Canevas infini à FILIATION : on tire un lien
+     depuis la sortie d'un node, on le dépose dans le vide, une boîte de prompt
+     s'ouvre (Image ou Texte), et le résultat apparaît comme node enfant rattaché
+     au parent. La génération tient compte du parent (contexte hérité). Le routeur
+     generate.js utilise le LOCAL en priorité (Ollama / Bonsai) et bascule sur le
+     CLOUD à défaut. L'arbre est persisté en localStorage. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Canevas créatif</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="./canvas.css?v=3" />
+<script type="module" src="./canvas.js?v=5" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="topbar-row topbar-row--main">
+        <div class="brand">
+          <span class="brand-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 7.5C12 9 12 15 16.5 16.5"/></svg></span>
+          <div class="brand-text">
+            <div class="brand-name">Canevas créatif</div>
+            <div class="brand-sub">Idées en arborescence</div>
+          </div>
+        </div>
+        <div class="project-bar">
+          <select id="sandbox-select" class="project-select" title="Sandbox de stockage"></select>
+          <select id="project-select" class="project-select" title="Projet ouvert"></select>
+          <button class="btn-soft" id="btn-new-project" title="Nouveau projet">+ Projet</button>
+          <button class="btn-soft" id="btn-rename" title="Renommer le projet">Renommer</button>
+          <button class="btn-soft" id="btn-delete" title="Supprimer le projet">Supprimer</button>
+          <span id="creative-bar"></span>
+        </div>
+        </div>
+        <div class="topbar-row topbar-row--settings">
+        <div class="backend-switch" aria-label="Backends de génération">
+          <label>Texte
+            <select id="text-backend-select" title="Backend texte">
+              <option value="auto">Auto</option>
+              <option value="local">Local</option>
+              <option value="cloud">En ligne</option>
+            </select>
+          </label>
+          <label>Image
+            <select id="image-backend-select" title="Moteur d'image">
+              <option value="bonsai">Bonsai</option>
+              <option value="ollama">Ollama</option>
+              <option value="openai">GPT</option>
+              <option value="playground" hidden>Image Playground</option>
+            </select>
+          </label>
+          <!-- Modèles et résolutions dépendent du moteur : ces deux listes sont
+               peuplées par setupBackendSwitches(), jamais écrites en dur. -->
+          <label>Modèle
+            <select id="image-model-select" title="Modèle d'image"></select>
+          </label>
+          <label>Taille
+            <select id="image-size-select" title="Résolution image"></select>
+          </label>
+        </div>
+        <div class="status" id="status-text" title="Backends disponibles">Vérification…</div>
+        </div>
+      </header>
+
+
+      <main class="stage" id="stage">
+        <!-- Couche SVG des liens de filiation (sous les nodes) -->
+        <svg class="links" id="links" aria-hidden="true"></svg>
+        <!-- Couche des nodes (cartes) -->
+        <div class="world" id="world"></div>
+
+        <div class="hint" id="hint">
+          <div class="hint-orb"></div>
+          <p class="hint-title">Lance une première idée</p>
+          <p class="hint-sub" id="hint-sub">Double-clique n'importe où, ou utilise le bouton ci-dessous.</p>
+          <button class="generate" id="btn-seed">Nouveau point de départ</button>
+        </div>
+      </main>
+    </div>
+
+    <!-- Boîte de prompt ancrée au point de dépôt du lien -->
+    <div class="prompt-pop" id="prompt-pop" hidden>
+      <div class="pp-types">
+        <button class="pp-type active" data-type="image">Image</button>
+        <button class="pp-type" data-type="text">Texte</button>
+        <button class="pp-type" data-type="charte">Charte</button>
+        <button class="pp-type" data-type="mockup">Visuel</button>
+        <button class="pp-type" data-type="jingle">Jingle</button>
+        <button class="pp-type" data-type="vision">Analyse</button>
+      </div>
+      <textarea class="pp-input" id="pp-input" rows="3" spellcheck="false"
+        placeholder="Décris ce que tu veux générer…"></textarea>
+      <div class="pp-row">
+        <span class="pp-ctx" id="pp-ctx" hidden>↳ hérite du node parent</span>
+        <div class="spacer"></div>
+        <button class="btn-soft" id="pp-cancel">Annuler</button>
+        <button class="btn-soft" id="pp-draft" title="Crée le bloc sans générer, pour y relier d'autres blocs">Brouillon</button>
+        <button class="btn-soft primary" id="pp-go">Générer</button>
+      </div>
+    </div>
+
+    <!-- Visionneuse : affiche tout le contenu d'un node texte/charte -->
+    <div class="viewer" id="viewer" hidden>
+      <div class="viewer-card">
+        <div class="viewer-head">
+          <h3 class="viewer-title" id="viewer-title"></h3>
+          <button class="btn-soft" id="viewer-close" title="Fermer">✕</button>
+        </div>
+        <div class="viewer-body" id="viewer-body"></div>
+      </div>
+    </div>
+
+    <!-- Modale maison (prompt()/confirm() sont inopérants en WKWebView) -->
+    <div class="modal" id="modal" hidden>
+      <div class="modal-card">
+        <h3 class="modal-title" id="modal-title"></h3>
+        <input type="text" id="modal-input" class="modal-input" maxlength="60" hidden />
+        <p class="modal-msg" id="modal-msg" hidden></p>
+        <div class="modal-actions">
+          <button class="btn-soft modal-copy" id="modal-copy" hidden>Copier</button>
+          <button class="btn-soft" id="modal-cancel">Annuler</button>
+          <button class="btn-soft primary" id="modal-ok">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

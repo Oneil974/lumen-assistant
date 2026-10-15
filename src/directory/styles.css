@@ -1,0 +1,32 @@
+/* Annuaire — une page, pas une coquille : la liste des personnes se suffit. */
+body { margin: 0; }
+.dir { max-width: 900px; margin: 0 auto; padding: 24px 26px 60px; }
+.dir-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.dir-head h1 { font-size: 20px; font-weight: 660; margin: 0; display: flex; align-items: center; gap: 10px; }
+.dir-head .title-ic { width: 32px; height: 32px; display: grid; place-items: center; border-radius: var(--radius-md); background: var(--sel); color: var(--primary, var(--accent-ink)); }
+.dir-head .title-ic svg { width: 16px; height: 16px; }
+.dir-head p { font-size: 12.5px; color: var(--text-muted); margin: 3px 0 0; }
+
+.people { display: flex; flex-direction: column; border: 1px solid var(--border);
+  border-radius: var(--radius-xl); background: var(--surface); overflow: hidden; }
+.person-card { display: flex; align-items: center; gap: 11px; padding: 12px 15px; border-bottom: 1px solid var(--border); }
+.person-card:last-child { border-bottom: 0; }
+/* La présence est un point, pas une phrase : on la lit sans la lire. */
+.pc-av { position: relative; flex: none; display: inline-flex; }
+.pc-dot { position: absolute; right: -1px; bottom: -1px; width: 10px; height: 10px; border-radius: 50%; background: var(--text-muted); opacity: .6; border: 2px solid var(--surface); }
+.pc-dot.on { background: var(--success, #30d158); opacity: 1; }
+.pc-id { flex: 1; min-width: 0; }
+.pc-name { font-size: 13.5px; font-weight: 620; }
+.pc-you { font-size: 10.5px; font-weight: 600; color: var(--text-muted); }
+.pc-handle { font-size: 11.5px; color: var(--text-muted); }
+
+.link-card { max-width: 560px; margin: 40px auto; border: 1px solid var(--border);
+  border-radius: var(--radius-xl); background: var(--surface); padding: 26px; box-shadow: var(--shadow-1); }
+.lk-ic { width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--radius-lg); background: var(--sel); color: var(--primary, var(--accent-ink)); margin-bottom: 14px; }
+.lk-ic svg { width: 20px; height: 20px; }
+.lk-title { font-size: 16px; font-weight: 650; }
+.lk-sub { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; margin: 6px 0 18px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid .wide { grid-column: 1 / -1; }
+.form-actions { display: flex; justify-content: flex-end; margin-top: 16px; }
+.note { font-size: 11.5px; color: var(--text-muted); line-height: 1.55; margin-top: 14px; }

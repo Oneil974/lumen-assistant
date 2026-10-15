@@ -1,10 +1,50 @@
-# macOS AppleDouble files (external volume)
-._*
-.DS_Store
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# App binaries are distributed via GitHub Releases, never committed
-*.dmg
-*.exe
-*.deb
-*.AppImage
-*.msi
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Moteurs embarqués par plateforme (produits par scripts/build-*.sh)
+src-tauri/resources/bonsai/*/
+src-tauri/resources/imageplayground/*/
+dist/bonsai-engine/
+tools/synchub/.venv/
+scripts/orch-eval/report-*.json
+
+# Generated local work/build archives: excluded from source distribution.
+.localtarget/
+.backup-pre-migration/
+preview_release/
+**/target/
+**/._*
+Lumen_*.dmg
+Lumen_*.deb
+Lumen_*.AppImage
+Lumen_*-setup.exe
+
+# Managed public mirror; workstation settings stay in the private source tree.
+public-source/
+.lumen-source-export.json
+tools/synchub/targets.local.json
+**/__pycache__/
+
+.lumen-source-export.json

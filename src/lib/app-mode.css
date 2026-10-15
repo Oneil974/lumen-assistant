@@ -1,0 +1,427 @@
+/* Mode « application » de Lumen (cf. lib/app-mode.js) : la fenêtre de la
+   barre devient une vraie fenêtre d'app façon ChatGPT/Codex — barre latérale,
+   accueil, fil centré, compositeur en carte. Tout est sous `html.shell-app` :
+   la barre flottante n'est jamais touchée. */
+
+html.shell-app, html.shell-app body {
+  background: transparent !important;
+  padding: 0 !important;
+  display: block !important;
+  user-select: none;
+}
+html.shell-app body { color: var(--foreground); }
+html.shell-app .glowing-orb { display: none !important; }
+
+/* Fenêtre transparente : la coque dessine elle-même ses coins arrondis, comme
+   les autres fenêtres de Lumen (l'ombre native suit la forme). */
+.app-shell {
+  position: fixed; inset: 0; display: flex; min-width: 0; overflow: hidden;
+  border-radius: 14px; background: var(--background);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--border) 85%, transparent);
+}
+html.as-max .app-shell { border-radius: 0; box-shadow: none; }
+.app-shell svg { flex: none; }
+
+/* ── Barre latérale ─────────────────────────────────────────────────────── */
+.as-side {
+  width: auto; flex: none; display: flex; flex-direction: column; min-height: 0;
+  background: var(--sidebar); color: var(--sidebar-foreground);
+  border-right: 1px solid var(--sidebar-border);
+  transition: margin-left .28s cubic-bezier(.2,.8,.2,1), opacity .2s;
+}
+
+.as-side-top { height: 46px; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 16px; flex: none; }
+.as-lights { display: flex; gap: 8px; }
+.as-lights button { width: 12px; height: 12px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; position: relative; }
+.as-lights button:nth-child(1) { background: #ff5f57; }
+.as-lights button:nth-child(2) { background: #febc2e; }
+.as-lights button:nth-child(3) { background: #28c840; }
+.as-lights button::after { content: ""; position: absolute; inset: 0; border-radius: 50%; box-shadow: inset 0 0 0 .5px rgba(0,0,0,.18); }
+.as-sp { flex: 1; }
+.as-ic {
+  width: 30px; height: 30px; border-radius: 9px; border: 0; background: none; color: var(--muted-foreground);
+  display: inline-grid; place-items: center; cursor: pointer; transition: background .15s, color .15s;
+}
+.as-ic:hover { background: var(--sidebar-accent); color: var(--sidebar-foreground); }
+.as-ic svg { width: 17px; height: 17px; }
+
+.as-brand { display: flex; align-items: center; gap: 10px; padding: 6px 14px 10px 16px; }
+.as-brand-mark {
+  width: 26px; height: 26px; border-radius: 50%; flex: none;
+  background: conic-gradient(from 200deg, #7c6cf0, #46c2ff, #56e0a8, #ff8ac2, #7c6cf0);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 2px 8px rgba(124,108,240,.35);
+  position: relative;
+}
+.as-brand-mark::before, .as-brand-mark::after {
+  content: ""; position: absolute; top: 9px; width: 3px; height: 8px; border-radius: 2px; background: #fff;
+}
+.as-brand-mark::before { left: 9px; } .as-brand-mark::after { right: 9px; }
+.as-brand b { font-size: 19px; font-weight: 650; letter-spacing: -.02em; }
+
+.as-new {
+  margin: 2px 10px 6px; display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+  border-radius: 11px; border: 0; background: transparent; color: var(--sidebar-foreground);
+  font: 500 14px/1.2 inherit; cursor: pointer; transition: background .15s, transform .1s;
+}
+.as-new:hover { background: color-mix(in oklch, var(--sidebar-accent) 70%, var(--foreground) 6%); }
+.as-new:active { transform: scale(.985); }
+.as-new svg { width: 17px; height: 17px; }
+.as-kbd { margin-left: auto; font-size: 11px; color: var(--muted-foreground); font-family: ui-monospace, SFMono-Regular, monospace; }
+
+.as-nav { display: flex; flex-direction: column; gap: 1px; padding: 4px 10px 8px; }
+.as-nav button {
+  display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 9px; border: 0; background: none;
+  color: var(--sidebar-foreground); font: 400 13.5px/1.2 inherit; cursor: pointer; text-align: left; position: relative;
+}
+.as-nav button:hover { background: var(--sidebar-accent); }
+.as-nav button svg { width: 16px; height: 16px; color: var(--muted-foreground); }
+.as-badge { margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--primary); color: var(--primary-foreground); font-size: 11px; display: grid; place-items: center; }
+.as-badge[hidden] { display: none; }
+
+.as-sec { display: flex; align-items: center; gap: 6px; padding: 12px 18px 4px; font-size: 12px; font-weight: 600; color: var(--muted-foreground); }
+.as-search { margin: 4px 10px 6px; display: flex; align-items: center; gap: 8px; padding: 0 10px; height: 32px; border-radius: 9px; background: color-mix(in oklch, var(--sidebar-accent) 80%, transparent); }
+.as-search svg { width: 14px; height: 14px; color: var(--muted-foreground); }
+.as-search input { flex: 1; min-width: 0; border: 0 !important; outline: none; background: none !important; color: var(--sidebar-foreground); font: 13px inherit; padding: 0 !important; box-shadow: none !important; }
+
+/* Liste des discussions (le conteneur de main.js, déplacé ici). */
+.as-convs { flex: 1; min-height: 0; overflow-y: auto; padding: 2px 8px 10px; user-select: none; }
+html.shell-app .as-convs #conversations-list-container { display: flex; flex-direction: column; gap: 1px; max-height: none !important; overflow: visible !important; padding: 0 !important; }
+html.shell-app .as-convs #conversations-list-container .conversation-history-item {
+  display: flex; align-items: center; gap: 2px; padding: 7px 8px 7px 10px; border-radius: 9px; margin: 0 !important;
+  background: none !important; border: 0 !important; box-shadow: none !important; flex-wrap: wrap; position: relative;
+}
+html.shell-app .as-convs #conversations-list-container .conversation-history-item:hover { background: var(--sidebar-accent) !important; }
+html.shell-app .as-convs #conversations-list-container .conversation-history-item.as-active { background: var(--sidebar-accent) !important; }
+html.shell-app .as-convs #conversations-list-container .conversation-history-item.as-active .conversation-history-title { font-weight: 600; }
+html.shell-app .as-convs #conversations-list-container .conversation-history-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+html.shell-app .as-convs #conversations-list-container .conversation-history-title { font-size: 13.5px !important; color: var(--sidebar-foreground) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.shell-app .as-convs #conversations-list-container .conversation-model-badge { display: none !important; }
+html.shell-app .as-convs #conversations-list-container .conv-folder-tag { font-size: 10.5px; flex: none; }
+html.shell-app .as-convs #conversations-list-container .btn-conv-icon, html.shell-app .as-convs #conversations-list-container .btn-delete-conv { opacity: 0; width: 22px; height: 22px; transition: opacity .12s; }
+html.shell-app .as-convs #conversations-list-container .conversation-history-item:hover :is(.btn-conv-icon, .btn-delete-conv),
+html.shell-app .as-convs #conversations-list-container .btn-conv-icon.on { opacity: .75; }
+html.shell-app .as-convs #conversations-list-container .conv-summary { width: 100%; font-size: 11.5px; color: var(--muted-foreground); margin: 2px 0 0; }
+html.shell-app .as-convs #conversations-list-container .conv-empty { display: block; padding: 10px; font-size: 12.5px; color: var(--muted-foreground); }
+html.shell-app .as-convs #conversations-list-container .conv-filters, html.shell-app .as-convs #conversations-list-container [class*="conv-filter"] { margin: 0 2px 6px; }
+html.shell-app .as-convs #conversations-list-container .as-hide { display: none !important; }
+
+.as-side-foot { flex: none; display: flex; align-items: center; gap: 4px; padding: 10px 10px 12px; border-top: 1px solid var(--sidebar-border); }
+.as-me { display: flex; align-items: center; gap: 9px; flex: 1; min-width: 0; padding: 5px 8px; border-radius: 10px; border: 0; background: none; cursor: pointer; color: var(--sidebar-foreground); font: 500 13px inherit; text-align: left; }
+.as-me:hover { background: var(--sidebar-accent); }
+.as-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: var(--primary-foreground); display: grid; place-items: center; font-size: 12px; font-weight: 600; flex: none; }
+.as-me span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── Zone principale ────────────────────────────────────────────────────── */
+.as-main { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; background: var(--background); }
+.as-top { height: 46px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 10px 0 12px; position: relative; z-index: 5; }
+.as-top-title { font-size: 13.5px; font-weight: 600; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 46%; opacity: 0; transition: opacity .2s; }
+html.shell-app:not(.as-empty) .as-top-title { opacity: 1; }
+.as-top-ctl { display: flex; gap: 2px; margin-left: 4px; }
+.as-top-ctl .as-ic svg { width: 15px; height: 15px; }
+html.as-mac .as-top-ctl { display: none; }
+html:not(.as-mac) .as-lights { display: none; }
+
+.as-top-lights { display: none; position: absolute; left: 16px; top: 17px; }
+
+
+html.shell-app #bar-stage { display: contents !important; }
+html.shell-app .bar-area {
+  flex: 1; min-height: 0; display: flex !important; flex-direction: column; position: relative;
+  width: 100%; max-width: none !important;
+}
+
+/* Accueil (fil vide) : mascotte, titre, cartes — tout centré avec le compositeur. */
+.as-hero { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; }
+html.as-empty .as-hero { display: flex; animation: asRise .5s cubic-bezier(.2,.8,.2,1) both; }
+html.as-empty .bar-area { justify-content: flex-end; padding-bottom: 8px; }
+/* The shared orb moves with the conversation; only its display size changes. */
+.as-mascot { --mascot-size: clamp(64px, var(--orb-preferred-size, 84px), 120px); width:var(--mascot-size); height:var(--mascot-size); flex:none; margin-bottom:24px; display:grid; place-items:center; }
+/* Discussion engagée : l'orbe descend dans le fil, sous la dernière réponse
+   (lib/app-mode.js, placeReplyOrb). Points seuls pendant le chargement,
+   orbe seulement pour ses animations (voix, humeurs, repos). */
+.as-reply { position:relative; display:block; height:34px; margin:10px 0 2px; }
+.as-reply > .as-mascot { --mascot-size:34px; margin:0; position:absolute; left:0; top:0;
+  transition:opacity .2s ease, transform .3s cubic-bezier(.3,1.5,.5,1); }
+.as-reply-dots { position:absolute; left:2px; top:50%; display:flex; gap:4px; transform:translateY(-50%); opacity:0; transition:opacity .18s ease; }
+.as-reply-dots i { display:block; width:6px; height:6px; border-radius:50%; background:var(--reply-dot, var(--foreground, currentColor)) !important; animation:asDot 1.1s ease-in-out infinite; }
+.as-reply-dots i:nth-child(2) { animation-delay:.15s; } .as-reply-dots i:nth-child(3) { animation-delay:.3s; }
+.as-reply[data-phase="wait"] .as-reply-dots { opacity:1; }
+.as-reply[data-phase="wait"] > .as-mascot { opacity:0; transform:scale(.6); pointer-events:none; }
+/* Texte en cours d'écriture : l'orbe le suit, discret. */
+.as-reply[data-phase="write"] > .as-mascot { opacity:1; }
+/* Dans le fil, pas de bulle d'émote ni de halo : l'orbe seul, à taille de texte. */
+.as-reply :is(.orb-emote, .orb-shadow, .orb-frost, .lumen-soft-dots, .lumen-soft-zz, .lumen-soft-ring) { display:none !important; }
+@keyframes asDot { 0%,100% { transform:translateY(0); opacity:.45; } 40% { transform:translateY(-3px); opacity:1; } }
+/* L'orbe remplace le curseur de frappe ; l'étape d'outil en échec passe en rouge. */
+html.shell-app .messages-list .lm-streaming > :last-child::after,
+html.shell-app .messages-list .lm-streaming:empty::after { content:none; }
+html.shell-app .messages-list .lm-wait { display:none; }
+html.shell-app .messages-list .lm-tool.err :is(.lm-name, .lm-label, .lm-ic, .lm-state) { color:var(--destructive, #e5484d); }
+html.shell-app .as-mascot #orb-wrap { position:relative!important; width:100%!important; height:100%!important; margin:0!important; transform:none!important; }
+html.shell-app .as-mascot #orb-container { width:100%!important; height:100%!important; }
+html.shell-app .as-mascot .orb-grab { cursor:default; }
+html.shell-app .as-mascot .orb-shadow { display:none; }
+html.shell-app .as-mascot .orb-eyes { gap:12%; }
+/* Yeux proportionnels à la mascotte : en unités de conteneur pour que l'échelle
+   des expressions (orb.js, --eye-w/--eye-h) suive aussi. */
+html.shell-app .as-mascot .orb-container { container-type:size; }
+html.shell-app .as-mascot .orb-eyes { --eye-w:7cqmin; --eye-h:22cqmin; }
+html.shell-app .as-mascot .orb-eyes span { width:var(--eye-w); height:var(--eye-h); }
+.as-hero h1 { font-size: clamp(24px, 3.2vw, 32px); font-weight: 450; letter-spacing: -.025em; margin: 6px 0 12px; color: var(--foreground); }
+.as-hero p { margin: 0 0 28px; color: var(--muted-foreground); font-size: 15px; }
+.as-cards { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 820px; }
+.as-card { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px;
+  border-radius: var(--radius-md); border: 1px solid var(--border); background: transparent; color: var(--muted-foreground);
+  cursor: pointer; font: inherit; text-align: left; transition: background .15s, color .15s; }
+.as-card:hover { background: var(--muted); color: var(--foreground); }
+.as-card-ic { display: grid; place-items: center; }
+.as-card-ic svg { width: 16px; height: 16px; }
+.as-card b { font-size: 13px; font-weight: 400; }
+.as-card small { display: none; }
+@media (max-height: 700px) { .as-cards { display: none; } .as-mascot { margin-bottom: 12px; } }
+@keyframes asRise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Fil de discussion : colonne centrée, lisible. */
+html.shell-app #messages-container {
+  display: flex !important; flex: 1; min-height: 0; max-height: none !important; margin: 0 !important;
+  background: none !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important; animation: none !important;
+  transform: none !important; overflow: hidden;
+}
+html.as-empty #messages-container { display: none !important; }
+html.shell-app #messages-container .messages-header-actions { position: absolute; top: 9px; right: 96px; z-index: 6; background: none !important; border: 0 !important; padding: 0 !important; gap: 8px; }
+html.as-mac.shell-app #messages-container .messages-header-actions { right: 14px; }
+html.shell-app .messages-header-actions .chat-status-label { display: none; }
+html.shell-app #messages-list {
+  flex: 1; overflow-y: auto; padding: 18px max(24px, calc((100% - 880px) / 2)) 28px !important;
+  max-height: none !important; user-select: text;
+}
+html.shell-app .message-bubble { font-size: 15px; line-height: 1.6; }
+html.shell-app .message-bubble.user {
+  background: var(--muted) !important; color: var(--foreground) !important; border: 0 !important;
+  border-radius: 20px !important; box-shadow: none !important; max-width: 78%;
+}
+html.shell-app .message-bubble.assistant {
+  background: none !important; border: 0 !important; box-shadow: none !important; padding-left: 0 !important;
+  color: var(--foreground) !important; max-width: 100%;
+}
+
+/* Compositeur : la capsule de la barre devient une carte. */
+.as-composer { position: relative; flex: none; width: min(880px, calc(100% - 48px)); margin: 0 auto 8px; }
+html.shell-app .as-composer #search-bar {
+  display: flex !important; flex-wrap: wrap; align-items: center; gap: 2px 4px;
+  border-radius: 24px !important; padding: 12px 10px 8px 12px !important;
+  background: var(--card) !important; border: 1px solid var(--border) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important; animation: none !important; transform: none !important;
+  box-shadow: var(--shadow-1) !important;
+  min-height: 0 !important; height: auto !important; width: 100% !important;
+}
+html.shell-app .as-composer #search-bar:focus-within { border-color: color-mix(in oklch, var(--ring) 70%, var(--border)) !important; }
+html.shell-app .as-composer #chat-input {
+  order: -2; flex: 1 1 100%; width: 100% !important; min-height: 48px; max-height: 240px;
+  padding: 4px 8px 10px !important; font-size: 15.5px !important; line-height: 1.5; user-select: text;
+  background: none !important; border: 0 !important; outline: none !important; box-shadow: none !important; color: var(--foreground) !important;
+}
+html.shell-app .as-composer .attach-preview { order: -1; flex: 1 1 100%; }
+html.shell-app .as-composer .left-controls { order: 1; display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+html.shell-app .as-composer .left-controls :is(#btn-settings, #btn-history, #btn-messages, #btn-notifications, #btn-theme-toggle, #btn-fluxo, #btn-lumen-os, #btn-shell-mode, #btn-agents, #btn-heartbeat, #btn-new-chat) { display: none !important; }
+html.shell-app .as-composer #btn-attach { order: 0; }
+html.shell-app .as-composer .quick-model-toggle { order: 2; margin-left: auto !important; }
+html.shell-app .as-composer #btn-preload-inline { order: 3; }
+html.shell-app .as-composer #btn-dictation { order: 4; position: static !important; }
+html.shell-app .as-composer .action-group { order: 5; }
+html.shell-app .as-composer #win-close { display: none !important; }
+html.shell-app .as-composer .submit-btn { width: 34px !important; height: 34px !important; border-radius: 50% !important; }
+/* Menus de la barre : ils s'ouvrent AU-DESSUS du compositeur. */
+html.shell-app .as-composer :is(#ollama-mode-menu, #backend-menu) { top: auto !important; bottom: calc(100% + 8px) !important; left: 8px !important; }
+html.shell-app .as-composer #toolbar-overflow { top: auto !important; bottom: calc(100% + 8px) !important; }
+.as-foot { text-align: center; font-size: 11.5px; color: var(--muted-foreground); padding: 2px 0 12px; }
+html.as-empty .as-foot { display: none; }
+
+/* Panneaux de la barre (réglages, notifications, Fluxo…) : feuille latérale. */
+html.shell-app #bar-area > .settings-panel {
+  position: fixed !important; top: 10px !important; right: 10px !important; bottom: 10px !important; left: auto !important;
+  width: min(440px, calc(100vw - 20px)) !important; max-height: none !important; z-index: 50;
+  background: var(--popover, var(--card)) !important; color: var(--foreground);
+  border: 1px solid var(--border) !important; border-radius: 18px !important;
+  box-shadow: var(--shadow-4) !important;
+  backdrop-filter: none !important; transform: translateX(16px) !important;
+}
+html.shell-app #bar-area > .settings-panel.active { transform: none !important; }
+html.shell-app #history-panel { display: none !important; }
+.as-scrim { position: fixed; inset: 0; background: rgba(0,0,0,.18); z-index: 45; opacity: 0; pointer-events: none; transition: opacity .2s; }
+html.as-sheet .as-scrim { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 760px) {
+  .as-side { position: absolute; z-index: 40; height: 100%; box-shadow: 0 0 40px rgba(0,0,0,.2); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .as-side, .as-card, html.as-empty .as-hero { transition: none; animation: none; }
+}
+.as-open-side { display: none; }
+html.as-collapsed .as-open-side { display: inline-grid; }
+/* Le compositeur suit les jetons, pas les classes de thème de la barre. */
+html.shell-app .as-composer :is(.icon-btn, .mode-btn, .model-preload-btn, .dictation-btn) { color: var(--muted-foreground) !important; background: none !important; border: 0 !important; }
+html.shell-app .as-composer :is(.icon-btn, .mode-btn, .dictation-btn):hover { color: var(--foreground) !important; background: var(--muted) !important; }
+html.shell-app .as-composer :is(.icon-btn, .mode-btn).active { color: var(--primary) !important; background: color-mix(in oklch, var(--primary) 12%, transparent) !important; }
+html.shell-app .as-composer #chat-input::placeholder { color: var(--muted-foreground) !important; opacity: 1; }
+html.shell-app .as-composer .quick-model-toggle { color: var(--muted-foreground) !important; background: var(--muted) !important; border: 0 !important; border-radius: 99px !important; font-size: 12px !important; padding: 4px 10px !important; }
+html.shell-app .as-composer .submit-btn { background: var(--foreground) !important; color: var(--background) !important; border: 0 !important; }
+
+/* Lisibilité : les titres de la liste gardent la taille de la barre latérale. */
+html.shell-app .as-convs #conversations-list-container .conversation-history-item :is(.conversation-history-title, span) { font-size: 13.5px !important; font-weight: 400; }
+html.shell-app #messages-container .messages-header-actions { position: fixed !important; top: 8px; }
+html.shell-app #messages-list .message-bubble.user { font-size: 15px; }
+
+/* ── Barre latérale défilante + outils ─────────────────────────────────── */
+.as-scroll { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
+.as-scroll .as-convs { flex: none; overflow: visible; }
+.as-nav button.as-on { background: var(--sidebar-accent); font-weight: 550; }
+.as-nav button.as-on svg { color: var(--sidebar-foreground); }
+.as-chev { margin-left: auto; display: inline-grid; transition: transform .2s; }
+.as-chev svg { width: 14px !important; height: 14px !important; }
+.as-more-btn[aria-expanded="true"] .as-chev { transform: rotate(90deg); }
+.as-more { display: flex; flex-direction: column; gap: 1px; padding-left: 14px; margin-left: 9px; border-left: 1px solid var(--sidebar-border); }
+.as-more[hidden] { display: none; }
+.as-more button { padding: 6px 10px; font-size: 13px; }
+.as-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted-foreground); opacity: .5; margin: 0 5px; flex: none; }
+
+/* ── Vues intégrées ────────────────────────────────────────────────────── */
+.as-views { display: none; flex: 1; min-height: 0; position: relative; }
+html.shell-app:not([data-as-view="chat"]) .as-views { display: block; }
+html.shell-app:not([data-as-view="chat"]) #bar-area { display: none !important; }
+html.shell-app:not([data-as-view="chat"]) .as-top-title { opacity: 1; }
+.as-view { position: absolute; inset: 0; border-top: 1px solid var(--border); background: var(--background); }
+.as-view[hidden] { display: none; }
+.as-view :is(.as-frame, .dt-appframe) { width: 100%; height: 100%; border: 0; display: block; background: var(--background); }
+.as-missing { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; color: var(--muted-foreground); }
+.as-missing b { color: var(--foreground); font-size: 16px; }
+.as-missing-ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--muted); color: var(--foreground); margin-bottom: 4px; }
+.as-missing-ic svg { width: 22px; height: 22px; }
+.as-btn { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: calc(var(--radius, .625rem) - 2px); border: 0; margin-top: 8px;
+  background: var(--primary); color: var(--primary-foreground); font: 500 14px inherit; cursor: pointer; }
+.as-btn svg { width: 16px; height: 16px; }
+.as-scroll > * { flex: none; }
+
+/* ── Menu contextuel (shadcn ContextMenu) ──────────────────────────────── */
+.as-ctx { position: fixed; z-index: 200; min-width: 220px; padding: 4px; border-radius: calc(var(--radius, .625rem) + 2px);
+  background: var(--popover, var(--card)); color: var(--popover-foreground, var(--foreground)); border: 1px solid var(--border);
+  box-shadow: var(--shadow-3); animation: asCtx .12s ease-out; }
+@keyframes asCtx { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
+.as-ctx button { display: flex; align-items: center; gap: 9px; width: 100%; height: 32px; padding: 0 8px; border: 0; border-radius: calc(var(--radius, .625rem) - 4px);
+  background: none; color: inherit; font: 13.5px/1 inherit; text-align: left; cursor: default; }
+.as-ctx button:hover, .as-ctx button:focus-visible { background: var(--accent, var(--muted)); outline: none; }
+.as-ctx button svg { width: 15px; height: 15px; color: var(--muted-foreground); }
+.as-ctx button.danger, .as-ctx button.danger svg { color: var(--destructive, #e5484d); }
+.as-ctx kbd { margin-left: auto; font: 11.5px ui-monospace, SFMono-Regular, monospace; color: var(--muted-foreground); }
+.as-ctx-sp { width: 15px; flex: none; }
+.as-ctx-sep { height: 1px; margin: 4px -4px; background: var(--border); }
+
+/* ── Barre latérale à deux niveaux (rail + panneau), façon ChatGPT/Codex ── */
+html.as-collapsed .as-side { margin-left: 0; opacity: 1; pointer-events: auto; }
+html.as-collapsed.as-mac .as-top { padding-left: 12px; }
+html.as-collapsed.as-mac .as-top-lights { display: none; }
+.as-body { flex: 1; min-height: 0; display: flex; }
+.as-rail { width: 56px; overflow-y: auto; scrollbar-width: none; flex: none; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 0 12px; }
+.as-rail-btn, .as-rail-me {
+  position: relative; width: 40px; height: 40px; flex: none; border-radius: var(--radius-md); border: 0; background: none;
+  color: var(--muted-foreground); display: grid; place-items: center; cursor: pointer; transition: background .15s, color .15s;
+}
+.as-rail-btn svg { width: 20px; height: 20px; }
+.as-rail-btn:hover { background: var(--sidebar-accent); color: var(--sidebar-foreground); }
+.as-rail-btn.as-on { background: var(--sidebar-accent); color: var(--sidebar-foreground); }
+
+.as-rail-dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--destructive, #e5484d); box-shadow: 0 0 0 2px var(--sidebar); }
+.as-rail-dot[hidden] { display: none; }
+.as-rail-me { margin-top: 6px; }
+.as-rail-me .as-avatar { width: 30px; height: 30px; font-size: 12px; }
+.as-rail .as-sp { flex: 1; }
+
+.as-panel { width: 276px; flex: none; min-height: 0; overflow: hidden; border-left: 1px solid var(--sidebar-border);
+  transition: width .26s cubic-bezier(.2,.8,.2,1), opacity .2s; }
+html.as-collapsed .as-panel { width: 0; opacity: 0; border-left-color: transparent; }
+.as-pane { height: 100%; width: 276px; overflow-y: auto; display: flex; flex-direction: column; padding-bottom: 12px; }
+.as-pane[hidden] { display: none; }
+.as-pane > * { flex: none; }
+.as-pane .as-convs { flex: 1 0 auto; }
+.as-pane-head { padding: 10px 18px 8px; }
+.as-pane-head b { font-size: 17px; font-weight: 650; letter-spacing: -.015em; }
+.as-pane .as-brand { padding: 6px 16px 10px; }
+.as-pane .as-nav { padding: 2px 10px 8px; gap: 2px; }
+.as-pane .as-nav button { min-height: 36px; padding: 7px 10px; gap: 11px; font-size: 14px; border-radius: 10px; }
+.as-pane .as-nav button svg { width: 18px; height: 18px; flex: none; }
+.as-pane .as-nav button.as-on { background: var(--sidebar-accent); font-weight: 550; }
+.as-pane .as-nav button.as-on svg { color: var(--sidebar-foreground); }
+.as-sub { padding: 14px 10px 4px; font-size: 11.5px; font-weight: 600; letter-spacing: .02em; color: var(--muted-foreground); }
+.as-pane .as-nav .as-add { color: var(--muted-foreground); margin-top: 6px; }
+.as-new svg { width: 18px; height: 18px; }
+.as-search svg { width: 16px; height: 16px; }
+.as-side-top .as-ic svg { width: 18px; height: 18px; }
+/* Titres de discussion pleine largeur : les actions n'apparaissent qu'au survol. */
+html.shell-app .as-convs #conversations-list-container .conversation-history-item:not(:hover) :is(.btn-conv-icon:not(.on), .btn-delete-conv) { display: none; }
+/* Filtres de la liste (Toutes, Épinglées, dossiers) aux couleurs du thème. */
+html.shell-app .as-convs .conv-filter-bar { display: flex; flex-wrap: wrap; gap: 4px; padding: 2px 4px 8px; }
+html.shell-app .as-convs .conv-filter-chip { font-size: 12px; height: 26px; padding: 0 10px; border-radius: 99px;
+  border: 1px solid var(--sidebar-border); background: transparent; color: var(--muted-foreground); }
+html.shell-app .as-convs .conv-filter-chip:hover { background: var(--sidebar-accent); color: var(--sidebar-foreground); }
+html.shell-app .as-convs .conv-filter-chip.active { background: var(--sidebar-accent); color: var(--sidebar-foreground); border-color: transparent; font-weight: 550; }
+html.shell-app .as-convs .conv-filter-chip.ghost { border-color: transparent; }
+/* WebKit : une iframe composée (Messages, apps) échappe à border-radius +
+   overflow:hidden et débordait sur le coin bas-droit. clip-path découpe aussi
+   les calques composités. */
+.app-shell { clip-path: inset(0 round 14px); }
+.as-view { overflow: hidden; border-bottom-right-radius: 14px; }
+.as-view :is(.as-frame, .dt-appframe) { border-bottom-right-radius: 14px; }
+html.as-max .app-shell { clip-path: none; }
+html.as-max .as-view, html.as-max .as-view :is(.as-frame, .dt-appframe) { border-radius: 0; }
+
+/* Menu « Ranger dans un dossier » : popover opaque façon shadcn. */
+html.shell-app .conv-folder-menu {
+  position: absolute; right: 6px; top: calc(100% + 2px); z-index: 60; min-width: 190px; padding: 4px; gap: 1px;
+  background: var(--popover, var(--background)) !important; color: var(--popover-foreground, var(--foreground));
+  border: 1px solid var(--border) !important; border-radius: calc(var(--radius, .625rem) + 2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.14), 0 2px 6px rgba(0,0,0,.06);
+}
+html.shell-app .conv-folder-menu-row { font-size: 13px; padding: 7px 9px; border-radius: 6px; color: inherit; width: 100%; }
+html.shell-app .conv-folder-menu-row:hover { background: var(--accent, var(--sidebar-accent)); }
+html.shell-app .conv-folder-menu-row.active { background: var(--sidebar-accent); font-weight: 600; }
+html.shell-app .conv-folder-menu .conv-folder-input {
+  margin: 4px 0 0; width: 100%; box-sizing: border-box; font-size: 13px; padding: 7px 9px; border-radius: 6px;
+  background: var(--background) !important; border: 1px solid var(--input, var(--border)) !important; color: var(--foreground);
+}
+html.shell-app .as-convs #conversations-list-container .conversation-history-item:has(.conv-folder-menu) { z-index: 61; }
+
+/* Shared shadcn tokens retain light/dark/accent customization. */
+.app-shell :is(button, input, textarea):focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.as-brand-mark { background: var(--muted); box-shadow: none; }
+.as-brand-mark::before, .as-brand-mark::after { background: var(--foreground); opacity: .7; }
+.as-group-heading { padding: 18px 10px 6px; font-size: 12px; color: var(--muted-foreground); }
+.as-group-heading[data-kind="project"] { color: var(--sidebar-foreground); font-weight: 500; }
+html.shell-app .as-convs .conv-filter-bar { border-bottom: 1px solid var(--sidebar-border); padding-bottom: 10px; }
+html.shell-app .as-convs .conv-filter-chip { border: 0; border-radius: var(--radius-sm); }
+html.shell-app .as-convs .conversation-history-item:focus-within :is(.btn-conv-icon, .btn-delete-conv) { display: inline-flex !important; opacity: 1 !important; }
+html.shell-app .as-composer .quick-model-toggle { background: transparent !important; }
+@media (max-width: 820px) {
+  .as-panel, .as-pane { width: 228px; }
+  .as-hero h1 { font-size: 25px; }
+  .as-hero p { font-size: 13px; max-width: 360px; }
+  .as-composer { width: calc(100% - 32px); }
+}
+@media (prefers-reduced-motion: reduce) { .as-panel, .as-rail-btn { transition: none; } }
+
+.as-context { padding: 10px 16px 22px; margin: 0 12px -12px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--muted); color: var(--muted-foreground); font-size: 13px; }
+.as-context[hidden] { display: none; }
+button.as-group-heading { border: 0; background: transparent; text-align: left; width: 100%; cursor: pointer; border-radius: var(--radius-sm); }
+button.as-group-heading:hover { background: var(--sidebar-accent); }
+
+@media (max-width: 760px) {
+  .as-main { margin-left: 56px; }
+  .as-side { box-shadow: var(--shadow-3); }
+  html.as-collapsed .as-side { box-shadow: none; }
+  .as-side-top { padding: 0; justify-content: center; }
+  .as-side-top .as-lights, .as-side-top .as-sp { display: none; }
+  html.as-mac .as-top-lights { display: flex; }
+  html.as-mac .as-top { padding-left: 84px; }
+  html.as-collapsed.as-mac .as-top-lights { display: flex; }
+  html.as-collapsed.as-mac .as-top { padding-left: 84px; }
+}

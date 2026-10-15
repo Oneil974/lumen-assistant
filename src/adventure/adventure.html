@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- Aventure narrative : un jeu de rôle textuel infini généré par l'IA (llmChat),
+     illustré à la volée par le Studio d'images local (bonsai_generate_data_url).
+     Chaque tour : une scène, une illustration, des choix. 100 % local. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Aventure</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <!-- Écran d'accueil -->
+      <section class="setup" id="setup">
+        <div class="setup-card">
+          <h1>Aventure infinie</h1>
+          <p class="sub">Choisissez un univers — l'IA écrit l'histoire et l'illustre, vous décidez de la suite.</p>
+          <div class="worlds" id="worlds"></div>
+          <textarea id="custom" class="custom" placeholder="…ou décrivez votre propre point de départ"></textarea>
+          <label class="opt"><input type="checkbox" id="illus" checked /> Illustrer les scènes (Studio d'images local)</label>
+          <button class="start" id="start">Commencer l'aventure</button>
+          <div class="setup-status" id="setup-status"></div>
+          <div class="saves" id="saves" hidden>
+            <div class="saves-h">Reprendre une aventure</div>
+            <div class="saves-list" id="saves-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Jeu -->
+      <section class="game" id="game" hidden>
+        <header class="game-bar">
+          <button class="icon" id="restart" title="Nouvelle aventure">↺</button>
+          <button class="icon" id="btn-history" title="Historique / étapes">🕘</button>
+          <div class="turn" id="turn">Tour 1</div>
+          <div class="spacer"></div>
+          <button class="icon" id="toggle-illus" title="Illustrations">🖼</button>
+          <div class="menu-wrap">
+            <button class="icon" id="btn-settings" title="Réglages">⚙</button>
+            <div class="menu" id="settings-menu" hidden>
+              <div class="menu-t">Taille des images</div>
+              <div class="seg" id="size-seg">
+                <button data-size="small">Petite</button>
+                <button data-size="medium">Moyenne</button>
+                <button data-size="large">Grande</button>
+              </div>
+              <label class="menu-opt"><input type="checkbox" id="menu-illus" /> Illustrer les scènes</label>
+              <label class="menu-opt"><input type="checkbox" id="menu-card" /> Mode carte TCG</label>
+              <div class="menu-t card-theme-row" style="margin-top:12px">Thème carte</div>
+              <select id="menu-card-theme" class="menu-sel card-theme-row">
+                <option value="arcane">Arcane</option>
+                <option value="relic">Relique</option>
+                <option value="neon">Néon</option>
+                <option value="forest">Sylvestre</option>
+                <option value="noir">Noir</option>
+              </select>
+              <label class="menu-opt"><input type="checkbox" id="menu-speak" /> Lecture vocale des scènes</label>
+              <button class="menu-action" id="btn-context" type="button">Contexte fort…</button>
+              <div class="menu-t" style="margin-top:12px">Voix</div>
+              <select id="menu-voice" class="menu-sel"><option value="">Voix française par défaut</option></select>
+            </div>
+          </div>
+        </header>
+        <div class="scene-wrap" id="scene-wrap">
+          <figure class="illus" id="illus-fig" hidden><img id="illus-img" alt="" /></figure>
+          <div class="scene" id="scene"></div>
+        </div>
+        <div class="choices" id="choices"></div>
+        <form class="free" id="free-form">
+          <input id="free" class="free-in" placeholder="Ou tentez une action de votre choix…" autocomplete="off" />
+          <button class="free-go" type="submit">Agir</button>
+        </form>
+      </section>
+
+      <!-- Historique / étapes : revenir en arrière pour changer le cours -->
+      <div class="overlay" id="history-overlay" hidden>
+        <div class="sheet">
+          <div class="sheet-h"><strong>Étapes de l'aventure</strong><button class="icon" id="history-close" title="Fermer">✕</button></div>
+          <div class="timeline" id="timeline"></div>
+          <p class="sheet-hint">Revenez à une étape pour changer le cours de l'histoire. Les variantes déjà explorées y sont proposées ; un nouveau choix crée une nouvelle branche.</p>
+        </div>
+      </div>
+
+      <div class="overlay" id="context-overlay" hidden>
+        <div class="sheet context-sheet">
+          <div class="sheet-h"><strong>Contexte fort</strong><button class="icon" id="context-close" title="Fermer">✕</button></div>
+          <textarea id="context-text" class="context-text" placeholder="Ex : Le héros est allergique à la magie. Le ton doit rester sombre. Les robots mentent toujours. Ce contexte doit fortement guider la suite."></textarea>
+          <div class="context-actions">
+            <button class="ctx-btn ghost" id="context-clear" type="button">Vider</button>
+            <button class="ctx-btn primary" id="context-save" type="button">Enregistrer</button>
+          </div>
+          <p class="sheet-hint">Ce contexte est sauvegardé avec l'aventure et a un poids fort dans les prochaines générations.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

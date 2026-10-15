@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!-- Tableau Kanban collaboratif de Lumen. Fenêtre dédiée. Le modèle (colonnes,
+     cartes, membres, commentaires) vit côté front et est persisté en JSON via
+     kanban.rs. L'IA traite les cartes de la colonne « à traiter » via Ollama. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Kanban</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="../lib/confirm.css?v=1" />
+    <link rel="stylesheet" href="./styles.css?v=4" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop (dtTheme partagé
+         via localStorage). Appliqué tôt pour éviter tout flash de thème. -->
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="4" height="13" rx="1.5"/><path d="M4.4 7.5h2.2M4.4 10h2.2M11.4 7.5h2.2"/></svg></span>
+          <input id="board-name" class="board-name" value="Tableau" spellcheck="false" />
+        </div>
+        <div class="members" id="members" title="Membres du tableau"></div>
+        <div class="spacer"></div>
+        <button class="btn-soft" id="btn-instruction" title="Consigne donnée à l'IA pour traiter les cartes"><i data-ic="settings"></i><span>Consigne IA</span></button>
+        <button class="btn-soft" id="btn-add-member"><i data-ic="plus"></i><span>Membre</span></button>
+        <button class="btn-soft primary" id="btn-add-column"><i data-ic="plus"></i><span>Colonne</span></button>
+      </header>
+
+      <main class="board" id="board"></main>
+    </div>
+
+    <!-- Détail d'une carte -->
+    <div class="overlay" id="card-overlay" hidden>
+      <div class="card-modal">
+        <header class="cm-head">
+          <input id="cm-title" class="cm-title" placeholder="Titre de la carte" spellcheck="false" />
+          <button class="icon-btn" id="cm-close" title="Fermer"><i data-ic="x"></i></button>
+        </header>
+        <div class="cm-body">
+          <label class="cm-label">Description</label>
+          <textarea id="cm-desc" class="cm-desc" rows="4" placeholder="Détails, contexte, critères…"></textarea>
+
+          <div class="cm-row">
+            <div class="cm-field">
+              <label class="cm-label">Assigné</label>
+              <select id="cm-assignee" class="select"></select>
+            </div>
+            <div class="cm-field">
+              <label class="cm-label">Étiquettes</label>
+              <input id="cm-labels" class="input" placeholder="design, urgent…" spellcheck="false" />
+            </div>
+          </div>
+
+          <!-- Assignation à un agent IA : la carte entre dans la todo de l'agent. -->
+          <div class="cm-row">
+            <div class="cm-field">
+              <label class="cm-label">Agent IA assigné</label>
+              <select id="cm-agent" class="select"></select>
+            </div>
+            <div class="cm-field">
+              <label class="cm-label">Échéance</label>
+              <input id="cm-due" type="date" class="input" />
+            </div>
+          </div>
+
+          <!-- Fichier de sandbox sur lequel travailler (versionné automatiquement). -->
+          <div class="cm-row">
+            <div class="cm-field">
+              <label class="cm-label">Sandbox</label>
+              <select id="cm-file-sandbox" class="select"></select>
+            </div>
+            <div class="cm-field">
+              <label class="cm-label">Fichier lié</label>
+              <select id="cm-file-path" class="select"></select>
+            </div>
+          </div>
+
+          <div class="cm-ai">
+            <button class="btn-soft primary" id="cm-ai-run"><i data-ic="sparkles"></i><span>Traiter cette carte avec l'IA</span></button>
+            <span class="cm-ai-state" id="cm-ai-state"></span>
+          </div>
+          <div class="cm-airesult" id="cm-airesult" hidden></div>
+
+          <label class="cm-label">Commentaires</label>
+          <div class="cm-comments" id="cm-comments"></div>
+          <div class="cm-addcomment">
+            <input id="cm-comment-input" class="input" placeholder="Ajouter un commentaire…" />
+            <button class="btn-soft" id="cm-comment-add"><i data-ic="send"></i><span>Envoyer</span></button>
+          </div>
+        </div>
+        <footer class="cm-foot">
+          <button class="btn-soft danger" id="cm-delete"><i data-ic="trash-2"></i><span>Supprimer la carte</span></button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Consigne IA -->
+    <div class="overlay" id="instr-overlay" hidden>
+      <div class="mini-modal">
+        <h3>Consigne pour l'IA</h3>
+        <p class="muted">Appliquée à chaque carte de la colonne « à traiter ». La carte (titre + description) est jointe automatiquement.</p>
+        <textarea id="instr-text" rows="5" class="cm-desc" placeholder="Ex. : Rédige un plan d'action concret en 3 étapes pour cette tâche."></textarea>
+        <div class="mini-actions">
+          <button class="btn-soft" id="instr-cancel">Annuler</button>
+          <button class="btn-soft primary" id="instr-save">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-popover" id="col-popover" hidden></div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

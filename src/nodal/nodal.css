@@ -1,0 +1,75 @@
+/* Studio Nodal — coque de l'app (shadcn/ui sur les jetons Lumen). Le graphe
+   lui-même est stylé par graph/graph.css. */
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--background); color: var(--foreground); font: 13px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; overflow: hidden; }
+button, input, select { font: inherit; color: inherit; }
+.nd-app { display: flex; flex-direction: column; height: 100vh; }
+
+.nd-top { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--card); flex: none; min-width: 0; }
+.nd-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.nd-logo { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(135deg, #6d5dfc, #c75cff); color: #fff; flex: none; }
+.nd-logo svg { width: 17px; height: 17px; }
+.nd-brand b { display: block; font-size: 13.5px; font-weight: 650; letter-spacing: -0.01em; }
+.nd-brand small { display: block; font-size: 11px; color: var(--muted-foreground); white-space: nowrap; }
+.nd-projects { display: flex; align-items: center; gap: 6px; margin-left: 10px; min-width: 0; }
+.nd-grow { flex: 1; }
+.nd-select { height: 30px; min-width: 0; max-width: 240px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--background); padding: 0 8px; font-size: 12.5px; }
+.nd-input { width: 100%; height: 30px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--background); padding: 0 10px; font-size: 12.5px; outline: none; }
+.nd-input:focus, .nd-select:focus { border-color: var(--ring, var(--primary)); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring, var(--primary)) 20%, transparent); }
+.nd-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--background); font-size: 12.5px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+.nd-btn:hover { background: var(--subtle); }
+.nd-btn.icon { width: 30px; padding: 0; justify-content: center; }
+.nd-btn svg, .nd-menu svg { width: 15px; height: 15px; }
+.nd-btn [data-ic], .nd-menu [data-ic] { display: inline-flex; }
+.nd-status { font-size: 11.5px; color: var(--muted-foreground); padding: 4px 10px; border-radius: 999px; background: var(--muted); white-space: nowrap; max-width: 380px; overflow: hidden; text-overflow: ellipsis; }
+.nd-status.warn { color: #b45309; background: color-mix(in oklab, #f59e0b 14%, transparent); }
+
+.nd-menu-wrap { position: relative; }
+.nd-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 80; min-width: 190px; padding: 4px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--popover, var(--card)); color: var(--popover-foreground, var(--foreground)); box-shadow: var(--shadow-3); }
+.nd-projects .nd-menu { left: 0; right: auto; }
+.nd-menu > button { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border: 0; border-radius: var(--radius-sm); background: transparent; text-align: left; cursor: pointer; font-size: 12.5px; }
+.nd-menu > button:hover { background: var(--subtle); }
+.nd-menu > button.danger { color: var(--destructive, #dc2626); }
+.nd-menu-sep { height: 1px; background: var(--border); margin: 4px 2px; }
+.nd-menu-title { font-size: 11px; font-weight: 650; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .04em; padding: 4px 4px 8px; }
+.nd-engines { width: 280px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.nd-engines label { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--muted-foreground); font-weight: 500; }
+.nd-engines .nd-select { max-width: none; width: 100%; color: var(--foreground); }
+
+.nd-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 236px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+.nd-lib { display: flex; flex-direction: column; min-height: 0; min-width: 0; border-right: 1px solid var(--border); background: var(--card); }
+.nd-lib-head { padding: 10px; flex: none; }
+.nd-lib-list { flex: 1; min-height: 0; overflow: auto; padding: 0 8px 8px; }
+.nd-lib-foot { flex: none; padding: 8px 12px 10px; font-size: 11px; color: var(--muted-foreground); border-top: 1px solid var(--border); }
+.nd-cat { margin-bottom: 4px; }
+.nd-cat summary { display: flex; align-items: center; gap: 6px; padding: 6px 4px; font-size: 11px; font-weight: 650; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .04em; cursor: pointer; list-style: none; user-select: none; }
+.nd-cat summary::-webkit-details-marker { display: none; }
+.nd-cat summary::before { content: "›"; display: inline-block; width: 10px; transition: transform .15s; font-size: 13px; }
+.nd-cat[open] summary::before { transform: rotate(90deg); }
+.nd-cat summary small { margin-left: auto; font-weight: 500; }
+.nd-node { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 6px 8px; border: 1px solid transparent; border-radius: var(--radius-sm); background: transparent; text-align: left; cursor: grab; font-size: 12.5px; }
+.nd-node:hover { background: var(--subtle); border-color: var(--border); }
+.nd-node:active { cursor: grabbing; }
+.nd-node-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nd-dots { display: inline-flex; gap: 3px; flex: none; }
+.nd-dots i { width: 7px; height: 7px; border-radius: 50%; display: block; }
+.nd-empty { color: var(--muted-foreground); font-size: 12px; padding: 8px; }
+
+.nd-toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 200; padding: 8px 14px; border-radius: var(--radius-md); background: var(--foreground); color: var(--background); font-size: 12.5px; box-shadow: var(--shadow-3); max-width: 80vw; }
+
+@media (max-width: 760px) {
+  .nd-body { grid-template-columns: minmax(0, 1fr); }
+  .nd-lib { display: none; }
+  .nd-brand small, .nd-status { display: none; }
+}
+/* Component cards, with consistent category accents and port summaries. */
+.nd-body { grid-template-columns: 270px minmax(0,1fr); }
+.nd-node { margin: 5px 0; padding: 10px; border-color: var(--border); border-radius: 10px; background: var(--background); transition: border-color .15s, transform .15s; }
+.nd-node:hover { border-color: var(--primary); transform: translateX(2px); }
+.nd-node-t { white-space: normal; }
+.nd-node-t b { display:block; font-size:12px; font-weight:600; }
+.nd-node-t small { display:block; margin-top:4px; font-size:10px; line-height:1.35; color:var(--muted-foreground); }
+.nd-block-icon { display:grid; place-items:center; width:32px; height:32px; flex:none; border-radius:8px; color:var(--block-color); background:color-mix(in srgb,var(--block-color) 12%,transparent); }
+.nd-block-icon svg { width:18px; height:18px; }
+@media (max-width:760px) { .nd-body { grid-template-columns:minmax(0,1fr); } }

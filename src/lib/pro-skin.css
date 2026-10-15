@@ -1,0 +1,368 @@
+/* Habillages « métal » — un métal posé sur le noir.
+   ------------------------------------------------------------------------
+   Nés avec l'édition Pro, ouverts à TOUT LE MONDE depuis le 15/09/2026 :
+   ce sont des thèmes d'apparence, pas une fonction payante. Actif quand la
+   racine porte `data-skin="metal"` (cf. lib/theme-init.js) ; l'habillage
+   standard ne voit RIEN de ce fichier : aucune règle hors de ce sélecteur.
+
+   # Trois saveurs, une seule grammaire
+
+   `data-skin-flavor` choisit le métal ; tout le reste du fichier ne connaît que
+   quatre variables (`--pro-metal-*`). Ajouter une saveur, c'est donc écrire un
+   bloc de quatre lignes, pas dupliquer une feuille de style.
+
+     gold     — noir et or, lettres grasses : la finition « anniversaire »,
+                dans la veine des séries limitées de matériel (ROG 20, etc.).
+                Inspiration de vocabulaire seulement : aucune marque, aucun
+                tracé et aucune ressource d'un tiers n'est repris ici.
+     red      — le même traitement en rouge métal, plus froid et plus sec.
+     premium  — la version sobre : platine froid, pas de majuscules, pas de
+                dégradé sur le texte. Pour qui trouve les deux autres trop
+                démonstratives — un poste de direction, une salle de réunion.
+
+   # Le parti pris, commun aux trois
+
+   Le métal SOULIGNE, il ne remplit pas : une bordure et une lueur sur les
+   surfaces d'action, un titre, un badge. Jamais un aplat — un fond doré ferait
+   clinquant et rendrait le texte illisible. */
+
+:root[data-skin="metal"] {
+  /* Défaut : or. Une édition Pro sans saveur choisie est dorée. */
+  --pro-metal-light: #ffeab0;   /* champagne : les reflets hauts */
+  --pro-metal: #e3b64a;         /* or franc : la bordure */
+  --pro-metal-deep: #8f6314;    /* vieil or : les ombres portées */
+  --pro-metal-ink: #f6dc93;     /* texte, lisible sur fond sombre */
+  --pro-ink-on-metal: #2a1e05;  /* texte POSÉ sur le métal (bouton plein) */
+  /* Départ des APLATS (bouton plein, badge actif). Distinct du reflet : un
+     liseré veut le ton le plus pâle, un aplat veut celui qui porte l'encre.
+     L'or est un métal CLAIR — son aplat peut partir du champagne et recevoir
+     une encre sombre. Un métal sombre, lui, doit rester sombre de bout en
+     bout et porter une encre claire (cf. la saveur rouge). */
+  --pro-metal-fill: var(--pro-metal-light);
+}
+
+/* Rouge métal : un RUBIS, pas un vermillon.
+   La différence tient à une chose et elle se voit tout de suite : aucune trace
+   d'orange. Le ton de base est carmin (teinte ~348°, du côté rose du rouge),
+   les reflets sont franchement rosés, les ombres virent au grenat sombre. Un
+   rouge orangé donnerait une alerte ; celui-ci donne une laque. */
+:root[data-skin="metal"][data-skin-flavor="red"] {
+  --pro-metal-light: #ff9fb0;   /* rosé : les reflets hauts */
+  --pro-metal: #cd2545;         /* rubis : la bordure */
+  --pro-metal-deep: #5e0f20;    /* grenat : les ombres portées */
+  --pro-metal-ink: #ffc2cd;     /* texte, lisible sur fond sombre */
+  /* Le rubis est un métal SOMBRE : son aplat part d'un rose soutenu (pas du
+     rosé pâle des reflets) et porte une encre CLAIRE. L'inverse — l'encre
+     sombre de l'or — se lisait à peine sur le milieu du dégradé. Vu à l'écran
+     avant d'être vu dans le code. */
+  --pro-metal-fill: #e04a68;
+  --pro-ink-on-metal: #fff4f6;
+}
+
+/* Premium : platine froid. Volontairement peu contrasté — c'est ce qui le rend
+   sobre, et c'est aussi pourquoi il n'a ni majuscules ni dégradé de texte. */
+:root[data-skin="metal"][data-skin-flavor="premium"] {
+  --pro-metal-light: #eef1f5;
+  --pro-metal: #b9c1cc;
+  --pro-metal-deep: #6b7482;
+  --pro-metal-ink: #dfe4ea;
+  --pro-metal-fill: var(--pro-metal-light);
+  --pro-ink-on-metal: #1b1f25;
+}
+
+/* ---------- Barre de chat principale (fenêtre Lumen) ---------- */
+:root[data-skin="metal"] .search-bar {
+  position: relative;
+  border-color: color-mix(in oklab, var(--pro-metal) 55%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, var(--pro-metal-light) 26%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--pro-metal) 18%, transparent),
+    0 0 22px -6px color-mix(in oklab, var(--pro-metal) 30%, transparent),
+    0 16px 38px -16px color-mix(in oklab, var(--pro-metal-deep) 72%, transparent),
+    0 12px 30px 0 var(--glass-shadow, rgb(0 0 0 / .18));
+}
+
+/* Le liseré en DÉGRADÉ, dessiné sur un calque masqué : c'est ce qui donne
+   l'effet métal (clair en haut à gauche, sombre en bas à droite) qu'une
+   `border-color` unie ne peut pas rendre. Purement décoratif — si le navigateur
+   ne sait pas composer les masques, la bordure unie ci-dessus fait le travail
+   et ce bloc n'est jamais appliqué. */
+@supports ((-webkit-mask-composite: xor) or (mask-composite: exclude)) {
+  :root[data-skin="metal"] .search-bar::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg,
+      var(--pro-metal-light) 0%,
+      var(--pro-metal) 42%,
+      var(--pro-metal-deep) 78%,
+      var(--pro-metal) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+  }
+  /* La bordure unie ne sert plus que de repli : on la rend discrète pour ne pas
+     doubler le trait du dégradé. */
+  :root[data-skin="metal"] .search-bar {
+    border-color: color-mix(in oklab, var(--pro-metal) 18%, transparent);
+  }
+}
+
+/* À la saisie, la lueur se resserre : l'or dit où est le focus. */
+:root[data-skin="metal"] .search-bar:focus-within {
+  border-color: color-mix(in oklab, var(--pro-metal) 42%, transparent);
+  box-shadow:
+    inset 0 1.2px 0 0 color-mix(in oklab, var(--pro-metal-light) 34%, transparent),
+    0 0 0 3px color-mix(in oklab, var(--pro-metal) 18%, transparent),
+    0 0 28px -4px color-mix(in oklab, var(--pro-metal) 38%, transparent),
+    0 16px 38px -14px color-mix(in oklab, var(--pro-metal-deep) 78%, transparent);
+}
+
+/* Le curseur et la sélection dans le champ suivent la même teinte. */
+:root[data-skin="metal"] .search-bar input,
+:root[data-skin="metal"] .search-bar textarea {
+  caret-color: var(--pro-metal);
+}
+:root[data-skin="metal"] .search-bar ::selection {
+  background: color-mix(in oklab, var(--pro-metal) 35%, transparent);
+}
+
+/* Le bouton d'envoi et la pastille du modèle : les deux seuls éléments de la
+   barre qui « portent » une couleur. En Pro, c'est l'or — le reste des icônes
+   garde sa teinte neutre, sinon la barre vire au sapin de Noël. */
+/* `!important` assumé : la peau plate impose déjà la couleur d'action à ce
+   bouton de la même manière (cf. styles.css, « le seul bouton plein de la
+   barre »). C'est une couche d'habillage, pas une règle de composant. */
+:root[data-skin="metal"] .search-bar .submit-btn {
+  background: linear-gradient(140deg, var(--pro-metal-fill), var(--pro-metal) 52%, var(--pro-metal-deep)) !important;
+  border: none !important;
+  color: var(--pro-ink-on-metal) !important;
+  box-shadow: 0 4px 14px -6px color-mix(in oklab, var(--pro-metal-deep) 85%, transparent) !important;
+}
+:root[data-skin="metal"] .search-bar .submit-btn:hover {
+  filter: brightness(1.06);
+}
+:root[data-skin="metal"] .search-bar .quick-model-toggle {
+  border-color: color-mix(in oklab, var(--pro-metal) 38%, transparent) !important;
+  color: var(--pro-metal-ink) !important;
+}
+
+/* ---------- Barre de chat du bureau (Lumen Desktop) ---------- */
+:root[data-skin="metal"] .dt-chat {
+  border-color: color-mix(in oklab, var(--pro-metal) 42%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, var(--pro-metal-light) 20%, transparent),
+    0 14px 36px -18px color-mix(in oklab, var(--pro-metal-deep) 70%, transparent);
+}
+:root[data-skin="metal"] .dt-chat:focus-within {
+  border-color: color-mix(in oklab, var(--pro-metal) 58%, transparent);
+}
+
+/* ---------- Signature discrète ---------- */
+/* Le nom du système, sur l'écran de démarrage et dans le menu, prend l'or : une
+   ligne suffit à dire quelle édition tourne. */
+:root[data-skin="metal"] .dt-boot-name,
+:root[data-skin="metal"] .dt-start-sub {
+  background: linear-gradient(100deg, var(--pro-metal-light), var(--pro-metal) 55%, var(--pro-metal-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Le bouton « Démarrer » et l'app active du dock portent un filet or plutôt que
+   la couleur d'action : c'est le seul endroit où l'or remplace l'accent. */
+:root[data-skin="metal"] .dt-tb-start.primary {
+  border-color: color-mix(in oklab, var(--pro-metal) 50%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--pro-metal) 20%, transparent);
+}
+
+/* Les orbes des écrans de démarrage du bureau.
+ *
+ * Il y en a DEUX, et c'est le piège : `.dt-boot-orb` sur l'écran d'amorçage,
+ * `.dt-load-orb` pendant l'ouverture de la session. Chacune porte sa propre
+ * copie de la palette pastel dans desktop.css — n'en habiller qu'une laissait
+ * la seconde animation en rose et bleu au milieu d'un produit doré. Les deux
+ * sélecteurs sont donc traités ENSEMBLE ici : une règle, deux cibles, aucune
+ * divergence possible.
+ *
+ * Elles sont peintes en CSS (dégradés radiaux), pas par WebGL : elles
+ * n'écoutent ni `applyAppearance` ni le thème de l'orbe.
+ *
+ * Les teintes suivent la saveur (`--pro-metal-*`) — donc l'or, le rubis ou le
+ * platine, sans qu'il y ait rien à répéter. */
+:root[data-skin="metal"] .dt-boot-orb,
+:root[data-skin="metal"] .dt-load-orb {
+  background:
+    radial-gradient(circle at 35% 30%, var(--pro-metal-light) 0%, transparent 45%),
+    radial-gradient(circle at 70% 40%, var(--pro-metal) 0%, transparent 50%),
+    radial-gradient(circle at 50% 75%, color-mix(in oklab, var(--pro-metal) 70%, var(--pro-metal-deep)) 0%, transparent 50%),
+    radial-gradient(circle at 25% 70%, var(--pro-metal-deep) 0%, transparent 55%);
+}
+
+/* L'anneau qui tourne autour du second orbe : un balayage BLANC en habillage
+   standard. Un liseré blanc autour d'une sphère dorée se voit — il prend donc
+   le métal lui aussi. */
+:root[data-skin="metal"] .dt-load-ring {
+  background: conic-gradient(from 0deg,
+    transparent 0deg,
+    color-mix(in oklab, var(--pro-metal) 12%, transparent) 180deg,
+    var(--pro-metal-light) 340deg,
+    transparent 360deg);
+}
+
+/* Les trois points d'attente : discrets, mais dans la teinte. */
+:root[data-skin="metal"] .dt-load-dots i {
+  background: color-mix(in oklab, var(--pro-metal) 70%, transparent);
+}
+
+/* La barre de progression du premier écran : blanche par défaut, et c'était le
+   dernier élément clair d'un écran devenu doré. */
+:root[data-skin="metal"] .dt-boot-bar i {
+  background: linear-gradient(90deg, var(--pro-metal-deep), var(--pro-metal) 55%, var(--pro-metal-light));
+}
+:root[data-skin="metal"] .dt-boot-bar {
+  background: color-mix(in oklab, var(--pro-metal) 14%, transparent);
+}
+
+
+/* ======================================================================
+   Charte « anniversaire » : noir, métal, lettres grasses
+   ----------------------------------------------------------------------
+   La finition des séries limitées de matériel tient en trois gestes, et pas
+   un de plus : un noir profond, un métal qui ne sert qu'aux titres et aux
+   accents, et une typographie lourde en capitales espacées.
+
+   La saveur `premium` s'en exclut explicitement : elle existe justement pour
+   qui ne veut pas de cette emphase. C'est pourquoi les sélecteurs ci-dessous
+   portent tous `:not([data-skin-flavor="premium"])` — un habillage sobre qui
+   crierait en capitales ne serait pas sobre.
+   ====================================================================== */
+
+/* Le noir : plus profond que le thème sombre standard, pour que le métal
+   ressorte.
+   ----------------------------------------------------------------------
+   UNIQUEMENT QUAND LE THÈME SOMBRE EST RÉELLEMENT ACTIF. La première version
+   posait ce fond sans condition — et sans toucher à `--foreground`. En thème
+   clair, le texte restait donc noir sur un fond devenu noir : toute la fenêtre
+   des Réglages était illisible. Une règle qui change le FOND doit se poser au
+   même endroit que celle qui change l'ENCRE, ou ne pas se poser du tout.
+
+   Deux cas, comme dans lib/tokens.css : le thème choisi à la main
+   (`data-dt-theme="dark"`), et le thème système quand rien n'a été choisi. */
+:root[data-dt-theme="dark"][data-skin="metal"]:not([data-skin-flavor="premium"]) {
+  --background: oklch(0.13 0.004 260);
+  --card: oklch(0.17 0.005 260);
+  --popover: oklch(0.17 0.005 260);
+  --border: color-mix(in oklab, var(--pro-metal) 16%, oklch(1 0 0 / 12%));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-dt-theme="light"])[data-skin="metal"]:not([data-skin-flavor="premium"]) {
+    --background: oklch(0.13 0.004 260);
+    --card: oklch(0.17 0.005 260);
+    --popover: oklch(0.17 0.005 260);
+    --border: color-mix(in oklab, var(--pro-metal) 16%, oklch(1 0 0 / 12%));
+  }
+}
+
+/* Titres : gras, capitales, lettres espacées, et le métal en dégradé.
+   `background-clip: text` demande une couleur transparente — si le navigateur
+   ne sait pas le faire, le texte garde `--pro-metal-ink` et reste lisible. */
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) h1,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .topbar h1,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .card-head > span:first-child,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .card-head h2,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .brand-title {
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Le dégradé métal SUR le texte : réservé au fond sombre.
+   `-webkit-text-fill-color: transparent` rend le titre invisible si le dégradé
+   ne se peint pas — et un dégradé or sur fond blanc serait de toute façon
+   illisible. La casse et la graisse, elles, valent dans les deux thèmes : c'est
+   la typographie qui porte la charte, la couleur ne fait que la souligner. */
+:root[data-dt-theme="dark"][data-skin="metal"]:not([data-skin-flavor="premium"]) h1,
+:root[data-dt-theme="dark"][data-skin="metal"]:not([data-skin-flavor="premium"]) .topbar h1,
+:root[data-dt-theme="dark"][data-skin="metal"]:not([data-skin-flavor="premium"]) .card-head > span:first-child,
+:root[data-dt-theme="dark"][data-skin="metal"]:not([data-skin-flavor="premium"]) .card-head h2,
+:root[data-dt-theme="dark"][data-skin="metal"]:not([data-skin-flavor="premium"]) .brand-title {
+  color: var(--pro-metal-ink);
+  background: linear-gradient(100deg, var(--pro-metal-light), var(--pro-metal) 52%, var(--pro-metal-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-dt-theme="light"])[data-skin="metal"]:not([data-skin-flavor="premium"]) h1,
+  :root:not([data-dt-theme="light"])[data-skin="metal"]:not([data-skin-flavor="premium"]) .topbar h1,
+  :root:not([data-dt-theme="light"])[data-skin="metal"]:not([data-skin-flavor="premium"]) .card-head > span:first-child,
+  :root:not([data-dt-theme="light"])[data-skin="metal"]:not([data-skin-flavor="premium"]) .card-head h2,
+  :root:not([data-dt-theme="light"])[data-skin="metal"]:not([data-skin-flavor="premium"]) .brand-title {
+    color: var(--pro-metal-ink);
+    background: linear-gradient(100deg, var(--pro-metal-light), var(--pro-metal) 52%, var(--pro-metal-deep));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* Badges et pastilles : le métal, en filet. Un badge plein doré serait le
+   premier élément à saturer une interface — on garde le contour. */
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .pill,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .badge,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .tile-share,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .access-pill {
+  border-color: color-mix(in oklab, var(--pro-metal) 48%, transparent);
+  color: var(--pro-metal-ink);
+  background: color-mix(in oklab, var(--pro-metal) 10%, transparent);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+/* Un badge « plein » (état actif) prend le métal en fond, avec l'encre sombre
+   prévue pour lui : c'est le seul aplat de métal de toute la charte. */
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .pill.ok,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .pill.admin,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .access-pill.rw {
+  background: linear-gradient(140deg, var(--pro-metal-fill), var(--pro-metal) 58%, var(--pro-metal-deep));
+  border-color: transparent;
+  color: var(--pro-ink-on-metal);
+}
+
+/* Le trait d'angle : une entaille de métal en haut à gauche des cartes. C'est
+   le geste graphique qui signe la finition, et il ne coûte qu'un pseudo-élément.
+   Purement décoratif, donc `pointer-events: none` et aucun impact sur la mise
+   en page. */
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .card,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .tile {
+  position: relative;
+  overflow: hidden;
+}
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .card::after,
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .tile::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 46px; height: 3px;
+  background: linear-gradient(90deg, var(--pro-metal), transparent);
+  pointer-events: none;
+}
+
+/* Les boutons d'action des apps Pro suivent le métal, comme la barre de chat. */
+:root[data-skin="metal"]:not([data-skin-flavor="premium"]) .btn.primary {
+  background: linear-gradient(140deg, var(--pro-metal-fill), var(--pro-metal) 52%, var(--pro-metal-deep));
+  border-color: transparent;
+  color: var(--pro-ink-on-metal);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Premium : le seul geste conservé est le filet froid sur les surfaces
+   d'action, déjà porté par les règles génériques plus haut. Rien à ajouter —
+   et c'est exactement le point. */

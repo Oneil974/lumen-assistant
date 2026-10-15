@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!-- Recherche profonde : un agent multi-étapes qui décompose une question,
+     interroge la base de connaissances (RAG local, rag_search) sous plusieurs
+     angles, puis rédige un rapport sourcé avec citations. 100 % local. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Recherche profonde</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M8 9.5h6M8 12.5h4"/></svg></span>
+          <div><div class="brand-title">Recherche profonde</div><div class="brand-sub" id="kb-status">Base de connaissances…</div></div>
+        </div>
+        <div class="spacer"></div>
+        <button class="export-btn" id="export-btn" type="button" hidden>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          Exporter en Markdown
+        </button>
+      </header>
+
+      <form class="ask" id="ask-form">
+        <input id="q" class="ask-in" placeholder="Posez une question sur vos documents…" autocomplete="off" />
+        <select id="source-mode" class="ask-select" title="Sources à utiliser">
+          <option value="documents">Documents</option>
+          <option value="documents-db">Documents + base</option>
+          <option value="db">Base uniquement</option>
+        </select>
+        <select id="research-base" class="ask-select" title="Base de données à utiliser"><option value="">Choisir une base</option></select>
+        <select id="research-tables" class="ask-select ask-tables" title="Tables à utiliser" multiple hidden></select>
+        <button class="ask-go" id="ask-go" type="submit">Enquêter</button>
+      </form>
+
+      <main class="content" id="content">
+        <div class="intro" id="intro">
+          <div class="intro-emoji">🔎</div>
+          <p>L'agent décompose votre question, fouille votre base « Connaissances » sous plusieurs angles, puis rédige un rapport <strong>sourcé</strong>.</p>
+        </div>
+
+        <section class="steps" id="steps" hidden>
+          <h3>Démarche</h3>
+          <ol id="steps-list"></ol>
+        </section>
+
+        <article class="report" id="report" hidden></article>
+
+        <section class="db-result" id="db-result" hidden>
+          <h3>Résultat de la base de données</h3>
+          <div class="db-sql" id="db-result-sql"></div>
+          <div class="db-table-wrap" id="db-result-table"></div>
+        </section>
+
+        <section class="sources" id="sources" hidden>
+          <h3>Sources</h3>
+          <ol id="sources-list"></ol>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modal générique : affichage d'une citation OU sélection de sandbox -->
+    <div class="modal-backdrop" id="modal" hidden>
+      <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-head">
+          <h4 id="modal-title">Source</h4>
+          <button class="modal-close" id="modal-close" type="button" aria-label="Fermer">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

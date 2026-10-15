@@ -1,0 +1,83 @@
+name: CI
+
+# Validation continue : tests JS, banc d'orchestration (modèle scripté),
+# tests Rust et build + tests de l'app iOS. L'audit de sécurité et le SBOM
+# restent dans security.yml.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Tests unitaires
+        run: npm test
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Sécurité de l'export source
+        run: python scripts/test-source-export.py
+      - name: Banc d'orchestration (modèle scripté)
+        run: npm run eval:orch
+      - name: Frontend du noyau
+        run: npm run build:frontend
+      - name: Catalogue complet
+        run: npm run apps:package -- --out dist/ci-apps
+
+  rust:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            features: ""
+          - os: windows-latest
+            features: ""
+          - os: ubuntu-24.04
+            features: "--features linux-standard"
+    runs-on: ${{ matrix.os }}
+    env:
+      # Ignore workstation-specific Cargo target paths on every CI platform.
+      CARGO_TARGET_DIR: ${{ github.workspace }}/src-tauri/target
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Dépendances Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential libxdo-dev libssl-dev librsvg2-dev libudev-dev pkg-config
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - name: Préparer les assets du noyau
+        run: node scripts/build-frontend.mjs
+      - name: Tests Rust
+        working-directory: src-tauri
+        run: cargo test --lib --locked ${{ matrix.features }}
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: XcodeGen
+        run: brew install xcodegen
+      - name: Générer le projet
+        working-directory: ios-companion
+        run: xcodegen generate
+      - name: Build + tests (simulateur)
+        working-directory: ios-companion
+        run: |
+          DEST_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin)["devices"]; print(next(x["udid"] for k,v in d.items() if "iOS" in k for x in v if x["name"].startswith("iPhone")))')
+          xcodebuild test -project LumenCompanion.xcodeproj -scheme LumenCompanion \
+            -destination "id=$DEST_ID" CODE_SIGNING_ALLOWED=NO

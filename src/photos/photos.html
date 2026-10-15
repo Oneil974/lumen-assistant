@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!-- Photos de Lumen : la bibliothèque de toutes les images qui vivent dans les
+     sandboxes (générées par le Studio, importées, produites par les agents…),
+     rangées par sandbox et par mois, avec visionneuse, favoris, export et
+     « Envoyer vers… ». Les vignettes viennent du backend (sandbox_image_thumb,
+     cache disque) ; l'image pleine de sandbox_read_image_b64. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Photos</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=2" />
+    <script type="module" src="./main.js" defer></script>
+    <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.5-3.5a2 2 0 0 0-2.8 0L6 21"/></svg></span>
+          <span class="brand-title">Photos</span>
+        </div>
+        <div class="side-section">
+          <div class="side-label">Bibliothèque</div>
+          <nav class="side-nav" id="nav-library"></nav>
+        </div>
+        <div class="side-section grow">
+          <div class="side-label">Sandboxes</div>
+          <nav class="side-nav" id="nav-sandboxes"></nav>
+        </div>
+        <div class="side-foot" id="side-foot"></div>
+      </aside>
+
+      <main class="main">
+        <header class="toolbar">
+          <h1 class="title" id="title">Toutes les images</h1>
+          <span class="count" id="count"></span>
+          <div class="folders" id="folders"></div>
+          <div class="spacer"></div>
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="search" type="search" placeholder="Rechercher…" spellcheck="false" />
+          </div>
+          <select id="sort" class="select" title="Tri">
+            <option value="date">Plus récentes</option>
+            <option value="date-asc">Plus anciennes</option>
+            <option value="name">Nom</option>
+            <option value="size">Poids</option>
+          </select>
+          <label class="zoom" title="Taille des vignettes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><input type="range" id="zoom" min="110" max="320" step="10" value="180" /></label>
+          <button class="btn" id="btn-select">Sélectionner</button>
+          <button class="btn icon" id="btn-refresh" title="Recharger">⟳</button>
+        </header>
+
+        <div class="bulk" id="bulk" hidden>
+          <span id="bulk-count"></span>
+          <div class="spacer"></div>
+          <button class="btn" data-bulk="fav">♥ Favori</button>
+          <button class="btn" data-bulk="export">Exporter</button>
+          <button class="btn danger" data-bulk="delete">Supprimer</button>
+          <button class="btn ghost" data-bulk="cancel">Terminer</button>
+        </div>
+
+        <div class="grid-host" id="grid"></div>
+      </main>
+    </div>
+
+    <!-- Visionneuse -->
+    <div class="viewer" id="viewer" hidden>
+      <header class="viewer-top">
+        <button class="vbtn" id="v-close" title="Fermer (Échap)">✕</button>
+        <div class="viewer-name" id="v-name"></div>
+        <div class="spacer"></div>
+        <button class="vbtn" id="v-fav" title="Favori">♡</button>
+        <button class="vbtn" id="v-info" title="Informations">i</button>
+        <button class="vbtn" id="v-share" title="Envoyer vers une autre app">Envoyer vers…</button>
+        <button class="vbtn" id="v-export" title="Copier dans Téléchargements">Exporter</button>
+        <button class="vbtn danger" id="v-delete" title="Supprimer de la sandbox">Supprimer</button>
+      </header>
+      <div class="viewer-body">
+        <button class="vnav prev" id="v-prev" title="Précédente (←)">‹</button>
+        <div class="viewer-stage" id="v-stage"><img id="v-img" alt="" /><div class="viewer-loading" id="v-loading" hidden></div></div>
+        <button class="vnav next" id="v-next" title="Suivante (→)">›</button>
+        <aside class="viewer-side" id="v-side" hidden></aside>
+      </div>
+      <div class="viewer-strip" id="v-strip"></div>
+    </div>
+
+    <div class="confirm" id="confirm" hidden>
+      <div class="confirm-card">
+        <b id="c-title"></b><p id="c-text"></p>
+        <div class="confirm-actions"><button class="btn" id="c-no">Annuler</button><button class="btn danger solid" id="c-yes">Supprimer</button></div>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

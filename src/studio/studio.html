@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<!-- Studio d'images de Lumen. Fenêtre dédiée, galerie de génération locale via
+     l'API Bonsai (commande bonsai_generate_data_url côté Rust). Rendu en data URL
+     PNG affiché directement dans la grille ; la galerie est persistée en
+     localStorage (plafonnée pour rester sous le quota). -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Studio d'images</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="./studio.css?v=3" />
+    <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop (dtTheme partagé
+         via localStorage). Appliqué tôt pour éviter tout flash de thème. -->
+<script type="module" src="./studio.js" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="m21 15-5-5L5 21"/></svg></span>
+          <div class="brand-text">
+            <div class="brand-name">Studio d'images</div>
+            <div class="brand-sub">Génération d'image</div>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <div class="status" id="status" title="État du moteur d'image">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Vérification…</span>
+        </div>
+      </header>
+
+      <section class="composer">
+        <div class="prompt-row">
+          <textarea id="prompt" class="prompt" rows="1" spellcheck="false"
+            placeholder="Décris l'image à créer… (ex. « un phare au crépuscule, brume, pastel »)"></textarea>
+          <button class="generate" id="btn-generate">
+            <span class="gen-spark"></span>
+            <span id="gen-label">Générer</span>
+          </button>
+        </div>
+
+        <div class="options">
+          <label class="opt opt-sandbox">
+            <span>Destination</span>
+            <select id="opt-sandbox">
+              <option value="">Mémoire seule (non conservé)</option>
+            </select>
+          </label>
+          <label class="opt">
+            <span>Modèle</span>
+            <select id="opt-backend">
+              <option value="">Automatique</option>
+            </select>
+          </label>
+          <label class="opt">
+            <span>Format</span>
+            <select id="opt-resolution">
+              <option value="512x512">Carré · 512</option>
+              <option value="768x512">Paysage · 768×512</option>
+              <option value="512x768">Portrait · 512×768</option>
+              <option value="768x768">Carré · 768</option>
+            </select>
+          </label>
+          <label class="opt">
+            <span>Étapes</span>
+            <input type="number" id="opt-steps" min="1" max="64" value="4" />
+          </label>
+          <label class="opt">
+            <span>Images</span>
+            <input type="number" id="opt-batch" min="1" max="8" value="2" />
+          </label>
+          <label class="opt opt-seed">
+            <span>Seed</span>
+            <input type="text" id="opt-seed" placeholder="aléatoire" />
+            <button class="seed-dice" id="opt-seed-dice" title="Seed aléatoire">⤬</button>
+          </label>
+        </div>
+
+        <div class="chips" id="chips">
+          <button>paysage onirique, lumière dorée</button>
+          <button>portrait minimaliste, fond pastel</button>
+          <button>architecture méditerranéenne, ombres douces</button>
+          <button>texture organique, macro, naturel</button>
+          <button>illustration vectorielle, formes simples</button>
+        </div>
+
+        <div class="dest-warn" id="dest-warn" hidden>
+          <span class="dest-warn-ico">⚠</span>
+          <span class="dest-warn-text" id="dest-warn-text"></span>
+          <button class="btn-soft" id="dest-warn-action" hidden>Créer une sandbox</button>
+        </div>
+
+        <div class="progress" id="progress" hidden>
+          <div class="progress-fill" id="progress-fill"></div>
+          <div class="progress-label" id="progress-label"></div>
+        </div>
+      </section>
+
+      <main class="gallery-wrap">
+        <div class="gallery-head">
+          <h2>Galerie</h2>
+          <div class="spacer"></div>
+          <button class="btn-soft" id="btn-clear" hidden>Vider la galerie</button>
+        </div>
+        <div class="gallery" id="gallery"></div>
+        <div class="empty" id="empty">
+          <div class="empty-orb"></div>
+          <p class="empty-title">Aucune image pour l'instant</p>
+          <p class="empty-sub">Décris une scène ci-dessus, puis lance la génération.</p>
+        </div>
+      </main>
+    </div>
+
+    <!-- Aperçu plein cadre -->
+    <div class="lightbox" id="lightbox" hidden>
+      <button class="lb-close" id="lb-close" title="Fermer">✕</button>
+      <img id="lb-img" alt="" />
+      <div class="lb-bar">
+        <span id="lb-prompt" class="lb-prompt"></span>
+        <div class="spacer"></div>
+        <button class="btn-soft" id="lb-reuse">Réutiliser le prompt</button>
+        <button class="btn-soft primary" id="lb-save">Enregistrer…</button>
+      </div>
+    </div>
+
+    <!-- Création rapide de sandbox (prompt() est inopérant en WKWebView) -->
+    <div class="lightbox sb-modal" id="sb-modal" hidden>
+      <div class="sb-dialog">
+        <h3>Nouvelle sandbox</h3>
+        <p class="sb-hint">Vos images générées y seront enregistrées et conservées.</p>
+        <input type="text" id="sb-name" placeholder="Nom de la sandbox (ex. Mes visuels)" maxlength="60" />
+        <div class="sb-actions">
+          <button class="btn-soft" id="sb-cancel">Annuler</button>
+          <button class="btn-soft primary" id="sb-create">Créer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

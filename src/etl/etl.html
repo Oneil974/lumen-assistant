@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!-- Flux de données (édition Pro) — l'ETL de Lumen : prendre des données où
+     elles sont, les transformer étape par étape sous les yeux de l'utilisateur,
+     et les déposer là où elles serviront. Un flux se compose sur un canevas :
+     des blocs (sources, transformations, destinations) reliés par des liens. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Flux de données</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=4" />
+    <script type="module" src="./main.js?v=3" defer></script>
+    <link rel="stylesheet" href="../lib/confirm.css?v=1" />
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+    <link rel="stylesheet" href="/lib/pro-skin.css?v=8" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.828 14.828 21 21"/><path d="M21 16v5h-5"/><path d="m21 3-9 9-4-4-6 6"/><path d="M21 8V3h-5"/></svg>
+          </span>
+          <span><strong>Flux de données</strong><small id="brand-sub">ETL visuel</small></span>
+        </div>
+        <input id="flow-name" class="flow-name" placeholder="Nom du flux" />
+        <select id="sandbox-pick" class="space-pick" title="Espace où les flux s'enregistrent"></select>
+        <div class="top-actions">
+          <button class="btn" id="btn-new">Nouveau</button>
+          <button class="btn" id="btn-open">Ouvrir</button>
+          <button class="btn" id="btn-save">Enregistrer</button>
+          <button class="btn" id="btn-preview" title="Rejouer le flux sur un échantillon">Aperçu</button>
+          <button class="btn primary" id="btn-run" title="Lire toutes les lignes et écrire dans les destinations">Exécuter</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="palette">
+          <div class="panel-head"><strong>Blocs</strong><span id="block-count"></span></div>
+          <input id="block-search" class="search" placeholder="Rechercher un bloc…" />
+          <div class="palette-note">Cliquez pour poser un bloc. Tirez la sortie d'un bloc vers l'entrée d'un autre pour les relier. L'aperçu se met à jour à chaque changement.</div>
+          <div id="block-list" class="block-list"></div>
+        </aside>
+
+        <section id="stage" class="stage" aria-label="Canevas du flux">
+          <svg id="links" class="links" aria-hidden="true"></svg>
+          <div id="world" class="world"></div>
+          <div id="empty-state" class="empty-state">
+            <div class="empty-mark">⋔</div>
+            <h2>Composez votre premier flux</h2>
+            <p>Une source, des transformations, une destination. Rien n'est modifié à la source : un flux qui écrase ses entrées n'est pas rejouable.</p>
+            <button id="starter" class="btn primary">Commencer avec une table de Lumen</button>
+          </div>
+          <div class="canvas-controls"><button id="zoom-out" title="Réduire">−</button><button id="zoom-reset" title="Réinitialiser">100%</button><button id="zoom-in" title="Agrandir">+</button><button id="auto-layout" title="Ranger les blocs">⇥</button></div>
+          <div id="run-hud" class="run-hud" hidden><span class="run-orb">⋔</span><span><strong id="run-title">Exécution</strong><small id="run-status">Prêt</small></span></div>
+        </section>
+
+        <aside class="inspector">
+          <div class="panel-head"><strong>Configuration</strong>
+            <span class="insp-actions">
+              <button id="toggle-node" class="icon-btn" title="Désactiver / réactiver le bloc" disabled>◉</button>
+              <button id="delete-node" class="icon-btn" title="Supprimer le bloc" disabled>⌫</button>
+            </span>
+          </div>
+          <div id="inspector-empty" class="inspector-empty">Sélectionnez un bloc pour le configurer.</div>
+          <form id="node-form" hidden autocomplete="off"></form>
+        </aside>
+      </main>
+
+      <section class="bottom" id="bottom">
+        <header class="bottom-head">
+          <button class="tab on" data-tab="preview">Aperçu</button>
+          <button class="tab" data-tab="trace">Trace</button>
+          <span class="bottom-title" id="bottom-title">—</span>
+          <span class="spacer"></span>
+          <span class="muted" id="preview-count"></span>
+          <button class="icon-btn" id="bottom-toggle" title="Replier / déplier">▾</button>
+        </header>
+        <div class="bottom-body">
+          <div class="pane on" id="pane-preview"><div class="grid-scroll" id="preview"></div></div>
+          <div class="pane" id="pane-trace"><div class="trace" id="trace"></div></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="backdrop" id="sheet" hidden><div class="modal" id="sheet-card"></div></div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

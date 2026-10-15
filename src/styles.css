@@ -1,0 +1,4604 @@
+/* Custom variables for premium look */
+:root {
+  --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"; /* emoji après la générique : cf. lib/flat.css */
+  /* HSL customized glass palette (opacity set dynamically in JS) */
+  --glass-opacity: 0.02;
+  --glass-bg: rgba(255, 255, 255, var(--glass-opacity));
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-highlight: rgba(255, 255, 255, 0.12);
+  --glass-shadow: rgba(0, 0, 0, 0.12);
+  --text-highlight: #3b82f6;
+  --primary-glow: var(--primary);
+}
+
+/* Thèmes complets « Rubis » / « Sombre » : définis en fin de fichier
+   (THEMES UNIFIÉS) pour passer APRÈS les règles `theme-dark-forced` !important
+   dont ils héritent la base sombre. */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  font-family: var(--font-main);
+  overflow: hidden;
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4px 20px 20px;
+  /* haut réduit : colle l'orbe au sommet de la fenêtre */;
+}
+
+/* Halo radial d'ambiance, derrière la barre */
+.glowing-orb {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+  width: 480px;
+  height: 280px;
+  background: var(--muted);
+  filter: blur(55px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Avatar color pickers */
+.orb-color-pickers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.orb-color-pickers input[type="color"] {
+  width: 34px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+}
+.orb-color-pickers input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+.orb-color-pickers input[type="color"]::-webkit-color-swatch { border: none; border-radius: var(--radius-sm); }
+.orb-colors-reset {
+  margin-left: 4px;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main, #fff);
+  cursor: pointer;
+  font-size: 15px;
+}
+.orb-colors-reset:hover { background: rgba(255, 255, 255, 0.12); }
+body.theme-light-forced .orb-colors-reset { color: #1c1c1e; background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.12); }
+
+/* Bar + overlay panels wrapper: positioning context for the absolute panels,
+   so they sit just below the search bar (not below the orb). */
+.bar-area {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ===== Companion orb ===== */
+.orb-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 116px;
+  margin-bottom: 6px;
+  pointer-events: none;
+  z-index: 3;
+}
+.orb-container {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  transform: translateY(var(--orb-bob, 0));
+}
+.orb-container::before {
+  content: none;
+}
+.orb-container canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1;
+}
+/* Frosted disc behind the orb: blurs the desktop like real glass */
+.orb-frost {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(9px) saturate(130%);
+  -webkit-backdrop-filter: blur(9px) saturate(130%);
+  box-shadow: inset 0 -4px 10px rgba(120, 120, 160, 0.10);
+}
+/* Poignée de déplacement de l'orbe : transparente, au-dessus du canvas et des
+   yeux. `.orb-wrap` reste en `pointer-events: none` pour que le vide autour de
+   l'orbe laisse passer les clics vers le bureau ; seul ce disque capte. */
+.orb-grab {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: 4;
+  pointer-events: auto;
+  cursor: grab;
+}
+.orb-grab:active { cursor: grabbing; }
+
+/* Soft ground shadow */
+.orb-shadow {
+  position: absolute;
+  bottom: 2px;
+  width: 80px;
+  height: 14px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--foreground) 12%, transparent);
+  filter: blur(3px);
+}
+/* Un GLB personnalisé remplace toutes les couches visuelles de l'orbe, pas
+   seulement ses meshes Three.js. Ces règles couvrent aussi l'instant précédant
+   l'application des styles inline par orb.js. */
+body.avatar-custom .glowing-orb,
+.orb-wrap[data-avatar-mode="custom"] .orb-shadow,
+.orb-container[data-avatar-mode="custom"] .orb-frost { display: none !important; }
+/* Eyes */
+.orb-eyes {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  transform: translateY(-4px);
+  z-index: 2;
+}
+.orb-eyes { --eye-w: 7px; --eye-h: 22px; }
+.orb-eyes span {
+  width: var(--eye-w);
+  height: var(--eye-h);
+  border-radius: 99px;
+  background: #ffffff;
+  box-shadow: 0 0 7px rgba(255, 255, 255, 0.85);
+  animation: orbBlink 5.2s infinite;
+  transform-origin: center;
+}
+.orb-eyes span:nth-child(2) { animation-delay: 0.06s; }
+/* Clignement par découpe arrondie (clip-path … round) et non par scaleY :
+   écraser l'œil aplatissait ses bouts ronds ; la découpe garde une pilule. */
+@keyframes orbBlink {
+  0%, 92%, 100% { clip-path: inset(-12px round 99px); }
+  95% { clip-path: inset(calc(50% - var(--eye-w, 7px) * .375) 0 round 99px); }
+}
+
+/* Budget intégré au bureau Travail (pas de fenêtre native séparée). */
+.budget-embedded-window{position:fixed;z-index:1180;inset:72px 4vw 78px;display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.72);border-radius:22px;background:rgba(248,249,253,.94);box-shadow:0 28px 90px rgba(22,28,45,.28),0 2px 10px rgba(22,28,45,.12);backdrop-filter:blur(28px) saturate(1.1);animation:budget-embedded-in .2s ease}
+.budget-embedded-window.is-focused{animation:budget-embedded-focus .26s ease}
+.budget-embedded-titlebar{height:34px;flex:none;display:flex;align-items:center;gap:9px;padding:0 12px;border-bottom:1px solid rgba(20,24,32,.08);background:rgba(244,246,251,.86);color:#262a33;font-size:13px}
+.budget-embedded-titlebar .budget-embedded-dot{width:11px;height:11px;border-radius:50%;background:#ff5f57;box-shadow:18px 0 #febc2e,36px 0 #28c840;margin-right:36px}
+.budget-embedded-titlebar strong{font-weight:600}
+.budget-embedded-titlebar button{margin-left:auto;width:24px;height:24px;border:0;border-radius:var(--radius-sm);background:transparent;color:#737985;font-size:19px;line-height:1;cursor:pointer}
+.budget-embedded-titlebar button:hover{background:rgba(0,0,0,.08);color:#22252b}
+.budget-embedded-window iframe{width:100%;height:100%;border:0;background:#f7f8fc}
+@keyframes budget-embedded-in{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes budget-embedded-focus{0%,100%{transform:none}50%{transform:scale(1.006)}}
+/* Faster, livelier blink while thinking/speaking */
+.orb-container[data-state="thinking"] .orb-eyes span,
+.orb-container[data-state="speaking"] .orb-eyes span {
+  animation-duration: 2.6s;
+}
+
+/* Scène de la barre (conteneur principal) */
+.bar-stage {
+  position: relative;
+  z-index: 2;
+  width: 100%; /* Resized dynamically by changing the Tauri window size */
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Barre de commande de Lumen (capsule) */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: var(--glass-bg);
+  backdrop-filter: blur(50px) saturate(220%);
+  -webkit-backdrop-filter: blur(50px) saturate(220%);
+  will-change: backdrop-filter;
+  transform: translateZ(0);
+  border-radius: 99px;
+  border: 1px solid var(--glass-border);
+  padding: 8px 12px 8px 16px;
+  
+  /* Relief : le liseré interne fait l'arête, l'ombre porte la hauteur.
+     L'ombre vient de l'échelle partagée (--shadow-2, cf. lib/tokens.css) au
+     lieu d'une valeur propre : la barre flotte au même plan que les autres
+     surfaces flottantes de Lumen, et s'adapte au thème sombre, où l'ancienne
+     valeur — calculée pour le clair — s'écrasait en halo gris. */
+  box-shadow:
+    inset 0 1px 0 0 var(--glass-highlight),
+    var(--shadow-2);
+  
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: grab;
+}
+
+.search-bar:active {
+  cursor: grabbing;
+}
+
+.search-bar:focus-within {
+  background: rgba(255, 255, 255, calc(var(--glass-opacity) + 0.03));
+  border-color: rgba(255, 255, 255, 0.1);
+  /* Le focus SIGNALE, il ne soulève pas : on garde la même hauteur d'ombre et
+     on ajoute l'anneau teinté par la couleur d'action. Monter à
+     `0 16px 35px / 20%` faisait sauter la barre à chaque clic dans le champ. */
+  box-shadow:
+    inset 0 1.2px 0 0 rgba(255, 255, 255, 0.18),
+    var(--shadow-2),
+    var(--shadow-focus);
+}
+
+/* Option Windows/Linux : barre principale opaque, sans toucher à Lumen Desktop. */
+body.bar-opaque .search-bar {
+  --bar-opaque-bg: #222228;
+  --bar-opaque-border: rgba(255, 255, 255, 0.14);
+  --bar-opaque-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), var(--shadow-2);
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  animation: none !important;
+  background: var(--bar-opaque-bg) !important;
+  border-color: var(--bar-opaque-border) !important;
+  box-shadow: var(--bar-opaque-shadow) !important;
+}
+body.bar-opaque.theme-light-forced .search-bar {
+  --bar-opaque-bg: #ffffff;
+  --bar-opaque-border: rgba(0, 0, 0, 0.1);
+  --bar-opaque-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78), 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.left-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Icon Buttons */
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+/* Icônes hydratées depuis lib/icons.js : le SVG Lucide n'a pas de dimension
+   propre (la taille vient toujours du CSS), il faut donc la donner ici pour
+   rester aligné sur les <svg width="16"> écrits en dur dans la barre. */
+.icon-btn .ic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-btn .ic svg { width: 16px; height: 16px; }
+
+.icon-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.theme-toggle-btn:hover {
+  color: #facc15 !important;
+  background: rgba(250, 204, 21, 0.15) !important;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.4) !important;
+}
+
+.action-mode-btn {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.action-mode-btn:hover {
+  color: var(--action-color, #ff9e6b) !important;
+  background: color-mix(in srgb, var(--action-color, #ff9e6b) 12%, transparent) !important;
+}
+
+.action-mode-btn.active,
+body.theme-dark-forced .action-mode-btn.active,
+body.theme-light-forced .action-mode-btn.active {
+  color: color-mix(in srgb, var(--action-color, #ff9e6b) 85%, white) !important;
+  background: color-mix(in srgb, var(--action-color, #ff9e6b) 28%, transparent) !important;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--action-color, #ff9e6b) 70%, transparent) !important;
+  animation: pulseActive 1.5s infinite alternate ease-in-out;
+}
+
+/* Bouton « mode » unifié (Ollama) : pilule icône + libellé */
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--glass-border, rgba(255,255,255,0.12));
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.mode-btn:hover {
+  color: var(--action-color, #ff9e6b);
+  background: color-mix(in srgb, var(--action-color, #ff9e6b) 12%, transparent);
+  border-color: color-mix(in srgb, var(--action-color, #ff9e6b) 35%, transparent);
+}
+.mode-btn .mode-ic { display: flex; }
+.mode-btn .mode-ic svg { width: 14px; height: 14px; }
+.mode-btn .mode-label { max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+.mode-btn.open {
+  color: color-mix(in srgb, var(--action-color, #ff9e6b) 85%, white);
+  border-color: color-mix(in srgb, var(--action-color, #ff9e6b) 50%, transparent);
+}
+
+/* Menu déroulant des modes */
+.mode-menu {
+  position: absolute;
+  top: 52px;
+  left: 12px;
+  z-index: 60;
+  min-width: 220px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: var(--radius-xl);
+  background: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+}
+.mode-menu[hidden] { display: none; }
+.mode-menu-sep {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 8px 10px 4px;
+}
+.mode-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.mode-item:hover { background: rgba(255, 255, 255, 0.08); }
+.mode-item.active { background: color-mix(in srgb, var(--action-color, #ff9e6b) 26%, transparent); color: #fff; }
+.mode-item .mode-item-ic { display: flex; opacity: 0.85; }
+.mode-item .mode-item-ic svg { width: 15px; height: 15px; }
+.mode-item .mode-item-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.mode-item .mode-item-name { font-weight: 500; }
+.mode-item .mode-item-desc { font-size: 11px; color: rgba(255,255,255,0.45); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mode-item .mode-item-check { margin-left: auto; opacity: 0; }
+.mode-item.active .mode-item-check { opacity: 1; }
+
+/* Panneau « Backend IA » : ancré à droite (sous la pastille de modèle). */
+#backend-menu { left: auto; right: 12px; }
+.backend-field { padding: 4px 10px 8px; }
+.backend-field input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: 7px 9px;
+  font-size: 13px;
+}
+.backend-field input:focus { outline: none; border-color: var(--action-color, #ff9e6b); }
+
+.autospeak-btn:hover {
+  color: var(--speak-color, #61f2c7) !important;
+  background: color-mix(in srgb, var(--speak-color, #61f2c7) 12%, transparent) !important;
+}
+
+.autospeak-btn.active,
+body.theme-dark-forced .autospeak-btn.active,
+body.theme-light-forced .autospeak-btn.active {
+  color: color-mix(in srgb, var(--speak-color, #61f2c7) 85%, white) !important;
+  background: color-mix(in srgb, var(--speak-color, #61f2c7) 28%, transparent) !important;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--speak-color, #61f2c7) 70%, transparent) !important;
+}
+
+.dictation-btn:hover {
+  color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+.dictation-btn.active,
+body.theme-dark-forced .dictation-btn.active,
+body.theme-light-forced .dictation-btn.active {
+  color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.45) !important;
+  animation: pulseActive 1s infinite alternate ease-in-out;
+}
+
+/* Micro dans le champ de saisie : discret (petit, atténué, sans fond) tant
+   qu'on ne le survole pas ; l'état actif conserve la pulsation rouge. Collé
+   au bord droit du texte, avant la prévisualisation des pièces jointes. */
+.search-bar .dictation-btn.inline-mic {
+  width: 24px;
+  height: 24px;
+  margin-left: -6px;
+  margin-right: 2px;
+  flex: 0 0 auto;
+  opacity: 0.55;
+  transition: opacity 0.2s, color 0.2s, background 0.2s;
+}
+.search-bar .dictation-btn.inline-mic:hover,
+.search-bar .dictation-btn.inline-mic.active,
+.search-bar:focus-within .dictation-btn.inline-mic { opacity: 1; }
+.search-bar.expanded .dictation-btn.inline-mic { margin-left: 0; }
+
+/* Spectromètre Whisper (lib/dictation-visualizer.js) : glissé entre le micro et
+   les pièces jointes, il apparaît en fondu à l'ouverture du micro et disparaît
+   après la transcription. Le champ de texte se resserre pour lui faire place. */
+.search-bar .dictation-viz {
+  flex: 0 0 auto;
+  margin: 0 6px 0 2px;
+  opacity: 0;
+  transform: scaleX(0.6);
+  transform-origin: left center;
+  transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.search-bar .dictation-viz.visible { opacity: 1; transform: scaleX(1); }
+/* Pendant l'écoute le micro devient un bouton d'arrêt franc, pas un simple
+   indicateur : opacité pleine et curseur explicite. */
+.search-bar.dictating .dictation-btn.inline-mic { opacity: 1; cursor: pointer; }
+.search-bar.expanded .dictation-viz { margin-left: 0; }
+/* Anneau de chargement discret (modèle Whisper / transcription) : un arc fin
+   qui tourne autour du micro, l'icône ne bouge pas. */
+.dictation-btn.working::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  border-top-color: currentColor;
+  opacity: 0.7;
+  animation: dictationSpin 0.9s linear infinite;
+  pointer-events: none;
+}
+@keyframes dictationSpin { to { transform: rotate(360deg); } }
+
+.heartbeat-btn:hover {
+  color: var(--heartbeat-color, #ff54a3) !important;
+  background: color-mix(in srgb, var(--heartbeat-color, #ff54a3) 12%, transparent) !important;
+}
+.heartbeat-btn.active,
+body.theme-dark-forced .heartbeat-btn.active,
+body.theme-light-forced .heartbeat-btn.active {
+  color: color-mix(in srgb, var(--heartbeat-color, #ff54a3) 85%, white) !important;
+  background: color-mix(in srgb, var(--heartbeat-color, #ff54a3) 28%, transparent) !important;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--heartbeat-color, #ff54a3) 70%, transparent) !important;
+  animation: heartbeatPulse 1.2s infinite ease-in-out;
+}
+
+/* Estompé quand le mode courant embarque déjà la mémoire. */
+.memory-btn.dim { opacity: .6; }
+
+/* Le glyphe « cerveau » est très détaillé pour 16px : on épaissit le trait
+   pour qu'il reste lisible sur fond clair comme sur fond sombre. */
+.memory-btn .ic svg { stroke-width: 2.1; }
+
+/* Bouton Mémoire : actif = l'IA peut rappeler et mémoriser dans la discussion
+   simple. Teinté avec la couleur d'action (et non une couleur figée comme les
+   boutons plus anciens) : il suit l'habillage et reste lisible avec un accent
+   clair comme avec un accent foncé. */
+.memory-btn.active,
+body.theme-light-forced .memory-btn.active {
+  /* L'accent seul peut être très pâle (jaune, pêche…) : on le fonce avec de
+     l'encre pour garantir le contraste du glyphe. Pas de liseré : c'est la
+     couleur du trait qui porte l'état actif, comme sur les autres boutons. */
+  color: color-mix(in oklab, var(--primary) 55%, #14141a) !important;
+  background: color-mix(in oklab, var(--primary) 20%, transparent) !important;
+  box-shadow: var(--flat-shadow-md);
+}
+body.theme-dark-forced .memory-btn.active {
+  /* Sur fond sombre c'est l'inverse : on éclaircit l'accent. */
+  color: color-mix(in oklab, var(--primary) 60%, white) !important;
+  background: color-mix(in oklab, var(--primary) 20%, transparent) !important;
+  box-shadow: var(--flat-shadow-md);
+}
+
+@keyframes heartbeatPulse {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.18); }
+  30% { transform: scale(1); }
+}
+
+/* Settings: section divider + hint text (used by the Heartbeat group) */
+.settings-section-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--text-main, #fff);
+  margin: 20px 0 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(128, 128, 128, 0.18);
+}
+.setting-hint {
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
+/* Theme toggle icon: black in light mode, white in dark mode */
+body.theme-light-forced .theme-toggle-btn {
+  color: #000000 !important;
+}
+
+body.theme-dark-forced .theme-toggle-btn {
+  color: #ffffff !important;
+}
+
+@keyframes pulseActive {
+  from { opacity: 0.85; }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+/* Keep WKWebView's backdrop-filter from going stale (which makes the glass look
+   like it changes transparency when the input loses focus). Animating the blur
+   by an imperceptible amount forces a continuous recompute. */
+@keyframes glassRepaint {
+  from { backdrop-filter: blur(50px) saturate(220%); -webkit-backdrop-filter: blur(50px) saturate(220%); }
+  to   { backdrop-filter: blur(50.6px) saturate(220%); -webkit-backdrop-filter: blur(50.6px) saturate(220%); }
+}
+.search-bar,
+.messages-container {
+  animation: glassRepaint 2.5s linear infinite alternate;
+}
+body.flavor-rpi .search-bar,
+body.flavor-rpi .messages-container,
+body.flavor-linux-standard .search-bar,
+body.flavor-linux-standard .messages-container {
+  animation: none !important;
+}
+
+/* Status Indicator Dot next to settings icon */
+.status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  border: 1px solid #1a1a1a;
+}
+
+.status-dot.online {
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.status-dot.offline {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+/* Gris = au repos, pas en erreur : llama-server n'est simplement pas encore
+   démarré (il ne l'est qu'à la première requête). Le rouge reste réservé aux
+   vrais problèmes (modèle absent, backend injoignable, échec de démarrage). */
+.status-dot.idle {
+  background: #9ca3af;
+  box-shadow: 0 0 4px rgba(156, 163, 175, 0.6);
+}
+
+.status-dot.loading {
+  background: var(--accent-color);
+  box-shadow: var(--flat-shadow-md);
+  animation: statusPulse 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes statusPulse {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+/* Indicateur « Réflexion… » affiché pendant la phase de raisonnement (think). */
+.thinking-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  animation: statusPulse 1s ease-in-out infinite alternate;
+}
+.thinking-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  box-shadow: var(--flat-shadow-md);
+  flex: none;
+}
+
+/* Input field styling */
+.search-bar #chat-input {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: var(--text-main) !important;
+  font-family: var(--font-main) !important;
+  font-size: 14.5px;
+  font-weight: 400;
+  flex: 1 1 auto;
+  /* min-width:0 = autorise le champ à rétrécir sous sa taille intrinsèque, sinon
+     il pousse la pastille de modèle + le groupe d'actions hors de la capsule
+     (bouton fermer qui dépasse en petite barre selon le nom du modèle). */
+  min-width: 0;
+  padding: 8px 12px;
+  box-shadow: none !important;
+
+  /* Champ multi-lignes auto-extensible : il démarre sur une ligne (aspect
+     identique à l'ancien <input>) puis grandit avec le texte jusqu'à
+     --chat-input-max (~5 lignes), après quoi il défile. La hauteur réelle est
+     posée en ligne par autosizeChatInput() dans main.js. */
+  --chat-input-line: 20px;
+  --chat-input-max: 100px;
+  display: block;
+  resize: none;
+  overflow-y: hidden;
+  line-height: var(--chat-input-line);
+  /* +16px = le rembourrage vertical, compté dans la hauteur en border-box. */
+  height: calc(var(--chat-input-line) + 16px);
+  max-height: calc(var(--chat-input-max) + 16px);
+  /* Un textarea hérite de la police du navigateur, pas du document. */
+  font-family: var(--font-main) !important;
+  /* Aligné sur la ligne de base des icônes de la capsule. */
+  align-self: center;
+  scrollbar-width: none;
+}
+.search-bar #chat-input::-webkit-scrollbar { width: 0; height: 0; }
+/* Champ vide : le texte d'invite ne doit jamais passer à la ligne (il
+   déborderait sous la capsule d'une ligne). */
+.search-bar #chat-input:placeholder-shown {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Au-delà d'une ligne le champ défile : on rend la molette utile. */
+.search-bar #chat-input.multiline { overflow-y: auto; }
+
+/* Dès la deuxième ligne, la capsule bascule en composeur à deux rangées : le
+   texte occupe toute la largeur en haut, les commandes passent dessous. Le
+   champ ne reste plus coincé dans une colonne étroite entre les icônes, et
+   c'est la disposition attendue d'une zone de saisie qui grandit. */
+.search-bar.expanded {
+  border-radius: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 6px;
+  padding: 12px 12px 8px 14px;
+}
+.search-bar.expanded #chat-input {
+  order: -1;            /* le texte passe au-dessus des deux groupes d'icônes */
+  flex: 0 0 100%;
+  width: 100%;
+  padding: 0 4px;
+}
+/* Le champ ne pousse plus le groupe de droite : on le recolle au bord. */
+.search-bar.expanded > .action-group:last-child { margin-left: auto; }
+
+.search-bar #chat-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Quick Model Toggle Pill (inside Search Bar) */
+.quick-model-toggle {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-right: 8px;
+  /* Ne pas rétrécir le groupe d'actions/pastille : c'est le champ qui cède. */
+  flex-shrink: 0;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body[data-bar-size="petit"] .quick-model-toggle { max-width: 92px; }
+
+.quick-model-toggle:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+body.theme-light-forced .quick-model-toggle {
+  background: rgba(0, 0, 0, 0.045);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #1c1c1e;
+}
+body.theme-light-forced .quick-model-toggle:hover {
+  color: #000;
+  background: rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Préchargement du modèle : bouton discret juste après le sélecteur de modèle.
+   Volontairement effacé (faible opacité), s'éclaire au survol. */
+.quick-model-toggle { margin-right: 4px; }
+.model-preload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin-right: 8px;
+  border: none;
+  border-radius: 99px;
+  background: transparent;
+  color: var(--text-muted);
+  opacity: 0.45;
+  cursor: pointer;
+  transition: opacity 0.2s, background 0.2s, color 0.2s;
+}
+.model-preload-btn:hover {
+  opacity: 1;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.08);
+}
+.model-preload-btn.loading {
+  opacity: 1;
+  color: var(--accent-ink);
+  animation: preload-spin 0.9s linear infinite;
+}
+@keyframes preload-spin { to { transform: rotate(360deg); } }
+body[data-bar-size="petit"] .model-preload-btn { margin-right: 4px; }
+
+/* Action buttons group */
+.action-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  /* Toujours visible en entier : jamais compressé par le champ ou la pastille. */
+  flex-shrink: 0;
+}
+
+/* Small bar: tighten spacing so the close button never overflows the capsule. */
+body[data-bar-size="petit"] .search-bar {
+  padding: 8px 8px 8px 12px;
+}
+body[data-bar-size="petit"] .search-bar #chat-input {
+  padding: 8px 8px;
+}
+body[data-bar-size="petit"] .quick-model-toggle {
+  margin-right: 4px;
+  padding: 5px 9px;
+}
+body[data-bar-size="petit"] .action-group {
+  gap: 2px;
+}
+
+.submit-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: none;
+}
+
+.submit-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+}
+
+.close-btn {
+  background: rgba(255, 95, 87, 0.55);
+  border: 1px solid rgba(255, 95, 87, 0.35);
+  color: rgba(80, 0, 0, 0.55);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  color: rgba(60, 0, 0, 0.85);
+  background: rgba(255, 95, 87, 0.9);
+  border-color: rgba(255, 95, 87, 0.6);
+}
+
+/* Chat history panel */
+.messages-container {
+  display: none;
+  position: relative; /* ancre la barre d'export des messages sélectionnés */
+  flex-direction: column;
+  max-height: 420px;
+  margin-top: 12px;
+  background: rgba(255, 255, 255, calc(var(--glass-opacity) - 0.005));
+  backdrop-filter: blur(50px) saturate(220%);
+  -webkit-backdrop-filter: blur(50px) saturate(220%);
+  will-change: backdrop-filter;
+  transform: translateZ(0);
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    inset 0 1px 0 0 var(--glass-highlight),
+    var(--shadow-3);
+  overflow: hidden;
+  animation: expandDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.messages-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.chat-status-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Context usage indicator */
+.context-meter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  cursor: default;
+  transition: color 0.3s;
+}
+.context-meter[hidden] { display: none; }
+.context-meter-bar {
+  width: 56px;
+  height: 4px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.context-meter-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 99px;
+  background: #10b981;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+.context-meter-label { font-variant-numeric: tabular-nums; min-width: 28px; text-align: right; }
+/* States */
+.context-meter.warn { color: #ff9e6b; }
+.context-meter.warn .context-meter-fill { background: #ff9e6b; }
+.context-meter.danger { color: #ef4444; }
+.context-meter.danger .context-meter-fill { background: #ef4444; }
+
+/* Inline system note inside the chat (context warnings, etc.) */
+.context-note {
+  align-self: center;
+  max-width: 90%;
+  margin: 4px auto;
+  padding: 8px 12px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  background: rgba(255, 158, 107, 0.08);
+  border: 1px solid rgba(255, 158, 107, 0.2);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.icon-btn-text {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-family: var(--font-main);
+  transition: all 0.2s;
+}
+
+.icon-btn-text:hover {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.messages-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+/* Scrollbar */
+.messages-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.messages-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 99px;
+}
+
+/* Chat bubble card styles */
+.message-bubble {
+  padding: 12px 16px;
+  border-radius: var(--radius-xl);
+  max-width: 88%;
+  line-height: 1.55;
+  font-size: 13px;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.message-bubble.user {
+  align-self: flex-end;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.message-bubble.assistant {
+  align-self: flex-start;
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.95);
+  border-bottom-left-radius: 4px;
+}
+
+/* Vignettes d'images jointes dans une bulle utilisateur */
+.message-bubble .msg-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.message-bubble .msg-images img {
+  max-width: 160px;
+  max-height: 160px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  object-fit: cover;
+}
+
+/* Puce d'un document joint à la discussion (à côté des vignettes d'image). */
+.attach-doc {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 160px;
+  padding: 4px 6px 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--text-main);
+  background: color-mix(in oklab, currentColor 8%, transparent);
+  border: 1px solid color-mix(in oklab, currentColor 16%, transparent);
+  flex: 0 0 auto;
+}
+/* Document indexé (trop long pour le contexte) : liseré à l'accent, pour que la
+   différence de régime se voie sans survoler la puce. */
+.attach-doc.is-indexed {
+  border-color: color-mix(in oklab, var(--primary) 45%, transparent);
+  background: color-mix(in oklab, var(--primary) 12%, transparent);
+}
+.attach-doc-ic { display: flex; }
+.attach-doc-ic svg { width: 12px; height: 12px; }
+.attach-doc-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.attach-doc .attach-remove {
+  position: static;
+  width: 14px;
+  height: 14px;
+  line-height: 12px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 0;
+}
+.attach-doc .attach-remove:hover { opacity: 1; }
+
+/* Survol d'un glisser-déposer d'image au-dessus de la barre. */
+.search-bar.drop-target {
+  outline: 2px dashed color-mix(in oklab, var(--primary) 55%, transparent);
+  outline-offset: 3px;
+}
+
+/* Champ de fichier du bouton trombone : il doit rester dans le rendu pour que
+   le sélecteur natif s'ouvre, d'où ce masquage par la taille et non par
+   `display:none`. */
+.visually-hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+  opacity: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+
+/* Aperçu des images jointes dans la barre (avant envoi) */
+.attach-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 4px;
+}
+.attach-preview[hidden] { display: none; }
+.attach-thumb {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  flex: 0 0 auto;
+}
+.attach-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.attach-thumb .attach-remove {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 15px;
+  height: 15px;
+  line-height: 13px;
+  text-align: center;
+  border: none;
+  border-radius: 0 0 0 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+.attach-btn.has-images { color: var(--accent, #3b82f6); }
+
+.message-bubble pre {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: var(--radius-lg);
+  margin: 10px 0;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.message-bubble code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11.5px;
+}
+
+/* Markdown rendering inside message bubbles */
+.message-bubble :not(pre) > code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+}
+.message-bubble h1,
+.message-bubble h2,
+.message-bubble h3,
+.message-bubble h4,
+.message-bubble h5,
+.message-bubble h6 {
+  margin: 8px 0 4px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.message-bubble h1 { font-size: 1.4em; }
+.message-bubble h2 { font-size: 1.25em; }
+.message-bubble h3 { font-size: 1.12em; }
+.message-bubble h4,
+.message-bubble h5,
+.message-bubble h6 { font-size: 1em; }
+.message-bubble ul,
+.message-bubble ol {
+  margin: 6px 0;
+  padding-left: 22px;
+}
+.message-bubble li {
+  margin: 2px 0;
+}
+.message-bubble blockquote {
+  margin: 6px 0;
+  padding: 2px 12px;
+  border-left: 3px solid var(--accent-color, #3b82f6);
+  opacity: 0.85;
+}
+.message-bubble hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 10px 0;
+}
+.message-bubble a {
+  color: var(--accent-color, #3b82f6);
+  text-decoration: underline;
+}
+.message-bubble strong { font-weight: 600; }
+.message-bubble em { font-style: italic; }
+.message-bubble table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  font-size: 12.5px;
+}
+.message-bubble th,
+.message-bubble td {
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  vertical-align: top;
+}
+.message-bubble th {
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 600;
+}
+.message-bubble img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin: 10px 0;
+}
+.message-bubble .md-math-inline,
+.message-bubble .md-math-block {
+  font-family: ui-serif, Georgia, "Times New Roman", serif;
+  font-size: 0.98em;
+  color: inherit;
+}
+.message-bubble .md-math-inline {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  max-width: 100%;
+  padding: 0 4px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.07);
+  white-space: nowrap;
+}
+.message-bubble .md-math-block {
+  display: block;
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-x: auto;
+  text-align: center;
+  white-space: nowrap;
+}
+.message-bubble .md-math-text {
+  font-family: inherit;
+  font-style: normal;
+}
+.message-bubble .md-frac {
+  display: inline-grid;
+  grid-template-rows: auto auto;
+  align-items: center;
+  margin: 0 2px;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 1.1;
+}
+.message-bubble .md-frac > span:first-child {
+  border-bottom: 1px solid currentColor;
+  padding: 0 3px 1px;
+}
+.message-bubble .md-frac > span:last-child {
+  padding: 1px 3px 0;
+}
+
+body.theme-light-forced .message-bubble th,
+body.theme-light-forced .message-bubble td {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+body.theme-light-forced .message-bubble th,
+body.theme-light-forced .message-bubble .md-math-inline,
+body.theme-light-forced .message-bubble .md-math-block {
+  background: rgba(0, 0, 0, 0.05);
+}
+body.theme-light-forced .message-bubble .md-math-block {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Action validation card styles */
+.action-validation-card {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+  max-width: 88%;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+body.theme-light-forced .action-validation-card {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #1c1c1e;
+}
+
+.action-card-header {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-card-body {
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.action-card-footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.action-btn-confirm {
+  background: var(--primary-glow) !important;
+  color: var(--primary-foreground) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 6px 14px !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  transition: all 0.2s;
+}
+
+.action-btn-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+}
+
+.action-btn-cancel {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-main) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 6px 14px !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+body.theme-light-forced .action-btn-cancel {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.action-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Overflow toolbar — holds the tool buttons collapsed in small/medium bar sizes.
+   Deploys as a floating glass row just below the bar. */
+.toolbar-overflow {
+  position: absolute;
+  top: 56px;
+  left: 8px;
+  z-index: 15;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: rgba(28, 28, 32, 0.55);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+  transform: translateY(-6px) scale(0.96);
+  transform-origin: top left;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.toolbar-overflow.open {
+  display: flex;
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0) scale(1);
+}
+body.theme-light-forced .toolbar-overflow {
+  background: rgba(245, 245, 248, 0.6);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+/* The collapsed Action button is hidden until shortcut mode — keep it laid out
+   the same way inside the overflow (its inline display:none/flex still applies). */
+.more-btn.active {
+  color: var(--text-main) !important;
+}
+
+/* Settings panel overlays */
+.settings-panel {
+  position: absolute;
+  top: 58px;
+  left: 0;
+  width: 100%;
+  /* Panel starts at top:58px, so its height must leave that offset (plus a
+     small bottom margin) or it overflows past the window bottom — worse when a
+     large avatar pushes the bar down. The settings-body padding-bottom keeps
+     the last button clear of the scroll edge. */
+  max-height: calc(100% - 66px);
+  min-height: 0;
+  overflow-y: auto;
+  background: rgba(18, 18, 20, 0.45);
+  backdrop-filter: blur(50px) saturate(180%);
+  -webkit-backdrop-filter: blur(50px) saturate(180%);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.98);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 20px;
+}
+
+.settings-panel.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0) scale(1);
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+/* ===== Boîte à outils intégrée : grille compacte d'apps sous la barre ===== */
+.toolbox-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding-bottom: 16px;
+}
+.toolbox-item {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 11px 6px 9px;
+  border: 1px solid transparent; border-radius: var(--radius-xl); cursor: pointer;
+  background: transparent; color: var(--text-main, #fff);
+  font: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.toolbox-item:hover {
+  background: color-mix(in srgb, var(--text-main, #fff) 7%, transparent);
+  border-color: color-mix(in srgb, var(--text-main, #fff) 9%, transparent);
+}
+.toolbox-item:focus-visible {
+  outline: 2px solid var(--accent-color, #007aff);
+  outline-offset: 2px;
+}
+.toolbox-item:active { transform: scale(0.96); }
+.toolbox-item .tb-ic {
+  width: 40px; height: 40px; border-radius: var(--radius-lg);
+  display: grid; place-items: center; color: #fff;
+  background: var(--muted);
+  box-shadow: 0 6px 14px -7px color-mix(in srgb, var(--c1) 70%, #000), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.toolbox-item .tb-ic svg { width: 20px; height: 20px; }
+.toolbox-item .tb-name {
+  font-size: 11px; font-weight: 500; letter-spacing: -0.01em;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: color-mix(in srgb, var(--text-main, #fff) 88%, transparent);
+}
+
+/* --- Personnalisation de la boîte à outils --------------------------------
+   En mode édition la grille montre TOUT le catalogue : les apps non retenues
+   restent lisibles mais visiblement éteintes, et une pastille marque celles
+   qui seront affichées. */
+.settings-header-actions { display: flex; align-items: center; gap: 6px; }
+.settings-header-actions .icon-btn.active {
+  background: color-mix(in srgb, var(--accent-color, #007aff) 18%, transparent);
+  color: var(--accent-color, #007aff);
+}
+.toolbox-grid.is-editing .toolbox-item { cursor: pointer; }
+.toolbox-item.is-off .tb-ic { filter: grayscale(1); opacity: 0.42; }
+.toolbox-item.is-off .tb-name { opacity: 0.55; }
+.toolbox-item .tb-ic { position: relative; }
+.toolbox-item .tb-check {
+  position: absolute; right: -4px; bottom: -4px;
+  width: 16px; height: 16px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 10px; font-weight: 700; line-height: 1;
+  /* La pastille reprend la couleur de l'app plutôt que --accent-color : selon
+     le thème, l'accent peut retomber sur un gris de jeton (--primary) et la
+     coche deviendrait indistincte d'une tuile éteinte. */
+  color: #fff; background: var(--c1, #007aff);
+  /* Anneau de la couleur du PANNEAU, pour détacher la pastille de l'icône :
+     il doit donc suivre le thème clair/sombre, pas rester noir en mode clair. */
+  border: 2px solid var(--tb-check-ring, #161619);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+body { --tb-check-ring: #161619; }
+body.theme-light-forced { --tb-check-ring: #f2f2f4; }
+@media (prefers-color-scheme: light) {
+  body:not(.theme-dark-forced) {
+    --tb-check-ring: #f2f2f4;
+  }
+}
+body.bar-opaque { --tb-check-ring: var(--panel-opaque-bg); }
+.toolbox-item.is-off .tb-check {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--text-main, #fff) 35%, transparent);
+}
+.toolbox-edit-hint { margin: -6px 0 12px; }
+.toolbox-empty {
+  grid-column: 1 / -1; margin: 0; padding: 18px 4px;
+  text-align: center; font-size: 12px;
+  color: color-mix(in srgb, var(--text-main, #fff) 60%, transparent);
+}
+
+.settings-header h2 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+}
+
+.settings-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* WebKit ignores a scroll container's own bottom padding, which clips the
+     last button. Pad the scrolling content itself so it never gets cut off. */
+  padding-bottom: 24px;
+}
+
+/* Settings tabs */
+.settings-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--text-main, #fff) 6%, transparent);
+}
+.settings-tab {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-muted, rgba(255, 255, 255, 0.55));
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.settings-tab:hover { color: var(--text-main, #fff); }
+.settings-tab.active {
+  background: color-mix(in srgb, var(--text-main, #fff) 14%, transparent);
+  color: var(--text-main, #fff);
+}
+.settings-tab-pane { display: none; flex-direction: column; gap: 14px; }
+.settings-tab-pane.active { display: flex; }
+
+/* Barre étroite : les onglets deviennent un menu déroulant. */
+.settings-tab-dropdown {
+  display: none;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--text-main, #fff) 12%, transparent);
+  background: color-mix(in srgb, var(--text-main, #fff) 6%, transparent);
+  color: var(--text-main, #fff);
+  font-size: 13px;
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .settings-tabs { display: none; }
+  .settings-tab-dropdown { display: block; }
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.setting-item label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Select tag glass styling */
+.setting-item select {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 10px 14px !important;
+  color: #ffffff !important;
+  font-family: var(--font-main) !important;
+  font-size: 13px !important;
+  outline: none !important;
+  transition: all 0.2s;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+}
+
+.setting-item select option {
+  background: #141416;
+  color: #ffffff;
+}
+
+.setting-item input[type="text"],
+.setting-item textarea {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 10px 14px !important;
+  color: #ffffff !important;
+  font-family: var(--font-main) !important;
+  font-size: 13px !important;
+  outline: none !important;
+  transition: all 0.2s;
+}
+
+.setting-item textarea {
+  resize: vertical;
+  min-height: 54px;
+  line-height: 1.45;
+}
+
+.setting-item input[type="text"]:focus,
+.setting-item textarea:focus,
+.setting-item select:focus {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Transparency range slider styling */
+.setting-item input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  cursor: pointer;
+  box-shadow: var(--flat-shadow-md);
+  transition: transform 0.1s;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+/* Saveur Raspberry Pi : masque le choix de source d'IA et la carte « Modèle Apple »
+   (la source Ollama est forcée par le build). */
+/* Pi : pas d'Apple Intelligence → on masque la carte « Modèle Apple », mais on
+   garde le sélecteur de source visible (Ollama + API cloud restent choisissables). */
+body.flavor-rpi .source-card[data-source="shortcut"],
+body.flavor-linux-standard .source-card[data-source="shortcut"],
+body.flavor-windows .source-card[data-source="shortcut"] { display: none; }
+
+/* Pi : on rend la fenêtre principale OPAQUE (la transparence WebKitGTK n'est pas
+/* VRAIE barre flottante : un compositeur X11 (picom) compose l'alpha, donc la
+   fenêtre est TRANSPARENTE — seuls la barre, l'orbe et les panneaux (opaques)
+   s'affichent, le reste laisse voir le bureau. ⚠️ NÉCESSITE picom actif (sinon
+   fond noir) → à mettre en autostart. */
+body.flavor-rpi {
+  background: transparent !important;
+  /* La barre n'a pas de `backdrop-filter` (bug WebKitGTK) : fond quasi opaque
+     pour rester lisible sur le bureau. Les thèmes d'avatar (rubis…) surchargent
+     --glass-bg avec leur teinte opaque. */
+  --glass-bg: rgba(255, 255, 255, 0.92);
+}
+body.flavor-rpi.theme-light-forced { --glass-bg: rgba(255, 255, 255, 0.95); }
+body.flavor-rpi.theme-dark-forced { --glass-bg: rgba(34, 34, 40, 0.94); }
+body.flavor-rpi .bar-area { background: transparent; }
+/* Panneaux & chat : fond opaque (illisibles sans le flou sur fond transparent). */
+body.flavor-rpi .messages-container,
+body.flavor-rpi .settings-panel,
+body.flavor-rpi .toolbar-overflow,
+body.flavor-rpi .mode-menu {
+  background: var(--glass-bg) !important;
+}
+
+/* CAUSE RACINE Pi : `backdrop-filter` (verre flouté) est buggé/incohérent sur
+   WebKitGTK → la barre de chat et l'orbe-frost ne peignent pas leur fond et
+   deviennent INVISIBLES (d'où « pas de barre », et juste le fond du thème). On
+   le désactive sur tous les éléments « verre » : ils utilisent alors leur fond
+   solide (--glass-bg, teinté par le thème). */
+body.flavor-rpi .search-bar,
+body.flavor-rpi .messages-container,
+body.flavor-rpi .settings-panel,
+body.flavor-rpi .toolbar-overflow,
+body.flavor-rpi .mode-menu,
+body.flavor-rpi .orb-frost,
+body.flavor-linux-standard .search-bar,
+body.flavor-linux-standard .messages-container,
+body.flavor-linux-standard .settings-panel,
+body.flavor-linux-standard .toolbar-overflow,
+body.flavor-linux-standard .mode-menu,
+body.flavor-linux-standard .orb-frost {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  will-change: auto !important;
+}
+/* La barre garde une forme de capsule nette, jamais étirée à toute la fenêtre. */
+body.flavor-rpi .search-bar,
+body.flavor-linux-standard .search-bar {
+  background: var(--glass-bg);
+  flex: 0 0 auto;
+  align-self: stretch;
+  animation: none !important;
+}
+body.flavor-rpi .orb-frost,
+body.flavor-linux-standard .orb-frost {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* WebKitGTK (Pi ET Ubuntu/VM) : un `filter: blur()` promeut l'élément en couche de
+   compositing que le compositeur peint en BOÎTE OPAQUE (fond de page) sur beaucoup
+   de configs sans GPU réel (ex. VirtualBox) → un carré bleu apparaît autour de
+   l'orbe (lueur ambiante `.glowing-orb`) et une boîte sous l'orbe (`.orb-shadow`).
+   Même famille de bug que `backdrop-filter`. On retire donc ces flous décoratifs
+   sur Linux : la lueur ambiante bleue est purement cosmétique → masquée ; l'ombre
+   au sol garde sa forme via le seul dégradé radial, sans flou. */
+body.flavor-rpi .glowing-orb,
+body.flavor-linux-standard .glowing-orb { display: none !important; }
+body.flavor-rpi .orb-shadow,
+body.flavor-linux-standard .orb-shadow { filter: none !important; }
+
+body.flavor-rpi .search-bar,
+body.flavor-linux-standard .search-bar {
+  box-shadow: none !important;
+}
+
+/* Ubuntu / Linux standard : même moteur WebKitGTK que le Pi → le `backdrop-filter`
+   du verre dépoli n'est pas peint, la barre devient invisible. On garde la
+   transparence de la fenêtre (le compositeur Ubuntu la gère), mais la barre et
+   les panneaux reçoivent un fond solide `--glass-bg` (sinon ils sont vides). */
+/* ⚠️ `!important` obligatoire : `body.theme-dark-forced` redéfinit --glass-bg
+   en `!important` (≈ rgba blanc 0.02, invisible). Et en thème sombre le texte
+   est blanc → il faut un fond SOMBRE opaque, pas blanc. On cible chaque thème
+   avec une spécificité ≥ pour gagner le cascade. */
+body.flavor-linux-standard {
+  --glass-bg: rgba(255, 255, 255, 0.92) !important;
+}
+body.flavor-linux-standard.theme-light-forced { --glass-bg: rgba(255, 255, 255, 0.95) !important; }
+body.flavor-linux-standard.theme-dark-forced { --glass-bg: rgba(34, 34, 40, 0.94) !important; }
+body.flavor-linux-standard .messages-container,
+body.flavor-linux-standard .settings-panel,
+body.flavor-linux-standard .toolbar-overflow,
+body.flavor-linux-standard .mode-menu {
+  background: var(--glass-bg) !important;
+}
+/* Barre TRANSPARENTE (option « barre opaque » décochée dans les Réglages) : le
+   fond suit le SLIDER « transparence du verre » (--glass-opacity). Comme le
+   backdrop-filter est désactivé sur WebKitGTK, on ajoute un petit plancher (+0.05
+   clair / +0.10 sombre) pour la lisibilité ; la bordure + les icônes donnent la
+   forme de capsule flottante. Nécessite un compositeur (picom) pour la fenêtre.
+   Cocher « barre opaque » repasse au fond plein (--glass-bg) défini plus haut. */
+body.flavor-rpi:not(.bar-opaque) .search-bar,
+body.flavor-linux-standard:not(.bar-opaque) .search-bar {
+  background: rgba(255, 255, 255, calc(var(--glass-opacity) + 0.05)) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+body.flavor-rpi.theme-dark-forced:not(.bar-opaque) .search-bar,
+body.flavor-linux-standard.theme-dark-forced:not(.bar-opaque) .search-bar {
+  background: rgba(30, 30, 36, calc(var(--glass-opacity) + 0.10)) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Sur Pi, Bonsai (MLX) ne tourne pas en local : on masque le téléchargement et
+   le lancement de l'API locale, seul le champ « URL du backend » (machine
+   distante) reste pertinent. */
+/* Bonsai local = MLX (Apple Silicon uniquement) → inutile sur tout Linux : on
+   masque téléchargement/lancement de l'API locale, seul le champ URL distante sert. */
+body.flavor-rpi .bonsai-local-only,
+/* ---------------------------------------------------------------------------
+   Linux + pilote NVIDIA propriétaire.
+
+   Même cause que le repli « verre dépoli » ci-dessus, poussée à l'extrême :
+   l'import DMABUF cassé du pilote fait que toute couche de compositing promue
+   par WebKitGTK est mal peinte — fond noir au lieu du contenu (les « ombres
+   noires »), tuiles jamais réeffacées (rémanence, traînées), et un coût de
+   recomposition qui fait ramer toute la fenêtre. Le correctif principal est
+   côté Rust (WEBKIT_DISABLE_DMABUF_RENDERER=1 auto sur NVIDIA) ; ici on retire
+   ce qui PROMEUT une couche : filter, backdrop-filter, will-change,
+   mix-blend-mode et les animations décoratives permanentes.
+
+   Règle à tenir : tout nouvel effet de ce genre doit être neutralisé ici comme
+   il l'est sous flavor-rpi / flavor-linux-standard.
+   --------------------------------------------------------------------------- */
+body.gpu-nvidia *,
+body.gpu-nvidia *::before,
+body.gpu-nvidia *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  mix-blend-mode: normal !important;
+  will-change: auto !important;
+}
+
+/* `filter` porte aussi des usages fonctionnels (icônes inversées en thème
+   sombre) : on ne coupe que les flous et lueurs décoratifs, nommément. */
+body.gpu-nvidia .glowing-orb,
+body.gpu-nvidia .orb-glow,
+body.gpu-nvidia .orb-halo { display: none !important; }
+body.gpu-nvidia .orb-shadow,
+body.gpu-nvidia .search-bar,
+body.gpu-nvidia .messages-container,
+body.gpu-nvidia .settings-panel,
+body.gpu-nvidia .toolbar-overflow,
+body.gpu-nvidia .mode-menu,
+body.gpu-nvidia .orb-frost { filter: none !important; }
+
+/* Une animation infinie garde la couche vivante : sur ce pilote elle se traduit
+   en repeinte permanente de toute la fenêtre. Les transitions ponctuelles, qui
+   se terminent, restent. */
+body.gpu-nvidia .search-bar,
+body.gpu-nvidia .orb-frost,
+body.gpu-nvidia .orb-shadow { animation: none !important; }
+
+body.flavor-linux-standard .bonsai-local-only { display: none; }
+
+/* Section Synthèse vocale Piper : visible uniquement sur le build Pi. */
+#tts-settings { display: none; }
+body.flavor-rpi #tts-settings,
+body.flavor-linux-standard #tts-settings { display: block; }
+.tts-voice-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 10px; border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.05); }
+.tts-voice-meta { font-size: 12.5px; overflow: hidden; }
+.tts-voice-meta small { opacity: 0.55; }
+.tts-voice-btn { border: none; cursor: pointer; flex-shrink: 0; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: var(--radius-sm); background: rgba(52, 199, 89, 0.15); color: #34c759; transition: background 0.2s; }
+.tts-voice-btn:hover { background: rgba(52, 199, 89, 0.28); }
+.tts-voice-btn.installed { background: rgba(255, 255, 255, 0.08); color: var(--text-color); }
+.tts-voice-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* Checkbox alignment */
+.checkbox-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+/* Cases à cocher des réglages stylées en interrupteur (couleur nette à l'activation) */
+.checkbox-row input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: 42px;
+  height: 25px;
+  margin: 0;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  background: rgba(120, 120, 128, 0.32);
+  transition: background 0.25s ease;
+}
+.checkbox-row input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.25s cubic-bezier(0.3, 1.3, 0.6, 1);
+}
+.checkbox-row input[type="checkbox"]:checked {
+  background: #34c759;
+  box-shadow: 0 0 10px rgba(52, 199, 89, 0.45);
+}
+.checkbox-row input[type="checkbox"]:checked::before {
+  transform: translateX(17px);
+}
+.checkbox-row input[type="checkbox"]:focus-visible {
+  outline: 2px solid rgba(153, 97, 255, 0.6);
+  outline-offset: 2px;
+}
+
+.checkbox-row label {
+  cursor: pointer;
+  margin-top: 0;
+}
+
+/* Modèles chargés en mémoire */
+.loaded-models-head { display: flex; align-items: center; justify-content: space-between; }
+.loaded-refresh-btn {
+  border: none; background: transparent; color: inherit; cursor: pointer;
+  font-size: 16px; line-height: 1; padding: 2px 6px; border-radius: var(--radius-sm); opacity: 0.7;
+}
+.loaded-refresh-btn:hover { opacity: 1; background: rgba(255, 255, 255, 0.08); }
+.loaded-models-list { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.loaded-empty { font-size: 12px; opacity: 0.55; padding: 4px 0; }
+.loaded-model-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 6px 10px; border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.05);
+}
+.loaded-model-name { font-size: 12.5px; font-family: ui-monospace, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.loaded-stop-btn {
+  border: none; cursor: pointer; flex-shrink: 0;
+  background: rgba(255, 77, 79, 0.15); color: #ff6b6d;
+  font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: var(--radius-sm);
+  transition: background 0.2s;
+}
+.loaded-stop-btn:hover { background: rgba(255, 77, 79, 0.28); }
+.loaded-stop-btn:disabled { opacity: 0.5; cursor: default; }
+
+.settings-save-btn {
+  margin-top: 8px;
+  background: var(--primary-glow) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: var(--radius-xl) !important;
+  padding: 11px !important;
+  color: var(--primary-foreground) !important;
+  font-family: var(--font-main) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2) !important;
+  transition: all 0.2s !important;
+}
+
+/* Le bouton secondaire troque le fond plein du bouton principal contre un fond
+   quasi transparent — mais il héritait encore de `--primary-foreground`, la
+   couleur de texte prévue POUR ce fond plein. En thème sombre ce jeton vaut un
+   gris très foncé (il est fait pour un bouton clair) : le libellé devenait donc
+   sombre sur sombre, à peine lisible. `--foreground` suit le thème dans les deux
+   sens, ce qui est exactement ce qu'il faut ici. */
+.settings-save-btn.secondary-action {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+
+.settings-save-btn.secondary-action:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Light theme: secondary buttons have a light background, so use dark text */
+body.theme-light-forced .settings-save-btn.secondary-action {
+  color: #1c1c1e !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+body.theme-light-forced .settings-save-btn.secondary-action:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ===== Onboarding / Setup wizard ===== */
+.onboarding-panel {
+  z-index: 20;
+}
+
+.onboarding-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.onboarding-steps .dot {
+  width: 22px;
+  height: 4px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+.onboarding-steps .dot.active {
+  background: var(--accent-color, #3b82f6);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+.onboarding-steps .dot.done {
+  background: rgba(52, 211, 153, 0.8);
+}
+
+.onboarding-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.onboarding-step { animation: fadeStep 0.35s ease; }
+@keyframes fadeStep {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.onboarding-hero {
+  text-align: center;
+  padding: 14px 8px 8px;
+}
+.onboarding-hero-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--accent-color, #3b82f6);
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+.onboarding-hero-icon.success {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.3);
+}
+.onboarding-hero h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main, #fff);
+  margin-bottom: 10px;
+}
+.onboarding-hero p {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-width: 88%;
+  margin: 0 auto 8px;
+}
+.onboarding-note {
+  font-size: 11px !important;
+  opacity: 0.7;
+}
+.onboarding-intro {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+.onboarding-intro strong { color: var(--text-main, #fff); }
+
+.onboarding-doc {
+  margin: 0 0 16px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.onboarding-doc li {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.onboarding-doc strong { color: var(--text-main, #fff); }
+
+/* Dictation hint toast */
+.dictation-hint {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  max-width: 80%;
+  padding: 10px 16px;
+  border-radius: var(--radius-xl);
+  background: rgba(28, 28, 30, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 50;
+}
+.dictation-hint.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+/* Barre claire : le fond de la bulle suit le thème (blanc en mode opaque, ou
+   surface du thème d'orbe). Le `color: #fff` ci-dessus la rendait alors
+   invisible — blanc sur blanc — pour TOUS les messages d'information (badge
+   RFID, synthèse vocale, indexation d'un document). Le texte suit donc
+   maintenant --text-main, et le fond clair est explicite en thème clair. */
+body.theme-light-forced .dictation-hint,
+body.bar-opaque.theme-light-forced .dictation-hint {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+}
+@media (prefers-color-scheme: light) {
+  body:not(.theme-dark-forced) .dictation-hint {
+    background: rgba(255, 255, 255, 0.96);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+  }
+}
+body.theme-light-forced .dictation-hint,
+body.bar-opaque .dictation-hint {
+  color: var(--text-main, #fff);
+}
+@media (prefers-color-scheme: light) {
+  body:not(.theme-dark-forced) .dictation-hint {
+    color: var(--text-main, #1c1c1e);
+  }
+}
+
+/* Feature explanation list */
+.feature-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+.feature-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+.feature-list .feature-ic {
+  flex-shrink: 0;
+  width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent, #5b8def);
+}
+.feature-list .feature-ic svg { width: 19px; height: 19px; display: block; }
+.feature-list strong { color: var(--text-main, #fff); font-weight: 600; }
+body.theme-light-forced .feature-list strong { color: #1c1c1e; }
+
+/* Shortcut install cards */
+.shortcut-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.shortcut-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-xl);
+}
+.shortcut-card-info { flex: 1; min-width: 0; }
+.shortcut-card-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main, #fff);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.shortcut-card-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.shortcut-status {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.shortcut-status.ok {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.15);
+}
+.shortcut-status.missing {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+}
+.shortcut-install-btn {
+  flex-shrink: 0;
+  font-family: var(--font-main);
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  color: var(--primary-foreground);
+  background: var(--primary-glow);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.2s;
+}
+.shortcut-install-btn:hover { filter: brightness(1.1); }
+.shortcut-install-btn.installed {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: rgba(52, 211, 153, 0.3);
+  color: #34d399;
+}
+
+.onboarding-secondary-btn {
+  width: 100%;
+  font-family: var(--font-main);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 11px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  color: var(--text-main, #fff);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s;
+}
+.onboarding-secondary-btn:hover { background: rgba(255, 255, 255, 0.12); }
+
+/* Footer nav */
+.onboarding-footer {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.onboarding-nav-btn {
+  flex: 1;
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 11px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.onboarding-nav-btn.primary {
+  color: var(--primary-foreground);
+  background: var(--primary-glow);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+}
+.onboarding-nav-btn.primary:hover { filter: brightness(1.1); }
+.onboarding-nav-btn.ghost {
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.onboarding-nav-btn.ghost:hover { background: rgba(255, 255, 255, 0.08); }
+.onboarding-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* Light theme adjustments */
+body.theme-light-forced .onboarding-hero h3,
+body.theme-light-forced .shortcut-card-name,
+body.theme-light-forced .onboarding-intro strong,
+body.theme-light-forced .onboarding-doc strong { color: #1c1c1e; }
+body.theme-light-forced .shortcut-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
+body.theme-light-forced .onboarding-secondary-btn,
+body.theme-light-forced .onboarding-nav-btn.ghost { color: #1c1c1e; background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); }
+
+/* Saved conversations history list */
+.conversations-list-container {
+  max-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+.conversation-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.conversation-history-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.conversation-history-title {
+  font-size: 12.5px;
+  color: #ffffff;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.conversation-model-badge {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2px 7px;
+  border-radius: 99px;
+  margin: 0 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== Classement des discussions : dossiers, épingles, résumés ===== */
+/*
+ * Toutes les couleurs de ce bloc passent par des jetons posés sur le panneau.
+ * Première version écrite en dur pour le verre sombre (#fff, fonds blancs
+ * translucides) : en thème clair, le nom d'un dossier devenait du blanc sur
+ * blanc — il ne restait que sa pastille de couleur. Les deux thèmes clairs
+ * (préférence système et thème forcé) n'ont donc plus qu'à redéfinir ces
+ * quelques valeurs, au lieu de dupliquer chaque règle.
+ */
+#history-panel {
+  --conv-fg: #ffffff;
+  --conv-muted: var(--text-muted);
+  --conv-surface: rgba(255, 255, 255, 0.05);
+  --conv-surface-hover: rgba(255, 255, 255, 0.1);
+  --conv-surface-active: rgba(255, 255, 255, 0.14);
+  --conv-border: rgba(255, 255, 255, 0.06);
+  --conv-border-strong: rgba(255, 255, 255, 0.18);
+  --conv-menu-bg: rgba(24, 26, 34, 0.98);
+  --conv-menu-shadow: rgba(0, 0, 0, 0.45);
+}
+
+.conv-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding-bottom: 2px;
+}
+
+.conv-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--conv-muted);
+  background: var(--conv-surface);
+  border: 1px solid var(--conv-border);
+  padding: 3px 9px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.conv-filter-chip:hover { background: var(--conv-surface-hover); }
+
+.conv-filter-chip.active {
+  color: var(--conv-fg);
+  background: var(--conv-surface-active);
+  border-color: var(--conv-border-strong);
+}
+
+.conv-filter-chip.ghost { background: transparent; border-color: transparent; }
+.conv-filter-chip.ghost:hover { background: var(--conv-surface-hover); color: var(--conv-fg); }
+
+.conv-folder-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--chip-color, var(--conv-muted));
+  flex-shrink: 0;
+}
+
+.conv-folder-input {
+  font-size: 11px;
+  color: var(--conv-fg);
+  background: var(--conv-surface-hover);
+  border: 1px solid var(--conv-border-strong);
+  border-radius: 99px;
+  padding: 3px 10px;
+  outline: none;
+  width: 120px;
+}
+
+/* L'élément passe en grille : titre + actions sur une ligne, résumé dessous. */
+.conversation-history-item {
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.conversation-history-item.pinned {
+  border-color: var(--conv-border-strong);
+  background: var(--conv-surface);
+}
+
+.conversation-history-main {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Le nom du dossier doit rester lisible : c'est le seul texte de la pastille,
+   la couleur ne sert qu'à la reconnaître d'un coup d'œil. */
+.conv-folder-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--conv-muted);
+  background: var(--conv-surface-hover);
+  border-radius: 99px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-conv-icon {
+  background: transparent;
+  border: none;
+  color: var(--conv-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.btn-conv-icon:hover { color: var(--conv-fg); background: var(--conv-surface-hover); }
+.btn-conv-icon.on { color: #e0a12a; }
+.btn-conv-icon.busy { opacity: 0.5; }
+
+.conv-summary {
+  flex-basis: 100%;
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--conv-muted);
+}
+
+.conv-empty {
+  font-size: 12px;
+  color: var(--conv-muted);
+  text-align: center;
+  display: block;
+  padding: 12px;
+}
+
+/* Le menu de rangement se pose SUR la fiche : le panneau d'historique défile,
+   un menu en position fixe s'en détacherait au premier coup de molette. */
+.conv-folder-menu {
+  position: absolute;
+  right: 8px;
+  top: calc(100% - 4px);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 150px;
+  padding: 6px;
+  border-radius: var(--radius-lg);
+  background: var(--conv-menu-bg);
+  border: 1px solid var(--conv-border-strong);
+  box-shadow: 0 12px 32px var(--conv-menu-shadow);
+}
+
+.conv-folder-menu-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  text-align: left;
+  color: var(--conv-fg);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 8px;
+  cursor: pointer;
+}
+
+.conv-folder-menu-row:hover { background: var(--conv-surface-hover); }
+.conv-folder-menu-row.active { background: var(--conv-surface-active); }
+.conv-folder-menu .conv-folder-input { width: auto; margin-top: 4px; }
+
+.btn-delete-conv {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.btn-delete-conv:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Shortcuts Loading Panel */
+.shortcut-loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  padding: 4px 0;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  box-shadow: var(--flat-shadow-md);
+  animation: pulse-dot-anim 1s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-dot-anim {
+  from { opacity: 0.3; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1.1); }
+}
+
+/* --- Panneau de progression d'un run du Action Router --- */
+.run-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding-left: 2px;
+  border-left: 2px solid color-mix(in srgb, var(--action-color, #ff9e6b) 55%, transparent);
+  padding: 2px 0 2px 10px;
+}
+.run-progress:empty {
+  display: none;
+}
+.run-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--text-muted);
+  animation: run-step-in 0.18s ease-out;
+}
+.run-step-dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--action-color, #ff9e6b);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--action-color, #ff9e6b) 70%, transparent);
+}
+.run-step-msg { min-width: 0; word-break: break-word; }
+/* Étape image (Image Playground). */
+.run-step-image { padding-left: 0; }
+.run-image {
+  max-width: 100%;
+  max-height: 320px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  display: block;
+}
+/* Couleurs sémantiques des puces selon le `kind`. */
+.run-step-result .run-step-dot,
+.run-step-success .run-step-dot { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.6); }
+.run-step-error .run-step-dot { background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,0.6); }
+.run-step-tool .run-step-dot { background: #a855f7; box-shadow: 0 0 6px rgba(168,85,247,0.6); }
+.run-step-image .run-step-dot { background: #ec4899; box-shadow: 0 0 6px rgba(236,72,153,0.6); }
+.run-step-inference .run-step-dot,
+.run-step-model .run-step-dot,
+.run-step-ai .run-step-dot { background: #ffffff; box-shadow: 0 0 6px rgba(255,255,255,0.7), 0 0 0 1px rgba(0,0,0,0.18); }
+@keyframes run-step-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Documentation du Routeur d'Actions (dans les Paramètres) --- */
+.router-doc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  background: rgba(127, 127, 127, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 10px 12px;
+}
+.router-doc > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-main);
+  list-style: none;
+  user-select: none;
+}
+.router-doc .doc-ic {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  vertical-align: -2px;
+  margin-right: 6px;
+  flex: none;
+}
+.router-doc > summary::-webkit-details-marker { display: none; }
+.router-doc[open] > summary { margin-bottom: 8px; }
+.router-doc p { margin: 6px 0; }
+.router-doc ul { margin: 6px 0 6px 0; padding-left: 18px; }
+.router-doc li { margin: 2px 0; }
+.router-doc .router-doc-step { font-weight: 600; color: var(--text-main); margin-top: 10px; }
+.router-doc .router-doc-legend-title { font-weight: 600; color: var(--text-main); margin-top: 10px; }
+.router-doc .router-doc-note { font-style: italic; opacity: 0.8; margin-top: 8px; }
+.router-doc code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  background: rgba(127, 127, 127, 0.16);
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+}
+.router-doc pre {
+  margin: 6px 0;
+  padding: 9px 11px;
+  background: rgba(127, 127, 127, 0.12);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+.router-doc pre code {
+  background: none;
+  padding: 0;
+  font-size: 11.5px;
+  white-space: pre;
+}
+.router-doc .run-step { margin: 4px 0; }
+
+/* --- LIGHT THEME STYLING RULES (OS Auto-detection and Forced option) --- */
+
+@media (prefers-color-scheme: light) {
+  body:not(.theme-dark-forced) {
+    --glass-bg: rgba(255, 255, 255, 0.78);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-highlight: rgba(255, 255, 255, 0.45);
+    --glass-shadow: rgba(0, 0, 0, 0.12);
+    --text-main: #1c1c1e;
+    --text-muted: rgba(28, 28, 30, 0.55);
+    --text-highlight: #007aff;
+    --accent-color: #007aff;
+    --primary-glow: var(--primary);
+  }
+  body:not(.theme-dark-forced) .search-bar:focus-within {
+    background: rgba(255, 255, 255, 0.82) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    box-shadow:
+      inset 0 1.2px 0 0 rgba(255, 255, 255, 0.6),
+      0 16px 35px 0 rgba(0, 0, 0, 0.12) !important;
+  }
+  body:not(.theme-dark-forced) .search-bar #chat-input {
+    color: #1c1c1e !important;
+  }
+  body:not(.theme-dark-forced) .search-bar #chat-input::placeholder {
+    color: rgba(28, 28, 30, 0.4);
+  }
+  body:not(.theme-dark-forced) .message-bubble.user {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.06);
+    color: #1c1c1e;
+  }
+  body:not(.theme-dark-forced) .message-bubble.assistant {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(0, 0, 0, 0.04);
+    color: #1c1c1e;
+  }
+  body:not(.theme-dark-forced) .settings-panel {
+    background: rgba(245, 245, 247, 0.95);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+  body:not(.theme-dark-forced) .settings-header h2,
+  body:not(.theme-dark-forced) .setting-item label,
+  body:not(.theme-dark-forced) .conversation-history-title {
+    color: #1c1c1e !important;
+  }
+  body:not(.theme-dark-forced) .setting-item input[type="text"],
+  body:not(.theme-dark-forced) .setting-item select {
+    background: rgba(0, 0, 0, 0.02) !important;
+    border-color: rgba(0, 0, 0, 0.06) !important;
+    color: #1c1c1e !important;
+  }
+  body:not(.theme-dark-forced) .setting-item select option {
+    background: #ffffff;
+    color: #1c1c1e;
+  }
+  /* Jetons du classement des discussions : sans eux, le nom d'un dossier
+     s'affiche en blanc sur blanc et seule sa pastille reste visible. */
+  body:not(.theme-dark-forced) #history-panel {
+    --conv-fg: #1c1c1e;
+    --conv-muted: rgba(28, 28, 30, 0.55);
+    --conv-surface: rgba(0, 0, 0, 0.03);
+    --conv-surface-hover: rgba(0, 0, 0, 0.06);
+    --conv-surface-active: rgba(0, 0, 0, 0.1);
+    --conv-border: rgba(0, 0, 0, 0.07);
+    --conv-border-strong: rgba(0, 0, 0, 0.16);
+    --conv-menu-bg: #ffffff;
+    --conv-menu-shadow: rgba(0, 0, 0, 0.16);
+  }
+  body:not(.theme-dark-forced) .icon-btn,
+  body:not(.theme-dark-forced) .close-btn,
+  body:not(.theme-dark-forced) .btn-delete-conv {
+    color: rgba(28, 28, 30, 0.55);
+  }
+  body:not(.theme-dark-forced) .icon-btn:hover,
+  body:not(.theme-dark-forced) .close-btn:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+  body:not(.theme-dark-forced) .icon-btn-text {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.05);
+    color: rgba(28, 28, 30, 0.55);
+  }
+}
+
+/* Forced Light Text style */
+body.theme-light-forced {
+  --glass-bg: rgba(255, 255, 255, 0.78) !important;
+  --glass-border: rgba(0, 0, 0, 0.08) !important;
+  --glass-highlight: rgba(255, 255, 255, 0.45) !important;
+  --glass-shadow: rgba(0, 0, 0, 0.12) !important;
+  --text-main: #1c1c1e !important;
+  --text-muted: rgba(28, 28, 30, 0.55) !important;
+  --text-highlight: #007aff !important;
+  --accent-color: #007aff !important;
+  --primary-glow: var(--primary) !important;
+}
+/* En thème clair, le focus ne doit pas retomber sur l'opacité « verre » sombre
+   (calc(--glass-opacity + 0.03) ≈ transparent) : on garde un fond clair opaque,
+   cohérent avec le panneau des conversations. */
+body.theme-light-forced .search-bar:focus-within {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow:
+    inset 0 1.2px 0 0 rgba(255, 255, 255, 0.6),
+    0 16px 35px 0 rgba(0, 0, 0, 0.12) !important;
+}
+body.theme-light-forced .search-bar #chat-input {
+  color: #1c1c1e !important;
+}
+body.theme-light-forced .search-bar #chat-input::placeholder {
+  color: rgba(28, 28, 30, 0.4);
+}
+body.theme-light-forced .message-bubble.user {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: #1c1c1e !important;
+}
+body.theme-light-forced .message-bubble.assistant {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border-color: rgba(0, 0, 0, 0.04) !important;
+  color: #1c1c1e !important;
+}
+body.theme-light-forced .settings-panel,
+body.theme-light-forced .messages-container {
+  background: rgba(245, 245, 247, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+/* Zone de discussion en mode clair : textes et puces lisibles comme les Paramètres. */
+body.theme-light-forced .messages-container,
+body.theme-light-forced .messages-header-actions,
+body.theme-light-forced .run-step,
+body.theme-light-forced .run-step-msg {
+  color: #1c1c1e !important;
+}
+body.theme-light-forced .settings-header h2,
+body.theme-light-forced .setting-item label,
+body.theme-light-forced .conversation-history-title {
+  color: #1c1c1e !important;
+}
+body.theme-light-forced .setting-item input[type="text"],
+body.theme-light-forced .setting-item textarea,
+body.theme-light-forced .setting-item select {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: #1c1c1e !important;
+}
+body.theme-light-forced .setting-item select option {
+  background: #ffffff;
+  color: #1c1c1e;
+}
+body.theme-light-forced #history-panel {
+  --conv-fg: #1c1c1e !important;
+  --conv-muted: rgba(28, 28, 30, 0.55) !important;
+  --conv-surface: rgba(0, 0, 0, 0.03) !important;
+  --conv-surface-hover: rgba(0, 0, 0, 0.06) !important;
+  --conv-surface-active: rgba(0, 0, 0, 0.1) !important;
+  --conv-border: rgba(0, 0, 0, 0.07) !important;
+  --conv-border-strong: rgba(0, 0, 0, 0.16) !important;
+  --conv-menu-bg: #ffffff !important;
+  --conv-menu-shadow: rgba(0, 0, 0, 0.16) !important;
+}
+body.theme-light-forced .icon-btn,
+body.theme-light-forced .close-btn,
+body.theme-light-forced .btn-delete-conv {
+  color: rgba(28, 28, 30, 0.55) !important;
+}
+body.theme-light-forced .icon-btn:hover,
+body.theme-light-forced .close-btn:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+body.theme-light-forced .icon-btn-text {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.05) !important;
+  color: rgba(28, 28, 30, 0.55) !important;
+}
+
+/* Forced Dark Text style (dark mode, light text) */
+body.theme-dark-forced {
+  --glass-bg: rgba(255, 255, 255, var(--glass-opacity)) !important;
+  --glass-border: rgba(255, 255, 255, 0.05) !important;
+  --glass-highlight: rgba(255, 255, 255, 0.12) !important;
+  --glass-shadow: rgba(0, 0, 0, 0.12) !important;
+  --text-main: #ffffff !important;
+  --text-muted: rgba(255, 255, 255, 0.45) !important;
+  --text-highlight: #3b82f6 !important;
+  --accent-color: #3b82f6 !important;
+  --primary-glow: var(--primary) !important;
+}
+body.theme-dark-forced .search-bar #chat-input {
+  color: #ffffff !important;
+}
+body.theme-dark-forced .search-bar #chat-input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Dark theme: brighter, more legible bar icons & text (the bar often sits over
+   light/colorful wallpapers where the default dim grey is hard to read). */
+body.theme-dark-forced .search-bar .icon-btn {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+body.theme-dark-forced .quick-model-toggle {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+body.theme-dark-forced .search-bar #chat-input {
+  color: #ffffff !important;
+}
+body.theme-dark-forced .message-bubble.user {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+body.theme-dark-forced .message-bubble.assistant {
+  background: rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.03) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+body.theme-dark-forced .settings-panel {
+  background: rgba(18, 18, 20, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+body.theme-dark-forced .settings-header h2,
+body.theme-dark-forced .setting-item label,
+body.theme-dark-forced .conversation-history-title {
+  color: #ffffff !important;
+}
+body.theme-dark-forced .setting-item input[type="text"],
+body.theme-dark-forced .setting-item select {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+}
+body.theme-dark-forced .setting-item select option {
+  background: #141416;
+  color: #ffffff;
+}
+body.theme-dark-forced .icon-btn,
+body.theme-dark-forced .close-btn,
+body.theme-dark-forced .btn-delete-conv {
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+body.theme-dark-forced .icon-btn:hover,
+body.theme-dark-forced .close-btn:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+body.theme-dark-forced .icon-btn-text {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* When a custom text color is selected, icons follow it instead of the
+   theme-forced hardcoded greys. Higher specificity than the theme-forced rules. */
+body.custom-text-color.theme-dark-forced .icon-btn:not(.theme-toggle-btn):not(.action-mode-btn):not(.autospeak-btn):not(.dictation-btn),
+body.custom-text-color.theme-light-forced .icon-btn:not(.theme-toggle-btn):not(.action-mode-btn):not(.autospeak-btn):not(.dictation-btn),
+body.custom-text-color.theme-dark-forced .close-btn,
+body.custom-text-color.theme-light-forced .close-btn {
+  color: var(--text-muted) !important;
+}
+body.custom-text-color.theme-dark-forced .icon-btn:not(.theme-toggle-btn):not(.action-mode-btn):not(.autospeak-btn):not(.dictation-btn):hover,
+body.custom-text-color.theme-light-forced .icon-btn:not(.theme-toggle-btn):not(.action-mode-btn):not(.autospeak-btn):not(.dictation-btn):hover {
+  color: var(--text-main) !important;
+}
+
+/* Retry button (shown under an errored response) */
+.msg-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.msg-retry-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+body.theme-light-forced .msg-retry-btn {
+  color: #1c1c1e;
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+body.theme-light-forced .msg-retry-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+
+/* Speak Button styles */
+.message-bubble.assistant {
+  position: relative !important;
+  padding-right: 44px !important; /* Make sure text doesn't overlap the speaker button */
+}
+
+/* Bouton infos discret (stats de génération) sur un message assistant */
+.msg-info-wrap { position: relative; display: inline-flex; vertical-align: middle; margin-left: 6px; }
+.msg-info-btn {
+  background: transparent; border: none; cursor: pointer; padding: 2px;
+  color: currentColor; opacity: 0.35; display: inline-flex; transition: opacity 0.2s;
+}
+.msg-info-btn:hover { opacity: 0.8; }
+.msg-info-pop {
+  position: fixed; z-index: 1000;
+  white-space: normal; word-break: break-word; font-size: 11px; line-height: 1.3;
+  background: rgba(20, 20, 24, 0.95); color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 9px; border-radius: var(--radius-md); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+body.theme-light-forced .msg-info-pop { background: rgba(255, 255, 255, 0.98); color: #1a1a1a; border-color: rgba(0, 0, 0, 0.1); }
+
+/* Rangée d'outils au pied d'une bulle : « + » (sélection) et « i » (stats) */
+.msg-tools { display: inline-flex; align-items: center; gap: 2px; vertical-align: middle; }
+.msg-pick-btn {
+  background: transparent; border: none; cursor: pointer; padding: 2px;
+  color: currentColor; opacity: 0.35; display: inline-flex; transition: opacity 0.2s, transform 0.15s;
+}
+.msg-pick-btn:hover { opacity: 0.85; }
+.msg-pick-btn.picked { opacity: 1; color: var(--accent-color); transform: rotate(45deg); }
+.message-bubble.msg-picked {
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent-color) 65%, transparent);
+}
+
+/* Barre d'export : bandeau posé SOUS la liste des messages (dernier enfant du
+   conteneur en colonne), jamais en surimpression — elle ne peut donc ni
+   couvrir les « + » des dernières bulles ni déborder de la fenêtre. Ses
+   éléments passent à la ligne quand la fenêtre est étroite. */
+.msg-export-bar {
+  flex: none; z-index: 60;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px;
+  margin: 0 10px 10px; padding: 6px 8px 6px 12px; border-radius: 16px;
+  max-width: calc(100% - 20px); box-sizing: border-box;
+  background: rgba(20, 20, 24, 0.82); color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  font-size: 12px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.msg-export-bar[hidden] { display: none; }
+body.theme-light-forced .msg-export-bar { background: rgba(255, 255, 255, 0.96); color: #1a1a1a; border-color: rgba(0, 0, 0, 0.1); }
+.msg-export-count { opacity: 0.8; white-space: nowrap; flex: none; }
+/* Champ du nom de fichier : hérite de la couleur de la barre (sombre par
+   défaut, claire en thème forcé), d'où `color: inherit` plutôt qu'un jeton. */
+.msg-export-name {
+  font: inherit; font-size: 12px; color: inherit;
+  background: color-mix(in oklab, currentColor 10%, transparent);
+  border: 1px solid color-mix(in oklab, currentColor 22%, transparent);
+  border-radius: var(--radius-md); padding: 4px 9px; flex: 1 1 120px; min-width: 90px; max-width: 100%;
+}
+.msg-export-name:focus { outline: none; border-color: color-mix(in oklab, currentColor 45%, transparent); }
+.msg-export-name::placeholder { color: inherit; opacity: 0.45; }
+.msg-export-go {
+  font: inherit; cursor: pointer; border: none; border-radius: 999px; flex: none; white-space: nowrap;
+  padding: 5px 12px; background: var(--accent-color); color: #fff;
+}
+.msg-export-go:disabled { opacity: 0.6; cursor: default; }
+.msg-export-clear {
+  font: inherit; cursor: pointer; border: none; background: transparent;
+  color: inherit; opacity: 0.5; padding: 2px 4px;
+}
+.msg-export-clear:hover { opacity: 1; }
+.msg-export-done { cursor: pointer; text-decoration: underline; opacity: 0.85; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.msg-speak-btn {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 50% !important;
+  transition: all 0.2s !important;
+  z-index: 99 !important;
+}
+
+body.theme-light-forced .msg-speak-btn {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #1c1c1e !important;
+}
+
+.msg-speak-btn:hover {
+  color: var(--accent-color) !important;
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: scale(1.08) !important;
+}
+
+body.theme-light-forced .msg-speak-btn:hover {
+  background: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* macOS-style translucent red close button (overrides theme-forced greys) */
+body.theme-dark-forced .close-btn,
+body.theme-light-forced .close-btn {
+  color: rgba(70, 0, 0, 0.6) !important;
+  background: rgba(255, 95, 87, 0.55) !important;
+}
+body.theme-dark-forced .close-btn:hover,
+body.theme-light-forced .close-btn:hover {
+  color: rgba(60, 0, 0, 0.9) !important;
+  background: rgba(255, 95, 87, 0.9) !important;
+}
+
+/* ===== Centre de notifications (Heartbeat) ===== */
+/* Badge compteur sur la cloche */
+.notifications-btn { position: relative; }
+.notif-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: 99px;
+  background: var(--heartbeat-color, #ff54a3);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+.notifications-btn.has-unread { color: var(--text-main); }
+
+/* Liste des résultats */
+.notifications-list-container {
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
+}
+.notif-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 24px 12px;
+  line-height: 1.6;
+}
+/* Même carte que le compagnon mobile et que le centre du bureau : surface
+   `card`, filet unique, l'erreur portée par la couleur du filet. Les anciens
+   `rgba(255,255,255,…)` supposaient un fond sombre et disparaissaient en clair. */
+.notif-item {
+  padding: 10px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.notif-item.error { border-color: color-mix(in oklab, var(--destructive) 45%, var(--border)); }
+.notif-item-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+/* L'état de la notification est porté par une icône Lucide (même jeu que le
+   reste de l'interface) plutôt que par une pastille muette. */
+.notif-ic {
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--heartbeat-color, #ff54a3);
+}
+.notif-ic svg { width: 15px; height: 15px; }
+.notif-item.error .notif-ic { color: var(--destructive); }
+.notif-shortcut {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.notif-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.notif-item-body {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+.notif-empty-output { color: var(--text-muted); font-style: italic; }
+
+/* Point « non-lu » reporté sur le bouton « ⋯ » quand la cloche est repliée */
+.more-btn.has-unread::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--heartbeat-color, #ff54a3);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== Panneau Fluxo (automatisations) ===== */
+.fluxo-hint {
+  font-size: 11.5px;
+  color: var(--text-muted, rgba(255,255,255,0.55));
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.fluxo-hint code {
+  font-family: ui-monospace, monospace;
+  font-size: 10.5px;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+.fluxo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg);
+  margin-bottom: 6px;
+}
+.fluxo-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-main, #fff);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fluxo-run-btn {
+  flex-shrink: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 5px 12px;
+  cursor: pointer;
+  background: var(--muted);
+}
+.fluxo-run-btn:hover { filter: brightness(1.1); }
+.fluxo-empty {
+  font-size: 12px;
+  color: var(--text-muted, rgba(255,255,255,0.55));
+  text-align: center;
+  padding: 22px 12px;
+  line-height: 1.6;
+}
+
+/* ===== Réglages : moteur d'actions ===== */
+.settings-subhead {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--text-muted, rgba(255,255,255,0.55));
+  margin: 6px 0 8px;
+  opacity: 0.8;
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.setting-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: #a86bff; flex-shrink: 0; }
+.setting-hint {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-muted, rgba(255,255,255,0.55));
+  margin: 6px 0 4px;
+}
+.setting-hint code {
+  font-family: ui-monospace, monospace;
+  font-size: 10.5px;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+/* ===== Carte réglages « Moteur d'actions : Fluxo » (style Apple) ===== */
+.fluxo-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  padding: 14px;
+  margin: 4px 0 12px;
+  backdrop-filter: blur(8px);
+}
+.fluxo-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.fluxo-card-ic {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: var(--muted);
+  box-shadow: 0 4px 14px rgba(124, 77, 240, 0.35);
+}
+.fluxo-card-ic svg { width: 21px; height: 21px; }
+.fluxo-card-head-text { min-width: 0; }
+.fluxo-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main, #fff);
+  letter-spacing: -0.01em;
+}
+.fluxo-card-sub {
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-muted, rgba(255, 255, 255, 0.55));
+  margin-top: 2px;
+}
+.fluxo-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+.fluxo-card-row-text { min-width: 0; }
+.fluxo-card-row-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-main, #fff);
+}
+.fluxo-card-row-hint {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-muted, rgba(255, 255, 255, 0.55));
+  margin-top: 3px;
+}
+.fluxo-card-row-hint code {
+  font-family: ui-monospace, monospace;
+  font-size: 10.5px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+/* Interrupteur iOS */
+.ios-switch { flex-shrink: 0; cursor: pointer; display: inline-flex; }
+.ios-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.ios-switch-track {
+  position: relative;
+  width: 44px;
+  height: 26px;
+  border-radius: var(--radius-xl);
+  background: rgba(120, 120, 128, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+.ios-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.25s cubic-bezier(0.3, 1.3, 0.6, 1);
+}
+.ios-switch input:checked + .ios-switch-track {
+  background: #34c759 !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08), 0 0 10px rgba(52, 199, 89, 0.45);
+}
+.ios-switch input:checked + .ios-switch-track .ios-switch-thumb {
+  transform: translateX(18px);
+}
+.ios-switch input:focus-visible + .ios-switch-track {
+  outline: 2px solid rgba(153, 97, 255, 0.6);
+  outline-offset: 2px;
+}
+body.theme-light-forced .fluxo-card {
+  background: rgba(0, 0, 0, 0.025);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+body.theme-light-forced .fluxo-card-row { border-top-color: rgba(0, 0, 0, 0.07); }
+
+/* ===== Note d'appel d'outil Fluxo dans une réponse ===== */
+.tool-call-note {
+  font-size: 11.5px;
+  color: var(--text-muted, rgba(255,255,255,0.6));
+  background: rgba(168, 107, 255, 0.08);
+  border: 1px solid rgba(168, 107, 255, 0.22);
+  border-radius: var(--radius-md);
+  padding: 6px 9px;
+  margin: 6px 0;
+  word-break: break-word;
+}
+.tool-call-ic { display: inline-flex; vertical-align: -2px; margin-right: 4px; color: rgba(168, 107, 255, 0.9); }
+.tool-call-ic svg { width: 13px; height: 13px; }
+
+/* Fichier produit par un outil (export_pdf). La note d'appel d'outil dit ce que
+   le modèle a fait ; cette carte-ci donne le fichier lui-même et les deux gestes
+   qui suivent — ouvrir, ou aller le voir dans le dossier. Pas de blur : la règle
+   Linux/WebKitGTK vaut aussi pour la fenêtre principale. */
+.file-card {
+  display: flex; align-items: center; gap: 10px;
+  margin: 8px 0; padding: 9px 11px;
+  border-radius: var(--radius-lg, 10px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.file-card-ic {
+  flex: none; width: 30px; height: 30px; border-radius: var(--radius-md);
+  display: grid; place-items: center;
+  color: var(--on-accent, #fff); background: var(--accent, #a86bff);
+}
+.file-card-ic svg { width: 16px; height: 16px; }
+.file-card-tx { flex: 1; min-width: 0; display: grid; gap: 1px; }
+.file-card-tx b { font-size: 12.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-card-tx i { font-style: normal; font-size: 11px; color: var(--text-muted, rgba(255,255,255,0.6)); }
+.file-card-btn {
+  flex: none; display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+  font: inherit; font-size: 11.5px; color: var(--text-main, #fff);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-md); padding: 5px 9px;
+}
+.file-card-btn:hover { background: rgba(255, 255, 255, 0.14); }
+.file-card-btn svg { width: 13px; height: 13px; }
+
+/* Image générée par l'outil generate_image (lib/live-tools.js) */
+.image-card {
+  margin: 8px 0; padding: 8px; display: grid; gap: 8px;
+  border-radius: var(--radius-lg, 10px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.image-card-img { display: block; width: 100%; max-height: 360px; object-fit: contain; border-radius: var(--radius-md); background: rgba(0,0,0,0.15); }
+.image-card-meta { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 11.5px; }
+.image-card-meta span { font-weight: 600; }
+.image-card-meta i { flex: 1; min-width: 0; font-style: normal; color: var(--text-muted, rgba(255,255,255,0.6)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Sélecteur de langue dans l'en-tête de l'assistant de configuration */
+.onboarding-lang {
+  margin-left: auto;
+  margin-right: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-main, #fff);
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 7px;
+  cursor: pointer;
+  outline: none;
+}
+body.theme-light-forced .onboarding-lang {
+  color: #1c1c1e;
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* Choix de la source d'IA dans l'assistant (étape d'accueil) */
+.onboarding-source-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+.onboarding-source-q {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main, #fff);
+  margin-bottom: 2px;
+}
+.source-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: var(--radius-xl);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-main, #fff);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.source-card:hover { background: rgba(255, 255, 255, 0.06); }
+.source-card.active {
+  border-color: var(--accent-color, #3b82f6);
+  background: color-mix(in srgb, var(--accent-color, #3b82f6) 14%, transparent);
+  box-shadow: 0 0 0 1px var(--accent-color, #3b82f6) inset;
+}
+.source-card-head { display: flex; align-items: center; gap: 8px; }
+.source-card-num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.8);
+}
+.source-card-title { font-size: 14px; font-weight: 600; }
+.source-card-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--muted);
+  border-radius: 99px;
+  padding: 2px 8px;
+}
+.source-card-desc { font-size: 12px; color: var(--text-muted, rgba(255,255,255,0.55)); line-height: 1.4; }
+body.theme-light-forced .source-card { color: #1c1c1e; }
+body.theme-light-forced .source-card-desc { color: rgba(0,0,0,0.55); }
+
+/* Compagnon mobile : adresse à ouvrir, mise en avant. */
+.companion-url {
+  display: inline-block;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  background: rgba(153, 97, 255, 0.16);
+  border: 1px solid rgba(153, 97, 255, 0.35);
+  color: inherit;
+  user-select: all;
+  -webkit-user-select: all;
+}
+
+/* ===== Onglet Mémoire ===== */
+.memory-list { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+.memory-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 8px 10px; border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.memory-row-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.memory-key { font-size: 12px; font-weight: 600; opacity: 0.95; }
+.memory-val { font-size: 11px; opacity: 0.65; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.memory-row-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.memory-row-actions button {
+  background: rgba(255, 255, 255, 0.08); border: none; color: inherit;
+  border-radius: var(--radius-sm); width: 26px; height: 26px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.memory-row-actions button:hover { background: rgba(255, 255, 255, 0.16); }
+.memory-row-actions button svg { width: 15px; height: 15px; }
+
+/* ===== Code d'appairage compagnon ===== */
+.companion-code-row { display: flex; align-items: center; gap: 10px; }
+.companion-code {
+  font-size: 20px; font-weight: 700; letter-spacing: 4px;
+  font-variant-numeric: tabular-nums; user-select: all; -webkit-user-select: all;
+}
+.companion-code-countdown { font-size: 12px; opacity: 0.6; }
+.companion-qr {
+  width: 180px; height: 180px; padding: 8px; border-radius: var(--radius-lg);
+  background: #fff; display: inline-flex; align-items: center; justify-content: center;
+}
+.companion-qr svg { width: 100%; height: 100%; display: block; }
+.companion-key {
+  font-size: 13px; letter-spacing: 1px; word-break: break-all;
+  user-select: all; -webkit-user-select: all; opacity: 0.9;
+}
+
+/* Icône inline dans la doc (Routeur d'Actions) */
+.doc-ic { width: 15px; height: 15px; vertical-align: -2px; margin-right: 4px; opacity: 0.85; }
+
+/* ===== Panneau d'aide & documentation ===== */
+.help-tabs { margin-bottom: 4px; }
+.help-tab {
+  flex: 1; background: transparent; border: none; cursor: pointer; color: var(--text-muted);
+  font-size: 13px; font-weight: 600; padding: 8px 10px; border-radius: var(--radius-md);
+}
+.help-tab.active { background: rgba(128,128,128,0.16); color: var(--text-main, #fff); }
+.help-pane { display: none; }
+.help-pane.active { display: block; }
+
+.help-hero { display: flex; align-items: center; gap: 14px; margin: 6px 0 18px; }
+.help-hero-icon {
+  width: 52px; height: 52px; border-radius: var(--radius-xl); flex-shrink: 0; color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--muted);
+}
+.help-hero-icon svg { width: 26px; height: 26px; }
+.help-hero-title { font-size: 18px; font-weight: 700; }
+.help-hero-sub { font-size: 12.5px; opacity: 0.65; margin-top: 3px; line-height: 1.4; }
+
+.help-card { display: flex; align-items: flex-start; gap: 12px; padding: 12px 4px; border-top: 1px solid rgba(128,128,128,0.14); }
+.help-ic {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 28px; height: 28px; border-radius: var(--radius-md); color: #fff; background: var(--ic, #5b8def);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.25), inset 0 0 0 0.5px rgba(255,255,255,0.25);
+}
+.help-ic svg { width: 17px; height: 17px; }
+.help-card-t { font-size: 14px; font-weight: 600; }
+.help-card-d { font-size: 12.5px; opacity: 0.7; line-height: 1.45; margin-top: 3px; }
+
+.help-api { margin: 16px 0; }
+.help-api-t { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.help-api pre {
+  background: rgba(0,0,0,0.28); border: 1px solid rgba(128,128,128,0.2);
+  border-radius: var(--radius-lg); padding: 12px 14px; margin: 8px 0 0; overflow-x: auto;
+}
+body.theme-light-forced .help-api pre { background: rgba(0,0,0,0.05); }
+.help-api code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11.5px; line-height: 1.55; color: inherit; white-space: pre; }
+.help-card-d code, .setting-hint code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em; background: rgba(128,128,128,0.18); padding: 1px 5px; border-radius: var(--radius-sm); }
+.help-kinds-label { font-size: 12px; opacity: 0.7; margin: 12px 0 6px; }
+.help-kinds-label code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em; background: rgba(128,128,128,0.18); padding: 1px 5px; border-radius: var(--radius-sm); }
+.help-demo {
+  background: rgba(0,0,0,0.18); border: 1px solid rgba(128,128,128,0.18);
+  border-radius: var(--radius-lg); padding: 12px 14px; gap: 7px;
+}
+body.theme-light-forced .help-demo { background: rgba(0,0,0,0.04); }
+.help-demo .run-step { font-size: 12.5px; }
+
+/* ===== Mode debug : bloc « prompt envoyé » ===== */
+.debug-prompt {
+  margin: 4px 0 8px; border-radius: var(--radius-lg);
+  background: rgba(120, 90, 255, 0.08);
+  border: 1px solid rgba(120, 90, 255, 0.28);
+}
+.debug-head {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 12px; font-size: 11.5px; font-weight: 600; color: var(--text-muted);
+}
+.debug-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.debug-ic { display: inline-flex; color: #9d7bff; }
+.debug-ic svg { width: 14px; height: 14px; }
+.debug-copy { background: none; border: none; cursor: pointer; color: var(--text-muted); display: inline-flex; padding: 2px; border-radius: var(--radius-sm); flex-shrink: 0; }
+.debug-copy:hover { background: rgba(120,90,255,0.18); }
+.debug-copy svg { width: 14px; height: 14px; }
+.debug-prompt > pre {
+  margin: 0; padding: 10px 12px; border-top: 1px solid rgba(120,90,255,0.2);
+  border-radius: 0 0 10px 10px;
+  background: rgba(0,0,0,0.22);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; line-height: 1.5;
+  /* Toujours en entier : retour à la ligne, pas de hauteur max, pas de clip. */
+  white-space: pre-wrap; word-break: break-word; overflow: visible; max-height: none;
+}
+body.theme-light-forced .debug-prompt > pre { background: rgba(0,0,0,0.05); }
+
+/* ===== Widgets (complications) générés à la volée ===== */
+.run-step-widget { padding: 0 !important; background: none !important; border: none !important; }
+.lumen-widget {
+  margin: 6px 0; padding: 14px 16px; border-radius: var(--radius-xl);
+  background: var(--muted);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  max-width: 340px;
+}
+body.theme-light-forced .lumen-widget { background: var(--muted); border-color: rgba(0,0,0,0.08); }
+.wdg-head { display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
+.wdg-ic {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: var(--radius-sm); color: #fff;
+  background: var(--wdg-accent, #5b8def);
+}
+.wdg-ic svg { width: 13px; height: 13px; }
+.wdg-title { font-size: 13px; font-weight: 700; letter-spacing: 0.01em; }
+.wdg-caption { font-size: 11px; opacity: 0.55; margin-top: 6px; }
+
+/* metric */
+.wdg-metric { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.wdg-mvalue { font-size: 30px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.wdg-unit { font-size: 14px; font-weight: 600; opacity: 0.6; margin-left: 3px; }
+.wdg-mside { display: flex; align-items: center; gap: 6px; }
+.wdg-trend.up { color: #34c759; } .wdg-trend.down { color: #ff4d4f; } .wdg-trend.flat { color: #8e8e93; }
+.wdg-delta { font-size: 13px; font-weight: 600; opacity: 0.8; }
+.wdg-mlabel { font-size: 12px; opacity: 0.7; margin-top: 4px; }
+
+/* weather */
+.wdg-weather { display: flex; align-items: center; gap: 14px; }
+.wdg-temp { font-size: 38px; font-weight: 300; line-height: 1; font-variant-numeric: tabular-nums; }
+.wdg-temp .wdg-unit { font-size: 18px; }
+.wdg-wcol { display: flex; flex-direction: column; gap: 2px; }
+.wdg-cond { font-size: 14px; font-weight: 600; }
+.wdg-loc { font-size: 12px; opacity: 0.6; }
+.wdg-hilo { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+.wdg-hourly { display: flex; gap: 12px; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(128,128,128,0.18); }
+.wdg-hour { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; opacity: 0.8; }
+.wdg-hour strong { font-size: 13px; }
+
+/* stat-grid */
+.wdg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.wdg-cell { background: rgba(128,128,128,0.1); border-radius: var(--radius-lg); padding: 8px 10px; }
+.wdg-cell-label { font-size: 11px; opacity: 0.6; }
+.wdg-cell-value { font-size: 16px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+/* list */
+.wdg-list { display: flex; flex-direction: column; }
+.wdg-listrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(128,128,128,0.14); }
+.wdg-listrow:last-child { border-bottom: none; }
+.wdg-listtitle { font-size: 13px; font-weight: 600; }
+.wdg-listsub { font-size: 11px; opacity: 0.6; margin-top: 1px; }
+.wdg-listtrail { font-size: 12px; opacity: 0.7; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+
+/* gauge */
+.wdg-gauge { display: flex; align-items: center; gap: 14px; }
+.wdg-ring { width: 64px; height: 64px; flex-shrink: 0; transform: rotate(-90deg); }
+.wdg-ring-bg { fill: none; stroke: rgba(128,128,128,0.22); stroke-width: 6; }
+.wdg-ring-fg { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s; }
+.wdg-ring-txt { transform: rotate(90deg); transform-origin: center; text-anchor: middle; fill: currentColor; font-size: 15px; font-weight: 700; }
+.wdg-glabel { font-size: 14px; font-weight: 600; }
+
+/* report */
+.wdg-report { display: flex; flex-direction: column; gap: 6px; }
+.wdg-status { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-bottom: 2px; }
+.wdg-status-ok { background: #34c759; } .wdg-status-err { background: #ff4d4f; } .wdg-status-run { background: #ff9f0a; }
+.wdg-reprow { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; }
+.wdg-reprow span { opacity: 0.7; }
+.wdg-rep-ok { color: #34c759; } .wdg-rep-error, .wdg-rep-err { color: #ff4d4f; } .wdg-rep-warn { color: #ff9f0a; }
+
+/* Résultat sportif */
+.wdg-sport { display: flex; flex-direction: column; gap: 6px; }
+.wdg-sport-league { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.55; margin-bottom: 2px; }
+.wdg-team { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.wdg-teamname { display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 500; opacity: 0.85; }
+.wdg-teamlogo { font-size: 16px; line-height: 1; }
+.wdg-teamscore { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; opacity: 0.7; }
+.wdg-team.win .wdg-teamname, .wdg-team.win .wdg-teamscore { opacity: 1; }
+.wdg-team.win .wdg-teamscore { color: var(--wdg-accent); }
+.wdg-sport-status { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; margin-top: 4px; }
+.wdg-sport-final { opacity: 0.55; }
+.wdg-sport-sched { opacity: 0.7; }
+.wdg-sport-live { color: #ff4d4f; }
+.wdg-livedot { width: 7px; height: 7px; border-radius: 50%; background: #ff4d4f; display: inline-block; animation: wdgLivePulse 1.2s ease-in-out infinite; }
+@keyframes wdgLivePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* ===== Tuiles-icônes devant les champs de raccourcis (façon app iOS) ===== */
+.field-label { display: flex; align-items: center; gap: 8px; }
+.field-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: var(--radius-sm); flex-shrink: 0;
+  color: #fff;
+  background: var(--ic, #007aff);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), inset 0 0 0 0.5px rgba(255, 255, 255, 0.25);
+}
+.field-icon svg { width: 14px; height: 14px; display: block; }
+
+/* ===== Onglet Profil — langage visuel Réglages iOS ===== */
+.profile-hero { display: flex; align-items: center; gap: 14px; margin: 6px 0 18px; }
+.profile-avatar {
+  width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 600; color: #fff;
+  background: var(--muted);
+}
+.profile-avatar svg { width: 26px; height: 26px; color: #fff; }
+.profile-hero-name { font-size: 17px; font-weight: 600; }
+.profile-hero-sub { font-size: 12px; opacity: 0.6; margin-top: 2px; line-height: 1.35; }
+
+.ios-group-title {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+  opacity: 0.5; margin: 18px 4px 6px; font-weight: 600;
+}
+.ios-group {
+  border-radius: var(--radius-lg); overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.ios-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 11px 14px; min-height: 44px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.ios-group .ios-row:last-child { border-bottom: none; }
+.ios-row > label, .ios-row > span { font-size: 14px; opacity: 0.9; flex-shrink: 0; }
+.ios-row input[type="text"], .ios-row select, .ios-row textarea {
+  background: transparent; border: none; outline: none; color: inherit;
+  font-size: 14px; text-align: right; flex: 1; min-width: 0;
+}
+.ios-row select { text-align: right; }
+.ios-row > code { font-size: 12.5px; text-align: right; opacity: 0.85; }
+/* Valeurs longues (URL, clé) : pleine largeur sous le label, alignées à gauche. */
+.ios-row-block > code { text-align: left; align-self: flex-start; max-width: 100%; overflow-wrap: anywhere; }
+.ios-row .companion-code-row { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+.ios-row .companion-code { font-size: 18px; letter-spacing: 2px; white-space: nowrap; }
+.ios-row-block { flex-direction: column; align-items: stretch; gap: 8px; }
+.ios-row-block input[type="text"], .ios-row-block textarea { text-align: left; width: 100%; }
+.ios-row-block textarea { resize: vertical; line-height: 1.4; }
+
+/* Bouton-ligne (action) */
+.ios-row-action {
+  width: 100%; background: transparent; border: none; cursor: pointer;
+  color: #5b8def; font-size: 14px; text-align: left; justify-content: flex-start;
+}
+.ios-row-action.danger { color: #ff4d4f; }
+
+/* Switch iOS */
+.ios-switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0; }
+.ios-switch input { opacity: 0; width: 0; height: 0; }
+.ios-slider {
+  position: absolute; inset: 0; cursor: pointer; border-radius: 999px;
+  background: rgba(120, 120, 128, 0.5); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  transition: 0.25s;
+}
+.ios-slider::before {
+  content: ""; position: absolute; height: 22px; width: 22px; left: 2px; top: 2px;
+  background: #fff; border-radius: 50%; transition: 0.25s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.ios-switch input:checked + .ios-slider { background: #34c759 !important; box-shadow: 0 0 10px rgba(52, 199, 89, 0.45); }
+.ios-switch input:checked + .ios-slider::before { transform: translateX(18px); }
+
+/* Contrôle segmenté */
+.ios-segmented {
+  display: inline-flex; background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md); padding: 2px; gap: 2px;
+}
+.ios-segmented button {
+  border: none; background: transparent; color: inherit; cursor: pointer;
+  font-size: 12px; padding: 5px 10px; border-radius: var(--radius-sm); transition: 0.15s;
+}
+.ios-segmented button.active { background: rgba(255, 255, 255, 0.22); font-weight: 600; }
+
+/* Chips (intérêts) */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(120, 140, 255, 0.18); border: 1px solid rgba(120, 140, 255, 0.3);
+  border-radius: 999px; padding: 4px 10px; font-size: 13px;
+}
+.chip button { background: none; border: none; color: inherit; cursor: pointer; opacity: 0.6; font-size: 13px; line-height: 1; }
+.chip button:hover { opacity: 1; }
+.chip-input {
+  background: transparent; border: none; outline: none; color: inherit;
+  font-size: 14px; width: 100%; padding: 2px 0;
+}
+
+/* Souvenirs */
+.memory-fact { gap: 10px; }
+.memory-fact .fact-text { flex: 1; text-align: left; font-size: 14px; opacity: 0.92; }
+.memory-fact .fact-meta { font-size: 11px; opacity: 0.45; flex-shrink: 0; }
+.memory-fact .fact-del {
+  background: none; border: none; color: #ff4d4f; cursor: pointer; flex-shrink: 0;
+  display: inline-flex; align-items: center;
+}
+.memory-fact .fact-del svg { width: 16px; height: 16px; }
+
+.memory-toast-wrap {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 10000;
+  display: grid;
+  gap: 8px;
+  pointer-events: none;
+}
+.memory-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: var(--radius-lg);
+  background: rgba(28,28,30,.88);
+  color: #fff;
+  box-shadow: 0 12px 34px rgba(0,0,0,.28);
+  backdrop-filter: blur(18px);
+  pointer-events: auto;
+}
+.memory-toast button {
+  border: 0;
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: var(--accent-ink);
+  background: rgba(255,255,255,.95);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Dernier garde-fou : en mode opaque, le focus ne doit jamais repeindre la barre. */
+body.bar-opaque .bar-area .search-bar,
+body.bar-opaque .bar-area .search-bar:focus,
+body.bar-opaque .bar-area .search-bar:focus-within,
+body.bar-opaque.theme-light-forced .bar-area .search-bar,
+body.bar-opaque.theme-light-forced .bar-area .search-bar:focus-within {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  animation: none !important;
+  background: var(--bar-opaque-bg) !important;
+  border-color: var(--bar-opaque-border) !important;
+  box-shadow: var(--bar-opaque-shadow) !important;
+}
+
+/* ===== Mode opaque réellement global ======================================
+   Le réglage ne doit pas seulement solidifier la capsule : chaque surface qui
+   flotte au-dessus du bureau devient une couleur pleine. Aucun canal alpha ni
+   backdrop-filter ne subsiste sur les panneaux, menus et notifications. */
+body.bar-opaque {
+  --bar-opaque-bg: #222228;
+  --panel-opaque-bg: #161619;
+  --bar-opaque-border: rgba(255, 255, 255, 0.14);
+  --panel-opaque-border: rgba(255, 255, 255, 0.10);
+  --bar-opaque-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 12px 30px rgba(0, 0, 0, 0.22);
+  --panel-opaque-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 22px 48px rgba(0, 0, 0, 0.30);
+}
+body.bar-opaque.theme-light-forced {
+  --bar-opaque-bg: #ffffff;
+  --panel-opaque-bg: #ffffff;
+  --bar-opaque-border: rgba(0, 0, 0, 0.10);
+  --panel-opaque-border: rgba(0, 0, 0, 0.10);
+  --bar-opaque-shadow: inset 0 1px 0 #ffffff, 0 12px 30px rgba(0, 0, 0, 0.12);
+  --panel-opaque-shadow: inset 0 1px 0 #ffffff, 0 22px 48px rgba(0, 0, 0, 0.16);
+}
+@media (prefers-color-scheme: light) {
+  body.bar-opaque:not(.theme-dark-forced) {
+    --bar-opaque-bg: #ffffff;
+    --panel-opaque-bg: #ffffff;
+    --bar-opaque-border: rgba(0, 0, 0, 0.10);
+    --panel-opaque-border: rgba(0, 0, 0, 0.10);
+    --bar-opaque-shadow: inset 0 1px 0 #ffffff, 0 12px 30px rgba(0, 0, 0, 0.12);
+    --panel-opaque-shadow: inset 0 1px 0 #ffffff, 0 22px 48px rgba(0, 0, 0, 0.16);
+  }
+}
+
+/* Les thèmes d'avatar conservent leur identité, avec des couleurs 100 % solides. */
+
+body.bar-opaque .search-bar,
+body.bar-opaque .search-bar:focus,
+body.bar-opaque .search-bar:focus-within {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  background: var(--bar-opaque-bg) !important;
+  border-color: var(--bar-opaque-border) !important;
+  box-shadow: var(--bar-opaque-shadow) !important;
+}
+body.bar-opaque .messages-container,
+body.bar-opaque .settings-panel,
+body.bar-opaque .toolbar-overflow,
+body.bar-opaque .mode-menu,
+body.bar-opaque .dictation-hint {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  background: var(--panel-opaque-bg) !important;
+  border-color: var(--panel-opaque-border) !important;
+  box-shadow: var(--panel-opaque-shadow) !important;
+}
+body.bar-opaque .memory-toast {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  background: #1c1c1e !important;
+}
+
+/* Desktop : des cibles plus nettes et un survol de tuile qui ressemble à une
+   vraie bibliothèque d'apps, sans alourdir la variante compacte. */
+@media (min-width: 700px) {
+  .toolbox-grid { gap: 10px; }
+  .toolbox-item { min-height: 82px; padding: 12px 8px 10px; }
+  .toolbox-item:hover { box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06); }
+  .settings-header > .icon-btn { width: 30px; height: 30px; border-radius: var(--radius-md); justify-content: center; }
+}
+
+/* Garde-fou Linux/Pi : le menu du sélecteur de modèle reçoit un fond clair
+   solide quand WebKitGTK désactive le verre. Les couleurs codées en blanc plus
+   haut deviennent donc illisibles sans ce bloc final. */
+body.theme-light-forced .mode-menu,
+body.theme-light-forced.flavor-rpi .mode-menu,
+body.theme-light-forced.flavor-linux-standard .mode-menu {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16) !important;
+}
+body.theme-light-forced .mode-menu-sep,
+body.theme-light-forced.flavor-rpi .mode-menu-sep,
+body.theme-light-forced.flavor-linux-standard .mode-menu-sep {
+  color: rgba(28, 28, 30, 0.52) !important;
+}
+body.theme-light-forced .mode-item,
+body.theme-light-forced.flavor-rpi .mode-item,
+body.theme-light-forced.flavor-linux-standard .mode-item {
+  color: #1c1c1e !important;
+}
+body.theme-light-forced .mode-item:hover,
+body.theme-light-forced.flavor-rpi .mode-item:hover,
+body.theme-light-forced.flavor-linux-standard .mode-item:hover {
+  background: rgba(0, 0, 0, 0.055) !important;
+}
+body.theme-light-forced .mode-item.active,
+body.theme-light-forced.flavor-rpi .mode-item.active,
+body.theme-light-forced.flavor-linux-standard .mode-item.active {
+  background: color-mix(in srgb, var(--action-color, #ff9e6b) 24%, rgba(0, 0, 0, 0.035)) !important;
+  color: #1c1c1e !important;
+}
+body.theme-light-forced .mode-item .mode-item-desc,
+body.theme-light-forced.flavor-rpi .mode-item .mode-item-desc,
+body.theme-light-forced.flavor-linux-standard .mode-item .mode-item-desc {
+  color: rgba(28, 28, 30, 0.58) !important;
+}
+body.theme-light-forced .backend-field input,
+body.theme-light-forced.flavor-rpi .backend-field input,
+body.theme-light-forced.flavor-linux-standard .backend-field input {
+  background: rgba(0, 0, 0, 0.035) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #1c1c1e !important;
+}
+body.flavor-rpi:not(.theme-dark-forced) .mode-menu,
+body.flavor-linux-standard:not(.theme-dark-forced) .mode-menu,
+body.flavor-rpi.theme-rose .mode-menu,
+body.flavor-rpi.theme-ice .mode-menu,
+body.flavor-rpi.theme-amber .mode-menu,
+body.flavor-linux-standard.theme-rose .mode-menu,
+body.flavor-linux-standard.theme-ice .mode-menu,
+body.flavor-linux-standard.theme-amber .mode-menu {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16) !important;
+}
+body.flavor-rpi:not(.theme-dark-forced) .mode-menu-sep,
+body.flavor-linux-standard:not(.theme-dark-forced) .mode-menu-sep {
+  color: rgba(28, 28, 30, 0.52) !important;
+}
+body.flavor-rpi:not(.theme-dark-forced) .mode-item,
+body.flavor-linux-standard:not(.theme-dark-forced) .mode-item {
+  color: #1c1c1e !important;
+}
+body.flavor-rpi:not(.theme-dark-forced) .mode-item:hover,
+body.flavor-linux-standard:not(.theme-dark-forced) .mode-item:hover {
+  background: rgba(0, 0, 0, 0.055) !important;
+}
+body.flavor-rpi:not(.theme-dark-forced) .mode-item.active,
+body.flavor-linux-standard:not(.theme-dark-forced) .mode-item.active {
+  background: color-mix(in srgb, var(--action-color, #ff9e6b) 24%, rgba(0, 0, 0, 0.035)) !important;
+  color: #1c1c1e !important;
+}
+body.flavor-rpi:not(.theme-dark-forced) .mode-item .mode-item-desc,
+body.flavor-linux-standard:not(.theme-dark-forced) .mode-item .mode-item-desc {
+  color: rgba(28, 28, 30, 0.58) !important;
+}
+body.flavor-rpi:not(.theme-dark-forced) .backend-field input,
+body.flavor-linux-standard:not(.theme-dark-forced) .backend-field input {
+  background: rgba(0, 0, 0, 0.035) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #1c1c1e !important;
+}
+
+/* Doit rester la dernière règle de surface : les garde-fous WebKit ci-dessus
+   ciblent fortement .mode-menu et ne doivent pas réintroduire 4 % d'alpha. */
+body.bar-opaque .messages-container,
+body.bar-opaque .settings-panel,
+body.bar-opaque .toolbar-overflow,
+body.bar-opaque .mode-menu,
+body.bar-opaque .dictation-hint {
+  background: var(--panel-opaque-bg) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Bouton clair/sombre neutralisé par un thème d'orbe : celui-ci impose son
+   contraste (champ `text` de ORB_THEMES), la bascule n'aurait aucun effet.
+   On le montre au lieu de laisser cliquer dans le vide. */
+.theme-toggle-btn.is-locked { opacity: 0.4; }
+.theme-toggle-btn.is-denied { animation: themeDenied 0.32s ease; }
+@keyframes themeDenied {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* --- Panneau « Sources » sous une réponse documentaire ---------------------
+   Compact par défaut : une pastille par extrait (numéro cité, document, score).
+   Un clic ouvre un seul panneau de détail, ancré sous la pastille. */
+.msg-sources {
+  position: relative;
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+.msg-sources-head {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 7px;
+  /* Peut porter le nom du document : il ne doit pas casser sur deux lignes. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.msg-sources-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  font: inherit;
+  /* Couleur explicite : hériter suffisait dans la bulle sombre, mais le
+     panneau de détail est un calque posé par-dessus et n'hérite de rien de
+     fiable — le titre y ressortait noir sur fond noir. */
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  padding: 3px 8px 3px 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.15s, border-color 0.15s;
+}
+.source-chip:hover { background: rgba(255, 255, 255, 0.1); }
+.source-chip.active {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+.source-chip-num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.8);
+}
+.source-chip-title {
+  min-width: 0;
+  /* Assez court pour que plusieurs pastilles tiennent sur une ligne, y compris
+     avec une police large : c'est ce qui les empilait une par ligne. */
+  max-width: 110px;
+  font-size: 11.5px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.source-chip-score {
+  flex: none;
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Détail d'une source : un seul panneau, repositionné sous la pastille active. */
+.source-pop {
+  position: absolute;
+  z-index: 12;
+  width: min(340px, 100%);
+  padding: 9px 11px;
+  border-radius: var(--radius-lg, 12px);
+  background: #23242c;
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.7);
+}
+.source-pop-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 2px;
+}
+.source-pop-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 650;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.source-pop-close {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+.source-pop-close:hover { background: rgba(255, 255, 255, 0.1); color: inherit; }
+.source-pop-sub {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.42);
+  margin-bottom: 5px;
+}
+.source-pop-text {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.68);
+  white-space: pre-wrap;
+  max-height: 220px;
+  overflow-y: auto;
+}
+body.theme-light-forced .msg-sources { border-top-color: rgba(0, 0, 0, 0.08); }
+body.theme-light-forced .msg-sources-head { color: rgba(0, 0, 0, 0.45); }
+body.theme-light-forced .source-chip {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.09);
+}
+body.theme-light-forced .source-chip:hover { background: rgba(0, 0, 0, 0.07); }
+body.theme-light-forced .source-chip.active { background: rgba(0, 0, 0, 0.1); border-color: rgba(0, 0, 0, 0.18); }
+body.theme-light-forced .source-chip-num { background: rgba(0, 0, 0, 0.09); color: rgba(0, 0, 0, 0.72); }
+body.theme-light-forced .source-chip-score { color: rgba(0, 0, 0, 0.5); }
+body.theme-light-forced .source-chip { color: rgba(0, 0, 0, 0.88); }
+body.theme-light-forced .source-pop {
+  background: #ffffff;
+  color: rgba(0, 0, 0, 0.88);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.3);
+}
+body.theme-light-forced .source-pop-sub { color: rgba(0, 0, 0, 0.45); }
+body.theme-light-forced .source-pop-text { color: rgba(0, 0, 0, 0.68); }
+body.theme-light-forced .source-pop-close { color: rgba(0, 0, 0, 0.45); }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PEAU PLATE — barre principale
+   ═══════════════════════════════════════════════════════════════════════════
+   Reprend le langage visuel du compagnon mobile : surfaces pleines, bordure de
+   1 px, rayons sobres, aucun halo ni verre. Les couleurs viennent exclusivement
+   des jetons de `lib/tokens.css`.
+
+   POURQUOI CES SÉLECTEURS À RALLONGE : les blocs de contraste plus haut ciblent
+   `body.theme-dark-forced .x` en `!important` (spécificité 0,3,0). Une règle
+   `.x` seule, même en `!important`, perd. On repart donc de la même base de
+   contraste — main.js pose toujours l'une des deux classes — avec en plus
+   `` : un thème coloré (Rubis, Violet…) garde ses surfaces,
+   on ne lui a retiré que le flou et les halos (voir lib/flat.css).
+
+   La FENÊTRE, elle, reste transparente : elle fait 680×680 alors que la barre
+   n'en occupe qu'une bande, la peindre poserait un grand rectangle sur le
+   bureau. « Opaque » vaut pour les surfaces — plus rien ne transparaît. */
+
+.flat, /* ancre de lisibilité : la liste ci-dessous est une seule et même peau */
+body.theme-light-forced .search-bar,
+body.theme-dark-forced .search-bar {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--flat-shadow-sm), var(--flat-shadow-md) !important;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+body.theme-light-forced .search-bar:focus-within,
+body.theme-dark-forced .search-bar:focus-within {
+  background: var(--card) !important;
+  border-color: var(--ring) !important;
+  box-shadow: var(--flat-shadow-sm), var(--flat-shadow-md) !important;
+}
+body.theme-light-forced .search-bar #chat-input,
+body.theme-dark-forced .search-bar #chat-input {
+  color: var(--foreground) !important;
+}
+body.theme-light-forced .search-bar #chat-input::placeholder,
+body.theme-dark-forced .search-bar #chat-input::placeholder {
+  color: var(--muted-foreground) !important;
+}
+
+/* -- Boutons d'icône : le « ghost » de shadcn -- */
+body.theme-light-forced .icon-btn,
+body.theme-dark-forced .icon-btn,
+body.theme-light-forced .icon-btn-text,
+body.theme-dark-forced .icon-btn-text {
+  color: var(--muted-foreground) !important;
+  border-radius: var(--radius-md) !important;
+}
+body.theme-light-forced .icon-btn:hover,
+body.theme-dark-forced .icon-btn:hover,
+body.theme-light-forced .icon-btn-text:hover,
+body.theme-dark-forced .icon-btn-text:hover,
+body.theme-light-forced .theme-toggle-btn:hover,
+body.theme-dark-forced .theme-toggle-btn:hover {
+  color: var(--foreground) !important;
+  background: var(--subtle) !important;
+  box-shadow: none !important;
+}
+/* Un outil actif se signale par la couleur d'action, jamais par un halo. */
+body.theme-light-forced .icon-btn.active,
+body.theme-dark-forced .icon-btn.active,
+body.theme-light-forced .action-mode-btn.active,
+body.theme-dark-forced .action-mode-btn.active,
+body.theme-light-forced .autospeak-btn.active,
+body.theme-dark-forced .autospeak-btn.active,
+body.theme-light-forced .dictation-btn.active,
+body.theme-dark-forced .dictation-btn.active,
+body.theme-light-forced .heartbeat-btn.active,
+body.theme-dark-forced .heartbeat-btn.active,
+body.theme-light-forced .memory-btn.active,
+body.theme-dark-forced .memory-btn.active {
+  color: var(--accent-ink) !important;
+  background: color-mix(in oklab, var(--primary) 14%, transparent) !important;
+  box-shadow: none !important;
+}
+
+/* -- Fermer : discret comme le reste, rouge seulement au survol -- */
+body.theme-light-forced .close-btn,
+body.theme-dark-forced .close-btn {
+  background: transparent !important;
+  color: var(--muted-foreground) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+body.theme-light-forced .close-btn:hover,
+body.theme-dark-forced .close-btn:hover {
+  background: color-mix(in oklab, var(--destructive) 14%, transparent) !important;
+  color: var(--destructive) !important;
+}
+
+/* -- Pastille de modèle -- */
+body.theme-light-forced .quick-model-toggle,
+body.theme-dark-forced .quick-model-toggle {
+  background: var(--secondary) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--secondary-foreground) !important;
+  font-size: 11px !important;
+  box-shadow: none !important;
+}
+body.theme-light-forced .quick-model-toggle:hover,
+body.theme-dark-forced .quick-model-toggle:hover {
+  background: color-mix(in oklab, var(--secondary) 80%, var(--foreground) 6%) !important;
+  box-shadow: none !important;
+}
+body.theme-light-forced .model-preload-btn:hover,
+body.theme-dark-forced .model-preload-btn:hover {
+  color: var(--foreground) !important;
+  background: var(--subtle) !important;
+}
+
+/* -- Envoi : le seul bouton plein de la barre -- */
+body.theme-light-forced .submit-btn,
+body.theme-dark-forced .submit-btn {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+body.theme-light-forced .submit-btn:hover,
+body.theme-dark-forced .submit-btn:hover {
+  background: color-mix(in oklab, var(--primary) 90%, transparent) !important;
+}
+
+/* -- Fil de discussion -- */
+body.theme-light-forced .messages-container,
+body.theme-dark-forced .messages-container {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--flat-shadow-lg) !important;
+}
+/* L'utilisateur en bulle, l'assistant à plat sur toute la largeur : c'est ce
+   qui rend les réponses longues lisibles, et c'est déjà le choix du compagnon. */
+body.theme-light-forced .message-bubble.user,
+body.theme-dark-forced .message-bubble.user {
+  background: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: var(--radius-lg) !important;
+}
+body.theme-light-forced .message-bubble.assistant,
+body.theme-dark-forced .message-bubble.assistant {
+  background: transparent !important;
+  color: var(--foreground) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* -- Menus et panneaux flottants -- */
+body.theme-light-forced .mode-menu,
+body.theme-dark-forced .mode-menu,
+body.theme-light-forced .toolbar-overflow,
+body.theme-dark-forced .toolbar-overflow,
+body.theme-light-forced .settings-panel,
+body.theme-dark-forced .settings-panel,
+body.theme-light-forced .dictation-hint,
+body.theme-dark-forced .dictation-hint {
+  background: var(--popover) !important;
+  color: var(--popover-foreground) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--flat-shadow-lg) !important;
+}
+body.theme-light-forced .mode-menu-sep,
+body.theme-dark-forced .mode-menu-sep {
+  color: var(--muted-foreground) !important;
+}
+body.theme-light-forced .mode-item,
+body.theme-dark-forced .mode-item {
+  color: var(--popover-foreground) !important;
+  border-radius: var(--radius-md) !important;
+}
+body.theme-light-forced .mode-item:hover,
+body.theme-dark-forced .mode-item:hover,
+body.theme-light-forced .mode-item.active,
+body.theme-dark-forced .mode-item.active {
+  background: var(--subtle) !important;
+}
+
+/* ===== Menus « @ » (outils) et « # » (documents) de la barre de chat ===== */
+/* Posé sur <body> en `fixed` : la barre a un `overflow` propre et un menu en
+   position absolue s'y ferait rogner. */
+.mention-menu {
+  position: fixed;
+  z-index: 4000;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid var(--border, rgba(120, 120, 128, 0.3));
+  background: var(--card, #1c1c1e);
+  color: var(--text, #fff);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+}
+.mention-menu[hidden] { display: none; }
+.mention-head {
+  padding: 4px 8px 6px;
+  font-size: 11px;
+  opacity: 0.6;
+}
+.mention-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: none;
+  border-radius: var(--radius-sm, 8px);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.mention-item.is-active,
+.mention-item:hover { background: rgba(120, 120, 128, 0.22); }
+.mention-label { flex: 0 0 auto; font-weight: 500; }
+.mention-sub {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* Calque des mentions : peint « @outil » en pastille À LA PLACE du texte du
+   champ (lib/chat-mentions.js). Il est posé SOUS le champ, aux mêmes
+   coordonnées ; le champ passe son texte en transparent et garde son curseur. */
+.mention-layer {
+  position: absolute;
+  z-index: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--text-main);
+  background: transparent;
+  box-sizing: border-box;
+}
+.mention-layer[hidden] { display: none; }
+.mention-layer-inner { white-space: inherit; will-change: transform; }
+/* La pastille ne doit DÉCALER aucun caractère : le `padding` qui l'élargit est
+   repris à l'identique en marge négative. */
+.mention-mark {
+  /* 0.22em : assez pour dessiner une pastille, assez peu pour que son fond
+     n'empiète pas visiblement sur l'espace qui suit le nom de l'outil. */
+  padding: 1px 0.22em;
+  margin: 0 -0.22em;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--primary, #6c8cff) 18%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--primary, #6c8cff) 45%, transparent);
+  color: var(--primary, #6c8cff);
+  /* AUCUNE propriété qui changerait la largeur des glyphes ici (font-weight,
+     font-size, letter-spacing…) : le calque doit rester au caractère près sur le
+     texte réel, sinon le curseur du champ se décale après la pastille. */
+  /* Le fond suit le texte s'il passe à la ligne. */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* Champ dont le texte est peint par le calque. `-webkit-text-fill-color` est
+   nécessaire sous WebKit, où `color` seul ne suffit pas sur un champ de saisie.
+   La couleur du curseur est posée en ligne par le module, avant l'effacement. */
+.mention-lit {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+.mention-lit::selection { background: color-mix(in oklab, var(--primary, #6c8cff) 35%, transparent); }
+
+/* Même pastille, dans les messages déjà envoyés (decorateMentions). */
+.mention-chip {
+  display: inline-flex;
+  align-items: baseline;
+  padding: 1px 0.45em;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--primary, #6c8cff) 45%, transparent);
+  background: color-mix(in oklab, var(--primary, #6c8cff) 16%, transparent);
+  color: var(--primary, #6c8cff);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ===== Mode performance (Raspberry Pi) ==================================== */
+/* Activé depuis Paramètres → Apparence, visible seulement sur Pi. L'orbe et
+   son contexte WebGL ne sont pas créés du tout (cf. orb.js) ; ici on retire ce
+   qui reste coûteux à composer pour le GPU vidéo du Pi : flous, ombres
+   portées, dégradés animés et transitions. Le trait est posé sur <html> par
+   orb.js, avant le premier rendu, pour éviter tout clignotement. */
+html.perf-mode * {
+  animation: none !important;
+  transition: none !important;
+}
+html.perf-mode *,
+html.perf-mode *::before,
+html.perf-mode *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+html.perf-mode .glowing-orb,
+html.perf-mode .orb-shadow,
+html.perf-mode .orb-frost,
+html.perf-mode #orb-wrap,
+html.perf-mode #orb-container { display: none !important; }
+
+/* Prompt système rejoué à la reprise d'une discussion : masqué par défaut
+   (cf. loadConversation), visible seulement en mode DEV. Quand il s'affiche,
+   il ne doit pas se confondre avec un message — d'où la monospace, le libellé
+   et la teinte d'avertissement. */
+.message-bubble.system {
+  align-self: stretch;
+  max-width: 100%;
+  background: color-mix(in oklab, #ff9f0a 10%, transparent);
+  border: 1px dashed color-mix(in oklab, #ff9f0a 45%, transparent);
+  color: var(--text-muted, inherit);
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: 11.5px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.message-bubble.system::before {
+  content: "SYSTEM · DEV";
+  display: block;
+  margin-bottom: 6px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #ff9f0a;
+}
+
+/* Journal des accès de l'IA (Réglages › Confidentialité). */
+.access-log-ov { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.access-log { width: min(620px, 100%); max-height: min(80vh, 720px); display: flex; flex-direction: column; background: var(--card, var(--background, #fff)); color: var(--foreground, inherit); border: 1px solid var(--border); border-radius: var(--radius-lg, 14px); box-shadow: var(--shadow-3, 0 10px 40px rgba(0,0,0,.25)); }
+.access-log header, .access-log footer { display: flex; align-items: center; gap: 8px; padding: 12px 16px; }
+.access-log header { border-bottom: 1px solid var(--border); justify-content: space-between; }
+.access-log header h3 { margin: 0; font-size: 15px; }
+.access-log header span { font-size: 12px; opacity: .6; }
+.access-log ul { list-style: none; margin: 0; padding: 6px 10px; overflow: auto; flex: 1; }
+.access-log li { display: grid; grid-template-columns: auto 1fr; gap: 1px 10px; padding: 7px 6px; border-bottom: 1px dashed var(--border); font-size: 12.5px; }
+.access-log li time { grid-row: span 3; font-size: 11px; opacity: .6; white-space: nowrap; }
+.access-log li .t { opacity: .85; word-break: break-word; }
+.access-log li .s { font-size: 11px; opacity: .6; }
+.access-log li.w strong { color: color-mix(in oklab, var(--warning, #d9a23a) 80%, var(--foreground, #000)); }
+.access-log li.ko { opacity: .6; }
+.access-log li.empty { display: block; text-align: center; opacity: .6; border: 0; padding: 24px; }
+.access-log footer { border-top: 1px solid var(--border); justify-content: flex-end; }
+.access-log footer button { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: inherit; cursor: pointer; font: inherit; }
+.access-log footer button.primary { background: var(--primary); color: var(--primary-foreground, #fff); border-color: transparent; }
+
+/* Bouton d'envoi en mode « Stop » pendant un traitement IA */
+.submit-btn.is-stop { animation: send-stop-pulse 1.6s ease-in-out infinite; }
+@keyframes send-stop-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0); } 50% { box-shadow: 0 0 0 5px rgba(255, 69, 58, .18); } }
+@media (prefers-reduced-motion: reduce) { .submit-btn.is-stop { animation: none; } }
+
+/* Dépassement de contexte : explication + deux remèdes (cf. renderContextOverflow). */
+.ctx-overflow { margin-top: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid color-mix(in oklch, #ef4444 35%, transparent);
+  background: color-mix(in oklch, #ef4444 7%, transparent); color: inherit; font-size: 13px; line-height: 1.45; }
+.ctx-overflow p { margin: 0 0 8px; }
+.ctx-overflow-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.ctx-overflow-actions .msg-retry-btn { position: static; margin: 0; }
+
+/* Choix du moteur de décision, gardé en tête de la réponse. */
+.route-chip { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 6px; padding: 2px 9px; border-radius: 99px;
+  font-size: 11px; font-weight: 500; color: var(--muted-foreground, #888); background: var(--muted, rgba(127,127,127,.12)); }
+.route-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #10b981; }
+.route-chip.route-tools::before { background: #3b82f6; }
+.route-chip.route-orchestrate::before { background: #8b5cf6; }
+.route-chip.route-topic { display: flex; width: fit-content; margin: 4px 0 4px auto; }
+.route-chip.route-topic::before { background: #f59e0b; }
+.mode-menu-adv-toggle { background: none; border: 0; width: 100%; text-align: left; cursor: pointer; font: inherit; }
+.mode-menu-adv-toggle:hover { opacity: .8; }
+
+/* Soft characters remain available in performance mode without WebGL. */
+html.perf-mode #orb-wrap:has([data-orb-renderer="soft"]):not([style*="display: none"]) { display:flex!important; }
+html.perf-mode #orb-container[data-orb-renderer="soft"] { display:block!important; }
+
+.setting-item[hidden] { display:none!important; }

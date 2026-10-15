@@ -1,0 +1,153 @@
+/* Peau « plate » de Lumen — le langage visuel du compagnon mobile, étendu à
+ * toute la solution (barre principale, Lumen Desktop, apps).
+ *
+ * Principe : AUCUNE couleur n'est écrite ici. Cette feuille rebranche les
+ * anciennes variables décoratives (verre, halos, dégradés) sur les jetons de
+ * `lib/tokens.css`, et neutralise les effets. Les écrans gardent donc leur
+ * structure — seule leur peau change.
+ *
+ * À charger EN DERNIER, après la feuille propre à l'écran :
+ *   <link rel="stylesheet" href="/lib/tokens.css" />
+ *   <link rel="stylesheet" href="styles.css" />
+ *   <link rel="stylesheet" href="/lib/flat.css" />
+ *
+ * Ce qui n'est PAS touché :
+ *   • l'orbe (son verre et ses yeux lui sont propres — c'est l'identité de
+ *     Lumen, pas une décoration d'interface) ;
+ *   • les thèmes colorés (Rubis, Violet, Rose…) : ils gardent leurs surfaces,
+ *     on ne leur retire que le flou et les halos. Un thème reste un thème.
+ *   • la fenêtre elle-même, qui doit rester transparente : elle fait 680×680
+ *     alors que la barre en occupe une fraction, la peindre en opaque poserait
+ *     un grand rectangle gris sur le bureau. « Opaque » vaut donc pour les
+ *     SURFACES : plus rien ne transparaît à travers l'interface.
+ */
+
+/* ── 1. Variables décoratives → jetons ───────────────────────────────────── */
+/* `lib/tokens.css` fait déjà le pont pour les noms courants (--text-main,
+   --accent-color, --surface…). Il reste le vocabulaire « verre » de la barre
+   principale, que personne n'avait repris : c'est lui qu'on rebranche ici.
+   Sur `:root` et chargé APRÈS les feuilles d'écran : à spécificité égale, la
+   dernière déclaration l'emporte. Les thèmes colorés, eux, posent leurs
+   surfaces en `!important` depuis `body.theme-*` et gardent donc la main. */
+:root {
+  /* Les polices d'emoji viennent APRÈS `sans-serif`, jamais avant. Sur Linux
+     aucune des familles nommées n'existe : la première trouvée était alors
+     « Noto Color Emoji », qui contient les CHIFFRES, l'ESPACE et quelques
+     signes (base des touches clavier ⌨ 0️⃣…) avec une chasse d'emoji. D'où
+     des mots très écartés et des « 1 0 0 % » lettre à lettre, uniquement sur
+     Ubuntu. Placée après la générique, la police d'emoji ne sert plus qu'aux
+     glyphes que la sans-serif n'a pas — ce pour quoi elle est listée. */
+  --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, system-ui, sans-serif, "Apple Color Emoji", "Noto Color Emoji";
+
+  /* Verre → surfaces pleines. `--glass-opacity` reste défini (le curseur de
+     transparence des Réglages écrit dedans) mais ne sert plus de canal alpha. */
+  --glass-bg: var(--card);
+  --glass-border: var(--border);
+  --glass-highlight: transparent;
+  --glass-shadow: oklch(0 0 0 / 12%);
+
+  /* Surfaces des thèmes : le thème par défaut suit les jetons. */
+  --surface-bar: var(--card);
+  --surface-panel: var(--popover);
+  --surface-soft: var(--muted);
+  --surface-line: var(--border);
+
+  --text-highlight: var(--primary);
+  --primary-glow: var(--primary);
+
+  /* Ombres communes : une seule échelle, discrète, pour toute la solution. */
+  /* Alias de l'échelle unique (lib/tokens.css). Ces trois noms restent parce
+     qu'ils sont employés dans des dizaines de feuilles ; ils ne définissent
+     plus de valeurs propres, sans quoi le thème sombre les laissait figées sur
+     une ombre calculée pour le clair. */
+  --flat-shadow-sm: var(--shadow-1);
+  --flat-shadow-md: var(--shadow-2);
+  --flat-shadow-lg: var(--shadow-3);
+}
+
+/* ── 1 bis. `hidden` fait autorité ───────────────────────────────────────── */
+/* Un `display:` déclaré dans une feuille d'écran l'emporte sur l'attribut
+   `hidden`, et l'élément reste affiché. Le piège s'est déjà refermé sur le
+   compagnon : la règle vaut donc pour toute la solution. */
+[hidden] { display: none !important; }
+
+/* ── 2. Effets décoratifs : coupés ───────────────────────────────────────── */
+/* Le flou d'arrière-plan est ce qui datait le plus l'interface, et c'est aussi
+   ce qui se dégrade le plus mal (WKWebView le laisse « figé » quand la fenêtre
+   perd le focus, WebKitGTK le rend en boîte opaque). L'orbe en est exclu. */
+*:not(.orb-frost):not(.orb-eyes):not(.orb-eyes span) {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Halos d'ambiance et animations de repeinte du verre : sans objet désormais. */
+.glowing-orb { display: none !important; }
+.search-bar,
+.messages-container { animation: none !important; }
+
+/* ── 3. Typographie ──────────────────────────────────────────────────────── */
+body,
+button, input, select, textarea {
+  font-family: var(--font-main);
+}
+body { -webkit-font-smoothing: antialiased; }
+
+/* ── 4. Anneau de focus commun ───────────────────────────────────────────── */
+/* Absent de la plupart des écrans aujourd'hui : c'est autant un défaut de
+   cohérence qu'un problème d'accessibilité au clavier.
+   Les CHAMPS DE SAISIE en sont exclus : dans Lumen, un champ est presque
+   toujours posé nu à l'intérieur d'une capsule arrondie (barre de recherche,
+   recherche globale, composeur). L'`outline` suit le rayon de l'ÉLÉMENT, pas celui de
+   son conteneur : on obtenait un rectangle dur au milieu d'une pilule. Le
+   focus d'un champ se marque donc sur son conteneur (voir ci-dessous), et à
+   défaut par la couleur de sa propre bordure. */
+:is(button, a, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Un champ qui porte lui-même une bordure : on la teinte, sans rectangle. */
+:is(input, textarea):focus-visible {
+  outline: none;
+  border-color: var(--ring);
+}
+
+/* Un champ nu dans une capsule : c'est la capsule qui réagit. La liste reste
+   explicite — un `:focus-within` universel ferait clignoter des blocs entiers. */
+:is(.search-bar, .composer, .dt-find, .dt-start-search, .dt-chat-row, .dt-launcher-search,
+    .ui-input-wrap, .field-row, .attach-chip):focus-within {
+  border-color: var(--ring);
+}
+
+/* ── 5. Une seule couleur d'action ───────────────────────────────────────── */
+/* Chaque app posait sa propre tuile de marque, avec deux teintes écrites en dur
+   et une ombre colorée assortie : turquoise pour les Agents, magenta pour le
+   Calendrier, indigo pour Fluxo… Vingt apps, vingt couleurs, aucune ne suivant
+   l'accent choisi par l'utilisateur — c'est ce qui donnait cette impression de
+   patchwork. Une seule règle les ramène toutes sur `--primary`.
+   Les couleurs SÉMANTIQUES ne sont pas touchées : succès, danger et
+   avertissement doivent rester reconnaissables au premier coup d'œil. Les
+   pastilles d'apps du dock et du menu démarrer non plus : là, la couleur sert
+   à retrouver une app d'un coup d'œil, c'est une identité, pas un décor. */
+:is(.brand-ic, .brand-logo, .brand-icon, .logo-wrap .brand-ic) {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  box-shadow: none !important;
+}
+
+/* ===== Panneau Bonsai local (lib/bonsai-panel.js : barre + Réglages) ===== */
+.bonsai-models { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+.bonsai-model {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius, 10px);
+  background: var(--card, transparent);
+}
+.bonsai-model-info { min-width: 0; flex: 1; }
+.bonsai-model-name { font-weight: 600; font-size: 13px; }
+.bonsai-model-meta { font-size: 11.5px; color: var(--muted-foreground, #888); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bonsai-model-bar { height: 4px; border-radius: 2px; background: var(--muted, #e5e5e5); margin-top: 6px; overflow: hidden; }
+.bonsai-model-bar i { display: block; height: 100%; background: var(--primary); transition: width .2s; }
+.bonsai-model-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.bonsai-model-actions .settings-save-btn { width: auto; margin: 0; padding: 6px 10px; font-size: 12px; }
+.bonsai-model-actions .settings-save-btn.danger { color: var(--destructive, #c0392b); }
+#bonsai-status[data-kind="error"] { color: var(--destructive, #c0392b); }

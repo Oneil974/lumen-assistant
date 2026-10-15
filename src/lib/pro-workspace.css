@@ -1,0 +1,25 @@
+/* Professional controls use the same semantic tokens as the shadcn-style shell. */
+.toolbar, .data-footer { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.data-footer { padding:14px 0; font-size:12px; }
+.data-footer label { display:flex; align-items:center; gap:8px; }
+.toolbar input { flex:1; min-width:180px; }
+.column-picker { position:relative; }
+.column-picker summary { list-style:none; }
+.column-menu { position:absolute; z-index:20; right:0; top:calc(100% + 6px); min-width:220px; max-height:320px; overflow:auto; padding:8px; background:var(--popover); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:0 4px 14px #0002; }
+.column-menu label { display:flex; align-items:center; gap:8px; padding:7px; }
+.sort-button { display:flex; gap:12px; align-items:center; border:0; background:none; color:inherit; font:inherit; cursor:pointer; padding:0; }
+.sort-button span { color:var(--muted-foreground); }
+.grid td { max-width:340px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.grid thead { position:sticky; top:0; background:var(--card); z-index:1; }
+.workspace-status { color:var(--muted-foreground); font-size:12px; padding:10px 0; }
+.workspace-status[data-error="true"] { color:var(--destructive); }
+.report-card .report-open { color:inherit; font:inherit; text-align:left; border:0; background:none; padding:0; cursor:pointer; width:100%; }
+.report-card .row-actions { margin-top:12px; }
+.btn:disabled { opacity:.45; cursor:not-allowed; }
+:where(button,input,select,summary):focus-visible { outline:2px solid var(--ring); outline-offset:3px; }
+@media(max-width:700px) { .topbar { flex-wrap:wrap; gap:12px; } .top-actions { flex-wrap:wrap; } .data-footer .spacer { display:none; } }
+@media print { .workspace-status, .data-footer { display:none; } }
+
+.column-menu input[type="checkbox"] { width:16px; height:16px; min-width:16px; flex:none; margin:0; }
+
+.params-bar > select { width:auto; min-width:180px; }

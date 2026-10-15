@@ -1,0 +1,4780 @@
+{
+  "sourceLanguage" : "fr",
+  "strings" : {
+    "%@ — joint à la discussion" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ — attached to the chat"
+          }
+        }
+      }
+    },
+    "%@ utilise un certificat auto-signé. Vérifie que l'empreinte correspond à celle affichée par Lumen sur l'ordinateur :\n\n%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ uses a self-signed certificate. Check that the fingerprint matches the one Lumen shows on the computer:\n\n%2$@"
+          }
+        }
+      }
+    },
+    "%lld à décider" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld to decide"
+          }
+        }
+      }
+    },
+    "%lld agent(s) · %lld actif(s) · %lld au travail" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld agent(s) · %lld active · %lld working"
+          }
+        }
+      }
+    },
+    "%lld décision(s) en attente" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pending decision(s)"
+          }
+        }
+      }
+    },
+    "%lld dossier(s) · %lld fichier(s)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld folder(s) · %lld file(s)"
+          }
+        }
+      }
+    },
+    "%lld élément(s) joint(s) à la discussion" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld item(s) attached to the chat"
+          }
+        }
+      }
+    },
+    "%lld élément(s) trouvé(s)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld item(s) found"
+          }
+        }
+      }
+    },
+    "%lld éléments" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld items"
+          }
+        }
+      }
+    },
+    "%lld envoi(s) en attente parti(s)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pending item(s) sent"
+          }
+        }
+      }
+    },
+    "%lld fiches" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld records"
+          }
+        }
+      }
+    },
+    "%lld images" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld images"
+          }
+        }
+      }
+    },
+    "%lld tâche(s)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld task(s)"
+          }
+        }
+      }
+    },
+    "1 heure" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 hour"
+          }
+        }
+      }
+    },
+    "1 image" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 image"
+          }
+        }
+      }
+    },
+    "3 heures" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 hours"
+          }
+        }
+      }
+    },
+    "7 prochains jours et rappels en cours → agenda/iphone, rappels/iphone" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next 7 days and open reminders → agenda/iphone, rappels/iphone"
+          }
+        }
+      }
+    },
+    "À décider" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To decide"
+          }
+        }
+      }
+    },
+    "À la demande" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On demand"
+          }
+        }
+      }
+    },
+    "À propos de :" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About:"
+          }
+        }
+      }
+    },
+    "actif" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "active"
+          }
+        }
+      }
+    },
+    "Actif" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active"
+          }
+        }
+      }
+    },
+    "Active Face ID dans les réglages de l'app." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on Face ID in the app settings."
+          }
+        }
+      }
+    },
+    "Activité" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity"
+          }
+        }
+      }
+    },
+    "Activité des agents" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agent activity"
+          }
+        }
+      }
+    },
+    "Activité indisponible." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity unavailable."
+          }
+        }
+      }
+    },
+    "Actualiser" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh"
+          }
+        }
+      }
+    },
+    "Adresse de Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen address"
+          }
+        }
+      }
+    },
+    "Adresse invalide." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid address."
+          }
+        }
+      }
+    },
+    "Affiche une valeur du coffre Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows a value from the Lumen vault."
+          }
+        }
+      }
+    },
+    "Agenda" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar"
+          }
+        }
+      }
+    },
+    "Agenda et Rappels" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar and Reminders"
+          }
+        }
+      }
+    },
+    "Agent" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agent"
+          }
+        }
+      }
+    },
+    "Agent créé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agent created"
+          }
+        }
+      }
+    },
+    "Agent enregistré" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agent saved"
+          }
+        }
+      }
+    },
+    "Agent lancé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agent started"
+          }
+        }
+      }
+    },
+    "Agent supprimé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agent deleted"
+          }
+        }
+      }
+    },
+    "Agents" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agents"
+          }
+        }
+      }
+    },
+    "Agents indisponibles." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agents unavailable."
+          }
+        }
+      }
+    },
+    "Aide-moi à rédiger un message" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help me write a message"
+          }
+        }
+      }
+    },
+    "Ajouté à %@." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added to %@."
+          }
+        }
+      }
+    },
+    "Ajoute un élément à une liste du coffre (courses, idées…)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adds an item to a vault list (shopping, ideas…)."
+          }
+        }
+      }
+    },
+    "Ajoute une carte, un rappel ou une tâche d'agent dans Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adds a card, a reminder or an agent task in Lumen."
+          }
+        }
+      }
+    },
+    "Ajouter %@ à %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add %1$@ to %2$@"
+          }
+        }
+      }
+    },
+    "Ajouter à une liste" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to a list"
+          }
+        }
+      }
+    },
+    "Ajouter à une liste Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to a Lumen list"
+          }
+        }
+      }
+    },
+    "Ajouter ici" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add here"
+          }
+        }
+      }
+    },
+    "Ambre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amber"
+          }
+        }
+      }
+    },
+    "améliorée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "enhanced"
+          }
+        }
+      }
+    },
+    "annulé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cancelled"
+          }
+        }
+      }
+    },
+    "Annuler" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "Appareil photo indisponible" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera unavailable"
+          }
+        }
+      }
+    },
+    "Apparence" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        }
+      }
+    },
+    "Apple Intelligence n'est pas disponible sur cet iPhone." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence isn't available on this iPhone."
+          }
+        }
+      }
+    },
+    "Apprend de ses tâches" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Learns from its tasks"
+          }
+        }
+      }
+    },
+    "Approuvé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Approved"
+          }
+        }
+      }
+    },
+    "Approuver" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Approve"
+          }
+        }
+      }
+    },
+    "Arrêter la conversation" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop the conversation"
+          }
+        }
+      }
+    },
+    "Arrivée / départ de tes lieux → lieu/actuel + workflows « iphone/arrivee/<lieu> »" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arriving at / leaving your places → lieu/actuel + “iphone/arrivee/<place>” workflows"
+          }
+        }
+      }
+    },
+    "au travail" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "working"
+          }
+        }
+      }
+    },
+    "Aucun agent" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No agent"
+          }
+        }
+      }
+    },
+    "Aucun agent disponible" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No agent available"
+          }
+        }
+      }
+    },
+    "Aucun agent pour l'instant" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No agent yet"
+          }
+        }
+      }
+    },
+    "Aucun modèle disponible sur ce backend." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No model available on this backend."
+          }
+        }
+      }
+    },
+    "Aucun modèle renvoyé par l'API (clé manquante ?)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No model returned by the API (missing key?)."
+          }
+        }
+      }
+    },
+    "Aucun résultat" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No results"
+          }
+        }
+      }
+    },
+    "Aucun résultat trouvé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No result found"
+          }
+        }
+      }
+    },
+    "Aucune" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None"
+          }
+        }
+      }
+    },
+    "Aucune (à la demande)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None (on demand)"
+          }
+        }
+      }
+    },
+    "Aucune activité pour l'instant." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No activity yet."
+          }
+        }
+      }
+    },
+    "Aucune conversation enregistrée." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No saved conversations."
+          }
+        }
+      }
+    },
+    "Aucune étape pour l'instant." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No steps yet."
+          }
+        }
+      }
+    },
+    "Aucune notification." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No notifications."
+          }
+        }
+      }
+    },
+    "Aucune valeur pour « %@ »." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No value for “%@”."
+          }
+        }
+      }
+    },
+    "Audio / vidéo" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio / video"
+          }
+        }
+      }
+    },
+    "Auto" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        }
+      }
+    },
+    "Autorise la reconnaissance vocale dans Réglages › Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow speech recognition in Settings › Lumen."
+          }
+        }
+      }
+    },
+    "Autorise le micro dans Réglages › Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow the microphone in Settings › Lumen."
+          }
+        }
+      }
+    },
+    "Autoriser" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow"
+          }
+        }
+      }
+    },
+    "Azur" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Azure"
+          }
+        }
+      }
+    },
+    "Backend" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backend"
+          }
+        }
+      }
+    },
+    "Backend, modèle chargé et activité — change de modèle d'un toucher." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backend, loaded model and activity — switch models with a tap."
+          }
+        }
+      }
+    },
+    "Bleu" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blue"
+          }
+        }
+      }
+    },
+    "bloqué" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "blocked"
+          }
+        }
+      }
+    },
+    "Bonjour, je suis Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hello, I'm Lumen."
+          }
+        }
+      }
+    },
+    "Bouton Action ou tag NFC : dans Raccourcis, utilise « Déclencher un évènement Lumen » (workflows au webhook « iphone/raccourci/<nom> ») ou « Commander le bureau Lumen ». Modes de concentration : Réglages › Concentration › un mode › Filtres › Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Action button or NFC tag: in Shortcuts, use “Trigger a Lumen event” (workflows with the “iphone/raccourci/<name>” webhook) or “Control the Lumen desktop”. Focus modes: Settings › Focus › a mode › Filters › Lumen."
+          }
+        }
+      }
+    },
+    "Bureau" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desktop"
+          }
+        }
+      }
+    },
+    "C'est noté dans Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noted in Lumen."
+          }
+        }
+      }
+    },
+    "C'est parti." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On it."
+          }
+        }
+      }
+    },
+    "Capture" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture"
+          }
+        }
+      }
+    },
+    "Capture impossible" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture failed"
+          }
+        }
+      }
+    },
+    "Capture Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen capture"
+          }
+        }
+      }
+    },
+    "Capture rapide" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick capture"
+          }
+        }
+      }
+    },
+    "Capturer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture"
+          }
+        }
+      }
+    },
+    "Carte ajoutée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card added"
+          }
+        }
+      }
+    },
+    "Catalogue indisponible." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catalog unavailable."
+          }
+        }
+      }
+    },
+    "Ce backend ne lit pas les images" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This backend can't read images"
+          }
+        }
+      }
+    },
+    "Certificat de Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen certificate"
+          }
+        }
+      }
+    },
+    "Certificat modifié" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Certificate changed"
+          }
+        }
+      }
+    },
+    "Certificat refusé." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Certificate rejected."
+          }
+        }
+      }
+    },
+    "Ces données ne vont que dans ton coffre Lumen, sur ton ordinateur. Lumen, ses agents et tes workflows Fluxo peuvent alors s'en servir (« tu as peu dormi », arrivée à la maison…)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This data only goes to your Lumen vault, on your computer. Lumen, its agents and your Fluxo workflows can then use it (“you slept little”, arriving home…)."
+          }
+        }
+      }
+    },
+    "Changer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change"
+          }
+        }
+      }
+    },
+    "Changer d'adresse de Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Lumen address"
+          }
+        }
+      }
+    },
+    "Changer de backend" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch backend"
+          }
+        }
+      }
+    },
+    "Changer de modèle" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch model"
+          }
+        }
+      }
+    },
+    "Chaque matin à 8 h" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every morning at 8"
+          }
+        }
+      }
+    },
+    "Chaque soir à 19 h" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every evening at 7 pm"
+          }
+        }
+      }
+    },
+    "chargé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "loaded"
+          }
+        }
+      }
+    },
+    "Chargement…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading…"
+          }
+        }
+      }
+    },
+    "Chat" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat"
+          }
+        }
+      }
+    },
+    "Choisis d'abord un agent dans la capture rapide de l'app." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First pick an agent in the app's quick capture."
+          }
+        }
+      }
+    },
+    "Choisis une clé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a key"
+          }
+        }
+      }
+    },
+    "Clair" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light"
+          }
+        }
+      }
+    },
+    "Clé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Key"
+          }
+        }
+      }
+    },
+    "Clé (ex. maison/chauffage)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Key (e.g. home/heating)"
+          }
+        }
+      }
+    },
+    "cloud" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cloud"
+          }
+        }
+      }
+    },
+    "Code à 6 chiffres" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "6-digit code"
+          }
+        }
+      }
+    },
+    "Code incorrect." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wrong code."
+          }
+        }
+      }
+    },
+    "Code requis pour déverrouiller." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code required to unlock."
+          }
+        }
+      }
+    },
+    "Coffre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vault"
+          }
+        }
+      }
+    },
+    "Commande" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command"
+          }
+        }
+      }
+    },
+    "Commande envoyée au bureau" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command sent to the desktop"
+          }
+        }
+      }
+    },
+    "Commande pour le bureau…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command for the desktop…"
+          }
+        }
+      }
+    },
+    "Commander le bureau" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control the desktop"
+          }
+        }
+      }
+    },
+    "Commander le bureau Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control the Lumen desktop"
+          }
+        }
+      }
+    },
+    "Comment puis-je t'aider ?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How can I help you?"
+          }
+        }
+      }
+    },
+    "Compte" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account"
+          }
+        }
+      }
+    },
+    "Confier une tâche" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give a task"
+          }
+        }
+      }
+    },
+    "Connexion" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in"
+          }
+        }
+      }
+    },
+    "Connexion à l'ordinateur…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecting to the computer…"
+          }
+        }
+      }
+    },
+    "Connexion impossible." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to connect."
+          }
+        }
+      }
+    },
+    "Connexion…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signing in…"
+          }
+        }
+      }
+    },
+    "Contact" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contact"
+          }
+        }
+      }
+    },
+    "Contenu" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Content"
+          }
+        }
+      }
+    },
+    "contexte" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "context"
+          }
+        }
+      }
+    },
+    "Conversation Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen conversation"
+          }
+        }
+      }
+    },
+    "Conversation mains libres" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hands-free conversation"
+          }
+        }
+      }
+    },
+    "Conversation mains libres." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hands-free conversation."
+          }
+        }
+      }
+    },
+    "Conversations" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conversations"
+          }
+        }
+      }
+    },
+    "Copié" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copied"
+          }
+        }
+      }
+    },
+    "Copier" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        }
+      }
+    },
+    "Couper la voix de Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mute Lumen's voice"
+          }
+        }
+      }
+    },
+    "Courrier" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mail"
+          }
+        }
+      }
+    },
+    "Créer l'agent" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create the agent"
+          }
+        }
+      }
+    },
+    "Créer un agent" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create an agent"
+          }
+        }
+      }
+    },
+    "CRON (6 champs)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CRON (6 fields)"
+          }
+        }
+      }
+    },
+    "Dans combien de temps ?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When?"
+          }
+        }
+      }
+    },
+    "Date" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
+          }
+        }
+      }
+    },
+    "Décision impossible" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decision failed"
+          }
+        }
+      }
+    },
+    "Déclencher un évènement Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trigger a Lumen event"
+          }
+        }
+      }
+    },
+    "Demain" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tomorrow"
+          }
+        }
+      }
+    },
+    "Demande déjà traitée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request already handled"
+          }
+        }
+      }
+    },
+    "Demander" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask"
+          }
+        }
+      }
+    },
+    "Demander à Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask Lumen"
+          }
+        }
+      }
+    },
+    "Demander, capturer, parler à Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask, capture, talk to Lumen."
+          }
+        }
+      }
+    },
+    "Dernière synchro : %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last sync: %@"
+          }
+        }
+      }
+    },
+    "Derniers runs" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent runs"
+          }
+        }
+      }
+    },
+    "Description courte" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Short description"
+          }
+        }
+      }
+    },
+    "Destination" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destination"
+          }
+        }
+      }
+    },
+    "Déverrouillage demandé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock requested"
+          }
+        }
+      }
+    },
+    "Déverrouiller" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock"
+          }
+        }
+      }
+    },
+    "Déverrouiller avec %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock with %@"
+          }
+        }
+      }
+    },
+    "Déverrouiller tes fichiers sur l'ordinateur" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock your files on the computer"
+          }
+        }
+      }
+    },
+    "Dictée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictation"
+          }
+        }
+      }
+    },
+    "Dictée indisponible." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictation unavailable."
+          }
+        }
+      }
+    },
+    "Dictionnaire (JSON)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictionary (JSON)"
+          }
+        }
+      }
+    },
+    "Dis à Lumen dans quel mode tu es." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tell Lumen which mode you're in."
+          }
+        }
+      }
+    },
+    "Discussion" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat"
+          }
+        }
+      }
+    },
+    "Discussion supprimée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat deleted"
+          }
+        }
+      }
+    },
+    "Docs" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Docs"
+          }
+        }
+      }
+    },
+    "Document" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Document"
+          }
+        }
+      }
+    },
+    "Documents" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Documents"
+          }
+        }
+      }
+    },
+    "Documents — touche pour joindre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Documents — tap to attach"
+          }
+        }
+      }
+    },
+    "Données en direct" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live data"
+          }
+        }
+      }
+    },
+    "Du lundi au vendredi à 9 h" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekdays at 9"
+          }
+        }
+      }
+    },
+    "Échec" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed"
+          }
+        }
+      }
+    },
+    "Échec de l'outil" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tool failed"
+          }
+        }
+      }
+    },
+    "Échec sans message" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed without a message"
+          }
+        }
+      }
+    },
+    "Écrire %@ dans %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Write %1$@ to %2$@"
+          }
+        }
+      }
+    },
+    "Écrire une valeur Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Write a Lumen value"
+          }
+        }
+      }
+    },
+    "écrit" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "writes"
+          }
+        }
+      }
+    },
+    "Écrit une valeur dans le coffre de données partagé avec Lumen (synchronisé avec l'ordinateur)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Writes a value to the data vault shared with Lumen (synced with the computer)."
+          }
+        }
+      }
+    },
+    "Élément" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Item"
+          }
+        }
+      }
+    },
+    "Élément du coffre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vault item"
+          }
+        }
+      }
+    },
+    "Éléments séparés par des virgules" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Items separated by commas"
+          }
+        }
+      }
+    },
+    "en attente" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "waiting"
+          }
+        }
+      }
+    },
+    "En attente" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pending"
+          }
+        }
+      }
+    },
+    "en cours" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "running"
+          }
+        }
+      }
+    },
+    "En cours" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In progress"
+          }
+        }
+      }
+    },
+    "En cours…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In progress…"
+          }
+        }
+      }
+    },
+    "en file" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "queued"
+          }
+        }
+      }
+    },
+    "en pause" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "paused"
+          }
+        }
+      }
+    },
+    "Enregistrement impossible : " : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not save: "
+          }
+        }
+      }
+    },
+    "Enregistrement…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saving…"
+          }
+        }
+      }
+    },
+    "Enregistrer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "Enregistrer dans Photos" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save to Photos"
+          }
+        }
+      }
+    },
+    "Envoi à Lumen…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sending to Lumen…"
+          }
+        }
+      }
+    },
+    "Envoi de %@…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sending %@…"
+          }
+        }
+      }
+    },
+    "Envoi de la photo…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sending photo…"
+          }
+        }
+      }
+    },
+    "Envoie une commande vocale au bureau de Lumen (ouvrir une app, chercher…)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sends a voice command to the Lumen desktop (open an app, search…)."
+          }
+        }
+      }
+    },
+    "Envoie une question à Lumen, sur ton ordinateur." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sends a question to Lumen, on your computer."
+          }
+        }
+      }
+    },
+    "Envoyé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sent"
+          }
+        }
+      }
+    },
+    "Envoyé à Lumen (%lld)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sent to Lumen (%lld)."
+          }
+        }
+      }
+    },
+    "Envoyer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send"
+          }
+        }
+      }
+    },
+    "État de Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen status"
+          }
+        }
+      }
+    },
+    "État de Lumen et décisions en attente." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen status and pending decisions."
+          }
+        }
+      }
+    },
+    "Évènement" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event"
+          }
+        }
+      }
+    },
+    "Évènement « %@ » envoyé à Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event “%@” sent to Lumen."
+          }
+        }
+      }
+    },
+    "Exécuté (aucune sortie)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ran (no output)"
+          }
+        }
+      }
+    },
+    "Exécute ce workflow" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runs this workflow"
+          }
+        }
+      }
+    },
+    "externe" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "external"
+          }
+        }
+      }
+    },
+    "Faire confiance" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trust"
+          }
+        }
+      }
+    },
+    "Fermer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      }
+    },
+    "Fichier" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File"
+          }
+        }
+      }
+    },
+    "Fichier trop volumineux (12 Mo max)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File too large (12 MB max)"
+          }
+        }
+      }
+    },
+    "Framboise" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raspberry"
+          }
+        }
+      }
+    },
+    "Hors ligne" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline"
+          }
+        }
+      }
+    },
+    "Hors ligne — nouvelle tentative…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline — retrying…"
+          }
+        }
+      }
+    },
+    "Hors ligne — réponses d'Apple Intelligence sur cet iPhone" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline — answers from Apple Intelligence on this iPhone"
+          }
+        }
+      }
+    },
+    "Hors ligne : envoi dès la reconnexion" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline: will send when reconnected"
+          }
+        }
+      }
+    },
+    "IA LOCALE" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LOCAL AI"
+          }
+        }
+      }
+    },
+    "Identifiant ou code invalide." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid name or code."
+          }
+        }
+      }
+    },
+    "Image" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image"
+          }
+        }
+      }
+    },
+    "Image Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen image"
+          }
+        }
+      }
+    },
+    "indexé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "indexed"
+          }
+        }
+      }
+    },
+    "Instructions" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instructions"
+          }
+        }
+      }
+    },
+    "interrompu" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "interrupted"
+          }
+        }
+      }
+    },
+    "iPhone" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone"
+          }
+        }
+      }
+    },
+    "iPhone comme capteur" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone as a sensor"
+          }
+        }
+      }
+    },
+    "iPhone injoignable" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone unreachable"
+          }
+        }
+      }
+    },
+    "iPhone non connecté" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone not connected"
+          }
+        }
+      }
+    },
+    "Je t'écoute…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listening…"
+          }
+        }
+      }
+    },
+    "Joindre et options" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attach and options"
+          }
+        }
+      }
+    },
+    "La semaine prochaine" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next week"
+          }
+        }
+      }
+    },
+    "Lance les workflows Fluxo dont le déclencheur Webhook vaut « iphone/raccourci/<nom> ». Idéal pour le bouton Action ou un tag NFC." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runs the Fluxo workflows whose Webhook trigger is “iphone/raccourci/<name>”. Great for the Action button or an NFC tag."
+          }
+        }
+      }
+    },
+    "Lancer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Run"
+          }
+        }
+      }
+    },
+    "Le certificat de %@ n'est plus celui accepté la dernière fois. Connexion refusée.\n\nSi tu as réinstallé Lumen, oublie les certificats acceptés dans la configuration." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The certificate of %@ is no longer the one accepted last time. Connection refused.\n\nIf you reinstalled Lumen, forget accepted certificates in the setup screen."
+          }
+        }
+      }
+    },
+    "Le coffre est vide. Ajoute une valeur ici, depuis Raccourcis (« Écrire une valeur Lumen ») ou demande à Lumen : « ajoute du lait à mes courses »." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The vault is empty. Add a value here, from Shortcuts (“Write a Lumen value”) or ask Lumen: “add milk to my shopping”."
+          }
+        }
+      }
+    },
+    "Le modèle réfléchit avant de répondre (modèles compatibles)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The model thinks before answering (compatible models)."
+          }
+        }
+      }
+    },
+    "Lecture à voix haute" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read aloud"
+          }
+        }
+      }
+    },
+    "Lecture du fichier impossible" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to read the file"
+          }
+        }
+      }
+    },
+    "Les deux" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Both"
+          }
+        }
+      }
+    },
+    "Lieux" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Places"
+          }
+        }
+      }
+    },
+    "Lire" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read"
+          }
+        }
+      }
+    },
+    "Lire le coffre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read the vault"
+          }
+        }
+      }
+    },
+    "Lire une valeur Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read a Lumen value"
+          }
+        }
+      }
+    },
+    "Liste" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "List"
+          }
+        }
+      }
+    },
+    "Liste de courses" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shopping list"
+          }
+        }
+      }
+    },
+    "Lit une valeur du coffre de données partagé avec Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reads a value from the data vault shared with Lumen."
+          }
+        }
+      }
+    },
+    "local" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "local"
+          }
+        }
+      }
+    },
+    "Lumen attend ta réponse" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen is waiting for you"
+          }
+        }
+      }
+    },
+    "Lumen est injoignable et aucune copie locale n'est disponible." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen is unreachable and no local copy is available."
+          }
+        }
+      }
+    },
+    "Lumen injoignable : %@\nL'ordinateur est-il allumé, sur le même réseau, avec le compagnon activé ?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen unreachable: %@\nIs the computer on, on the same network, with the companion enabled?"
+          }
+        }
+      }
+    },
+    "Lumen répond, mais pas comme un compagnon mobile. Vérifie le port." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen answers, but not as a mobile companion. Check the port."
+          }
+        }
+      }
+    },
+    "Mains libres : parle, je t'écoute" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hands-free: talk, I'm listening"
+          }
+        }
+      }
+    },
+    "Maison" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        }
+      }
+    },
+    "maison, bureau…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "home, office…"
+          }
+        }
+      }
+    },
+    "Mémoire" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memory"
+          }
+        }
+      }
+    },
+    "Menthe" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mint"
+          }
+        }
+      }
+    },
+    "Mes lieux" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My places"
+          }
+        }
+      }
+    },
+    "Message" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Message"
+          }
+        }
+      }
+    },
+    "Message à Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Message Lumen"
+          }
+        }
+      }
+    },
+    "Mesure" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measurement"
+          }
+        }
+      }
+    },
+    "Mesures" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measurements"
+          }
+        }
+      }
+    },
+    "Micro indisponible." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Microphone unavailable."
+          }
+        }
+      }
+    },
+    "Mode" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode"
+          }
+        }
+      }
+    },
+    "Mode : %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode: %@"
+          }
+        }
+      }
+    },
+    "Mode « %@ »" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” mode"
+          }
+        }
+      }
+    },
+    "Mode « think »" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Think” mode"
+          }
+        }
+      }
+    },
+    "Modèle" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model"
+          }
+        }
+      }
+    },
+    "Modèle (vide = celui de Lumen)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model (empty = Lumen's)"
+          }
+        }
+      }
+    },
+    "Modèle Apple" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple model"
+          }
+        }
+      }
+    },
+    "Modèle de l'API" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API model"
+          }
+        }
+      }
+    },
+    "Modèle llama.cpp" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "llama.cpp model"
+          }
+        }
+      }
+    },
+    "Modèle Lumen Server" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen Server model"
+          }
+        }
+      }
+    },
+    "Modèle Ollama" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama model"
+          }
+        }
+      }
+    },
+    "Modèles" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Models"
+          }
+        }
+      }
+    },
+    "Modifier" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        }
+      }
+    },
+    "Nom" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
+    "Nom de l'agent" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agent name"
+          }
+        }
+      }
+    },
+    "Nom du mode" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode name"
+          }
+        }
+      }
+    },
+    "Nombre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Number"
+          }
+        }
+      }
+    },
+    "non" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no"
+          }
+        }
+      }
+    },
+    "Note" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note"
+          }
+        }
+      }
+    },
+    "Noté" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noted"
+          }
+        }
+      }
+    },
+    "Note rapide" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick note"
+          }
+        }
+      }
+    },
+    "Noter" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note"
+          }
+        }
+      }
+    },
+    "Noter dans Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note in Lumen"
+          }
+        }
+      }
+    },
+    "Notifications" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications"
+          }
+        }
+      }
+    },
+    "Nouvel agent" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New agent"
+          }
+        }
+      }
+    },
+    "Nouvelle discussion" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New chat"
+          }
+        }
+      }
+    },
+    "nouvelle tentative" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "retrying"
+          }
+        }
+      }
+    },
+    "Nouvelle valeur" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New value"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "Ollama local" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local Ollama"
+          }
+        }
+      }
+    },
+    "Options" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Options"
+          }
+        }
+      }
+    },
+    "Orchestrateur (délègue aux autres agents)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orchestrator (delegates to other agents)"
+          }
+        }
+      }
+    },
+    "Orchestration terminée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orchestration complete"
+          }
+        }
+      }
+    },
+    "orchestre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "orchestrates"
+          }
+        }
+      }
+    },
+    "Orchestré" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orchestrated"
+          }
+        }
+      }
+    },
+    "Ordinateur" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Computer"
+          }
+        }
+      }
+    },
+    "ou" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "or"
+          }
+        }
+      }
+    },
+    "Oublier" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forget"
+          }
+        }
+      }
+    },
+    "Oublier les certificats acceptés" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forget accepted certificates"
+          }
+        }
+      }
+    },
+    "oui" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yes"
+          }
+        }
+      }
+    },
+    "Oui / non" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yes / no"
+          }
+        }
+      }
+    },
+    "Oui/non" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yes/no"
+          }
+        }
+      }
+    },
+    "Outils" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tools"
+          }
+        }
+      }
+    },
+    "Outils — touche pour insérer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tools — tap to insert"
+          }
+        }
+      }
+    },
+    "Ouverture…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opening…"
+          }
+        }
+      }
+    },
+    "Ouvre l'accès à tes fichiers sur l'ordinateur, depuis l'iPhone ou pour Lumen XR." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens access to your files on the computer, from the iPhone or for Lumen XR."
+          }
+        }
+      }
+    },
+    "Ouvre l'app Lumen pour appairer ton ordinateur." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the Lumen app to pair your computer."
+          }
+        }
+      }
+    },
+    "Ouvre une conversation mains libres avec Lumen." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starts a hands-free conversation with Lumen."
+          }
+        }
+      }
+    },
+    "Ouvrir" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open"
+          }
+        }
+      }
+    },
+    "Ouvrir Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Lumen"
+          }
+        }
+      }
+    },
+    "Parler" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Talk"
+          }
+        }
+      }
+    },
+    "Parler à Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Talk to Lumen"
+          }
+        }
+      }
+    },
+    "Partager" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share"
+          }
+        }
+      }
+    },
+    "Pas de connexion à l'ordinateur" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No connection to the computer"
+          }
+        }
+      }
+    },
+    "Pas, sommeil, fréquence cardiaque au repos → sante/…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steps, sleep, resting heart rate → sante/…"
+          }
+        }
+      }
+    },
+    "Pêche" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peach"
+          }
+        }
+      }
+    },
+    "Personnalisée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom"
+          }
+        }
+      }
+    },
+    "Photothèque" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo library"
+          }
+        }
+      }
+    },
+    "Plan" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plan"
+          }
+        }
+      }
+    },
+    "Planification" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule"
+          }
+        }
+      }
+    },
+    "planifié" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "scheduled"
+          }
+        }
+      }
+    },
+    "Position introuvable." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location not found."
+          }
+        }
+      }
+    },
+    "Pour une voix plus naturelle, télécharge une voix premium dans Réglages › Accessibilité › Contenu énoncé › Voix." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For a more natural voice, download a premium voice in Settings › Accessibility › Spoken Content › Voices."
+          }
+        }
+      }
+    },
+    "premium" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "premium"
+          }
+        }
+      }
+    },
+    "Prendre une photo" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take a photo"
+          }
+        }
+      }
+    },
+    "prêt" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ready"
+          }
+        }
+      }
+    },
+    "puce Apple" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple chip"
+          }
+        }
+      }
+    },
+    "Qu'est-ce qui tourne sur mon ordinateur ?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's running on my computer?"
+          }
+        }
+      }
+    },
+    "Que dois-je noter ?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What should I note?"
+          }
+        }
+      }
+    },
+    "Que veux-tu demander à Lumen ?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What do you want to ask Lumen?"
+          }
+        }
+      }
+    },
+    "Quel agent s'en charge ?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which agent handles it?"
+          }
+        }
+      }
+    },
+    "Question" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Question"
+          }
+        }
+      }
+    },
+    "Raccourci" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut"
+          }
+        }
+      }
+    },
+    "Raccourcis" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcuts"
+          }
+        }
+      }
+    },
+    "Raccourcis, widgets, listes" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcuts, widgets, lists"
+          }
+        }
+      }
+    },
+    "Racine" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Root"
+          }
+        }
+      }
+    },
+    "Raisonnement" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reasoning"
+          }
+        }
+      }
+    },
+    "Rappel" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder"
+          }
+        }
+      }
+    },
+    "Rappel (dans 1 h)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder (in 1 h)"
+          }
+        }
+      }
+    },
+    "Rappel programmé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder scheduled"
+          }
+        }
+      }
+    },
+    "Récentes" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent"
+          }
+        }
+      }
+    },
+    "Récents" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent"
+          }
+        }
+      }
+    },
+    "Recherche" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        }
+      }
+    },
+    "Recherche de Lumen sur ce réseau…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looking for Lumen on this network…"
+          }
+        }
+      }
+    },
+    "Rechercher" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        }
+      }
+    },
+    "Rechercher " : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        }
+      }
+    },
+    "Rechercher dans tout le coffre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search the whole vault"
+          }
+        }
+      }
+    },
+    "réfléchit…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "thinking…"
+          }
+        }
+      }
+    },
+    "Réflexion…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thinking…"
+          }
+        }
+      }
+    },
+    "Refusé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denied"
+          }
+        }
+      }
+    },
+    "Refuser" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deny"
+          }
+        }
+      }
+    },
+    "Réglages" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
+    },
+    "Réponds sur l'ordinateur." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Answer on the computer."
+          }
+        }
+      }
+    },
+    "Réponse locale impossible : " : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local answer failed: "
+          }
+        }
+      }
+    },
+    "Réponse orchestrée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orchestrated answer"
+          }
+        }
+      }
+    },
+    "Réponse orchestrée : activée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orchestrated answer: on"
+          }
+        }
+      }
+    },
+    "Réponse orchestrée : désactivée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orchestrated answer: off"
+          }
+        }
+      }
+    },
+    "Résultat obtenu" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Result received"
+          }
+        }
+      }
+    },
+    "Résume ma journée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summarize my day"
+          }
+        }
+      }
+    },
+    "Rien pour l'instant." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing yet."
+          }
+        }
+      }
+    },
+    "Rose" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pink"
+          }
+        }
+      }
+    },
+    "Routeur" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Router"
+          }
+        }
+      }
+    },
+    "Sa sandbox et ses fichiers sont conservés." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Its sandbox and files are kept."
+          }
+        }
+      }
+    },
+    "Saisis le code à 6 chiffres de ton application d'authentification." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the 6-digit code from your authenticator app."
+          }
+        }
+      }
+    },
+    "Saisis ton nom d'utilisateur Lumen, puis le code à 6 chiffres affiché dans Lumen › Réglages › Compagnon mobile (ou donné par ton application d'authentification)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter your Lumen user name, then the 6-digit code shown in Lumen › Settings › Mobile companion (or given by your authenticator app)."
+          }
+        }
+      }
+    },
+    "Sandbox" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sandbox"
+          }
+        }
+      }
+    },
+    "Santé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Health"
+          }
+        }
+      }
+    },
+    "Santé indisponible sur cet appareil." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Health isn't available on this device."
+          }
+        }
+      }
+    },
+    "Scanne le QR code affiché dans Lumen › Réglages › Compagnon mobile, ou tape l'adresse (port 8766 en HTTP, 8768 en HTTPS). Hors de chez toi, utilise l'adresse de ton VPN (Tailscale…)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan the QR code shown in Lumen › Settings › Mobile companion, or type the address (port 8766 for HTTP, 8768 for HTTPS). Away from home, use your VPN address (Tailscale…)."
+          }
+        }
+      }
+    },
+    "Scanner le QR code" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan QR code"
+          }
+        }
+      }
+    },
+    "Se connecter" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in"
+          }
+        }
+      }
+    },
+    "Se déconnecter de ce profil" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign out of this profile"
+          }
+        }
+      }
+    },
+    "Sécurité" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Security"
+          }
+        }
+      }
+    },
+    "sensible" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sensitive"
+          }
+        }
+      }
+    },
+    "Session de %@ ouverte sur l'ordinateur — capture et agents restent disponibles." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@'s session is open on the computer — capture and agents remain available."
+          }
+        }
+      }
+    },
+    "Session déverrouillée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session unlocked"
+          }
+        }
+      }
+    },
+    "Session indisponible." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session unavailable."
+          }
+        }
+      }
+    },
+    "Sombre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark"
+          }
+        }
+      }
+    },
+    "Source d'IA" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI source"
+          }
+        }
+      }
+    },
+    "Source indisponible." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Source unavailable."
+          }
+        }
+      }
+    },
+    "Sources" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sources"
+          }
+        }
+      }
+    },
+    "Supprimer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "Supprimer « %@ » ?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete “%@”?"
+          }
+        }
+      }
+    },
+    "Supprimer l'agent" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete agent"
+          }
+        }
+      }
+    },
+    "Supprimer une valeur Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete a Lumen value"
+          }
+        }
+      }
+    },
+    "Sur ce réseau" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On this network"
+          }
+        }
+      }
+    },
+    "Synchronisation…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Syncing…"
+          }
+        }
+      }
+    },
+    "Synchroniser maintenant" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync now"
+          }
+        }
+      }
+    },
+    "Table" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Table"
+          }
+        }
+      }
+    },
+    "Tableau" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Board"
+          }
+        }
+      }
+    },
+    "Tâche" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task"
+          }
+        }
+      }
+    },
+    "Tâche ajoutée à %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task added to %@"
+          }
+        }
+      }
+    },
+    "Tâche confiée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task given"
+          }
+        }
+      }
+    },
+    "Tâche refusée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task refused"
+          }
+        }
+      }
+    },
+    "Tâches" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasks"
+          }
+        }
+      }
+    },
+    "Tape un mot dans la recherche pour fouiller toutes les données." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type a word in the search field to search all data."
+          }
+        }
+      }
+    },
+    "terminé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "done"
+          }
+        }
+      }
+    },
+    "Terminé" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        }
+      }
+    },
+    "Terminée avec des erreurs" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finished with errors"
+          }
+        }
+      }
+    },
+    "Tes messages sont traités par ton ordinateur." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your messages are processed by your computer."
+          }
+        }
+      }
+    },
+    "Test" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test"
+          }
+        }
+      }
+    },
+    "Texte" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text"
+          }
+        }
+      }
+    },
+    "Ton nom" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your name"
+          }
+        }
+      }
+    },
+    "Touche un backend pour lister ses modèles." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap a backend to list its models."
+          }
+        }
+      }
+    },
+    "Tout effacer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear all"
+          }
+        }
+      }
+    },
+    "Toutes les données" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All data"
+          }
+        }
+      }
+    },
+    "Toutes les heures" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every hour"
+          }
+        }
+      }
+    },
+    "Toutes tes données, au même endroit" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All your data, in one place"
+          }
+        }
+      }
+    },
+    "Trop d'essais : patiente 30 secondes." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Too many attempts: wait 30 seconds."
+          }
+        }
+      }
+    },
+    "Type" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type"
+          }
+        }
+      }
+    },
+    "Un agent travaille seul dans sa sandbox : veille, rapports, rangement…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An agent works on its own in its sandbox: monitoring, reports, tidying…"
+          }
+        }
+      }
+    },
+    "Un autre profil est ouvert sur l'ordinateur." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Another profile is open on the computer."
+          }
+        }
+      }
+    },
+    "Une autre session est ouverte sur l'ordinateur." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Another session is open on the computer."
+          }
+        }
+      }
+    },
+    "Une idée, une course, un rappel…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An idea, an errand, a reminder…"
+          }
+        }
+      }
+    },
+    "Une valeur ou une liste du coffre Lumen (courses, compteur, état de la maison…)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A value or list from the Lumen vault (shopping, counter, home state…)."
+          }
+        }
+      }
+    },
+    "Utiliser dans la discussion" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use in the chat"
+          }
+        }
+      }
+    },
+    "Valeur" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Value"
+          }
+        }
+      }
+    },
+    "Valeur absente" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No value"
+          }
+        }
+      }
+    },
+    "Valeur du coffre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vault value"
+          }
+        }
+      }
+    },
+    "Valeur du coffre Lumen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumen vault value"
+          }
+        }
+      }
+    },
+    "Valeurs du coffre" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vault values"
+          }
+        }
+      }
+    },
+    "Vert" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Green"
+          }
+        }
+      }
+    },
+    "veut utiliser " : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "wants to use "
+          }
+        }
+      }
+    },
+    "Violet" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Violet"
+          }
+        }
+      }
+    },
+    "Voix active" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice on"
+          }
+        }
+      }
+    },
+    "Voix coupée" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice muted"
+          }
+        }
+      }
+    },
+    "Voix par défaut" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default voice"
+          }
+        }
+      }
+    },
+    "Web" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web"
+          }
+        }
+      }
+    },
+    "Workflows Fluxo" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fluxo workflows"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

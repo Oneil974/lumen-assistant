@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="/lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="launcher.css?v=2" />
+  </head>
+  <body>
+    <div class="frame" id="frame">
+      <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+      <header class="top" id="drag">
+        <span class="mark" aria-hidden="true"></span>
+        <b>Lumen</b>
+        <span class="sp"></span>
+        <button class="x" id="quit" type="button" data-i18n-title="quit" title="Quitter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </header>
+
+      <main class="body">
+        <p class="eyebrow" data-i18n="eyebrow">Bienvenue</p>
+        <h1 data-i18n="title">Comment voulez-vous utiliser Lumen ?</h1>
+        <p class="lead" data-i18n="lead">Trois façons de travailler, le même assistant — vos discussions, agents et outils vous suivent partout.</p>
+
+        <div class="cards" role="radiogroup" aria-labelledby="title">
+
+          <button class="card" type="button" role="radio" data-mode="bar" aria-checked="false">
+            <span class="key">1</span>
+            <span class="pv pv-bar" aria-hidden="true">
+              <span class="pv-wall"><i></i><i></i><i></i></span>
+              <span class="pv-orb"></span>
+              <span class="pv-capsule"><span class="pv-dot"></span><span class="pv-type"><i></i><i></i><i></i></span><span class="pv-send"></span></span>
+              <span class="pv-reply"><i></i><i></i></span>
+            </span>
+            <span class="txt">
+              <b data-i18n="bar_t">Barre flottante</b>
+              <small data-i18n="bar_d">Toujours à portée de main, au-dessus de vos apps. Discrète, instantanée.</small>
+              <span class="chips"><em data-i18n="bar_c1">⌥ Espace</em><em data-i18n="bar_c2">Orbe vivante</em><em data-i18n="bar_c3">Légère</em></span>
+            </span>
+          </button>
+
+          <button class="card" type="button" role="radio" data-mode="app" aria-checked="false">
+            <span class="key">2</span>
+            <span class="badge" data-i18n="new">Nouveau</span>
+            <span class="pv pv-app" aria-hidden="true">
+              <span class="pv-win">
+                <span class="pv-side"><i class="b"></i><i class="n"></i><i></i><i></i><i></i><i class="s"></i><i></i><i></i></span>
+                <span class="pv-main">
+                  <span class="pv-hero"></span>
+                  <span class="pv-h"></span>
+                  <span class="pv-tiles"><i></i><i></i><i></i><i></i></span>
+                  <span class="pv-comp"><i></i><span></span></span>
+                </span>
+              </span>
+            </span>
+            <span class="txt">
+              <b data-i18n="app_t">Application</b>
+              <small data-i18n="app_d">Une vraie fenêtre de travail, façon ChatGPT : discussions, projets et outils côte à côte.</small>
+              <span class="chips"><em data-i18n="app_c1">Historique</em><em data-i18n="app_c2">Projets</em><em data-i18n="app_c3">@ outils</em></span>
+            </span>
+          </button>
+
+          <button class="card" type="button" role="radio" data-mode="desktop" aria-checked="false">
+            <span class="key">3</span>
+            <span class="pv pv-desk" aria-hidden="true">
+              <span class="pv-menu"><i></i><i></i><i></i></span>
+              <span class="pv-icons"><i></i><i></i><i></i><i></i></span>
+              <span class="pv-w1"><span></span></span>
+              <span class="pv-w2"><span></span></span>
+              <span class="pv-dock"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            </span>
+            <span class="txt">
+              <b data-i18n="desk_t">Lumen Desktop</b>
+              <small data-i18n="desk_d">Un bureau complet en plein écran : fenêtres, dock, fichiers et toutes les apps Lumen.</small>
+              <span class="chips"><em data-i18n="desk_c1">Plein écran</em><em data-i18n="desk_c2">Apps</em><em data-i18n="desk_c3">Fichiers</em></span>
+            </span>
+          </button>
+        </div>
+      </main>
+
+      <footer class="foot">
+        <label class="switch">
+          <input type="checkbox" id="remember" />
+          <span class="track"><span class="thumb"></span></span>
+          <span data-i18n="remember">Toujours ouvrir ce mode au démarrage</span>
+        </label>
+        <span class="hint" data-i18n="hint">Modifiable à tout moment dans les Réglages · touches 1 2 3</span>
+        <span class="sp"></span>
+        <button class="go" id="go" type="button"><span id="go-label">Ouvrir</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </footer>
+    </div>
+    <script type="module" src="launcher.js?v=1"></script>
+  </body>
+</html>

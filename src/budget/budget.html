@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumen — Budget</title>
+    <script src="/lib/theme-init.js"></script>
+  <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+  <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+  <link rel="stylesheet" href="./budget.css?v=7" />
+  <script type="module" src="./main.js?v=2" defer></script>
+    <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+<body>
+  <div class="budget-app">
+    <aside class="budget-sidebar">
+      <div class="budget-brand"><span class="budget-brand-icon">◒</span><div><strong>Budget</strong><small>Votre boussole personnelle</small></div></div>
+      <nav class="budget-nav" id="budget-nav">
+        <button class="active" data-view="overview">Vue d’ensemble</button>
+        <button data-view="transactions">Transactions</button>
+        <button data-view="budgets">Budgets</button>
+        <button data-view="goals">Objectifs</button>
+      </nav>
+      <div class="budget-sidebar-foot"><span class="privacy-dot"></span><span>Données locales et privées</span></div>
+    </aside>
+    <main class="budget-main">
+      <header class="budget-header"><div><span class="eyebrow">BUDGET PERSONNEL</span><h1 id="view-title">Vue d’ensemble</h1><p id="period-label">Ce mois-ci</p></div><div class="header-actions"><button class="soft-btn" id="export-btn">Exporter</button><button class="accent-btn" id="add-btn">+ Ajouter</button></div></header>
+      <section id="view-overview" class="budget-view active">
+        <div class="metric-grid" id="metrics"></div>
+        <div class="overview-grid"><section class="panel chart-panel"><div class="panel-head"><div><h2>Flux de trésorerie</h2><p>Entrées et sorties du mois</p></div><span class="period-pill">30 jours</span></div><div id="cashflow-chart" class="cashflow-chart"></div></section><section class="panel insight-panel"><div class="panel-head"><div><h2>Conseiller Lumen</h2><p>Une lecture claire de vos chiffres</p></div><div class="panel-head-actions"><span class="spark">✦</span><button class="expand-btn" id="ai-expand-btn" title="Afficher l’analyse en grand" aria-label="Afficher l’analyse en grand">↗</button></div></div><div id="ai-insight" class="ai-insight"><div class="ai-placeholder">Ajoutez quelques transactions pour obtenir des conseils personnalisés.</div></div><button class="outline-btn full" id="ai-btn">Analyser avec l’IA</button></section></div>
+        <div class="overview-grid lower"><section class="panel"><div class="panel-head"><div><h2>Dépenses par catégorie</h2><p>Répartition calculée par Lumen</p></div><button class="text-btn" data-view-link="budgets">Voir les budgets</button></div><div id="category-list" class="category-list"></div></section><section class="panel"><div class="panel-head"><div><h2>Activité récente</h2><p>Vos dernières opérations</p></div><button class="text-btn" data-view-link="transactions">Tout voir</button></div><div id="recent-list" class="recent-list"></div></section></div>
+      </section>
+      <section id="view-transactions" class="budget-view"><div class="section-toolbar"><div><h2>Transactions</h2><p>Chaque montant est calculé automatiquement.</p></div><button class="accent-btn" id="add-btn-secondary">+ Ajouter une transaction</button></div><div class="panel table-panel"><div class="table-filters"><input id="transaction-search" placeholder="Rechercher une transaction…" /><select id="transaction-filter"><option value="all">Toutes</option><option value="income">Revenus</option><option value="expense">Dépenses</option></select></div><div id="transactions-list" class="transactions-list"></div></div></section>
+      <section id="view-budgets" class="budget-view"><div class="section-toolbar"><div><h2>Budgets</h2><p>Suivez vos limites sans tableur.</p></div><button class="accent-btn" id="budget-btn">+ Nouveau budget</button></div><div id="budgets-list" class="budget-grid"></div></section>
+      <section id="view-goals" class="budget-view"><div class="section-toolbar"><div><h2>Objectifs</h2><p>Donnez une direction à votre épargne.</p></div><button class="accent-btn" id="goal-btn">+ Nouvel objectif</button></div><div id="goals-list" class="goal-grid"></div></section>
+    </main>
+  </div>
+  <div id="transaction-modal" class="modal" hidden><div class="modal-card"><div class="modal-head"><div><span class="eyebrow">NOUVELLE OPÉRATION</span><h2>Ajouter une transaction</h2></div><button class="close-btn" data-close="transaction-modal">×</button></div><form id="transaction-form" class="form-grid"><label>Date<input name="date" type="date" required /></label><label>Type<select name="type"><option value="expense">Dépense</option><option value="income">Revenu</option></select></label><label>Montant (€)<input name="amount" type="number" min="0.01" step="0.01" required /></label><label>Catégorie<select name="category"><option>Logement</option><option>Alimentation</option><option>Transport</option><option>Loisirs</option><option>Santé</option><option>Abonnements</option><option>Épargne</option><option>Autre</option></select></label><label class="wide">Libellé<input name="merchant" placeholder="Ex. Carrefour, salaire…" required /></label><label class="wide">Note<textarea name="note" rows="2" placeholder="Optionnel"></textarea></label><div class="modal-actions wide"><button type="button" class="soft-btn" data-close="transaction-modal">Annuler</button><button class="accent-btn">Ajouter</button></div></form></div></div>
+  <div id="budget-modal" class="modal" hidden><div class="modal-card compact"><div class="modal-head"><div><span class="eyebrow">PILOTAGE</span><h2>Nouveau budget</h2></div><button class="close-btn" data-close="budget-modal">×</button></div><form id="budget-form" class="form-grid"><label>Catégorie<select name="category"><option>Logement</option><option>Alimentation</option><option>Transport</option><option>Loisirs</option><option>Santé</option><option>Abonnements</option><option>Autre</option></select></label><label>Date<input name="date" type="date" required /></label><label>Limite mensuelle (€)<input name="limit" type="number" min="1" step="1" required /></label><div class="modal-actions wide"><button type="button" class="soft-btn" data-close="budget-modal">Annuler</button><button class="accent-btn">Créer</button></div></form></div></div>
+  <div id="goal-modal" class="modal" hidden><div class="modal-card compact"><div class="modal-head"><div><span class="eyebrow">PROJECTION</span><h2>Nouvel objectif</h2></div><button class="close-btn" data-close="goal-modal">×</button></div><form id="goal-form" class="form-grid"><label class="wide">Nom de l’objectif<input name="name" placeholder="Ex. Voyage au Japon" required /></label><label>Date<input name="date" type="date" required /></label><label>Cible (€)<input name="target" type="number" min="1" step="1" required /></label><label>Déjà épargné (€)<input name="saved" type="number" min="0" step="1" value="0" /></label><div class="modal-actions wide"><button type="button" class="soft-btn" data-close="goal-modal">Annuler</button><button class="accent-btn">Ajouter</button></div></form></div></div>
+  <div id="ai-modal" class="modal" hidden><div class="modal-card ai-modal-card"><div class="modal-head"><div><span class="eyebrow">ANALYSE LUMEN</span><h2>Conseils budgétaires</h2></div><button class="close-btn" data-close="ai-modal">×</button></div><div id="ai-modal-content" class="ai-modal-content"></div></div></div>
+  <div id="export-modal" class="modal" hidden><div class="modal-card compact"><div class="modal-head"><div><span class="eyebrow">ESPACE CONFINÉ</span><h2>Exporter vers une sandbox</h2></div><button class="close-btn" data-close="export-modal">×</button></div><form id="export-form" class="form-grid"><label class="wide">Sandbox de destination<select id="export-sandbox" name="sandbox" required><option value="">Chargement…</option></select></label><label class="wide">Nom du fichier<input name="filename" value="lumen-budget.json" pattern="[A-Za-z0-9._-]+" required /></label><p id="export-status" class="form-hint wide">Le fichier restera dans la sandbox choisie et ne sera pas écrit directement sur l’ordinateur.</p><div class="modal-actions wide"><button type="button" class="soft-btn" data-close="export-modal">Annuler</button><button class="accent-btn">Exporter</button></div></form></div></div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "open": "open.wav",
+  "close": "close.wav",
+  "peek": "peek.wav",
+  "tick": "tick.wav",
+  "success": "success.wav",
+  "joy": "joy.wav",
+  "error": "error.wav",
+  "ask": "ask.wav",
+  "send": "send.wav",
+  "squish": "squish.wav",
+  "wake": "wake.wav",
+  "drop": "drop.wav"
+}

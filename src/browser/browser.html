@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!-- Navigateur de Lumen — vue lecture (fiable, rendue à partir du contenu
+     récupéré côté backend via web_fetch → Markdown) + vue live (iframe) en option
+     pour les sites qui autorisent l'embedding. Volet IA (résumé, questions,
+     extraction, traduction, enregistrement RAG) alimenté par le même contenu. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Navigateur</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./browser.css?v=5" />
+    <script type="module" src="./main.js?v=3" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="wb">
+      <!-- Barre d'onglets : chaque onglet a son historique et sa page. -->
+      <div class="wb-tabbar">
+        <div class="wb-tabs" id="wb-tabs"></div>
+        <button class="wb-tab-new" id="wb-tab-new" title="Nouvel onglet (⌘T)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+
+      <!-- Barre de navigation -->
+      <header class="wb-nav">
+        <button class="wb-ic" id="wb-back" title="Précédent" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="wb-ic" id="wb-fwd" title="Suivant" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="wb-ic" id="wb-reload" title="Recharger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+        </button>
+        <form class="wb-urlform" id="wb-urlform">
+          <span class="wb-lock" id="wb-lock" title="Recherche ou adresse">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          </span>
+          <input id="wb-url" class="wb-url" type="text" placeholder="Rechercher ou saisir une adresse" autocomplete="off" spellcheck="false" />
+          <span class="wb-spin" id="wb-spin" hidden></span>
+        </form>
+        <!-- Bascule vue lecture / vue live (site interactif, exécute son JS) -->
+        <div class="wb-viewseg" id="wb-viewseg">
+          <button class="wb-seg active" data-view="reader" title="Vue lecture (sûre, sans code du site)">Lecture</button>
+          <button class="wb-seg" data-view="live" id="wb-seg-live" title="Vue live (site interactif, exécute son JavaScript)">Live</button>
+        </div>
+        <!-- Confort de lecture : la vue lecture est la vue principale, elle
+             mérite un réglage de taille de texte. -->
+        <div class="wb-zoom" id="wb-zoom">
+          <button class="wb-zoom-btn" data-zoom="-" title="Texte plus petit">A<span>−</span></button>
+          <button class="wb-zoom-btn" data-zoom="+" title="Texte plus grand">A<span>+</span></button>
+        </div>
+        <button class="wb-ic" id="wb-save" title="Ajouter à la liste de lecture (⌘D)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </button>
+        <button class="wb-ic" id="wb-readlist-toggle" title="Liste de lecture">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        </button>
+        <button class="wb-ic" id="wb-ext" title="Ouvrir dans le navigateur complet (connexions, sites qui refusent l'aperçu) — ⌥ : navigateur du système">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </button>
+        <button class="wb-ic wb-ai-toggle active" id="wb-ai-toggle" title="Volet IA">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15l-1.9-4.1L5.5 9l4.6-1.4z"/><path d="M18 15l.9 2.2L21 18l-2.1.8L18 21l-.9-2.2L15 18l2.1-.8z"/></svg>
+        </button>
+      </header>
+
+      <div class="wb-main">
+        <div class="wb-view">
+          <!-- Recherche dans la page (⌘F), sur la vue lecture. -->
+          <div class="wb-find" id="wb-find" hidden>
+            <input id="wb-find-input" placeholder="Rechercher dans la page…" autocomplete="off" spellcheck="false" />
+            <span class="wb-find-count" id="wb-find-count">0/0</span>
+            <button class="wb-find-btn" id="wb-find-prev" title="Précédent">↑</button>
+            <button class="wb-find-btn" id="wb-find-next" title="Suivant">↓</button>
+            <button class="wb-find-btn" id="wb-find-close" title="Fermer">✕</button>
+          </div>
+          <!-- Vue lecture (par défaut, toujours fiable) -->
+          <div class="wb-reader" id="wb-reader"><article class="wb-reader-inner" id="wb-reader-inner"></article></div>
+          <!-- Vue live (iframe) : le site s'exécute (JS). Bac à sable : scripts,
+               formulaires et popups autorisés, MAIS pas d'échappement du sandbox
+               ni de navigation de la fenêtre parente. Cross-origin → le site n'a
+               aucun accès à l'app ni à l'API Tauri (Same-Origin Policy). -->
+          <iframe id="wb-frame" class="wb-frame" hidden referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+          <!-- Indicateur discret : vue live active -->
+          <div class="wb-live-badge" id="wb-live-badge" hidden>● Live — code du site actif</div>
+          <!-- Avertissement de sécurité avant la première activation de la vue live -->
+          <div class="wb-warn" id="wb-warn" hidden>
+            <div class="wb-warn-card">
+              <div class="wb-warn-ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.6a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <strong>Activer la vue live ?</strong>
+              <p>La vue live charge le site réel et <b>exécute son code (JavaScript)</b>, comme un navigateur classique. Le site ne peut pas accéder à Lumen ni à vos données (isolation par origine), mais&nbsp;:</p>
+              <ul>
+                <li>n'y saisissez pas d'identifiants ou d'informations bancaires&nbsp;;</li>
+                <li>le contenu affiché n'est pas filtré (pubs, traceurs, scripts du site)&nbsp;;</li>
+                <li>en cas de doute, restez en vue lecture (sûre, sans code du site).</li>
+              </ul>
+              <label class="wb-warn-remember"><input type="checkbox" id="wb-warn-remember" /> Ne plus me demander</label>
+              <div class="wb-warn-actions">
+                <button class="wb-btn ghost" id="wb-warn-cancel">Rester en lecture</button>
+                <button class="wb-btn" id="wb-warn-ok">Activer la vue live</button>
+              </div>
+            </div>
+          </div>
+          <!-- Écran d'accueil -->
+          <div class="wb-home" id="wb-home">
+            <div class="wb-home-inner">
+              <div class="wb-home-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/></svg>
+              </div>
+              <h1>Navigateur Lumen</h1>
+              <p>Saisissez une adresse ou une recherche. Le contenu s'affiche en vue lecture (toujours fiable) ; l'IA peut résumer, analyser, traduire et enregistrer la page.</p>
+              <label class="wb-engine">Moteur de recherche
+                <select id="wb-engine"></select>
+              </label>
+              <div class="wb-quick" id="wb-quick"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Liste de lecture : favoris + archive hors-ligne des pages gardées. -->
+        <aside class="wb-readlist" id="wb-readlist" hidden>
+          <div class="wb-rl-head">
+            <span>Liste de lecture</span>
+            <button class="wb-rl-close" id="wb-rl-close" title="Fermer">✕</button>
+          </div>
+          <div class="wb-rl-items" id="wb-rl-items"></div>
+          <div class="wb-rl-foot" id="wb-rl-foot"></div>
+        </aside>
+
+        <!-- Volet IA -->
+        <aside class="wb-ai" id="wb-ai">
+          <div class="wb-ai-head">
+            <span class="wb-ai-title" id="wb-ai-page">Aucune page chargée</span>
+          </div>
+          <!-- Portée : une seule page, ou tous les onglets ouverts (comparaison,
+               synthèse — l'IA cite alors ses sources). -->
+          <div class="wb-scope" id="wb-scope">
+            <button class="wb-scope-btn active" data-scope="page">Cette page</button>
+            <button class="wb-scope-btn" data-scope="all">Tous les onglets</button>
+          </div>
+          <div class="wb-ai-actions">
+            <button class="wb-chip" data-act="summarize">Résumer</button>
+            <button class="wb-chip" data-act="keypoints">Points clés</button>
+            <button class="wb-chip" data-act="compare" id="wb-chip-compare" hidden>Comparer</button>
+            <button class="wb-chip" data-act="translate">Traduire</button>
+            <select class="wb-lang" id="wb-lang" title="Langue de traduction">
+              <option value="français">Français</option>
+              <option value="anglais">Anglais</option>
+              <option value="espagnol">Espagnol</option>
+              <option value="allemand">Allemand</option>
+              <option value="italien">Italien</option>
+            </select>
+            <button class="wb-chip wb-chip-save" data-act="knowledge">Enregistrer dans Connaissances</button>
+            <button class="wb-chip wb-chip-save" data-act="export">Exporter en Markdown</button>
+          </div>
+          <div class="wb-ai-log" id="wb-ai-log">
+            <div class="wb-ai-empty" id="wb-ai-empty">Chargez une page, puis demandez à l'IA de la résumer ou posez-lui une question.</div>
+          </div>
+          <form class="wb-ai-ask" id="wb-ai-ask">
+            <input id="wb-ai-input" class="wb-ai-input" placeholder="Poser une question sur la page…" autocomplete="off" />
+            <button class="wb-ai-send" id="wb-ai-send" title="Envoyer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </form>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

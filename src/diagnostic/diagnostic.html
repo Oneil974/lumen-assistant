@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!-- Diagnostic : une seule entrée pour comprendre ce que fait l'IA. Regroupe
+     le journal des appels de modèles (Traces), le Profiler des modèles locaux
+     et les traces des réponses orchestrées (harness). Ouvert depuis le menu
+     (espace Essentiel), l'app Équipe et les Réglages. Les deux vues existantes
+     sont réutilisées telles quelles en iframes (même origine). -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Diagnostic</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./diagnostic.css?v=2" />
+    <script type="module" src="./diagnostic.js?v=2" defer></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <header class="bar" role="tablist" aria-label="Diagnostic">
+      <strong class="title">Diagnostic</strong>
+      <button role="tab" data-view="traces" aria-selected="true">Traces des modèles</button>
+      <button role="tab" data-view="orchestrator">Réponses orchestrées</button>
+      <button role="tab" data-view="profiler">Profiler</button>
+      <span class="grow"></span>
+      <button type="button" class="soft" id="btn-clean">Nettoyer les journaux…</button>
+    </header>
+    <dialog id="clean-dialog">
+      <form method="dialog">
+        <h2>Nettoyer les journaux</h2>
+        <p class="hint">Les journaux servent à comprendre un problème après coup. Les effacer libère de la place et ne touche à aucune donnée (discussions, documents, réglages).</p>
+        <label><input type="checkbox" name="llm" checked /> Traces des modèles <small data-size="llm"></small></label>
+        <label><input type="checkbox" name="orch" checked /> Réponses orchestrées <small data-size="orch"></small></label>
+        <label><input type="checkbox" name="window" checked /> Journal des fenêtres (erreurs) <small data-size="window"></small></label>
+        <label><input type="checkbox" name="servers" /> Journaux des serveurs IA (llama.cpp, Bonsai…) <small data-size="servers"></small></label>
+        <label><input type="checkbox" name="usage" /> Statistiques d'utilisation des modèles (Profiler) </label>
+        <div class="actions"><button value="cancel" class="soft">Annuler</button><button value="ok" class="danger" id="clean-ok">Effacer</button></div>
+      </form>
+    </dialog>
+    <main>
+      <iframe data-pane="traces" title="Traces des modèles" data-src="/llmlog/llmlog.html"></iframe>
+      <section data-pane="orchestrator" hidden>
+        <p class="hint">Les 30 dernières réponses orchestrées : outils appelés, étapes et durées. <button id="copy-traces" class="soft">Copier en JSON</button> (rejouables avec <code>npm run eval:orch -- --replay</code>).</p>
+        <div id="orch-list"></div>
+      </section>
+      <iframe data-pane="profiler" title="Profiler" data-src="/profiler/profiler.html" hidden></iframe>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- Studio musical — générateur de musique 100 % local (Web Audio). Décris une
+     ambiance → l'IA propose un « spec » musical → un moteur synthétise accords,
+     basse, arpège, lead et batterie en boucle, avec visualiseur et export WAV. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Studio musical</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=4" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="bar">
+        <h1 class="brand"><span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></span>Studio musical</h1>
+        <div class="prompt">
+          <input id="prompt" class="prompt-in" placeholder="Décris une ambiance… ex. « un lofi pluvieux pour coder la nuit »" />
+          <button id="gen" class="btn primary">✨ Générer</button>
+        </div>
+      </header>
+
+      <section class="stage">
+        <canvas id="viz"></canvas>
+        <div class="now" id="now">
+          <div class="now-mood" id="mood">Synthwave nocturne</div>
+          <div class="now-sub" id="sub">A minor · 100 BPM</div>
+        </div>
+      </section>
+
+      <div class="presets" id="presets"></div>
+
+      <section class="console">
+        <div class="transport">
+          <button id="play" class="play-btn" title="Lecture / Stop">▶</button>
+          <button id="regen" class="round" title="Nouvelle variation">🎲</button>
+          <select id="sandbox" class="sandbox-select" title="Sandbox de destination">
+            <option value="">Sandbox…</option>
+          </select>
+          <button id="save-sb" class="round" title="Enregistrer le WAV dans une sandbox">💾</button>
+          <button id="export" class="round" title="Télécharger en WAV">⬇</button>
+        </div>
+
+        <div class="knobs">
+          <label class="knob">Tempo <output id="bpm-val">100</output>
+            <input id="bpm" type="range" min="60" max="160" step="1" value="100" />
+          </label>
+          <label class="knob">Tonalité
+            <select id="key" class="sel"></select>
+          </label>
+          <label class="knob">Gamme
+            <select id="scale" class="sel"></select>
+          </label>
+          <label class="knob">Énergie <output id="energy-val">60%</output>
+            <input id="energy" type="range" min="0" max="100" step="1" value="60" />
+          </label>
+          <label class="knob">Volume <output id="vol-val">80%</output>
+            <input id="vol" type="range" min="0" max="100" step="1" value="80" />
+          </label>
+        </div>
+
+        <div class="layers" id="layers"></div>
+      </section>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

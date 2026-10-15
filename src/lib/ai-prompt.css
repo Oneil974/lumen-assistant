@@ -1,0 +1,251 @@
+/* Volet d'assistant partagé (cf. lib/ai-prompt.js).
+   Toujours au même endroit — tiroir ancré au bord droit de la fenêtre — pour
+   que l'utilisateur le retrouve d'une app à l'autre sans le chercher. Replié,
+   il ne laisse qu'une languette verticale ; déplié, il glisse par-dessus le
+   contenu sans bousculer la mise en page de l'app. Les couleurs viennent des
+   jetons de l'app hôte (--surface, --border, --accent…). */
+
+.lumen-ai-dock, .lumen-ai-dock * { box-sizing: border-box; }
+
+.lumen-ai-dock {
+  /* Largeur nulle : le tiroir ne prend aucune place tant qu'il est replié, et
+     la languette reste collée au bord droit de la fenêtre. */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  z-index: 900;
+  pointer-events: none; /* seuls la languette et le panneau captent la souris */
+  font: 13px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  color: var(--text, #1c1c1e);
+  --lumen-ai-w: min(360px, 92vw);
+}
+
+/* ----- Languette (état replié comme déplié) ----- */
+.lumen-ai-handle {
+  pointer-events: auto;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-right: -1px;
+  padding: 14px 7px;
+  border: 1px solid var(--border, rgba(127, 127, 127, 0.25));
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  background: var(--surface, rgba(250, 250, 252, 0.92));
+  color: var(--text-muted, #6b6b70);
+  cursor: pointer;
+  font: inherit;
+  box-shadow: -6px 0 18px -12px rgba(0, 0, 0, 0.5);
+  transition: color 0.18s, background 0.18s, right 0.32s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.18s;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+}
+.lumen-ai-handle:hover { color: var(--text, #1c1c1e); }
+.lumen-ai-dock.open .lumen-ai-handle { right: var(--lumen-ai-w); }
+.lumen-ai-handle-ic { color: var(--accent, var(--primary)); display: flex; }
+.lumen-ai-handle-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.lumen-ai-dock.busy .lumen-ai-handle-ic { animation: lumenAiPulse 1.1s ease-in-out infinite; }
+
+/* Scintillement de présence : joué une poignée de secondes après l'ouverture
+   de l'app, puis retiré par le script. Volontairement léger — il signale une
+   poignée, il ne réclame pas un clic. */
+.lumen-ai-handle.hint {
+  animation: lumenAiHint 1.6s ease-in-out 3;
+}
+@keyframes lumenAiHint {
+  0%, 100% { background: var(--surface, rgba(250, 250, 252, 0.92)); box-shadow: none; }
+  50% {
+    background: color-mix(in oklab, var(--primary) 14%, var(--surface, #fafafc));
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 45%, transparent);
+  }
+}
+.lumen-ai-handle.hint .lumen-ai-handle-ic { color: var(--accent-ink); }
+@media (prefers-reduced-motion: reduce) {
+  .lumen-ai-handle.hint { animation: none; }
+}
+
+/* ----- Panneau ----- */
+.lumen-ai {
+  pointer-events: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--lumen-ai-w);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding: 12px 14px 14px;
+  border-left: 1px solid var(--border, rgba(127, 127, 127, 0.25));
+  background: var(--surface, rgba(252, 252, 254, 0.96));
+  box-shadow: -18px 0 44px -28px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(22px) saturate(170%);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  transform: translateX(100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease, visibility 0s linear 0.32s;
+}
+.lumen-ai-dock.open .lumen-ai {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease;
+}
+.lumen-ai-dock.open .lumen-ai-handle { opacity: 0.55; }
+.lumen-ai-dock.open .lumen-ai-handle:hover { opacity: 1; }
+
+.lumen-ai-head { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 650; color: var(--text-muted, #6b6b70); }
+.lumen-ai-name { color: var(--text, #1c1c1e); }
+.lumen-ai-app { font-weight: 500; opacity: 0.7; }
+.lumen-ai-sp { flex: 1; }
+.lumen-ai-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent, var(--primary));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, var(--primary)) 22%, transparent);
+}
+.lumen-ai.busy .lumen-ai-dot, .lumen-ai-dock.busy .lumen-ai-dot { animation: lumenAiPulse 1.1s ease-in-out infinite; }
+@keyframes lumenAiPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.lumen-ai-clear, .lumen-ai-close {
+  width: 24px; height: 24px; padding: 0;
+  display: grid; place-items: center;
+  font: inherit; font-size: 13px; line-height: 1; cursor: pointer;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted, #6b6b70);
+}
+.lumen-ai-clear:hover, .lumen-ai-close:hover { background: color-mix(in srgb, var(--accent, var(--primary)) 12%, transparent); color: var(--text, #1c1c1e); }
+.lumen-ai-close { font-size: 17px; }
+
+.lumen-ai-log { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; padding-right: 2px; }
+.lumen-ai-msg {
+  font-size: 12.5px; line-height: 1.45;
+  padding: 7px 10px; border-radius: 12px;
+  white-space: pre-wrap; word-break: break-word;
+}
+.lumen-ai-user {
+  background: color-mix(in srgb, var(--accent, var(--primary)) 16%, transparent);
+  border-bottom-right-radius: 4px;
+  align-self: flex-end; max-width: 92%;
+}
+.lumen-ai-bot {
+  background: color-mix(in srgb, var(--text, #1c1c1e) 5%, transparent);
+  border: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+  border-bottom-left-radius: 4px;
+}
+.lumen-ai-step { color: var(--text-muted, #6b6b70); font-size: 11.5px; font-style: italic; padding: 2px 4px; }
+.lumen-ai-err { color: var(--red, var(--destructive)); }
+
+.lumen-ai-sugg { display: flex; flex-wrap: wrap; gap: 5px; }
+.lumen-ai-sugg button {
+  font: inherit; font-size: 11px; padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border, rgba(127, 127, 127, 0.25));
+  background: transparent;
+  color: var(--text-muted, #6b6b70);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.lumen-ai-sugg button:hover {
+  color: var(--text, #1c1c1e);
+  border-color: color-mix(in srgb, var(--accent, var(--primary)) 45%, transparent);
+  background: color-mix(in srgb, var(--accent, var(--primary)) 8%, transparent);
+}
+
+.lumen-ai-box { display: flex; gap: 7px; align-items: flex-end; }
+.lumen-ai-input {
+  flex: 1; min-width: 0;
+  font: inherit; font-size: 12.5px; line-height: 1.4;
+  resize: none;
+  max-height: 140px;
+  color: var(--text, #1c1c1e);
+  background: color-mix(in srgb, var(--text, #1c1c1e) 4%, transparent);
+  border: 1px solid var(--border, rgba(127, 127, 127, 0.25));
+  border-radius: 12px;
+  padding: 9px 11px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.lumen-ai-input:focus {
+  border-color: color-mix(in srgb, var(--accent, var(--primary)) 60%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, var(--primary)) 15%, transparent);
+}
+.lumen-ai-send {
+  flex: none; width: 34px; height: 34px;
+  display: grid; place-items: center;
+  cursor: pointer;
+  border: none; border-radius: 50%;
+  background: var(--accent, var(--primary));
+  color: var(--primary-foreground, #fff);
+  transition: filter 0.15s, opacity 0.15s;
+}
+.lumen-ai-send:hover { filter: brightness(1.07); }
+.lumen-ai-send:disabled { opacity: 0.5; cursor: default; }
+
+/* Fenêtres étroites : le volet prend toute la largeur utile. */
+@media (max-width: 640px) {
+  .lumen-ai-dock { --lumen-ai-w: 100vw; }
+  .lumen-ai-handle-label { display: none; }
+}
+
+/* ----- Markdown dans les bulles du modèle ----- */
+.lumen-ai-md { white-space: normal; }
+.lumen-ai-md > :first-child { margin-top: 0; }
+.lumen-ai-md > :last-child { margin-bottom: 0; }
+.lumen-ai-md p { margin: 0 0 6px; }
+.lumen-ai-md h1, .lumen-ai-md h2, .lumen-ai-md h3, .lumen-ai-md h4, .lumen-ai-md h5, .lumen-ai-md h6 {
+  margin: 8px 0 4px; line-height: 1.3; font-weight: 680;
+}
+.lumen-ai-md h1 { font-size: 15px; }
+.lumen-ai-md h2 { font-size: 14px; }
+.lumen-ai-md h3 { font-size: 13px; }
+.lumen-ai-md h4, .lumen-ai-md h5, .lumen-ai-md h6 { font-size: 12.5px; }
+.lumen-ai-md ul, .lumen-ai-md ol { margin: 2px 0 6px; padding-left: 20px; }
+.lumen-ai-md li { margin: 2px 0; }
+.lumen-ai-md li > ul, .lumen-ai-md li > ol { margin: 2px 0 0; }
+.lumen-ai-md strong { font-weight: 660; }
+.lumen-ai-md code {
+  font: 11.5px ui-monospace, SFMono-Regular, Menlo, monospace;
+  padding: 1px 5px; border-radius: 5px;
+  background: color-mix(in srgb, var(--text, #1c1c1e) 8%, transparent);
+}
+.lumen-ai-md pre.md-code {
+  margin: 6px 0; padding: 8px 10px; border-radius: 9px; overflow: auto;
+  background: color-mix(in srgb, var(--text, #1c1c1e) 7%, transparent);
+  border: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+.lumen-ai-md pre.md-code code { padding: 0; background: none; font-size: 11.5px; line-height: 1.5; white-space: pre; }
+.lumen-ai-md blockquote {
+  margin: 6px 0; padding: 4px 10px;
+  border-left: 3px solid color-mix(in srgb, var(--accent, var(--primary)) 55%, transparent);
+  color: var(--text-muted, #6b6b70);
+}
+.lumen-ai-md hr { border: 0; border-top: 1px solid var(--border, rgba(127, 127, 127, 0.25)); margin: 8px 0; }
+.lumen-ai-md a { color: var(--accent-ink, var(--accent, var(--primary))); text-decoration: none; }
+.lumen-ai-md a:hover { text-decoration: underline; }
+.lumen-ai-md table.md-table {
+  border-collapse: collapse; margin: 6px 0; font-size: 11.5px; max-width: 100%;
+  display: block; overflow-x: auto;
+}
+.lumen-ai-md table.md-table th, .lumen-ai-md table.md-table td {
+  border: 1px solid var(--border, rgba(127, 127, 127, 0.25)); padding: 4px 8px; text-align: left; vertical-align: top;
+}
+.lumen-ai-md table.md-table th { font-weight: 650; background: color-mix(in srgb, var(--text, #1c1c1e) 5%, transparent); }
+.lumen-ai-md .md-task { color: var(--text-muted, #6b6b70); }
+.lumen-ai-md .md-task.done { color: var(--accent-ink, var(--accent, var(--primary))); }

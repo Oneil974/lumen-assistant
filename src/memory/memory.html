@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Mémoire</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="styles.css?v=4" />
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg></span>
+          <div>
+            <div class="brand-title">Mémoire</div>
+            <div class="brand-sub">Souvenirs de Lumen</div>
+          </div>
+        </div>
+        <button class="nav-special" data-view="overview"><span class="ni"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span> Vue d'ensemble</button>
+        <nav id="kind-nav" class="kind-nav"><!-- rempli en JS --></nav>
+        <div class="nav-sep"></div>
+        <button class="nav-special" data-view="search"><span class="ni"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span> Recherche</button>
+        <button class="nav-special" data-view="policy"><span class="ni"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> Accès &amp; sécurité</button>
+        <div class="foot">Local · Privé · On-device</div>
+      </aside>
+
+      <main class="content">
+        <!-- Vue d'ensemble -->
+        <section id="view-overview" class="view">
+          <header class="view-head"><div><h1>Mémoire de Lumen</h1><p class="muted">Quatre mémoires, comme un agent moderne : la session en cours, les faits (sémantique), les façons de faire (procédurale) et ce qui s'est passé (épisodique). Tout reste sur cet ordinateur.</p></div>
+            <div class="head-actions"><button id="btn-consolidate-ov" class="btn ghost" title="Transforme la session et les épisodes récents en faits et méthodes durables (IA)">Consolider</button></div></header>
+          <div id="overview"></div>
+        </section>
+
+        <!-- Vue d'un type de mémoire -->
+        <section id="view-kind" class="view" hidden>
+          <header class="view-head">
+            <div>
+              <h1 id="kind-title">—</h1>
+              <p id="kind-desc" class="muted"></p>
+            </div>
+            <div class="head-actions">
+              <button id="btn-consolidate" class="btn ghost" title="Transforme la session et les épisodes récents en faits et méthodes durables (IA)">Consolider</button>
+              <button id="btn-wipe" class="btn danger ghost">Tout effacer</button>
+            </div>
+          </header>
+
+          <div class="add-row">
+            <input id="add-text" type="text" placeholder="Ajouter un souvenir…" />
+            <input id="add-tags" type="text" class="tags-in" placeholder="tags, séparés, par virgule" />
+            <button id="btn-add" class="btn primary">Mémoriser</button>
+          </div>
+
+          <div id="items" class="items"><!-- items --></div>
+          <div id="items-empty" class="empty" hidden>Aucun souvenir de ce type pour l'instant.</div>
+        </section>
+
+        <!-- Recherche transverse -->
+        <section id="view-search" class="view" hidden>
+          <header class="view-head"><div><h1>Recherche</h1><p class="muted">Rappel pondéré (pertinence + récence + saillance) sur tous les types lisibles.</p></div></header>
+          <div class="add-row">
+            <input id="search-q" type="text" placeholder="Que cherche Lumen à se rappeler ?" />
+            <button id="btn-search" class="btn primary">Rappeler</button>
+          </div>
+          <div id="search-results" class="items"></div>
+        </section>
+
+        <!-- Politique d'accès -->
+        <section id="view-policy" class="view" hidden>
+          <header class="view-head">
+            <div><h1>Accès &amp; sécurité</h1><p class="muted">Qui peut lire/écrire quel type. Appliqué côté backend — un agent ou un bloc ne peut pas franchir ces règles.</p></div>
+            <button id="btn-policy-save" class="btn primary">Enregistrer</button>
+          </header>
+          <div class="policy-wrap"><table id="policy-table" class="policy"></table></div>
+          <p class="muted small">Légende : <b>—</b> aucun accès · <b>Lecture</b> · <b>Écriture</b> (implique lecture). Les contextes « app:memory », « settings » et « system » sont gestionnaires (accès total, non listés).</p>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

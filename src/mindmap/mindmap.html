@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!-- Mindmap (carte mentale) de Lumen. Fenêtre dédiée, ouverte en iframe depuis le
+     bureau (workspace). Le modèle (nœuds + liens) vit côté front et est persisté
+     en JSON dans localStorage. L'IA (composition d'une carte complète ou
+     développement d'un nœud) passe par le backend unifié llmChat (Ollama/API). -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Mindmap</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop (dtTheme partagé
+         via localStorage). Appliqué tôt pour éviter tout flash de thème. -->
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-dot"></span>
+          <input id="map-name" class="map-name" value="Carte mentale" spellcheck="false" />
+        </div>
+        <div class="spacer"></div>
+        <button class="btn-soft" id="btn-add">＋ Nœud</button>
+        <button class="btn-soft" id="btn-layout" title="Réorganiser automatiquement">⤢ Agencer</button>
+        <button class="btn-soft" id="btn-expand" title="Développer le nœud sélectionné avec l'IA">✦ Développer</button>
+        <button class="btn-soft primary" id="btn-compose">✨ Composer avec l'IA</button>
+        <span id="creative-bar"></span>
+        <button class="btn-soft" id="btn-menu" title="Plus">⋯</button>
+      </header>
+
+      <main class="canvas-wrap" id="canvas-wrap">
+        <svg class="edges" id="edges"></svg>
+        <div class="nodes" id="nodes"></div>
+        <div class="hint" id="hint">Double-cliquez pour ajouter un nœud · molette pour zoomer · glissez le fond pour vous déplacer</div>
+      </main>
+    </div>
+
+    <!-- Composition IA -->
+    <div class="overlay" id="ai-overlay" hidden>
+      <div class="mini-modal">
+        <h3 id="ai-title">Composer une carte mentale avec l'IA</h3>
+        <p class="muted" id="ai-sub">Décrivez le sujet : l'IA génère une carte structurée (thème central, branches et sous-idées).</p>
+        <textarea id="ai-text" rows="4" class="ta" placeholder="Ex. : Lancer un produit SaaS — stratégie, équipe, marketing, finances…"></textarea>
+        <div class="mini-actions">
+          <span class="ai-state" id="ai-state"></span>
+          <span class="spacer"></span>
+          <button class="btn-soft" id="ai-cancel">Annuler</button>
+          <button class="btn-soft primary" id="ai-run">Générer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu contextuel « plus » -->
+    <div class="menu-pop" id="menu-pop" hidden>
+      <button data-act="new">Nouvelle carte</button>
+      <button data-act="open-sb">Ouvrir depuis la sandbox</button>
+      <button data-act="save-sb">Enregistrer dans la sandbox</button>
+      <div class="menu-sep"></div>
+      <button data-act="export">Exporter (fichier JSON)</button>
+      <button data-act="import">Importer (fichier JSON)</button>
+      <button data-act="png">Exporter en image</button>
+    </div>
+    <input type="file" id="import-file" accept="application/json,.json" hidden />
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

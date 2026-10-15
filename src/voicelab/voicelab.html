@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!-- Studio de voix : vitrine du moteur TTS local de Lumen (Piper + Kokoro,
+     backend tts.rs). Parcourir le catalogue de voix, télécharger/supprimer,
+     définir la voix active, prévisualiser un texte libre et exporter en WAV.
+     100 % local. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Studio de voix</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4M8 23h8"/></svg></span>
+          <div>
+            <div class="brand-title">Studio de voix</div>
+            <div class="brand-sub" id="status">Chargement du catalogue…</div>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <input class="search" id="search" placeholder="Rechercher une voix…" />
+        <select class="sel" id="f-lang"><option value="">Toutes langues</option></select>
+        <select class="sel" id="f-engine">
+          <option value="">Tous moteurs</option>
+          <option value="piper">Piper</option>
+          <option value="kokoro">Kokoro</option>
+        </select>
+        <label class="chk"><input type="checkbox" id="f-installed" /> Installées</label>
+      </header>
+
+      <main class="grid" id="grid"></main>
+
+      <footer class="dock">
+        <textarea id="text" class="dock-text" placeholder="Tapez un texte à faire lire par la voix sélectionnée…">Bonjour, je suis la voix de Lumen. Ravi de faire votre connaissance.</textarea>
+        <div class="dock-side">
+          <div class="dock-voice">
+            <span class="dock-lbl">Voix de test</span>
+            <strong id="active-voice">—</strong>
+          </div>
+          <div class="dock-btns">
+            <button class="btn primary" id="btn-play">▶ Écouter</button>
+            <button class="btn" id="btn-stop">■ Stop</button>
+            <button class="btn" id="btn-export" hidden>⬇ Exporter WAV</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

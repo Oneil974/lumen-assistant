@@ -1,0 +1,98 @@
+<!doctype html>
+<!-- Analyse de données — mini Power BI local (rapports multipages, visuels,
+     segments, filtre croisé, période comparée, export PDF/HTML, envoi et
+     abonnements par email, assistant IA). Absorbe l'ancienne app Reporting. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Analyse de données</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="../lib/confirm.css?v=1" />
+    <link rel="stylesheet" href="./styles.css?v=11" />
+    <script type="module" src="./main.js?v=11"></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app" id="app" data-view="report">
+      <nav class="rail">
+        <div class="rail-logo" data-ic="chart-bar"></div>
+        <button class="rail-btn is-on" data-view="report" title="Rapport"><span data-ic="layout-dashboard"></span><small>Rapport</small></button>
+        <button class="rail-btn" data-view="data" title="Données"><span data-ic="table"></span><small>Données</small></button>
+        <button class="rail-btn" data-view="model" title="Modèle"><span data-ic="database"></span><small>Modèle</small></button>
+        <button class="rail-btn" data-view="subs" title="Envois"><span data-ic="mail"></span><small>Envois</small></button>
+      </nav>
+
+      <div class="main">
+        <header class="topbar">
+          <div class="menu-wrap">
+            <button class="btn ghost sm" id="btn-file"><span data-ic="folder"></span>Fichier</button>
+            <div class="menu" id="file-menu" hidden>
+              <button class="menu-item" data-file="new"><span data-ic="plus"></span>Nouveau rapport</button>
+              <button class="menu-item" data-file="open"><span data-ic="folder-open"></span>Ouvrir…</button>
+              <button class="menu-item" data-file="save"><span data-ic="save"></span>Enregistrer<small>⌘S</small></button>
+              <button class="menu-item" data-file="saveas"><span data-ic="copy"></span>Enregistrer sous…</button>
+              <div class="menu-sep"></div>
+              <button class="menu-item" data-file="pdf"><span data-ic="file-text"></span>Exporter en PDF</button>
+              <button class="menu-item" data-file="html"><span data-ic="code"></span>Exporter en HTML</button>
+              <button class="menu-item" data-file="todoc"><span data-ic="presentation"></span>Insérer la page dans un document…</button>
+              <button class="menu-item" data-file="email"><span data-ic="send"></span>Envoyer par email…</button>
+              <button class="menu-item" data-file="subs"><span data-ic="clock"></span>Abonnements…</button>
+            </div>
+          </div>
+          <input class="title-input" id="report-name" aria-label="Nom du rapport" />
+          <span class="save-state" id="save-state"></span>
+          <div class="period" id="period">
+            <label class="chk" title="Filtrer et comparer par période"><input type="checkbox" id="per-on" /><span data-ic="calendar"></span></label>
+            <input class="input sm" type="date" id="per-from" aria-label="Début" />
+            <span class="muted">→</span>
+            <input class="input sm" type="date" id="per-to" aria-label="Fin" />
+            <select class="select sm" id="per-preset" aria-label="Période prédéfinie">
+              <option value="">Prédéfinie…</option>
+              <option value="month">Ce mois</option>
+              <option value="last-month">Mois dernier</option>
+              <option value="30d">30 derniers jours</option>
+              <option value="year">Cette année</option>
+            </select>
+            <label class="chk small" title="Comparer à la période précédente"><input type="checkbox" id="per-compare" />vs préc.</label>
+          </div>
+          <span class="spacer"></span>
+          <div class="qa"><span data-ic="sparkles"></span><input id="qa-input" placeholder="Posez une question sur vos données…" /></div>
+          <button class="btn ghost icon sm" id="btn-refresh" title="Actualiser les données"><span data-ic="refresh-cw"></span></button>
+          <button class="btn outline sm" id="btn-ai" title="Assistant (⌘J)"><span data-ic="sparkles"></span>Assistant</button>
+        </header>
+
+        <div class="lock-banner" id="lock-banner" hidden>
+          <span data-ic="lock"></span>
+          <span>Vos sandboxes sont verrouillées : déverrouillez la session pour lire vos données et enregistrer vos rapports.</span>
+          <button class="btn primary sm" id="btn-unlock">Déverrouiller</button>
+        </div>
+
+        <div class="body">
+          <section class="view" id="view-report">
+            <div class="canvas-wrap">
+              <div class="selection-chip" id="selection-chip" hidden></div>
+              <div class="canvas" id="canvas"></div>
+              <div class="pagebar"><div class="pages" id="pages"></div><span class="spacer"></span><span class="data-status" id="data-status"></span></div>
+            </div>
+            <aside class="panes">
+              <div class="pane-tabs">
+                <button class="pane-tab is-on" data-pane="build"><span data-ic="chart-bar"></span>Visuel</button>
+                <button class="pane-tab" data-pane="format"><span data-ic="sliders-horizontal"></span>Format</button>
+                <button class="pane-tab" data-pane="filters"><span data-ic="filter"></span>Filtres</button>
+                <button class="pane-tab" data-pane="fields"><span data-ic="table"></span>Champs</button>
+              </div>
+              <div class="pane-body" id="pane-body"></div>
+            </aside>
+          </section>
+          <section class="view scroll" id="view-data" hidden></section>
+          <section class="view scroll" id="view-model" hidden></section>
+          <section class="view scroll" id="view-subs" hidden></section>
+        </div>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

@@ -1,0 +1,153 @@
+/* Composants visuels de Lumen, en CSS ordinaire.
+ *
+ * Reproduit l'aspect des composants shadcn/ui (MIT) sans React ni Tailwind :
+ * mêmes hauteurs, mêmes retraits, même anneau de focus, mêmes rayons. Tout est
+ * piloté par lib/tokens.css — aucune couleur n'est écrite en dur ici, c'est la
+ * règle qui rend la personnalisation possible.
+ *
+ * Dépend de : lib/tokens.css (à charger avant).
+ */
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+.ui,
+.ui * { box-sizing: border-box; }
+.ui {
+  color: var(--foreground);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Anneau de focus commun. Aujourd'hui Lumen n'en a pas, ou un par écran :
+   c'est ce qui donne l'impression que les surfaces ne viennent pas du même
+   endroit — et c'est un vrai problème d'accessibilité au clavier. */
+.ui :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ── Bouton ──────────────────────────────────────────────────────────────── */
+.ui-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 36px; padding: 0 16px;
+  border: 1px solid transparent; border-radius: var(--radius-md);
+  background: var(--primary); color: var(--primary-foreground);
+  font: inherit; font-size: 13.5px; font-weight: 500; white-space: nowrap;
+  cursor: pointer; user-select: none;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
+}
+.ui-btn:hover { background: color-mix(in oklab, var(--primary) 90%, transparent); }
+.ui-btn:active { transform: translateY(0.5px); }
+.ui-btn:disabled { opacity: .5; pointer-events: none; }
+.ui-btn svg { width: 16px; height: 16px; flex: none; }
+
+.ui-btn.secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.ui-btn.secondary:hover { background: color-mix(in oklab, var(--secondary) 80%, var(--foreground) 6%); }
+.ui-btn.outline { background: var(--background); color: var(--foreground); border-color: var(--border); }
+.ui-btn.outline:hover { background: var(--subtle); color: var(--subtle-foreground); }
+.ui-btn.ghost { background: transparent; color: var(--foreground); }
+.ui-btn.ghost:hover { background: var(--subtle); color: var(--subtle-foreground); }
+.ui-btn.destructive { background: var(--destructive); color: var(--background); }
+.ui-btn.destructive:hover { background: color-mix(in oklab, var(--destructive) 90%, transparent); }
+.ui-btn.link { background: transparent; color: var(--accent-ink); height: auto; padding: 0; text-decoration: underline; text-underline-offset: 4px; }
+
+.ui-btn.sm { height: 32px; padding: 0 12px; font-size: 12.5px; border-radius: var(--radius-sm); }
+.ui-btn.lg { height: 40px; padding: 0 24px; font-size: 14.5px; }
+.ui-btn.icon { width: 36px; padding: 0; }
+.ui-btn.icon.sm { width: 32px; }
+
+/* ── Carte ───────────────────────────────────────────────────────────────── */
+.ui-card {
+  display: flex; flex-direction: column; gap: 16px;
+  padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-xl);
+  background: var(--card); color: var(--card-foreground);
+}
+.ui-card-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.ui-card-desc { font-size: 13px; color: var(--muted-foreground); }
+.ui-card-head { display: flex; flex-direction: column; gap: 5px; }
+.ui-card-foot { display: flex; align-items: center; gap: 8px; }
+
+/* ── Champs ──────────────────────────────────────────────────────────────── */
+.ui-input, .ui-select, .ui-textarea {
+  width: 100%; height: 36px; padding: 0 12px;
+  border: 1px solid var(--input); border-radius: var(--radius-md);
+  background: var(--background); color: var(--foreground);
+  font: inherit; font-size: 13.5px;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.ui-textarea { height: auto; min-height: 76px; padding: 9px 12px; resize: vertical; }
+.ui-input::placeholder, .ui-textarea::placeholder { color: var(--muted-foreground); }
+.ui-input:focus, .ui-select:focus, .ui-textarea:focus {
+  outline: none; border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 35%, transparent);
+}
+.ui-input:disabled, .ui-select:disabled, .ui-textarea:disabled { opacity: .5; cursor: not-allowed; }
+.ui-label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; }
+.ui-hint { margin-top: 6px; font-size: 12px; color: var(--muted-foreground); }
+
+/* ── Interrupteur ────────────────────────────────────────────────────────── */
+.ui-switch {
+  position: relative; flex: none; width: 36px; height: 20px; padding: 0;
+  border: none; border-radius: var(--radius-full);
+  background: var(--input); cursor: pointer;
+  transition: background-color .18s ease;
+}
+.ui-switch[aria-checked="true"] { background: var(--primary); }
+.ui-switch::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+  border-radius: 50%; background: var(--background);
+  box-shadow: 0 1px 3px rgb(0 0 0 / .2);
+  transition: transform .18s cubic-bezier(.32,.72,0,1);
+}
+.ui-switch[aria-checked="true"]::after { transform: translateX(16px); }
+
+/* ── Badge ───────────────────────────────────────────────────────────────── */
+.ui-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 9px; border: 1px solid transparent; border-radius: var(--radius-full);
+  background: var(--primary); color: var(--primary-foreground);
+  font-size: 11.5px; font-weight: 500; white-space: nowrap;
+}
+.ui-badge.secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.ui-badge.outline { background: transparent; color: var(--foreground); border-color: var(--border); }
+.ui-badge.destructive { background: var(--destructive); color: var(--background); }
+
+/* ── Onglets ─────────────────────────────────────────────────────────────── */
+.ui-tabs {
+  display: inline-flex; align-items: center; gap: 3px; padding: 3px;
+  border-radius: var(--radius-md); background: var(--muted);
+}
+.ui-tab {
+  padding: 6px 13px; border: none; border-radius: calc(var(--radius-md) - 2px);
+  background: transparent; color: var(--muted-foreground);
+  font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
+}
+.ui-tab[aria-selected="true"] { background: var(--background); color: var(--foreground); box-shadow: 0 1px 3px rgb(0 0 0 / .08); }
+
+/* ── Séparateur, info-bulle, dialogue ────────────────────────────────────── */
+.ui-sep { height: 1px; border: 0; background: var(--border); margin: 16px 0; }
+
+.ui-dialog {
+  width: min(440px, 100%); padding: 22px;
+  border: 1px solid var(--border); border-radius: var(--radius-xl);
+  background: var(--popover); color: var(--popover-foreground);
+  box-shadow: 0 16px 48px rgb(0 0 0 / .18);
+}
+
+/* Liste type menu / barre latérale. */
+.ui-menu { display: flex; flex-direction: column; gap: 2px; }
+.ui-menu-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 10px; border: none; border-radius: var(--radius-sm);
+  background: transparent; color: var(--foreground);
+  font: inherit; font-size: 13.5px; text-align: left; cursor: pointer;
+}
+.ui-menu-item:hover { background: var(--subtle); color: var(--subtle-foreground); }
+.ui-menu-item[aria-current="true"] { background: var(--subtle); color: var(--subtle-foreground); font-weight: 500; }
+.ui-menu-item svg { width: 16px; height: 16px; flex: none; opacity: .8; }
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+.ui-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.ui-table th, .ui-table td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+.ui-table th { color: var(--muted-foreground); font-weight: 500; font-size: 12.5px; }
+.ui-table tbody tr:hover { background: var(--muted); }

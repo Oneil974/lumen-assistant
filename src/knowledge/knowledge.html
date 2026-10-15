@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!-- App Connaissances : gère la base de documents RAG de Lumen (backend rag.rs).
+     Import par glisser-déposer / fichier / texte collé, liste des documents,
+     suppression, et un panneau de test de recherche sémantique. L'assistant et
+     les agents interrogent cette base via l'outil « search_documents » / le bloc
+     Fluxo « Rechercher dans les connaissances ». 100 % local. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Connaissances</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <!-- ?v= : bump à chaque modif de knowledge/main.js (cache WKWebView). -->
+    <script type="module" src="./main.js?v=2" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg></span>
+          <div>
+            <div class="brand-title">Connaissances</div>
+            <div class="brand-sub" id="status">—</div>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn-soft" id="btn-reindex" hidden>Réindexer</button>
+        <button class="btn-soft danger" id="btn-clear">Vider la base</button>
+      </header>
+
+      <div class="body">
+        <!-- Colonne gauche : import + documents -->
+        <main class="left">
+          <div class="dropzone" id="dropzone">
+            <div class="dz-inner">
+              <span class="dz-ic"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+              <div class="dz-text">Glissez vos documents ici</div>
+              <div class="dz-sub">PDF, texte, Markdown, CSV, JSON, code…</div>
+              <button class="btn-soft primary" id="btn-pick">Choisir un fichier</button>
+              <input type="file" id="file-input" multiple accept=".txt,.md,.markdown,.csv,.json,.pdf,.log,.html,.htm,.js,.ts,.py,.rs,.go,.java,.c,.cpp,.yaml,.yml,.xml" hidden />
+            </div>
+          </div>
+
+          <!-- Encodeur : le même choix que Réglages → Modèles → Embeddings.
+               Ici parce que c'est ici qu'on indexe, et que changer d'encodeur
+               oblige à réindexer : les deux gestes doivent être côte à côte. -->
+          <div class="chunk-row">
+            <label for="embed-model">Encodeur (embeddings)</label>
+            <select id="embed-model" class="input">
+              <option value="auto">Automatique (suit la source d'IA)</option>
+            </select>
+            <span class="chunk-hint" id="embed-hint">Local, dans un serveur dédié.</span>
+            <button class="btn-soft" id="btn-embed-download" hidden>Télécharger</button>
+          </div>
+          <p class="empty" id="embed-warning" hidden></p>
+
+          <div class="chunk-row">
+            <label for="chunk-preset">Découpage des documents</label>
+            <select id="chunk-preset" class="input">
+              <option value="small">Petit — réponses précises (Q/R, fiches, annuaires)</option>
+              <option value="medium">Moyen — équilibré (défaut)</option>
+              <option value="large">Grand — garde le contexte (prose, rapports)</option>
+            </select>
+            <span class="chunk-hint">S'applique aux prochains imports.</span>
+          </div>
+
+          <details class="paste">
+            <summary>…ou coller du texte</summary>
+            <textarea id="paste-text" rows="4" placeholder="Collez ici un contenu à mémoriser dans la base de connaissances."></textarea>
+            <input id="paste-title" class="input" placeholder="Titre (optionnel)" />
+            <button class="btn-soft" id="btn-add-text">Indexer ce texte</button>
+          </details>
+
+          <div class="doc-head">
+            <span id="doc-count">Documents</span>
+          </div>
+          <div class="doc-list" id="doc-list"></div>
+          <p class="empty" id="doc-empty" hidden>Aucun document. Importez-en un ci-dessus.</p>
+        </main>
+
+        <!-- Colonne droite : test de recherche -->
+        <aside class="right">
+          <div class="side-head">Tester la recherche</div>
+          <p class="muted side-hint">Vérifiez ce que l'IA récupérera pour une question donnée (recherche sémantique).</p>
+          <div class="search-row">
+            <input id="search-input" class="input" placeholder="Ex. : adresse du magasin" />
+            <button class="btn-soft primary" id="btn-search">Chercher</button>
+          </div>
+          <div class="hits" id="hits"></div>
+          <p class="empty" id="hits-empty" hidden>Aucun extrait trouvé.</p>
+        </aside>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

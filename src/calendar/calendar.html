@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!-- Calendrier de Lumen : rappels datés qui notifient l'utilisateur à l'échéance
+     (backend reminders.rs + ticker dans lib.rs). Les rappels peuvent être créés
+     ici, par l'IA de la barre (outil create_reminder) ou par un agent/bloc Fluxo
+     (route loopback POST /reminders). Se rafraîchit sur l'évènement
+     `reminders-updated` et signale les déclenchements via `reminder-fired`. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Calendrier</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+    <!-- Thème du bureau (dtTheme, partagé via localStorage), appliqué tôt pour
+         éviter tout flash. L'accent vient de l'apparence (theme-init.js). -->
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><circle cx="8.5" cy="13.5" r="1.1"/><circle cx="12" cy="13.5" r="1.1"/><circle cx="15.5" cy="13.5" r="1.1"/></svg></span>
+          <span class="brand-title">Calendrier</span>
+        </div>
+        <div class="month-nav">
+          <button class="btn-ico" id="prev-month" title="Mois précédent">‹</button>
+          <span class="month-label" id="month-label">—</span>
+          <button class="btn-ico" id="next-month" title="Mois suivant">›</button>
+          <button class="btn-soft" id="btn-today">Aujourd'hui</button>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn-soft" id="btn-sources" title="Emplois du temps (ENT, Moodle…), fichiers .ics et Google Agenda">⇄ Agendas</button>
+        <button class="btn-soft primary" id="btn-new">＋ Nouveau rappel</button>
+      </header>
+
+      <div class="body">
+        <main class="cal">
+          <div class="weekdays" id="weekdays"></div>
+          <div class="grid" id="grid"></div>
+        </main>
+
+        <aside class="side">
+          <div class="side-head" id="side-head">À venir</div>
+          <div class="rem-list" id="rem-list"></div>
+          <p class="empty" id="rem-empty" hidden>Aucun rappel. Créez-en un avec « ＋ Nouveau rappel ».</p>
+
+        </aside>
+      </div>
+    </div>
+
+    <!-- Création / édition d'un rappel -->
+    <div class="overlay" id="overlay" hidden>
+      <div class="modal">
+        <h3 id="modal-title">Nouveau rappel</h3>
+        <label class="fld">Intitulé
+          <input id="f-title" class="input" placeholder="Ex. : Appeler le médecin" />
+        </label>
+        <label class="fld">Note (optionnel)
+          <textarea id="f-note" class="ta" rows="2" placeholder="Détail…"></textarea>
+        </label>
+        <div class="fld-row">
+          <label class="fld">Date
+            <input id="f-date" class="input" type="date" />
+          </label>
+          <label class="fld">Heure
+            <input id="f-time" class="input" type="time" />
+          </label>
+        </div>
+        <div class="fld-row">
+          <label class="fld">Durée (min)
+            <input id="f-duration" class="input" type="number" min="5" step="5" value="30" />
+          </label>
+          <label class="fld">Type
+            <select id="f-category" class="select">
+              <option value="tache">Tâche</option>
+              <option value="cours">Cours</option>
+              <option value="examen">Examen</option>
+              <option value="revision">Révision</option>
+              <option value="reunion">Réunion</option>
+              <option value="jalon">Jalon</option>
+              <option value="focus">Focus</option>
+              <option value="perso">Perso</option>
+            </select>
+          </label>
+        </div>
+        <div class="fld-row">
+          <label class="fld">Projet (optionnel)
+            <input id="f-project" class="input" placeholder="Ex. : Refonte site" />
+          </label>
+          <label class="fld">Participants (optionnel)
+            <input id="f-participants" class="input" placeholder="Léa, Marc" />
+          </label>
+        </div>
+        <label class="fld">Récurrence
+          <select id="f-recur" class="select">
+            <option value="none">Aucune</option>
+            <option value="daily">Tous les jours</option>
+            <option value="weekly">Toutes les semaines</option>
+            <option value="monthly">Tous les mois</option>
+          </select>
+        </label>
+        <div class="modal-actions">
+          <button class="btn-soft danger" id="f-delete" hidden>Supprimer</button>
+          <span class="spacer"></span>
+          <button class="btn-soft" id="f-cancel">Annuler</button>
+          <button class="btn-soft primary" id="f-save">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agendas externes : iCal, fichiers .ics, Google -->
+    <div class="overlay" id="src-overlay" hidden>
+      <div class="modal src-modal">
+        <h3>Agendas</h3>
+        <section class="src-sec">
+          <h4>Vos agendas</h4>
+          <div id="src-list" class="src-list"></div>
+          <div class="src-row"><button class="btn-soft" id="src-sync">↻ Tout resynchroniser</button><span class="muted" id="src-state"></span></div>
+        </section>
+        <section class="src-sec">
+          <h4>S'abonner à un emploi du temps</h4>
+          <p class="muted">Dans votre ENT, Moodle, ADE ou Pronote, cherchez « Exporter », « iCal » ou « Synchroniser l'agenda » et copiez l'adresse (https:// ou webcal://). Pour Google Agenda sans connexion : Paramètres de l'agenda › « Adresse secrète au format iCal ». Mise à jour automatique toutes les 30 minutes.</p>
+          <div class="src-row">
+            <input class="input grow" id="src-url" placeholder="https://… ou webcal://…" />
+            <input class="input" id="src-name" placeholder="Nom (facultatif)" style="max-width:180px" />
+            <button class="btn-soft primary" id="src-add">S'abonner</button>
+          </div>
+        </section>
+        <section class="src-sec">
+          <h4>Fichiers .ics</h4>
+          <div class="src-row">
+            <button class="btn-soft" id="src-import">Importer un fichier .ics…</button>
+            <input type="file" id="src-file" accept=".ics,text/calendar" hidden />
+            <button class="btn-soft" id="src-export">Exporter mes rappels en .ics</button>
+          </div>
+        </section>
+        <section class="src-sec" id="gcal-sec">
+          <h4>Google Agenda (lecture et écriture)</h4>
+          <div id="gcal-body"></div>
+        </section>
+        <div class="modal-actions"><span class="spacer"></span><button class="btn-soft" id="src-close">Fermer</button></div>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

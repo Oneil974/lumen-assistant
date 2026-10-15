@@ -1,0 +1,255 @@
+* { box-sizing: border-box; }
+/* L'assistant masque des blocs entiers avec l'attribut `hidden` (carte « Modèle
+   Apple », badges détectés, étapes…). La règle par défaut du navigateur —
+   `[hidden] { display: none }` — n'a AUCUNE spécificité : le moindre
+   `.source-card { display: grid }` la bat, et l'élément « masqué » restait
+   visible. C'est ainsi que la voie Apple s'affichait sur Windows, où elle ne
+   peut pas fonctionner. Règle explicite, `!important` compris : `hidden` doit
+   toujours l'emporter sur un `display` de classe. */
+[hidden] { display: none !important; }
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select { font: inherit; }
+.setup-shell { display: flex; height: 100vh; overflow: hidden; }
+.setup-side {
+  width: 250px;
+  flex: none;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  backdrop-filter: blur(24px);
+  padding: 22px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.brand { display: flex; align-items: center; gap: 11px; padding: 0 8px; }
+.brand .logo {
+  width: 32px; height: 32px; border-radius: var(--radius-md); display: grid; place-items: center;
+  color: #fff; font-weight: 750; background: var(--primary);
+}
+.brand strong { display: block; font-size: 15px; }
+.brand span { display: block; color: var(--text-muted); font-size: 11px; margin-top: 1px; }
+.onboarding-lang {
+  margin-top: auto;
+  width: 74px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: var(--radius-lg);
+  padding: 7px 9px;
+}
+.onboarding-steps { display: grid; gap: 8px; padding: 4px 8px; }
+.onboarding-steps .dot {
+  height: 9px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+}
+.onboarding-steps .dot.active { background: var(--accent); border-color: transparent; }
+.onboarding-steps .dot.done { background: color-mix(in srgb, var(--accent) 35%, transparent); border-color: transparent; }
+.setup-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.setup-header { max-width: 780px; width: 100%; margin: 0 auto; padding: 42px 44px 12px; }
+.eyebrow { color: var(--accent-ink); text-transform: uppercase; letter-spacing: .06em; font-size: 12px; font-weight: 700; }
+h1 { margin: 8px 0 0; font-size: 32px; letter-spacing: -.02em; }
+.onboarding-body {
+  max-width: 780px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px 44px 24px;
+  overflow-y: auto;
+}
+.onboarding-step { animation: fade .22s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.onboarding-hero, .shortcut-card, .source-card, .setting-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+}
+.onboarding-hero { padding: 22px; text-align: center; }
+.onboarding-hero-icon {
+  width: 54px; height: 54px; margin: 0 auto 14px; border-radius: var(--radius-xl); display: grid; place-items: center;
+  color: #fff; background: var(--primary);
+}
+.onboarding-hero-icon.success { background: var(--success); }
+.onboarding-hero h3 { margin: 0 0 8px; font-size: 19px; }
+.onboarding-hero p, .onboarding-note, .onboarding-intro, .onboarding-doc li, .feature-list li {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.onboarding-note { margin: 12px 0 0; }
+.onboarding-intro { margin: 0 0 14px; }
+.onboarding-doc { margin: 10px 0 16px; padding-left: 24px; }
+.onboarding-doc li { margin-bottom: 8px; color: var(--text); }
+.onboarding-source-choice { display: grid; gap: 10px; margin-top: 14px; }
+.onboarding-source-q {
+  font-size: 12px; font-weight: 700; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: .06em; padding: 0 2px;
+}
+.source-card {
+  cursor: pointer;
+  display: grid;
+  gap: 5px;
+  text-align: left;
+  padding: 14px 16px;
+  color: var(--text);
+}
+.source-card.active { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.source-card-head { display: flex; align-items: center; gap: 8px; }
+.source-card-title { font-weight: 680; }
+.source-card-badge {
+  font-size: 10.5px; color: var(--primary-foreground); background: var(--accent); border-radius: 999px; padding: 2px 7px;
+}
+.source-card-desc, .shortcut-card-desc { color: var(--text-muted); font-size: 12.5px; line-height: 1.45; }
+.shortcut-cards { display: grid; gap: 10px; margin: 14px 0; }
+.shortcut-card { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px; }
+.shortcut-card-info { min-width: 0; }
+.shortcut-card-name { font-weight: 680; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.shortcut-status {
+  font-size: 10.5px; border-radius: 999px; padding: 2px 7px;
+  color: #fff; background: var(--destructive);
+}
+.shortcut-status.ok { background: var(--success); }
+.shortcut-install-btn, .onboarding-secondary-btn, .onboarding-nav-btn {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  padding: 9px 12px;
+  font-weight: 650;
+}
+.shortcut-install-btn.installed { color: var(--accent-ink); }
+.onboarding-secondary-btn { width: 100%; margin-top: 8px; }
+.feature-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.feature-list li { display: flex; gap: 12px; color: var(--text); }
+.feature-ic {
+  width: 30px; height: 30px; flex: none; border-radius: var(--radius-md); display: grid; place-items: center;
+  color: #fff; background: var(--primary);
+}
+.feature-ic svg { width: 18px; height: 18px; }
+.setting-item { display: grid; gap: 8px; padding: 14px 16px; margin: 10px 0; }
+.setting-item label { font-size: 13px; font-weight: 650; }
+.setting-item input, .setting-item select {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  color: var(--text);
+  padding: 9px 10px;
+  outline: none;
+}
+.onboarding-footer {
+  max-width: 780px;
+  width: 100%;
+  margin: auto auto 0;
+  padding: 16px 44px 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+}
+.onboarding-nav-btn.primary { background: var(--accent); color: var(--primary-foreground); border-color: transparent; }
+.onboarding-nav-btn:disabled { opacity: .45; cursor: not-allowed; }
+code {
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  background: var(--surface-3);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+/* Assistant simplifié : détection, cartes d'étape, progression, volet avancé */
+.source-card-detect {
+  display: block; margin-top: 6px; font-size: 11.5px; font-weight: 650;
+  color: var(--success);
+}
+/* Source cloud : elle sort de la promesse « tout reste chez toi ». Le vert des
+   détections signifierait l'inverse — on la signale en ambre. */
+.source-card-detect.warn { color: var(--warning); font-weight: 600; }
+.source-card-badge.warn { background: var(--warning); }
+.onboarding-note.warn {
+  border-left: 3px solid var(--warning); padding-left: 10px; color: var(--accent-ink);
+}
+@media (prefers-color-scheme: dark) {
+  .source-card-detect.warn { color: var(--warning); }
+  .source-card-badge.warn { background: var(--warning); }
+  .onboarding-note.warn { color: var(--warning); border-left-color: var(--warning); }
+}
+.onboarding-step-card {
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--surface); padding: 14px 16px; margin: 10px 0;
+}
+.onboarding-step-card-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.onboarding-secondary-btn.compact { width: auto; margin: 0 0 0 6px; padding: 7px 12px; font-size: 12.5px; }
+.ob-progress {
+  height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  overflow: hidden; margin: 12px 0 6px;
+}
+.ob-progress-bar { height: 100%; width: 0%; background: var(--accent); transition: width .25s ease; }
+.onboarding-advanced { margin: 12px 0 0; border-top: 1px dashed var(--border); padding-top: 10px; }
+.onboarding-advanced > summary { cursor: pointer; font-size: 12.5px; font-weight: 650; color: var(--text-muted); }
+.onboarding-advanced[open] > summary { color: var(--text); margin-bottom: 6px; }
+
+@media (max-width: 760px) {
+  .setup-shell { flex-direction: column; }
+  .setup-side { width: 100%; flex-direction: row; align-items: center; padding: 12px; border-right: 0; border-bottom: 1px solid var(--border); }
+  .onboarding-steps { flex: 1; display: flex; }
+  .onboarding-steps .dot { flex: 1; }
+  .setup-header, .onboarding-body, .onboarding-footer { padding-left: 18px; padding-right: 18px; }
+}
+
+/* Bandeau matériel (RAM / disque) et réponse du test de configuration. */
+.hw-banner { display: none; }
+.hw-banner.visible { display: block; }
+.hw-banner.warn { color: var(--warning); }
+.ob-test-answer {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--surface-3);
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+/* Interrupteur (même dessin que Paramètres) et sa ligne d'intitulé. */
+.ob-switch-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--card); cursor: pointer;
+}
+.ob-switch-text { display: flex; flex-direction: column; gap: 2px; }
+.ob-switch-state { font-size: 12px; color: var(--muted-foreground); }
+.ios-switch { position: relative; display: inline-flex; width: 46px; height: 26px; flex: none; }
+.ios-switch input { opacity: 0; width: 0; height: 0; }
+.ios-slider { position: absolute; inset: 0; cursor: pointer; background: rgba(120, 120, 128, 0.28); border-radius: 999px; transition: 0.16s; }
+.ios-slider::before {
+  content: ""; position: absolute; width: 22px; height: 22px; left: 2px; top: 2px; border-radius: 50%;
+  background: var(--card); box-shadow: 0 1px 4px rgba(0,0,0,.22); transition: 0.16s;
+}
+.ios-switch input:checked + .ios-slider { background: var(--primary); }
+.ios-switch input:checked + .ios-slider::before { transform: translateX(20px); }
+/* Hors Mac, les mentions des Raccourcis Apple n'ont pas lieu d'être. */
+html:not([data-mac]) .ob-mac-only { display: none; }
+
+/* Démarrage express */
+.source-card-express { border-color: var(--primary) !important; }
+.ex-list { display: flex; flex-direction: column; gap: 2px; padding: 6px !important; }
+.ex-row { display: grid; grid-template-columns: auto 1fr auto 44px; align-items: center; gap: 4px 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+.ex-row:hover { background: var(--muted); }
+.ex-row input:disabled { opacity: .6; }
+.ex-meta { color: var(--muted-foreground); font-size: 12px; }
+.ex-state { text-align: right; font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted-foreground); }
+.ex-row[data-status="ok"] .ex-state { color: #10b981; font-weight: 600; }
+.ex-row[data-status="err"] .ex-state { color: var(--destructive, #e5484d); font-weight: 600; }
+.ex-bar { grid-column: 2 / -1; height: 3px; border-radius: 2px; background: var(--muted); overflow: hidden; display: none; }
+.ex-row[data-status="run"] .ex-bar { display: block; }
+.ex-bar i { display: block; height: 100%; width: 0; background: var(--primary); transition: width .2s; }
+.ex-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }

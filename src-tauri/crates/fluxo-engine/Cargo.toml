@@ -1,0 +1,36 @@
+# Copie vendorisée du moteur Fluxo (`Fluxo/crates/engine`), intégrée à Lumen pour
+# qu'il n'ait plus aucune dépendance au dossier Fluxo voisin. Les héritages de
+# workspace (`*.workspace = true`) de Fluxo ont été résolus en valeurs concrètes,
+# Lumen n'étant pas un workspace Cargo. Garder aligné avec l'original si le moteur
+# évolue côté Fluxo.
+[package]
+name = "fluxo-engine"
+edition = "2021"
+version = "0.1.0"
+license = "MIT"
+description = "Moteur d'automatisation headless de Fluxo : modèle de valeurs, actions, workflows et exécuteur."
+
+[lib]
+name = "fluxo_engine"
+
+[features]
+# Blocs Raspberry Pi (GPIO/PWM/I²C/série via pigpiod, infos système). Build Pi.
+rpi = []
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+# Actions cross-platform.
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
+# default-features=false : on ne veut que le presse-papier texte (évite la
+# dépendance `image` qui exige un rustc plus récent).
+arboard = { version = "3", default-features = false }
+rand = "0.8"
+# Dates lisibles dans le listage de fichiers (bloc « Lister les fichiers »).
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+# Blocs base de données. SQLite est embarqué (feature `bundled` : pas de lib
+# système requise). Postgres en client bloquant. Sécurité : les requêtes sont
+# **paramétrées** (liaison positionnelle) pour éviter l'injection SQL.
+rusqlite = { version = "0.32", features = ["bundled"] }
+postgres = { version = "0.19", features = ["with-serde_json-1"] }

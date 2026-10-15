@@ -1,0 +1,99 @@
+/* Porte d'acceptation du contrat de licence (cf. legal/license.js).
+   Plein écran, opaque et au-dessus de tout : tant que le contrat n'est pas
+   accepté, rien d'autre de Lumen n'est utilisable. */
+.lumen-eula {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(12, 12, 16, 0.55);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  font: 14px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  color: #1c1c1e;
+}
+.lumen-eula * { box-sizing: border-box; }
+
+.lumen-eula-card {
+  width: min(720px, 100%);
+  max-height: min(760px, 92vh);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 26px 28px 20px;
+  background: #fdfdff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.6);
+}
+
+.lumen-eula-head { display: flex; align-items: center; gap: 14px; }
+.lumen-eula-logo {
+  flex: none; width: 42px; height: 42px;
+  display: grid; place-items: center;
+  border-radius: 12px;
+  font-weight: 700; font-size: 19px; color: #fff;
+  background: var(--primary);
+  box-shadow: var(--flat-shadow-md);
+}
+.lumen-eula h1 { margin: 0; font-size: 18px; font-weight: 680; letter-spacing: -0.01em; }
+.lumen-eula-sub { margin: 2px 0 0; font-size: 12px; color: #6b6b70; }
+.lumen-eula-lead { margin: 0; font-size: 13px; line-height: 1.5; color: #45454b; }
+
+.lumen-eula-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 18px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  background: #f7f7fa;
+  outline: none;
+}
+.lumen-eula-body h2 { margin: 18px 0 6px; font-size: 13.5px; font-weight: 660; }
+.lumen-eula-body h2:first-child { margin-top: 0; }
+.lumen-eula-body p { margin: 0; font-size: 12.5px; line-height: 1.62; color: #3a3a40; }
+
+.lumen-eula-foot { display: flex; flex-direction: column; gap: 12px; }
+.lumen-eula.readonly .lumen-eula-foot { flex-direction: row; align-items: center; }
+.lumen-eula-sp { flex: 1; }
+.lumen-eula-check {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 12.5px; line-height: 1.45; color: #3a3a40; cursor: pointer;
+}
+.lumen-eula-check input { margin-top: 2px; width: 15px; height: 15px; accent-color: var(--primary); cursor: pointer; }
+.lumen-eula-check input:disabled { cursor: not-allowed; }
+.lumen-eula-actions { display: flex; align-items: center; gap: 10px; }
+.lumen-eula-note { flex: 1; font-size: 11.5px; color: #8a8a90; }
+
+.lumen-eula-btn {
+  font: inherit; font-size: 13px; font-weight: 550;
+  padding: 9px 16px; cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  color: #1c1c1e;
+  transition: filter 0.15s, opacity 0.15s, background 0.15s;
+}
+.lumen-eula-btn:hover { background: #f2f2f6; }
+.lumen-eula-btn.primary {
+  border-color: transparent;
+  background: var(--primary);
+  color: #fff;
+}
+.lumen-eula-btn.primary:hover { filter: brightness(1.06); }
+.lumen-eula-btn:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
+
+@media (prefers-color-scheme: dark) {
+  .lumen-eula { color: #f2f2f5; }
+  .lumen-eula-card { background: #17171c; border-color: rgba(255, 255, 255, 0.1); }
+  .lumen-eula-sub, .lumen-eula-note { color: #9a9aa2; }
+  .lumen-eula-lead { color: #c9c9d1; }
+  .lumen-eula-body { background: #101015; border-color: rgba(255, 255, 255, 0.08); }
+  .lumen-eula-body p { color: #c9c9d1; }
+  .lumen-eula-check { color: #c9c9d1; }
+  .lumen-eula-btn { background: #22222a; border-color: rgba(255, 255, 255, 0.12); color: #f2f2f5; }
+  .lumen-eula-btn:hover { background: #2b2b34; }
+}

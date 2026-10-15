@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Fusionné par Tauri dans l'Info.plist du bundle macOS. Nécessaire pour que
+     getUserMedia (dictée Whisper locale, visio de l'app Réunion) puisse demander
+     l'accès au micro et à la caméra — sans ces clés, macOS TUE l'application au
+     moment de la demande, ce qui se voit comme une caméra « introuvable ». -->
+<plist version="1.0">
+<dict>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Lumen utilise le micro pour la dictée vocale locale (transcription hors-ligne sur l'appareil) et pour les réunions.</string>
+  <key>NSCameraUsageDescription</key>
+  <string>Lumen utilise la caméra pour la visio de l'application Réunion. L'image ne quitte pas votre réseau local.</string>
+  <!-- Réseau local (macOS 15+) : sans cette clé, macOS refuse en silence les
+       connexions vers le LAN (orbe M5 Fire, Lumen Controller, domotique) avec
+       « No route to host (os error 65) », sans jamais afficher la demande. -->
+  <key>NSLocalNetworkUsageDescription</key>
+  <string>Lumen se connecte à tes appareils sur le réseau local : orbe physique, Lumen Controller, objets domotiques et compagnon mobile.</string>
+</dict>
+</plist>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>fr</string>
+	<key>CFBundleDisplayName</key>
+	<string>Lumen</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>fr</string>
+		<string>en</string>
+	</array>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>io.github.oneil974.lumen.companion</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lumen</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_lumen._tcp</string>
+	</array>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Lumen copie tes 7 prochains jours d'agenda dans ton coffre pour préparer ta journée.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Lumen utilise la caméra pour la capture rapide et le scan du QR code d'appairage.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Lumen utilise Face ID pour déverrouiller tes fichiers sur l'ordinateur, à distance.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Lumen lit tes pas, ton sommeil et ta fréquence cardiaque au repos pour les ranger dans ton coffre, sur ton ordinateur.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Lumen se connecte à ton ordinateur sur le réseau local.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Lumen détecte ton arrivée et ton départ de tes lieux pour lancer tes automatisations, sans suivre tes déplacements.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Lumen enregistre la position de tes lieux (maison, bureau…) pour savoir quand tu y arrives.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Lumen utilise le micro pour parler à ton assistant.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Lumen enregistre dans Photos les images générées par ton assistant.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Lumen te permet de joindre des photos à tes messages.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>Lumen copie tes rappels en cours dans ton coffre pour préparer ta journée.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Lumen transcrit ta voix pour l'envoyer à ton assistant.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+</dict>
+</plist>

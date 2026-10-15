@@ -1,0 +1,61 @@
+text,target
+allume la led rouge,action
+eteins la led verte,action
+fait clignoter la led bleue,action
+ouvre la pince du robot,action
+ferme la pince du robot,action
+avance de dix centimetres,action
+recule de cinq centimetres,action
+tourne a gauche,action
+tourne a droite,action
+levez le bras mecanique,action
+baisse le bras mecanique,action
+stoppe le moteur principal,action
+demarre le moteur principal,action
+active le ventilateur,action
+coupe l'alimentation,action
+redemarre le systeme,action
+regle la vitesse a cinquante,action
+initialise les capteurs,action
+nettoie la memoire,action
+met a jour le firmware,action
+prends une photo,vision
+enregistre une video,vision
+active la camera frontale,vision
+desactive la camera frontale,vision
+detecte les obstacles,vision
+analyse la couleur de l'objet,vision
+capture une image du ciel,vision
+lance la reconnaissance faciale,vision
+arrete la reconnaissance faciale,vision
+filme pendant dix secondes,vision
+zoome sur la cible,vision
+dezoome la camera,vision
+ajuste la luminosite,vision
+capture l'ecran,vision
+demarre le suivi de mouvement,vision
+arrete le suivi de mouvement,vision
+prends une photo en noir et blanc,vision
+prends une photo haute resolution,vision
+active la vision nocturne,vision
+desactive la vision nocturne,vision
+cherche la derniere mise a jour,search
+trouve la definition de machine learning,search
+recherche sur internet les actualites,search
+telecharge la documentation,search
+consulte la meteo,search
+trouve l'adresse IP du serveur,search
+cherche des tutoriels python,search
+recherche les resultats sportifs,search
+interroge la base de donnees,search
+telecharge les donnees du capteur,search
+recupere la temperature exterieure,search
+trouve les images les plus recentes,search
+lance une requete sur wiki,search
+cherche les mises a jour du systeme,search
+obtiens la liste des processus,search
+recherche des exemples de code,search
+verifie la connexion internet,search
+obtiens la position GPS,search
+telecharge le dernier firmware,search
+cherche des articles scientifiques,search

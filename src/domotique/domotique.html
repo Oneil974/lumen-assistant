@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<!-- Domotique de Lumen. Pilote des objets connectés (ESP32 / Raspberry Pi Pico W
+     flashés avec le firmware MicroPython de Lumen) sur le réseau local via le
+     protocole « Lumen Local Device » (découverte UDP + contrôle HTTP signé HMAC,
+     un équivalent d'ESP-NOW adapté à la plateforme). Deux onglets : objets
+     (contrôle direct) et générateur de firmwares MicroPython prêts à flasher.
+     Le pilotage en langage naturel passe par les barres de chat Lumen. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Domotique</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=5" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop (dtTheme partagé
+         via localStorage). Appliqué tôt pour éviter tout flash de thème. -->
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><rect x="10" y="13" width="4" height="4" rx="0.6"/><path d="M12 13v-2"/><path d="M16 5.5V3h2v4"/></svg></span>
+          <span class="brand-title">Domotique</span>
+        </div>
+        <nav class="tabs">
+          <button class="tab active" data-tab="devices">Objets</button>
+          <button class="tab" data-tab="plan">Plan</button>
+          <button class="tab" data-tab="scenes">Scènes</button>
+          <button class="tab" data-tab="rules">Automatisations</button>
+          <button class="tab" data-tab="firmware">Firmware</button>
+        </nav>
+        <div class="spacer"></div>
+        <button class="btn-soft" id="btn-add">＋ Ajouter</button>
+        <button class="btn-soft primary" id="btn-scan">⟳ Découvrir</button>
+      </header>
+
+
+      <!-- ===== Onglet Objets ===== -->
+      <section class="panel active" data-panel="devices">
+        <div class="room-bar" id="room-bar" hidden></div>
+        <div class="devices-grid" id="devices-grid"></div>
+        <div class="empty" id="devices-empty" hidden>
+          <p>Aucun objet pour l'instant.</p>
+          <p class="muted">Cliquez sur <b>Découvrir</b> pour scanner le réseau local, ou générez un firmware dans l'onglet <b>Firmware</b> pour flasher une carte ESP32 / ESP32-S3 / Pico W.</p>
+        </div>
+      </section>
+
+      <!-- ===== Onglets Scènes et Automatisations (home.js) ===== -->
+      <section class="panel" data-panel="plan"><div id="plan-host"></div></section>
+      <section class="panel" data-panel="scenes"><div id="scenes-host"></div></section>
+      <section class="panel" data-panel="rules"><div id="rules-host"></div>
+        <div class="hist-export"><button type="button" class="btn-soft" id="btn-hist-csv">Exporter l'historique des capteurs (CSV)</button></div>
+      </section>
+
+      <!-- ===== Onglet Firmware ===== -->
+      <section class="panel" data-panel="firmware">
+        <div class="fw-layout">
+          <form class="fw-form" id="fw-form">
+            <h3>Générer un firmware MicroPython</h3>
+
+            <label class="fld">Carte cible
+              <select id="fw-board" class="select"></select>
+            </label>
+
+            <label class="fld">Nom de l'objet
+              <input id="fw-name" class="input" placeholder="Carte salon" />
+            </label>
+
+            <div class="fld-row">
+              <label class="fld">Wi-Fi (SSID)
+                <input id="fw-ssid" class="input" placeholder="MonReseau" />
+              </label>
+              <label class="fld">Mot de passe Wi-Fi
+                <input id="fw-pass" class="input" type="text" placeholder="••••••••" />
+              </label>
+            </div>
+
+            <div class="fld">Composants
+              <div id="fw-components" class="comp-editor"></div>
+              <button type="button" class="btn-soft" id="fw-add-comp">＋ Ajouter un composant</button>
+            </div>
+            <p class="muted">Une même carte peut héberger plusieurs capteurs et actionneurs. Chacun a sa broche et une clé stable (ex. <code>relay_26</code>) utilisée par Lumen et l'IA pour le cibler.</p>
+
+            <label class="fld">Clé partagée (sécurité)
+              <span class="key-row">
+                <input id="fw-secret" class="input mono" />
+                <button type="button" class="btn-soft" id="fw-regen" title="Régénérer">⟳</button>
+              </span>
+            </label>
+            <p class="muted">Cette clé est intégrée au firmware et conservée par Lumen. Elle signe chaque commande (HMAC) : sans elle, personne ne peut piloter l'objet, même sur votre réseau.</p>
+
+            <div class="fw-actions">
+              <button type="button" class="btn-soft" id="fw-save">Enregistrer dans la sandbox</button>
+              <button type="button" class="btn-soft" id="fw-download">Télécharger main.py</button>
+              <button type="button" class="btn-soft primary" id="fw-register">Ajouter aux objets</button>
+            </div>
+          </form>
+
+          <div class="fw-preview">
+            <div class="fw-preview-head">
+              <span>Aperçu — <code id="fw-filename">main.py</code></span>
+              <button class="btn-soft" id="fw-copy">Copier</button>
+            </div>
+            <pre class="code" id="fw-code"></pre>
+            <div class="fw-help">
+              <h4>Flasher la carte</h4>
+
+              <!-- Étape 0 — Pico W vierge : installer MicroPython via BOOTSEL -->
+              <div class="fw-flash-step" id="fw-uf2-step" hidden>
+                <p class="muted"><strong>Carte neuve&nbsp;?</strong> Débranchez le Pico W, maintenez le bouton <strong>BOOTSEL</strong>, rebranchez-le, puis installez MicroPython.</p>
+                <div class="fw-flash-row">
+                  <input type="file" id="fw-uf2-file" accept=".uf2" class="input" />
+                  <button type="button" class="btn-soft" id="fw-flash-uf2">Installer MicroPython</button>
+                </div>
+                <p class="muted" id="fw-uf2-status"></p>
+              </div>
+
+              <!-- Étape 0 bis — ESP32 vierge : flasher MicroPython (.bin) -->
+              <div class="fw-flash-step" id="fw-esp-step" hidden>
+                <p class="muted"><strong>ESP32 / ESP32-S3 neuf&nbsp;?</strong> Installe MicroPython (<code>.bin</code>) directement — plus besoin d'<code>esptool</code>. Sélectionne le port ci-dessous.</p>
+                <div class="fw-flash-row">
+                  <input type="file" id="fw-esp-file" accept=".bin" class="input" />
+                  <button type="button" class="btn-soft" id="fw-flash-esp">Installer MicroPython</button>
+                </div>
+                <label class="check"><input type="checkbox" id="fw-esp-autoreset" checked /> Auto-reset (décoche si ta carte nécessite GPIO0→GND + reset à la main)</label>
+                <div class="fw-progress" id="fw-esp-progress" hidden><div class="fw-progress-bar" id="fw-esp-bar"></div></div>
+                <p class="muted" id="fw-esp-status"></p>
+              </div>
+
+              <!-- Étape 1 — téléverser le main.py par port série (raw REPL) -->
+              <div class="fw-flash-step">
+                <p class="muted">Carte déjà sous MicroPython&nbsp;: téléversez ce <code>main.py</code> directement par USB.</p>
+                <div class="fw-flash-row">
+                  <select id="fw-port" class="select"></select>
+                  <button type="button" class="btn-soft" id="fw-port-refresh" title="Rafraîchir les ports">⟳</button>
+                </div>
+                <button type="button" class="btn-soft primary" id="fw-flash-py">Téléverser main.py sur la carte</button>
+                <p class="muted" id="fw-flash-status"></p>
+              </div>
+
+              <!-- Mise à jour par Wi-Fi (OTA) d'une carte déjà flashée -->
+              <div class="fw-flash-step" id="fw-ota-step">
+                <p class="muted"><b>Mise à jour par Wi-Fi (OTA)</b> — pour une carte déjà en service avec un firmware Lumen récent (le premier flash reste par USB). Lumen garde l'identifiant et la clé de l'objet ; la carte vérifie l'empreinte, remplace son <code>main.py</code> (l'ancien est gardé en <code>main_old.py</code>) puis redémarre.</p>
+                <div class="fw-flash-row">
+                  <select id="fw-ota-device" class="select"></select>
+                  <button type="button" class="btn-soft" id="fw-ota-load" title="Recharger la composition de cet objet dans le formulaire">Charger sa configuration</button>
+                </div>
+                <button type="button" class="btn-soft primary" id="fw-ota-send">Mettre à jour par Wi-Fi</button>
+                <p class="muted" id="fw-ota-status"></p>
+              </div>
+
+              <p class="muted fw-flash-fallback">Sinon, manuellement&nbsp;: Thonny ou <code>mpremote fs cp main.py :</code>. La carte rejoint ensuite le Wi-Fi et répond à la découverte de Lumen.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Ajout / édition manuelle d'un objet -->
+    <div class="overlay" id="dev-overlay" hidden>
+      <div class="mini-modal">
+        <h3 id="dev-modal-title">Ajouter un objet</h3>
+        <label class="fld">Nom
+          <input id="dev-name" class="input" placeholder="Lampe salon" />
+        </label>
+        <label class="fld">Type
+          <select id="dev-type" class="select"></select>
+        </label>
+        <div class="fld-row">
+          <label class="fld">Adresse IP
+            <input id="dev-ip" class="input" placeholder="192.168.1.42" />
+          </label>
+          <label class="fld">Port
+            <input id="dev-port" class="input" value="80" />
+          </label>
+        </div>
+        <label class="fld">Pièce
+          <input id="dev-room" class="input" placeholder="Salon" />
+        </label>
+        <label class="fld">Clé partagée
+          <input id="dev-secret" class="input mono" />
+        </label>
+        <div class="mini-actions">
+          <button class="btn-soft danger" id="dev-delete" hidden>Supprimer</button>
+          <span class="spacer"></span>
+          <button class="btn-soft" id="dev-cancel">Annuler</button>
+          <button class="btn-soft primary" id="dev-save">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

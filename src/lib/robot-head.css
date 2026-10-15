@@ -1,0 +1,21 @@
+/* Also covers the performance facade and companion surfaces. */
+[data-avatar-mode="robot-head"] #orb-canvas,
+[data-avatar-mode="robot-head"] .orb-eyes,
+[data-avatar-mode="robot-head"] .orb-mouth,
+[data-avatar-mode="robot-head"] .orb-frost,
+[data-avatar-mode="robot-head"] .orb-shadow { visibility: hidden !important; }
+body:has([data-avatar-mode="robot-head"]) .glowing-orb { display: none !important; }
+[data-avatar-mode="robot-head"] { --orb-bob: 0px !important; }
+
+/* Orb styles force every canvas to 100%; the padded robot canvas must keep
+   its own pixel dimensions, otherwise its centre and scale are distorted. */
+.orb-container canvas.lumen-robot-head, canvas.lumen-robot-head {
+  inset: auto !important;
+  left: var(--robot-left) !important; top: var(--robot-top) !important;
+  width: var(--robot-width) !important; height: var(--robot-height) !important;
+  border-radius: 0 !important;
+}
+html.perf-mode #orb-wrap:has([data-avatar-mode="robot-head"]):not([style*="display: none"]),
+html.perf-mode .orb-wrap:has([data-avatar-mode="robot-head"]):not([style*="display: none"]) { display: flex !important; }
+html.perf-mode #orb-container[data-avatar-mode="robot-head"] { display: block !important; }
+.orb-wrap:has([data-avatar-mode="robot-head"]) { animation: none !important; }

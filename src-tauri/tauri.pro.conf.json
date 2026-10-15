@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Lumen Pro",
+  "mainBinaryName": "Lumen Pro",
+  "identifier": "com.lumen.pro",
+  "app": {
+    "windows": [
+      {
+        "title": "Lumen Pro",
+        "dragDropEnabled": false,
+        "width": 720,
+        "height": 550,
+        "resizable": true,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "shadow": false
+      }
+    ]
+  },
+  "bundle": {
+    "icon": [
+      "icons/pro/32x32.png",
+      "icons/pro/128x128.png",
+      "icons/pro/128x128@2x.png",
+      "icons/pro/icon.icns",
+      "icons/pro/icon.ico"
+    ],
+    "shortDescription": "Lumen Pro — l'édition professionnelle de Lumen",
+    "longDescription": "Lumen Pro ajoute à Lumen quatre applications métier : Relia (CRM, projets, facturation Factur-X), Réunion (visio et chat sur le réseau local), DB Studio (modélisation de base de données) et Reporting (rapports d'entreprise). Elle partage les données de Lumen : mêmes bases, mêmes sandboxes, mêmes profils."
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/Oneil974/lumen-assistant/releases/latest/download/latest-pro.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDg5MUVFQ0IyOTZEREE4MTkKUldRWnFOMldzdXdlaWVwVkY1bXk3VUVHcEtNME5JN0djQm9WNEJxMUJrSmFzdG1ZbFdUVTE5TEgK",
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  },
+  "longDescription": "OBSOLÈTE depuis Lumen 0.2 : il n'y a plus deux binaires. La feature Cargo « pro » est compilée par défaut et c'est une CLÉ DE LICENCE (Paramètres → Applications et licence) qui déverrouille les applications professionnelles. Cette configuration n'est conservée que pour reconstruire une ancienne version ; ne l'utilisez pas pour une nouvelle release."
+}

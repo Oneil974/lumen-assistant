@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Jeux</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=4" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-icon" data-icon="gamepad"></span>
+          <div>
+            <h1>Jeux</h1>
+            <p>IA joueuse, score réel, zéro triche.</p>
+          </div>
+        </div>
+        <div class="score-card">
+          <span class="score-label">Score utilisateur</span>
+          <strong id="user-score">0</strong>
+          <span class="score-sub" id="score-sub">Aucune partie terminée.</span>
+        </div>
+        <div class="model-card">
+          <label for="model-input">Modèle IA</label>
+          <select id="model-input" class="input">
+            <option value="">Modèle global</option>
+          </select>
+          <label for="persona-select">Personnalité</label>
+          <select id="persona-select" class="input"></select>
+          <label for="mode-select">Mode</label>
+          <select id="mode-select" class="input">
+            <option value="versus">Contre IA</option>
+            <option value="coach">IA coach</option>
+            <option value="duel">Duel modèles</option>
+          </select>
+        </div>
+        <nav id="game-list" class="game-list"></nav>
+      </aside>
+      <main class="stage">
+        <header class="stage-head">
+          <div>
+            <p class="eyebrow" id="game-kicker">Arcade Lumen</p>
+            <h2 id="game-title">Choisis un jeu</h2>
+          </div>
+          <div class="head-actions">
+            <button id="btn-new" class="btn primary" type="button"><span data-icon="sparkles"></span>Nouvelle partie</button>
+            <button id="btn-sound" class="btn icon-only" type="button" title="Activer/désactiver les sons" aria-label="Sons"><span data-icon="speaker"></span></button>
+            <button id="btn-reset-scores" class="btn" type="button"><span data-icon="trash"></span>Scores</button>
+          </div>
+        </header>
+        <section class="arena" id="arena"></section>
+        <aside class="right-panel">
+          <div class="panel-block">
+            <div class="panel-title">Tableau modèles</div>
+            <div id="model-board" class="leaderboard"></div>
+          </div>
+          <div class="panel-block grow">
+            <div class="panel-title">Journal</div>
+            <div id="log" class="log"></div>
+          </div>
+        </aside>
+      </main>
+    </div>
+    <div id="toast-host" class="toast-host" aria-live="polite"></div>
+  </body>
+</html>

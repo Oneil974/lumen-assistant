@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<!-- Python de Lumen. Un éditeur (même coque que l'Éditeur de code, Monokai) et
+     un interpréteur CPython compilé en WebAssembly (Pyodide) qui tourne dans un
+     Web Worker : sans processus système, sans accès au disque ni au réseau. Le
+     script ne voit que les fichiers de la sandbox, recopiés dans un système de
+     fichiers en mémoire avant l'exécution et relus après. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Python</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../editor/styles.css?v=4" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+    <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand"><span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19h8"/><path d="m4 17 6-6-6-6"/></svg></span><span class="brand-title">Python</span></div>
+        <select id="sandbox-select" class="select" title="Sandbox"></select>
+        <span class="path" id="open-path"></span>
+        <span class="dirty" id="dirty" hidden>●</span>
+        <div class="spacer"></div>
+        <span class="py-status" id="py-status" data-state="stopped"><span class="dot"></span><span class="lbl">Interpréteur arrêté</span></span>
+        <button class="btn-soft ic-btn" id="btn-ai" title="Écrire ou modifier le script avec l'IA"><span class="lbl">IA</span></button>
+        <button class="btn-soft ic-btn" id="btn-packages" title="Installer des paquets Python"><span class="lbl">Paquets</span></button>
+        <button class="btn-soft ic-btn" id="btn-theme" title="Thème clair/sombre"></button>
+        <button class="btn-soft ic-btn" id="btn-save" title="Enregistrer (⌘S)"><span class="lbl">Enregistrer</span></button>
+        <button class="btn-soft ic-btn danger" id="btn-stop" title="Arrêter l'exécution" hidden><span class="lbl">Arrêter</span></button>
+        <button class="btn-soft primary ic-btn" id="btn-run" title="Exécuter le script (⌘↩)"><span class="lbl">Exécuter</span></button>
+      </header>
+
+      <main class="body">
+        <aside class="files-pane">
+          <div class="files-head">
+            <span class="files-title">Fichiers</span>
+            <span class="spacer"></span>
+            <button class="icon-btn" id="btn-new-file" title="Nouveau fichier"></button>
+            <button class="icon-btn" id="btn-new-folder" title="Nouveau dossier"></button>
+            <button class="icon-btn" id="btn-import" title="Importer des fichiers (données…)"></button>
+            <button class="icon-btn" id="btn-refresh-tree" title="Rafraîchir l'arborescence"></button>
+          </div>
+          <div class="files" id="files"></div>
+          <input type="file" id="py-file-input" multiple hidden />
+        </aside>
+
+        <section class="edit-area">
+          <div class="editor" id="editor">
+            <div class="gutter" id="gutter"></div>
+            <div class="code-wrap">
+              <pre class="highlight" id="highlight" aria-hidden="true"><code></code></pre>
+              <textarea id="code" class="code-input" spellcheck="false" wrap="off"
+                placeholder="Écrivez du Python ici, puis ⌘↩ pour l'exécuter…"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <div class="console-resizer" id="console-resizer" title="Redimensionner"></div>
+
+        <aside class="console" id="console">
+          <div class="console-head">
+            <span class="files-title">Console</span>
+            <span class="console-meta" id="console-meta"></span>
+            <span class="spacer"></span>
+            <button class="icon-btn" id="btn-stdin" title="Entrée standard (pour input())"></button>
+            <button class="icon-btn" id="btn-restart" title="Redémarrer l'interpréteur (espace de noms vierge)"></button>
+            <button class="icon-btn" id="btn-clear" title="Effacer la console"></button>
+          </div>
+          <div class="console-out" id="console-out">
+            <div class="console-hint" id="console-hint">
+              <b>Cloisonné par conception.</b>
+              Le script tourne dans un interpréteur WebAssembly isolé : il ne voit que les fichiers de la sandbox,
+              n'ouvre ni socket ni processus, et une boucle infinie s'arrête d'un clic.
+              <br />numpy, pandas, matplotlib, scikit-learn… se chargent au premier <code>import</code> (connexion requise la première fois).
+            </div>
+          </div>
+          <div class="stdin-wrap" id="stdin-wrap" hidden>
+            <label for="stdin">Entrée standard — une ligne par appel à <code>input()</code></label>
+            <textarea id="stdin" rows="3" spellcheck="false"></textarea>
+          </div>
+          <div class="repl">
+            <span class="repl-prompt">&gt;&gt;&gt;</span>
+            <input id="repl" type="text" spellcheck="false" autocomplete="off" placeholder="Expression Python (variables du dernier script)…" />
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <div class="ctx-menu" id="tree-menu" hidden></div>
+
+    <!-- Menu contextuel (clic droit sur une sélection) -->
+    <div class="ctx-menu" id="ctx-menu" hidden>
+      <button data-act="run-sel" data-ic="play">Exécuter la sélection</button>
+      <button data-act="ai" data-ic="sparkles">Modifier la sélection avec l'IA…</button>
+      <button data-act="explain" data-ic="message">Expliquer la sélection</button>
+      <button data-act="copy" data-ic="copy">Copier</button>
+    </div>
+
+    <!-- Modale IA : générer / modifier / corriger -->
+    <div class="overlay" id="ai-overlay" hidden>
+      <div class="mini-modal">
+        <h3 id="ai-title">Écrire avec l'IA</h3>
+        <pre class="sel-preview" id="ai-sel" hidden></pre>
+        <textarea id="ai-instr" rows="3" class="ta" placeholder="Ex. : lis data.csv avec pandas et trace la moyenne par mois, écris une fonction qui…"></textarea>
+        <div class="mini-actions">
+          <span class="ai-state" id="ai-state"></span><span class="spacer"></span>
+          <button class="btn-soft" id="ai-cancel">Annuler</button>
+          <button class="btn-soft primary" id="ai-run">Proposer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale revue du diff IA -->
+    <div class="overlay" id="review-overlay" hidden>
+      <div class="review-modal">
+        <h3>Proposition de l'IA</h3>
+        <div class="diff-view" id="review-diff"></div>
+        <div class="mini-actions">
+          <span class="spacer"></span>
+          <button class="btn-soft" id="review-reject">Refuser</button>
+          <button class="btn-soft primary" id="review-accept">Appliquer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale paquets -->
+    <div class="overlay" id="pkg-overlay" hidden>
+      <div class="mini-modal">
+        <h3>Paquets Python</h3>
+        <p class="pkg-help">Les bibliothèques du catalogue Pyodide (numpy, pandas, matplotlib, scipy, scikit-learn, sympy, pillow, networkx…) se chargent seules au premier <code>import</code>. Ici, pour installer un paquet pur Python depuis PyPI (via micropip).</p>
+        <input id="pkg-input" class="ta" type="text" placeholder="Ex. : requests-cache, tabulate, pydantic" />
+        <div class="mini-actions">
+          <span class="ai-state" id="pkg-state"></span><span class="spacer"></span>
+          <button class="btn-soft" id="pkg-cancel">Fermer</button>
+          <button class="btn-soft primary" id="pkg-install">Installer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

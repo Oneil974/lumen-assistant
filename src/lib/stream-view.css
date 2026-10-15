@@ -1,0 +1,291 @@
+/* Blocs repliables des réponses en flux (lib/stream-view.js) : raisonnement et
+   appels d'outils. Peau plate (pas de blur : cf. règle Linux/WebKitGTK), jetons
+   du système de conception avec replis pour les pages qui ne les chargent pas. */
+.lm-blocks { display: flex; flex-direction: column; gap: 2px; margin: 0 0 10px; }
+.lm-blocks:empty { display: none; }
+
+/* --- Raisonnement et appels d'outils : une frise d'étapes -------------------
+   Chaque appel est une ligne « tuile d'icône + libellé lisible + aperçu », reliée
+   à la suivante par un filet ; le détail (paramètres, résultat) s'ouvre en carte. */
+.lm-think, .lm-tool {
+  --lm-acc: var(--primary, var(--accent-color, #7c5cff));
+  position: relative;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-muted, var(--muted-foreground, rgba(127, 127, 127, 0.95)));
+  max-width: 100%;
+  min-width: 0;
+}
+.lm-think > summary, .lm-tool > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px 5px 4px;
+  border-radius: 10px;
+  user-select: none;
+  min-width: 0;
+  transition: background-color 0.15s ease;
+}
+.lm-think > summary:hover, .lm-tool > summary:hover { background: color-mix(in oklab, var(--subtle, rgba(127, 127, 127, 0.1)) 70%, transparent); }
+.lm-think > summary:focus-visible, .lm-tool > summary:focus-visible { outline: 2px solid color-mix(in oklab, var(--lm-acc) 50%, transparent); outline-offset: 1px; }
+.lm-think > summary::-webkit-details-marker, .lm-tool > summary::-webkit-details-marker { display: none; }
+.lm-think > summary::after, .lm-tool > summary::after {
+  content: "";
+  flex: none;
+  width: 6px; height: 6px;
+  margin: 0 2px 0 2px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  opacity: 0;
+  transition: transform 0.18s ease, opacity 0.15s ease;
+}
+.lm-think > summary:hover::after, .lm-tool > summary:hover::after, .lm-think[open] > summary::after, .lm-tool[open] > summary::after { opacity: 0.55; }
+.lm-think[open] > summary::after, .lm-tool[open] > summary::after { transform: rotate(45deg); }
+
+/* Tuile d'icône teintée par l'accent, pastille d'état en bas à droite. */
+.lm-tile, .lm-think > summary > .lm-ic {
+  position: relative;
+  flex: none;
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--lm-acc);
+  background: color-mix(in oklab, var(--lm-acc) 13%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--lm-acc) 18%, transparent);
+}
+.lm-tile .lm-ic { display: inline-flex; color: inherit; }
+.lm-ic { display: inline-flex; flex: none; color: var(--lm-acc, var(--primary, #7c5cff)); }
+.lm-ic svg, .lm-tile svg { width: 14px; height: 14px; }
+.lm-badge {
+  position: absolute; right: -4px; bottom: -4px;
+  width: 13px; height: 13px; border-radius: 50%;
+  display: none; align-items: center; justify-content: center;
+  color: #fff; background: var(--success, #22a06b);
+  box-shadow: 0 0 0 2px var(--background, var(--bg, #fff));
+}
+.lm-badge svg { width: 8px; height: 8px; }
+.lm-tool.done .lm-badge { display: inline-flex; animation: lmPop 0.28s cubic-bezier(.3, 1.6, .5, 1) both; }
+.lm-tool.done.err .lm-badge { background: var(--warning, #d9a23a); }
+.lm-tool.done.err .lm-tile { color: var(--warning, #d9a23a); background: color-mix(in oklab, var(--warning, #d9a23a) 13%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--warning, #d9a23a) 22%, transparent); }
+
+/* En cours : la tuile respire (halo doux), le libellé miroite. Pas d'anneau
+   tournant : sur un carré arrondi il se lisait comme un bug, et WebKit rend
+   mal le masque `mask-composite` qu'il demandait. */
+.lm-tool.running .lm-tile { animation: lmBreath 1.4s ease-in-out infinite; }
+@keyframes lmBreath {
+  0%, 100% { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--lm-acc) 18%, transparent), 0 0 0 0 color-mix(in oklab, var(--lm-acc) 30%, transparent); }
+  50% { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--lm-acc) 35%, transparent), 0 0 0 4px color-mix(in oklab, var(--lm-acc) 0%, transparent); }
+}
+.lm-tool.running .lm-name, .lm-think.live .lm-label {
+  background: linear-gradient(90deg, var(--text-main, var(--foreground, #111)) 0 35%, color-mix(in oklab, var(--text-main, var(--foreground, #111)) 35%, transparent) 50%, var(--text-main, var(--foreground, #111)) 65% 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: lmShimmer 1.6s linear infinite;
+}
+
+.lm-title { display: flex; align-items: baseline; gap: 7px; min-width: 0; flex: 1; }
+.lm-name { color: var(--text-main, var(--foreground, inherit)); font-weight: 600; flex: none; }
+.lm-label { color: var(--text-main, var(--foreground, inherit)); font-weight: 500; flex: 1; min-width: 0; }
+.lm-hint { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.lm-tool .lm-hint::before { content: "·"; margin-right: 7px; opacity: 0.5; }
+.lm-state { flex: none; font-size: 11.5px; font-variant-numeric: tabular-nums; opacity: 0.75; }
+.lm-tool.err .lm-state { color: var(--warning, #d9a23a); opacity: 1; }
+.lm-dots { display: inline-flex; gap: 3px; }
+.lm-dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--lm-acc); animation: lmBounce 1s ease-in-out infinite; }
+.lm-dots i:nth-child(2) { animation-delay: 0.15s; }
+.lm-dots i:nth-child(3) { animation-delay: 0.3s; }
+
+/* Filet de la frise entre deux étapes repliées. */
+.lm-blocks > :is(.lm-tool, .lm-think):not([open]) + :is(.lm-tool, .lm-think)::before {
+  content: ""; position: absolute; left: 16.5px; top: -4px; height: 6px; width: 1.5px; border-radius: 1px;
+  background: color-mix(in oklab, var(--lm-acc) 30%, var(--border, rgba(127, 127, 127, 0.3)));
+}
+
+.lm-think.live .lm-ic svg { animation: lmSpin 2.4s linear infinite; }
+@keyframes lmPulse { from { opacity: 0.35; } to { opacity: 1; } }
+@keyframes lmSpin { to { transform: rotate(360deg); } }
+@keyframes lmShimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+@keyframes lmBounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.45; } 40% { transform: translateY(-3px); opacity: 1; } }
+@keyframes lmPop { from { transform: scale(0.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes lmIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+.lm-tool, .lm-think, .lm-ask { animation: lmIn 0.22s ease-out both; }
+.lm-tool.running .lm-state, .lm-wait { animation: lmPulse 1s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) {
+  .lm-tool, .lm-think, .lm-ask, .lm-tool.done .lm-badge, .lm-dots i,   .lm-tool.running .lm-name, .lm-think.live .lm-label, .lm-tool.running .lm-state, .lm-wait, .lm-think.live .lm-ic svg { animation: none; }
+  .lm-tool.running .lm-name, .lm-think.live .lm-label { color: var(--text-main, var(--foreground, inherit)); background: none; }
+}
+
+/* Détail ouvert : une carte décalée sous le libellé. */
+.lm-body {
+  margin: 4px 0 8px 40px;
+  padding: 8px 12px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(127, 127, 127, 0.22));
+  background: var(--card, color-mix(in oklab, var(--subtle, rgba(127, 127, 127, 0.08)) 50%, transparent));
+}
+.lm-think .lm-body { white-space: pre-wrap; word-break: break-word; max-height: 260px; overflow: auto; font-style: italic; }
+.lm-sec + .lm-sec { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border, rgba(127, 127, 127, 0.22)); }
+.lm-cap { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; opacity: 0.75; margin: 0 0 5px; }
+.lm-raw { font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace); font-size: 10.5px; text-transform: none; letter-spacing: 0; font-weight: 400; padding: 1px 6px; border-radius: 6px; background: color-mix(in oklab, var(--subtle, rgba(127, 127, 127, 0.12)) 80%, transparent); }
+.lm-copy { font: inherit; font-size: 10.5px; text-transform: none; letter-spacing: 0; padding: 1px 8px; border-radius: 6px; border: 1px solid var(--border, rgba(127, 127, 127, 0.3)); background: transparent; color: inherit; cursor: pointer; }
+.lm-copy:hover { color: var(--text-main, var(--foreground, inherit)); }
+.lm-kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 3px 12px; margin: 0; font-size: 12.5px; }
+.lm-kv dt { font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace); font-size: 11.5px; opacity: 0.75; }
+.lm-kv dd { margin: 0; color: var(--text-main, var(--foreground, inherit)); word-break: break-word; }
+.lm-body pre {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--subtle, rgba(127, 127, 127, 0.1)) 70%, transparent);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 220px;
+  overflow: auto;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-main, var(--foreground, inherit));
+}
+.lm-wait { font-size: 12.5px; color: var(--text-muted, rgba(127, 127, 127, 0.95)); padding: 2px 0; }
+
+/* Curseur de frappe pendant le flux. */
+.lm-streaming > :last-child::after, .lm-streaming:empty::after {
+  content: "";
+  display: inline-block;
+  width: 0.45em; height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: currentColor;
+  opacity: 0.5;
+  animation: lmPulse 0.6s ease-in-out infinite alternate;
+}
+.lm-streaming:empty { display: none; }
+
+/* Panneau d'étapes du mode « Réponse orchestrée ». */
+.lm-plan {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-muted, var(--muted-foreground, rgba(127, 127, 127, 0.95)));
+  border: 1px solid color-mix(in oklab, var(--primary, #a86bff) 35%, var(--border, rgba(127, 127, 127, 0.22)));
+  border-radius: var(--radius-md, 8px);
+  background: color-mix(in oklab, var(--primary, #a86bff) 6%, transparent);
+  min-width: 0;
+}
+/* Le panneau garde un détail à plat (pas la carte des appels d'outils). */
+.lm-plan > .lm-body { margin: 0; padding: 2px 10px 8px; border: 0; border-top: 1px dashed var(--border, rgba(127, 127, 127, 0.22)); border-radius: 0; background: transparent; }
+.lm-plan > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 9px; user-select: none; min-width: 0; }
+.lm-plan > summary::-webkit-details-marker { display: none; }
+.lm-plan > summary::after {
+  content: ""; margin-left: auto; flex: none; width: 6px; height: 6px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg); opacity: 0.6; transition: transform 0.15s ease;
+}
+.lm-plan[open] > summary::after { transform: rotate(45deg); }
+.lm-plan.live .lm-hint { animation: lmPulse 1s ease-in-out infinite alternate; }
+.lm-steps { list-style: none; margin: 6px 0 2px; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.lm-step { display: flex; gap: 8px; align-items: flex-start; min-width: 0; }
+.lm-step-ic { flex: none; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; margin-top: 1px; }
+.lm-step-ic svg { width: 13px; height: 13px; }
+.lm-step.ok .lm-step-ic { color: var(--success, #3fb27f); }
+.lm-step.warn .lm-step-ic { color: var(--warning, #d9a23a); }
+.lm-step.skip { opacity: 0.6; }
+.lm-step.running .lm-step-label { color: var(--text-main, var(--foreground, inherit)); font-weight: 600; }
+.lm-step-main { min-width: 0; flex: 1; }
+.lm-step-label { color: var(--text-main, var(--foreground, inherit)); }
+.lm-step-detail { font-size: 11.5px; word-break: break-word; }
+.lm-step-wait { font-size: 11.5px; font-style: italic; animation: lmPulse 1.1s ease-in-out infinite alternate; }
+.lm-step-items { margin: 3px 0 0; padding-left: 16px; font-size: 11.5px; word-break: break-word; }
+.lm-step-items li { margin: 1px 0; }
+.lm-spin {
+  width: 11px; height: 11px; border-radius: 50%;
+  border: 2px solid color-mix(in oklab, var(--primary, #a86bff) 25%, transparent);
+  border-top-color: var(--primary, #a86bff);
+  animation: lmSpin 0.8s linear infinite;
+}
+.lm-plan-tools { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0 2px; }
+.lm-chip {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px;
+  border: 1px solid var(--border, rgba(127, 127, 127, 0.22)); color: var(--text-main, var(--foreground, inherit));
+  background: var(--card, transparent);
+}
+.lm-chip .lm-ic svg { width: 11px; height: 11px; }
+@media (prefers-reduced-motion: reduce) {
+  .lm-spin, .lm-step-wait, .lm-plan.live .lm-hint { animation: none; }
+}
+
+/* Demande à l'utilisateur (lib/user-gate.js) : accord, mot de passe,
+   confirmation, choix. Bien visible : c'est Lumen qui attend. Une fois
+   répondue, la carte se replie en « question → réponse ». */
+.lm-ask {
+  --lm-acc: var(--primary, var(--accent-color, #7c5cff));
+  position: relative;
+  margin: 8px 0 6px;
+  padding: 12px 14px 12px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in oklab, var(--lm-acc) 35%, var(--border, rgba(127, 127, 127, 0.25)));
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--lm-acc) 8%, transparent), transparent 70%),
+    var(--card, transparent);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px -10px color-mix(in oklab, var(--lm-acc) 45%, transparent);
+  display: flex; flex-direction: column; gap: 9px;
+  font-size: 13.5px; line-height: 1.45;
+  color: var(--text-main, var(--foreground, inherit));
+}
+/* Posée dans la frise, sous l'appel qui demande : alignée sur les libellés. */
+.lm-blocks > .lm-ask { margin: 2px 0 8px 40px; }
+.lm-ask-consent, .lm-ask-unlock, .lm-ask-confirm { --lm-acc: var(--warning, #d9a23a); }
+.lm-ask-head { display: flex; align-items: flex-start; gap: 9px; }
+.lm-ask-head strong { font-weight: 600; }
+.lm-ask-dot { width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: var(--lm-acc); flex: none; box-shadow: 0 0 0 0 color-mix(in oklab, var(--lm-acc) 55%, transparent); animation: lmRing 1.6s ease-out infinite; }
+@keyframes lmRing { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--lm-acc) 55%, transparent); } 100% { box-shadow: 0 0 0 7px transparent; } }
+.lm-ask p { margin: 0; }
+.lm-ask-body { opacity: 0.8; font-size: 12.5px; padding-left: 17px; }
+.lm-ask-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding-left: 17px; }
+.lm-ask-row input, .lm-ask-free input { flex: 1; min-width: 140px; padding: 7px 10px; border-radius: 10px; border: 1px solid var(--border, rgba(127, 127, 127, 0.3)); background: var(--background, transparent); color: inherit; font: inherit; outline: none; }
+.lm-ask-row input:focus, .lm-ask-free input:focus { border-color: var(--lm-acc); box-shadow: 0 0 0 3px color-mix(in oklab, var(--lm-acc) 18%, transparent); }
+.lm-ask-row button, .lm-ask-free button {
+  padding: 6px 13px; border-radius: 999px;
+  border: 1px solid var(--border, rgba(127, 127, 127, 0.3));
+  background: var(--card, transparent); color: inherit; font: inherit; font-size: 13px; cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+}
+.lm-ask-row button:hover, .lm-ask-free button:hover { border-color: color-mix(in oklab, var(--lm-acc) 60%, var(--border, #ccc)); background: color-mix(in oklab, var(--lm-acc) 8%, var(--card, transparent)); }
+.lm-ask-row button:active, .lm-ask-free button:active { transform: scale(0.97); }
+.lm-ask-row button.primary, .lm-ask-free button.primary { background: var(--lm-acc); color: var(--primary-foreground, #fff); border-color: transparent; }
+.lm-ask-row button.primary:hover, .lm-ask-free button.primary:hover { background: color-mix(in oklab, var(--lm-acc) 88%, #000); }
+.lm-ask-row button.lm-ask-other { border-style: dashed; opacity: 0.85; }
+.lm-ask-row button.lm-ask-other.on { border-style: solid; border-color: var(--lm-acc); opacity: 1; }
+.lm-ask-free { display: flex; gap: 6px; padding-left: 17px; animation: lmIn 0.18s ease-out both; }
+.lm-ask-free[hidden] { display: none; }
+.lm-ask-note { font-size: 12.5px; padding-left: 17px; color: var(--text-muted, rgba(127, 127, 127, 0.95)); }
+.lm-ask.done { padding: 9px 14px; gap: 3px; border-color: var(--border, rgba(127, 127, 127, 0.25)); background: transparent; box-shadow: none; }
+.lm-ask.done .lm-ask-head strong { font-weight: 500; color: var(--text-muted, rgba(127, 127, 127, 0.95)); font-size: 12.5px; }
+.lm-ask.done .lm-ask-dot { animation: none; background: var(--success, #22a06b); box-shadow: none; }
+.lm-ask.done .lm-ask-note { color: var(--text-main, var(--foreground, inherit)); font-weight: 600; font-size: 13px; }
+.lm-ask.done .lm-ask-row, .lm-ask.done .lm-ask-free, .lm-ask.done .lm-ask-body { display: none; }
+@media (prefers-reduced-motion: reduce) { .lm-ask-dot { animation: none; } }
+.lm-plan.waiting-user { border-color: color-mix(in oklab, var(--warning, #d9a23a) 60%, var(--border, rgba(127, 127, 127, 0.22))); }
+.lm-plan.waiting-user .lm-step.running .lm-step-wait { color: var(--warning, #d9a23a); font-style: normal; font-weight: 600; }
+.lm-ask-checks { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; }
+.lm-ask-checks label { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+.lm-ask.done .lm-ask-checks { display: none; }
+
+/* Sources et suites sous une réponse (lib/answer-extras.js). */
+.ax-wrap { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.ax-sources, .ax-next { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.ax-cap { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; opacity: .6; margin-right: 2px; }
+.ax-src, .ax-chip {
+  display: inline-flex; align-items: center; gap: 5px; max-width: 100%;
+  padding: 3px 9px; border-radius: 999px; font: inherit; font-size: 12px; line-height: 1.4;
+  border: 1px solid var(--border, rgba(127,127,127,.25)); background: var(--card, transparent);
+  color: var(--text-main, var(--foreground, inherit));
+}
+.ax-src span, .ax-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+button.ax-src, .ax-chip { cursor: pointer; }
+button.ax-src:hover, .ax-chip:hover { border-color: color-mix(in oklab, var(--primary, #a86bff) 50%, var(--border, #ccc)); }
+.ax-chip { background: color-mix(in oklab, var(--primary, #a86bff) 7%, transparent); }
+.ax-src svg, .ax-chip svg { width: 12px; height: 12px; flex: none; }
+.ax-chip[disabled] { opacity: .7; cursor: default; }

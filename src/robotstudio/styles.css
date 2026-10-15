@@ -1,0 +1,83 @@
+/* Robot Studio — mêmes jetons et gabarits que les autres apps de Lumen. */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body { font: 14px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+.app { display: flex; flex-direction: column; height: 100vh; }
+.spacer { flex: 1; }
+
+.topbar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--surface); flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; margin-right: 6px; }
+.brand-ic { flex: none; width: 28px; height: 28px; border-radius: var(--radius-md); display: grid; place-items: center; color: #fff; background: #BC3657; box-shadow: var(--flat-shadow-md); }
+.brand-ic svg { width: 17px; height: 17px; }
+.brand-title { font-weight: 650; font-size: 15px; }
+.status { font-size: 12px; color: var(--text-muted); max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status[data-kind="ok"] { color: var(--green, #1f8a5f); }
+.status[data-kind="err"] { color: var(--red); }
+
+.select, input, textarea { border: 1px solid var(--border); background: var(--surface-2); color: var(--text); border-radius: var(--radius-md); padding: 6px 9px; font: inherit; font-size: 13px; min-width: 0; }
+textarea { resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+.btn-soft { border: 1px solid var(--border); background: var(--surface-2); color: var(--text); border-radius: var(--radius-md); padding: 6px 12px; font-size: 13px; cursor: pointer; font-family: inherit; white-space: nowrap; }
+.btn-soft:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.btn-soft.primary { background: var(--accent); color: var(--primary-foreground); border-color: transparent; }
+.btn-soft.primary:hover { filter: brightness(1.05); }
+.btn-soft.danger { color: var(--red); }
+
+.body { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 380px; }
+.workspace { position: relative; min-width: 0; min-height: 0; }
+.side { border-left: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; min-height: 0; }
+.seg { display: flex; gap: 2px; padding: 3px; margin: 10px; border-radius: var(--radius-lg); background: var(--surface-2); border: 1px solid var(--border); }
+.seg button { flex: 1; border: 0; background: transparent; color: var(--text-muted); padding: 5px 6px; border-radius: var(--radius-md); font-size: 12px; cursor: pointer; font-family: inherit; }
+.seg button.on { background: var(--surface); color: var(--text); box-shadow: var(--flat-shadow-sm, 0 1px 2px rgba(0,0,0,.08)); font-weight: 600; }
+.pane { flex: 1; min-height: 0; overflow: auto; padding: 0 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.pane-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.hint { margin: 0; font-size: 12px; color: var(--text-muted); line-height: 1.45; }
+.empty { font-size: 12.5px; color: var(--text-muted); padding: 8px 0; }
+
+pre { margin: 0; }
+.code, .log, .reqs pre, .cmd { font: 11.5px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; white-space: pre-wrap; word-break: break-word; overflow: auto; }
+.code { flex: 1; min-height: 160px; }
+.cmd { padding: 6px 10px; user-select: all; }
+.reqs { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+.log { min-height: 120px; max-height: 320px; }
+.explain { font-size: 13px; line-height: 1.5; border-left: 3px solid var(--accent); padding: 4px 10px; }
+
+.device-list, .custom-list { display: flex; flex-direction: column; gap: 6px; }
+.device, .custom { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); cursor: pointer; }
+.device.on { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); background: color-mix(in srgb, var(--accent) 8%, var(--surface-2)); }
+.device span, .custom { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.custom { flex-direction: row; }
+.custom b { flex: 1; }
+.device i, .custom i { font-style: normal; font-size: 11.5px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; }
+.x { border: 0; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 12px; padding: 2px 4px; }
+.x:hover { color: var(--red); }
+.device-form, .custom-form { display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px dashed var(--border); border-radius: var(--radius-md); }
+.row { display: flex; gap: 6px; }
+.row > * { flex: 1; }
+
+.doc { font-size: 13px; line-height: 1.55; }
+.doc h1 { font-size: 16px; margin: 4px 0 8px; }
+.doc h2 { font-size: 13.5px; margin: 14px 0 6px; }
+.doc code { font-size: 12px; background: var(--surface-2); padding: 1px 4px; border-radius: 4px; }
+.doc pre { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px; overflow: auto; }
+
+/* Blockly : le fond suit le thème de Lumen. */
+.blocklySvg { background: var(--bg); }
+.blocklyMainBackground { fill: var(--bg) !important; stroke: none !important; }
+.blocklyToolboxDiv { background: var(--surface) !important; border-right: 1px solid var(--border); color: var(--text); }
+.blocklyTreeLabel { color: var(--text); font-family: inherit !important; font-size: 13px !important; }
+.blocklyFlyoutBackground { fill: var(--surface-2) !important; fill-opacity: .96 !important; }
+
+@media (max-width: 900px) {
+  .body { grid-template-columns: 1fr; grid-template-rows: 1fr 45%; }
+  .side { border-left: 0; border-top: 1px solid var(--border); }
+}
+.doc-sum { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; background: var(--surface-2); }
+.doc-sum p { margin: 6px 0 0; }
+.doc-block { font-weight: 650; }
+.doc-pip { font-size: 12px; color: var(--text-muted); }
+.doc-notes-title { color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; font-size: 11.5px !important; }
+.bridge { display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-md); background: color-mix(in srgb, #7C5CFF 6%, var(--surface)); }
+.bridge-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.bridge-row > span { width: 110px; flex: none; color: var(--text-muted); }
+.bridge-row code, .bridge-row select { flex: 1; min-width: 0; font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; }

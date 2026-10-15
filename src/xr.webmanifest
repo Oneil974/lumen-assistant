@@ -1,0 +1,14 @@
+{
+  "name": "Lumen XR",
+  "short_name": "Lumen XR",
+  "description": "Lumen dans votre casque : l'orbe, la voix et des panneaux spatiaux.",
+  "start_url": "/xr",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b0c10",
+  "theme_color": "#0b0c10",
+  "icons": [
+    { "src": "/icons/lumen-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/lumen-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

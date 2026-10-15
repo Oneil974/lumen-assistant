@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<!-- Explorateur de sandboxes de Lumen. Fenêtre dédiée, isolée par sandbox.
+     Toutes les opérations passent par des commandes Rust confinées (cf. sandbox.rs). -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Sandboxes</title>
+    <!-- Intégré en iframe (« Bibliothèque » du mode application) : l'API
+         Tauri n'est injectée que dans la fenêtre ; on reprend celle du parent
+         (même origine), comme les apps du bureau. -->
+    <script>try { if (!window.__TAURI__ && window.parent !== window) window.__TAURI__ = window.parent.__TAURI__; } catch (e) {}</script>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="./styles.css?v=5" />
+    <link rel="stylesheet" href="../lib/screen-prompt.css?v=3" />
+    <link rel="stylesheet" href="./desktop.css?v=29" />
+    <link rel="stylesheet" href="./morning.css?v=3" />
+    <link rel="stylesheet" href="./fluxo-runs.css?v=3" />
+    <!-- Remonte les erreurs JS de la fenêtre au backend (frontend_log). -->
+    <script src="/lib/frontend-log-init.js" data-prefix="sandbox"></script>
+    <!-- ?v= : bump à chaque modif de main.js/desktop.js (cache WKWebView). -->
+    <script type="module" src="./main.js?v=33" defer></script>
+    <!-- Vrai orbe WebGL (partagé avec la fenêtre principale) pour le mode bureau. -->
+    <script type="module" src="/orb.js?v=30" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+    <!-- Habillage doré de l\'édition Pro : après la peau plate, pour la surcharger. -->
+    <link rel="stylesheet" href="/lib/pro-skin.css?v=8" />
+</head>
+  <body>
+    <div class="app">
+      <!-- Barre du haut : sélection de sandbox + jauge + actions -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><path d="M2 11h20"/><circle cx="12" cy="15.5" r="1.1"/></svg></span>
+          <span class="brand">Sandboxes</span>
+          <select id="sandbox-select" class="sb-select" title="Sandbox active"></select>
+          <button class="btn-soft" id="btn-new-sandbox" title="Nouvelle sandbox">+ Sandbox</button>
+          <!-- Supprimer une sandbox est rare et irréversible : le geste vit
+               dans un menu, pas sur un bouton à côté de « + Sandbox ». -->
+          <button class="btn-icon" id="btn-sandbox-menu" title="Actions sur la sandbox active">⋯</button>
+          <button class="btn-soft" id="btn-launchpad" title="Launchpad — apps de la sandbox">▦ Apps</button>
+        </div>
+        <div class="topbar-right">
+          <div class="usage" id="usage" title="Espace utilisé">
+            <div class="usage-bar"><span class="usage-fill" id="usage-fill"></span></div>
+            <span class="usage-label" id="usage-label">—</span>
+          </div>
+          <button class="btn-soft" id="btn-resize" title="Modifier la taille maximale">Taille</button>
+          <button class="btn-icon" id="btn-customize" title="Personnaliser l'apparence"></button>
+        </div>
+      </header>
+
+      <!-- Outils de navigation -->
+      <div class="toolbar">
+        <nav class="breadcrumb" id="breadcrumb"></nav>
+        <div class="file-search">
+          <span class="file-search-ic">⌕</span>
+          <input type="search" id="file-search" class="file-search-input" placeholder="Rechercher un fichier…" spellcheck="false" autocomplete="off" />
+        </div>
+        <div class="toolbar-actions">
+          <select id="sort-select" class="sb-select" title="Trier">
+            <option value="name">Nom</option>
+            <option value="type">Type</option>
+            <option value="size">Taille</option>
+            <option value="modified">Date de modification</option>
+            <option value="created">Date de création</option>
+          </select>
+          <!-- Sens du tri, comme dans un explorateur : le libellé du bouton
+               change avec la clé (A→Z, petit→grand, récent→ancien). -->
+          <button class="btn-icon" id="btn-sort-dir" title="Sens du tri"></button>
+          <button class="btn-icon" id="btn-view" title="Vue liste / grille"></button>
+          <button class="btn-icon" id="btn-refresh" title="Actualiser"></button>
+          <span class="toolbar-gap"></span>
+          <button class="btn-soft" id="btn-new-folder" title="Nouveau dossier"></button>
+          <button class="btn-soft" id="btn-new-file" title="Nouveau fichier"></button>
+          <button class="btn-soft" id="btn-upload" title="Importer un fichier"></button>
+          <input type="file" id="file-input" multiple hidden />
+        </div>
+      </div>
+
+      <!-- Grille de fichiers / dossiers -->
+      <main class="files" id="files"></main>
+      <div class="empty" id="empty" hidden></div>
+    </div>
+
+    <!-- Barre flottante de sélection multiple (Cmd/Ctrl+clic sur plusieurs fichiers) -->
+    <div class="sel-bar" id="sel-bar" hidden>
+      <span class="sel-info" id="sel-info"></span>
+      <span class="sel-ctx" id="sel-ctx" title="Estimation du contexte à transmettre au modèle"></span>
+      <button class="btn-soft" id="sel-clear">Désélectionner</button>
+      <button class="btn-soft primary" id="sel-ask">Demander à l'IA…</button>
+    </div>
+
+    <!-- Menu contextuel custom (le natif est inutilisable dans WKWebView) -->
+    <div class="ctx-menu" id="ctx-menu" hidden></div>
+
+    <!-- Quick Look (barre espace) : aperçu rapide centré -->
+    <div class="quicklook" id="quicklook" hidden>
+      <div class="quicklook-card">
+        <div class="quicklook-head">
+          <span class="quicklook-title" id="quicklook-title"></span>
+          <button class="btn-icon" id="quicklook-close" title="Fermer (espace)"></button>
+        </div>
+        <div class="quicklook-body" id="quicklook-body"></div>
+      </div>
+    </div>
+
+    <!-- Historique des versions d'un fichier (snapshots) -->
+    <div class="history-modal" id="history" hidden>
+      <div class="history-card">
+        <div class="history-head">
+          <span class="history-title" id="history-title">Historique</span>
+          <button class="btn-icon" id="history-close" title="Fermer"></button>
+        </div>
+        <div class="history-list" id="history-list"></div>
+        <div class="history-detail" id="history-detail" hidden></div>
+      </div>
+    </div>
+
+    <!-- Launchpad : écran d'accueil des mini-apps de la sandbox -->
+    <div class="launchpad" id="launchpad" hidden>
+      <div class="launchpad-head">
+        <span class="launchpad-title">Apps</span>
+        <span class="launchpad-sub" id="launchpad-sub"></span>
+        <span class="app-runner-spacer"></span>
+        <button class="btn-soft" id="launchpad-close">Fermer</button>
+      </div>
+      <div class="launchpad-grid" id="launchpad-grid"></div>
+    </div>
+
+    <!-- Lanceur de mini-app : iframe confinée (sans réseau, origine opaque) -->
+    <div class="app-runner" id="app-runner" hidden>
+      <div class="app-runner-bar">
+        <span class="app-runner-title" id="app-runner-title"></span>
+        <span class="app-runner-badge" title="Exécution isolée : aucun accès réseau ni au reste du système">🔒 isolé</span>
+        <span class="app-runner-spacer"></span>
+        <button class="btn-soft" id="app-runner-reload">Recharger</button>
+        <button class="btn-soft" id="app-runner-console-btn" title="Afficher la console de diagnostic">🐞 Console</button>
+        <button class="btn-soft" id="app-runner-dbwrite-btn" title="Autoriser cette app à MODIFIER les bases de données (défaut : lecture seule)">🗄 Écriture BDD : off</button>
+        <button class="btn-soft" id="app-runner-kiosk" title="Mode kiosque (plein écran sans barre)">⛶ Kiosque</button>
+        <button class="btn-soft" id="app-runner-close">Fermer</button>
+      </div>
+      <button class="app-runner-exit" id="app-runner-exit" title="Quitter le kiosque (Échap)" hidden>✕</button>
+      <div class="app-runner-body" id="app-runner-body">
+        <div class="app-runner-stage" id="app-runner-stage"></div>
+        <div class="app-runner-console" id="app-runner-console" hidden>
+          <div class="app-runner-console-bar">
+            <span class="app-runner-console-title">Console</span>
+            <span class="app-runner-spacer"></span>
+            <button class="btn-soft" id="app-runner-console-clear">Effacer</button>
+          </div>
+          <div class="app-runner-console-log" id="app-runner-console-log"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Volet latéral d'aperçu / agent -->
+    <aside class="preview" id="preview" hidden>
+      <div class="preview-head">
+        <span class="preview-title" id="preview-title"></span>
+        <div class="preview-head-actions">
+          <button class="btn-soft primary" id="preview-launch" hidden>▶ Lancer</button>
+          <button class="btn-icon" id="preview-history" title="Historique des versions" hidden></button>
+          <button class="btn-soft" id="preview-edit" hidden>Modifier</button>
+          <button class="btn-soft primary" id="preview-save" hidden>Enregistrer</button>
+          <button class="btn-soft" id="preview-cancel" hidden>Annuler</button>
+          <button class="btn-icon" id="preview-close" title="Fermer"></button>
+        </div>
+      </div>
+      <div class="preview-body" id="preview-body"></div>
+      <div class="editor-wrap" id="editor-wrap" hidden>
+        <pre class="editor-highlight monokai" id="editor-highlight" aria-hidden="true"><code></code></pre>
+        <textarea class="preview-editor" id="preview-editor" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+      </div>
+      <div class="agent-box" id="agent-box" hidden>
+        <textarea id="agent-prompt" class="agent-prompt" rows="2" placeholder="Demander à l'agent : résume, corrige, explique…"></textarea>
+        <div class="agent-actions">
+          <button class="btn-soft" id="agent-ask">Demander</button>
+          <button class="btn-soft primary" id="agent-apply" hidden>Appliquer les changements acceptés</button>
+        </div>
+        <div class="agent-answer" id="agent-answer" hidden></div>
+      </div>
+    </aside>
+
+    <!-- Volet d'analyse multi-fichiers -->
+    <aside class="preview" id="multi" hidden>
+      <div class="preview-head">
+        <span class="preview-title" id="multi-title"></span>
+        <button class="btn-icon" id="multi-close" title="Fermer"></button>
+      </div>
+      <div class="multi-files" id="multi-files"></div>
+      <div class="agent-box">
+        <div class="multi-ctx-note" id="multi-ctx-note"></div>
+        <textarea id="multi-prompt" class="agent-prompt" rows="2" placeholder="Demander à l'IA : compare ces fichiers, résume-les, trouve les liens…"></textarea>
+        <div class="agent-actions">
+          <select class="agent-select" id="multi-mode" title="Mode IA">
+            <option value="ask">Analyse</option>
+            <option value="edit">Modifier avec diff</option>
+            <option value="agent">Agent borné</option>
+          </select>
+          <label class="agent-iter" id="multi-iter-wrap" hidden>Itérations
+            <input type="number" id="multi-iters" min="1" max="5" value="3" />
+          </label>
+          <button class="btn-soft primary" id="multi-ask">Demander</button>
+          <button class="btn-soft primary" id="multi-apply" hidden disabled>Appliquer les changements acceptés</button>
+        </div>
+        <div class="agent-log" id="multi-log" hidden></div>
+        <div class="agent-answer" id="multi-answer" hidden></div>
+      </div>
+    </aside>
+
+    <!-- Modale générique (création / saisie / confirmation) -->
+    <div class="modal-overlay" id="modal" hidden>
+      <div class="modal">
+        <div class="modal-title" id="modal-title"></div>
+        <p class="modal-msg" id="modal-msg" hidden></p>
+        <input type="text" id="modal-input" class="modal-input" hidden />
+        <input type="number" id="modal-number" class="modal-input" hidden min="1" />
+        <div class="modal-actions">
+          <button class="btn-soft" id="modal-cancel">Annuler</button>
+          <button class="btn-soft primary" id="modal-ok">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Destination d'un déplacement / d'une copie vers une autre sandbox.
+         Le cloisonnement reste entier : c'est le backend qui résout chaque
+         chemin dans SA racine (cf. sandbox_transfer_path). -->
+    <div class="modal-overlay" id="sbpick-modal" hidden>
+      <div class="modal">
+        <div class="modal-title" id="sbpick-title">Déplacer vers une sandbox</div>
+        <p class="modal-msg" id="sbpick-msg"></p>
+        <label class="modal-field">
+          <span>Sandbox de destination</span>
+          <select id="sbpick-select" class="modal-input"></select>
+        </label>
+        <label class="modal-field">
+          <span>Dossier (facultatif)</span>
+          <input type="text" id="sbpick-dir" class="modal-input" placeholder="laisser vide pour la racine" />
+        </label>
+        <p class="modal-hint" id="sbpick-quota"></p>
+        <div class="modal-actions">
+          <button class="btn-soft" id="sbpick-cancel">Annuler</button>
+          <button class="btn-soft primary" id="sbpick-ok">Déplacer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suppression d'une sandbox : geste irréversible, donc confirmation
+         renforcée (le mot SUPPRIMER doit être tapé) et sortie de secours
+         (déplacer le contenu au lieu de le perdre). -->
+    <div class="modal-overlay" id="sbdel-modal" hidden>
+      <div class="modal sbdel-modal">
+        <div class="modal-title" id="sbdel-title">Supprimer la sandbox</div>
+        <p class="modal-msg" id="sbdel-summary"></p>
+        <div class="sbdel-choices">
+          <label class="sbdel-choice">
+            <input type="radio" name="sbdel-mode" value="move" id="sbdel-mode-move" />
+            <span>
+              <b>Déplacer les documents ailleurs</b>
+              <small>Tout le contenu part dans une autre sandbox ; rien n'est perdu.</small>
+            </span>
+          </label>
+          <label class="sbdel-target">
+            <span>Vers</span>
+            <select id="sbdel-target" class="modal-input"></select>
+          </label>
+          <label class="sbdel-choice">
+            <input type="radio" name="sbdel-mode" value="erase" id="sbdel-mode-erase" checked />
+            <span>
+              <b>Supprimer les fichiers</b>
+              <small>Le contenu est effacé du disque. Aucune corbeille, aucun retour en arrière.</small>
+            </span>
+          </label>
+        </div>
+        <label class="modal-field">
+          <span id="sbdel-word-label">Tapez SUPPRIMER pour confirmer</span>
+          <input type="text" id="sbdel-word" class="modal-input" autocomplete="off" spellcheck="false" placeholder="SUPPRIMER" />
+        </label>
+        <p class="modal-hint" id="sbdel-status"></p>
+        <div class="modal-actions">
+          <button class="btn-soft" id="sbdel-cancel">Annuler</button>
+          <button class="btn-soft danger" id="sbdel-ok" disabled>Supprimer la sandbox</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale Bonsai : génération d'image locale -->
+    <div class="modal-overlay" id="bonsai-modal" hidden>
+      <div class="modal bonsai-modal">
+        <div class="modal-title">Générer une image</div>
+        <p class="modal-msg">Moteur d'image choisi dans les Réglages (Bonsai ou Ollama en local, OpenAI en ligne). Les images sont enregistrées dans la sandbox.</p>
+        <textarea id="bonsai-prompt" class="bonsai-prompt" placeholder="Décris l'image à créer…"></textarea>
+        <div class="bonsai-grid">
+          <label><span>Modèle</span>
+            <!-- Peuplé par fillBonsaiModalChoices() selon le moteur choisi. -->
+            <select id="bonsai-backend"></select>
+          </label>
+          <label><span>Résolution</span>
+            <select id="bonsai-resolution"></select>
+          </label>
+          <label><span>Seed</span><input id="bonsai-seed" type="number" value="42" /></label>
+          <button class="btn-soft bonsai-random" id="bonsai-random-seed" title="Seed aléatoire">⚂</button>
+          <label><span>Steps</span><input id="bonsai-steps" type="number" min="1" max="64" value="4" /></label>
+          <label><span>Batch</span>
+            <select id="bonsai-batch">
+              <option value="1">Single</option>
+              <option value="4">Batch of 4</option>
+            </select>
+          </label>
+        </div>
+        <div class="bonsai-chips" id="bonsai-chips">
+          <button type="button">Un bonsaï lumineux dans un atelier japonais, photo réaliste</button>
+          <button type="button">Une interface Apple minimaliste posée sur un bureau en verre</button>
+          <button type="button">Une affiche éditoriale premium, lumière douce, typographie élégante</button>
+          <button type="button">Un paysage futuriste calme, rendu cinématique, détails fins</button>
+        </div>
+        <div class="bonsai-progress" id="bonsai-progress" hidden>
+          <div class="bonsai-progress-bar"><span id="bonsai-progress-fill"></span></div>
+          <span id="bonsai-progress-label">Préparation…</span>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-soft" id="bonsai-cancel">Annuler</button>
+          <button class="btn-soft primary" id="bonsai-generate">Générer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panneau de personnalisation -->
+    <div class="modal-overlay" id="customize" hidden>
+      <div class="modal">
+        <div class="modal-title">Apparence</div>
+        <label class="cust-row">Couleur de fond
+          <input type="color" id="cust-bg" />
+        </label>
+        <label class="cust-row">Couleur d'accent
+          <input type="color" id="cust-accent" />
+        </label>
+        <label class="cust-row">Couleur des dossiers (défaut)
+          <input type="color" id="cust-folder" />
+        </label>
+        <label class="cust-row">Thème
+          <select id="cust-theme">
+            <option value="auto">Auto (système)</option>
+            <option value="light">Clair</option>
+            <option value="dark">Sombre</option>
+          </select>
+        </label>
+        <div class="modal-actions">
+          <button class="btn-soft" id="cust-reset">Réinitialiser</button>
+          <button class="btn-soft primary" id="cust-close">Terminé</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode bureau : shell « OS » optionnel (fenêtres, widgets, chat, orbe). -->
+    <div id="desktop" hidden></div>
+
+    <!-- Scaffold du vrai orbe WebGL, hors de #desktop (jamais vidé) ; positionné
+         dans un coin et activé seulement en mode bureau. -->
+    <div id="dt-orb-real" hidden>
+      <div class="orb-wrap" id="orb-wrap">
+        <div class="orb-shadow"></div>
+        <div class="orb-container" id="orb-container">
+          <div class="orb-frost"></div>
+          <canvas id="orb-canvas"></canvas>
+          <div class="orb-eyes" id="orb-eyes"><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

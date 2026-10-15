@@ -1,0 +1,1107 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		083174F18AFC3539A349FE9A /* Iconography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032C14B6E1C7915470C65FE1 /* Iconography.swift */; };
+		0A55F8E9F1E76CC5B5D204A9 /* LumenWatchWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5203E1AE0D125BF1785C0B0 /* LumenWatchWidgets.swift */; };
+		0EE6B3C6E08F7EA7CD52BA14 /* Composer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2A9D069A028B0C85148344 /* Composer.swift */; };
+		10416A8D6B8761C7FD46EF76 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7064B1E57FE4E6CA8F7A0162 /* Theme.swift */; };
+		106118B5911963F22712BD6B /* QRScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52369494CC75B31C89506BF7 /* QRScannerView.swift */; };
+		112BACA069CA858162A6C9AD /* HaloView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64BDC272CA2CC470B9F21CE /* HaloView.swift */; };
+		166F75AB26FEA1693D13B248 /* SpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B8A78A7850D0F3FEB3BBC0 /* SpeechService.swift */; };
+		17A615A8B61C61056C2745BC /* AgentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB51E30A05FC06A3D3B2A7E /* AgentsView.swift */; };
+		183D99090FA32267CA60D24B /* VaultIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF46BDB0DC6D01D5E8FE3563 /* VaultIntents.swift */; };
+		2170F1AF44130CD14D7351CC /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D714927164385B767334FABB /* Localizable.xcstrings */; };
+		22560038363B5793FED10192 /* LumenClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFB364E570A4729905BBEDD /* LumenClient.swift */; };
+		2380E16845B6F5F417F56356 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D04446C9C2DED1DE27ACF3 /* Keychain.swift */; };
+		26F250756C3B8DB4A48BC72F /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE03A03B62B2ABBF56537C92 /* SharedStore.swift */; };
+		280B1828C82205083A668868 /* LumenWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 6997D1CAEF0FA4A3D16D2055 /* LumenWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		295BE417CD8E515C23F4511D /* LumenShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9E8357BB9E44E9313C2E5BE9 /* LumenShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		30FF7100B15550949DEDDC88 /* DataHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BB65211356D44DD805514A0 /* DataHub.swift */; };
+		3B48FB73E490F8E0B0688D8B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = EFB4C309CB7DB585229BB30B /* Localizable.xcstrings */; };
+		3BCB4E350F11E1025C4F8C00 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FECD71161304AECBF99C46 /* MessagesView.swift */; };
+		3FAA89223978D62105861B94 /* Discovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DD22605C81903C885FF764 /* Discovery.swift */; };
+		42930A4428993D9FEF2CFED7 /* ServerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843BDA68AC4A5C4B87C03A76 /* ServerStore.swift */; };
+		46945A2DDB5DA79EB100DCBE /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F70FE1362EA988FC6E4B6 /* ChatView.swift */; };
+		4B24A228A74B99213E8749E8 /* CertificateTrust.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6620037D0596FDD6DD885CB4 /* CertificateTrust.swift */; };
+		4BC89587B5C98D4338C2A51D /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C52A060A56BB16E8B1FEF91B /* SetupView.swift */; };
+		4FAF5CECD09152B59120BC34 /* AgentAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 007149C3D4C91036BD000B50 /* AgentAvatarView.swift */; };
+		56772614146565ECD58620C6 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0BB393A9E2F4157A701C1D93 /* InfoPlist.xcstrings */; };
+		57A9CD8F97C92CFCE92D4438 /* WatchBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F9F9EE0ADB35DD3FEDC5D24 /* WatchBridge.swift */; };
+		5970998DDDE535717001ACCC /* LumenActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A789433B45FE17878F78624C /* LumenActivity.swift */; };
+		5A71121F61B8E63A8ED8238E /* LocalAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C438DB3A11159FDC988FA79 /* LocalAI.swift */; };
+		5B26471A3A71D90C8B97DEBA /* WidgetIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BD2C3A6E1B851F1F0D536B /* WidgetIntents.swift */; };
+		624F19CD3D1D870B405FEE99 /* VaultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44892B2B1264020235C714A2 /* VaultView.swift */; };
+		64CF39AF34C0C0DD6ED6ADAE /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9072799EDECCD0235C7719 /* Controls.swift */; };
+		64E8CC313EEEE7BCA2DE940C /* LumenWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A7CBE881CF5A79EAB70C89E /* LumenWidgets.swift */; };
+		65D0040334B65477B07C2EF1 /* BiometricKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2901F2CFD67E0FB5E41A3B /* BiometricKey.swift */; };
+		7543AC0222CBB08869222C15 /* SensorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A0D71A5BA62D040A29E1F2 /* SensorsView.swift */; };
+		79A6DA5ACAFE6E2618F31C49 /* SystemIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD7134E2AB42569AAE56C15 /* SystemIntents.swift */; };
+		7C77F383D150639DAD8C65E7 /* VaultIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF46BDB0DC6D01D5E8FE3563 /* VaultIntents.swift */; };
+		7D63164A1AFC411510DB2F08 /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9072799EDECCD0235C7719 /* Controls.swift */; };
+		802D5F959403252150093A56 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5248B18FE8A3A0ECCAC3A16 /* Models.swift */; };
+		80D1C81B5C50CB739B46D56A /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE03A03B62B2ABBF56537C92 /* SharedStore.swift */; };
+		88D5F0338C7421396DE3E13D /* ShortcutIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96358A4238978F32FF566278 /* ShortcutIntents.swift */; };
+		8968D496483C64EF09F51983 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE03A03B62B2ABBF56537C92 /* SharedStore.swift */; };
+		89BECC364E84EF0BEF9ECB22 /* SecurityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54C4425F6A912CA7B949002 /* SecurityTests.swift */; };
+		98D83562D7AB1BA2C53BAD84 /* Intents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3951005B2F5025802D70245 /* Intents.swift */; };
+		9FBE246B411F7FEE4C12F3B7 /* LumenWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A2578CD05B0C8B1A8681530D /* LumenWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AC5D6D62A9C3CE05A2395FF4 /* LumenWatchWidgets.appex in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 55403BBB7C24A3D0F85D45B0 /* LumenWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B127F8BB8BB08B7F2E73BCD5 /* LumenCompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1B5812BEC31A961C492F0A2 /* LumenCompanionApp.swift */; };
+		B32330B9E38F8768C751E32A /* Sensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEA1948E66C863B9C23A341 /* Sensors.swift */; };
+		BE126169EA1B02203979B6D9 /* Vault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0958FBD30A6F9DA9F023B1E1 /* Vault.swift */; };
+		BE8E1A41D23F4926DEF38F11 /* StatusWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A00EAA90E0117FB36C0A6D1 /* StatusWidget.swift */; };
+		C06A19950A15C262EE62259A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95C8DED6971274CFA3CF1563 /* Assets.xcassets */; };
+		C26C4B0CF0A00CB0D5FFD34B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D714927164385B767334FABB /* Localizable.xcstrings */; };
+		C5408C717EE651757C61B8AE /* Vault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0958FBD30A6F9DA9F023B1E1 /* Vault.swift */; };
+		C596C5DB492C63B381C1809E /* LumenWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221FA62D000474ED4461E038 /* LumenWatchApp.swift */; };
+		C807E82315D1AEFD5DC31CB0 /* MessengerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D3AB666C24E72F0D7F63AA1 /* MessengerView.swift */; };
+		CB396A6373EC4F2AEF5CEA15 /* LumenFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C61AA75ECB9C307CF81190 /* LumenFiles.swift */; };
+		CDFF53909A28F97ED340269B /* PushManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77BC3393F255BE938AC7AB7 /* PushManager.swift */; };
+		D1731672776D8F603623DB4B /* Sheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB4F24CDB97D232FF57494C /* Sheets.swift */; };
+		D3E0BF76E3C3B8C1D7ECDE33 /* LumenActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A789433B45FE17878F78624C /* LumenActivity.swift */; };
+		D3F4F1E7D56E296CE08E105A /* MarkdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F2E7D9D917BB1F4785958 /* MarkdownView.swift */; };
+		E4A5CF0607EFE5F48D09ED4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7631D1F131355AE6F7CD3135 /* Assets.xcassets */; };
+		E572040BABD24D45912CAADA /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4600B65F6D68F431CF0D0 /* ShareViewController.swift */; };
+		EAB91336A1E5718B4D730A57 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4E6079E160A3524D43821B /* PairingView.swift */; };
+		ED35D236FD955CC2DCF163AE /* KENNEY-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 58CCCCF330C8A5B995B4CB2A /* KENNEY-LICENSE.txt */; };
+		FF850350B1265D69A9A37CBA /* WidgetIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BD2C3A6E1B851F1F0D536B /* WidgetIntents.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1579F946A5BB1443C4C40947 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D081FB636FC86E1612A0E32D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 50463C3205827ABBD759F605;
+			remoteInfo = LumenWatch;
+		};
+		52E1EC994015F76A007E180B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D081FB636FC86E1612A0E32D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8AA2E4B2B22C45C80D4E3AB2;
+			remoteInfo = LumenShare;
+		};
+		9161F1B90CC1F287061D9838 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D081FB636FC86E1612A0E32D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 182B3EAA1D6A6FD66A79FAB7;
+			remoteInfo = LumenWidgets;
+		};
+		E7B6295E1DCF3810A6B2F284 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D081FB636FC86E1612A0E32D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4472EA8310463593067F0891;
+			remoteInfo = LumenWatchWidgets;
+		};
+		FFDC2828AEF15F7803B64783 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D081FB636FC86E1612A0E32D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 06ACD69175FDE32D99A49928;
+			remoteInfo = LumenCompanion;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		06599DC4C253B77732EFA9BB /* Embed Dependencies */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AC5D6D62A9C3CE05A2395FF4 /* LumenWatchWidgets.appex in Embed Dependencies */,
+			);
+			name = "Embed Dependencies";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ABE1EE687887E3319D6AC7AD /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				280B1828C82205083A668868 /* LumenWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D88647650532E18D689586F0 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9FBE246B411F7FEE4C12F3B7 /* LumenWidgets.appex in Embed Foundation Extensions */,
+				295BE417CD8E515C23F4511D /* LumenShare.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		007149C3D4C91036BD000B50 /* AgentAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentAvatarView.swift; sourceTree = "<group>"; };
+		032C14B6E1C7915470C65FE1 /* Iconography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Iconography.swift; sourceTree = "<group>"; };
+		058AF81B251525A9D041B059 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		0958FBD30A6F9DA9F023B1E1 /* Vault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vault.swift; sourceTree = "<group>"; };
+		0BB393A9E2F4157A701C1D93 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		1BB65211356D44DD805514A0 /* DataHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataHub.swift; sourceTree = "<group>"; };
+		221FA62D000474ED4461E038 /* LumenWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWatchApp.swift; sourceTree = "<group>"; };
+		23435E3B54B6225A3CF36591 /* LumenWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LumenWatch.entitlements; sourceTree = "<group>"; };
+		2A0F2E7D9D917BB1F4785958 /* MarkdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownView.swift; sourceTree = "<group>"; };
+		2DB4600B65F6D68F431CF0D0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		32C61AA75ECB9C307CF81190 /* LumenFiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenFiles.swift; sourceTree = "<group>"; };
+		39D82C9BD8186AE34BA87547 /* LumenWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LumenWidgets.entitlements; sourceTree = "<group>"; };
+		3A00EAA90E0117FB36C0A6D1 /* StatusWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusWidget.swift; sourceTree = "<group>"; };
+		3C438DB3A11159FDC988FA79 /* LocalAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAI.swift; sourceTree = "<group>"; };
+		44892B2B1264020235C714A2 /* VaultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaultView.swift; sourceTree = "<group>"; };
+		48A1935ADFAB80EFA57AF146 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		4FEA1948E66C863B9C23A341 /* Sensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sensors.swift; sourceTree = "<group>"; };
+		506F70FE1362EA988FC6E4B6 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		50FECD71161304AECBF99C46 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
+		52369494CC75B31C89506BF7 /* QRScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerView.swift; sourceTree = "<group>"; };
+		55403BBB7C24A3D0F85D45B0 /* LumenWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LumenWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		58CCCCF330C8A5B995B4CB2A /* KENNEY-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "KENNEY-LICENSE.txt"; sourceTree = "<group>"; };
+		5BD7134E2AB42569AAE56C15 /* SystemIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemIntents.swift; sourceTree = "<group>"; };
+		65764CC159DDCE7928E41346 /* LumenCompanion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LumenCompanion.entitlements; sourceTree = "<group>"; };
+		65BD2C3A6E1B851F1F0D536B /* WidgetIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetIntents.swift; sourceTree = "<group>"; };
+		6620037D0596FDD6DD885CB4 /* CertificateTrust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateTrust.swift; sourceTree = "<group>"; };
+		6997D1CAEF0FA4A3D16D2055 /* LumenWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumenWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D3AB666C24E72F0D7F63AA1 /* MessengerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessengerView.swift; sourceTree = "<group>"; };
+		6FB51E30A05FC06A3D3B2A7E /* AgentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentsView.swift; sourceTree = "<group>"; };
+		7064B1E57FE4E6CA8F7A0162 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		7631D1F131355AE6F7CD3135 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7A7CBE881CF5A79EAB70C89E /* LumenWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWidgets.swift; sourceTree = "<group>"; };
+		7F9F9EE0ADB35DD3FEDC5D24 /* WatchBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBridge.swift; sourceTree = "<group>"; };
+		843BDA68AC4A5C4B87C03A76 /* ServerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerStore.swift; sourceTree = "<group>"; };
+		89A0D71A5BA62D040A29E1F2 /* SensorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorsView.swift; sourceTree = "<group>"; };
+		8B4E6079E160A3524D43821B /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
+		95C8DED6971274CFA3CF1563 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		95DD22605C81903C885FF764 /* Discovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Discovery.swift; sourceTree = "<group>"; };
+		96358A4238978F32FF566278 /* ShortcutIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutIntents.swift; sourceTree = "<group>"; };
+		9BC7F67E6970CF60ED1C272D /* LumenCompanionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LumenCompanionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DD7717D7CF605F9687AD91B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9E8357BB9E44E9313C2E5BE9 /* LumenShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LumenShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2578CD05B0C8B1A8681530D /* LumenWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LumenWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3951005B2F5025802D70245 /* Intents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Intents.swift; sourceTree = "<group>"; };
+		A5203E1AE0D125BF1785C0B0 /* LumenWatchWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWatchWidgets.swift; sourceTree = "<group>"; };
+		A64BDC272CA2CC470B9F21CE /* HaloView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HaloView.swift; sourceTree = "<group>"; };
+		A789433B45FE17878F78624C /* LumenActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenActivity.swift; sourceTree = "<group>"; };
+		AB2A9D069A028B0C85148344 /* Composer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Composer.swift; sourceTree = "<group>"; };
+		AC2901F2CFD67E0FB5E41A3B /* BiometricKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricKey.swift; sourceTree = "<group>"; };
+		AD9072799EDECCD0235C7719 /* Controls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controls.swift; sourceTree = "<group>"; };
+		B1B5812BEC31A961C492F0A2 /* LumenCompanionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenCompanionApp.swift; sourceTree = "<group>"; };
+		B4D04446C9C2DED1DE27ACF3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		B54C4425F6A912CA7B949002 /* SecurityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityTests.swift; sourceTree = "<group>"; };
+		BEB4F24CDB97D232FF57494C /* Sheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sheets.swift; sourceTree = "<group>"; };
+		C52A060A56BB16E8B1FEF91B /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
+		CCFB364E570A4729905BBEDD /* LumenClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenClient.swift; sourceTree = "<group>"; };
+		CF6FBAF0FE089809E7A14C02 /* LumenShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LumenShare.entitlements; sourceTree = "<group>"; };
+		D4B8A78A7850D0F3FEB3BBC0 /* SpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechService.swift; sourceTree = "<group>"; };
+		D5248B18FE8A3A0ECCAC3A16 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		D714927164385B767334FABB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		DCA6BDFF29078310E6224F28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		DF46BDB0DC6D01D5E8FE3563 /* VaultIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaultIntents.swift; sourceTree = "<group>"; };
+		E687F69DB92B9FF60EC16C5F /* LumenWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LumenWatchWidgets.entitlements; sourceTree = "<group>"; };
+		E6BE0F78D8D713F2A001CFB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		EE03A03B62B2ABBF56537C92 /* SharedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStore.swift; sourceTree = "<group>"; };
+		EFB4C309CB7DB585229BB30B /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		F5621D1C49FD09FF1613431B /* LumenCompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumenCompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F77BC3393F255BE938AC7AB7 /* PushManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		12EC9A32DA889BB8970CDCCA /* LumenWatchWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				058AF81B251525A9D041B059 /* Info.plist */,
+				E687F69DB92B9FF60EC16C5F /* LumenWatchWidgets.entitlements */,
+				A5203E1AE0D125BF1785C0B0 /* LumenWatchWidgets.swift */,
+			);
+			path = LumenWatchWidgets;
+			sourceTree = "<group>";
+		};
+		1E5E3A786ADF0D1B58BE296A /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				AD9072799EDECCD0235C7719 /* Controls.swift */,
+				D714927164385B767334FABB /* Localizable.xcstrings */,
+				A789433B45FE17878F78624C /* LumenActivity.swift */,
+				EE03A03B62B2ABBF56537C92 /* SharedStore.swift */,
+				0958FBD30A6F9DA9F023B1E1 /* Vault.swift */,
+				DF46BDB0DC6D01D5E8FE3563 /* VaultIntents.swift */,
+				65BD2C3A6E1B851F1F0D536B /* WidgetIntents.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		611B4FD43EB4E9C206A79C4E /* LumenCompanion */ = {
+			isa = PBXGroup;
+			children = (
+				007149C3D4C91036BD000B50 /* AgentAvatarView.swift */,
+				6FB51E30A05FC06A3D3B2A7E /* AgentsView.swift */,
+				7631D1F131355AE6F7CD3135 /* Assets.xcassets */,
+				AC2901F2CFD67E0FB5E41A3B /* BiometricKey.swift */,
+				6620037D0596FDD6DD885CB4 /* CertificateTrust.swift */,
+				506F70FE1362EA988FC6E4B6 /* ChatView.swift */,
+				AB2A9D069A028B0C85148344 /* Composer.swift */,
+				1BB65211356D44DD805514A0 /* DataHub.swift */,
+				95DD22605C81903C885FF764 /* Discovery.swift */,
+				A64BDC272CA2CC470B9F21CE /* HaloView.swift */,
+				032C14B6E1C7915470C65FE1 /* Iconography.swift */,
+				DCA6BDFF29078310E6224F28 /* Info.plist */,
+				0BB393A9E2F4157A701C1D93 /* InfoPlist.xcstrings */,
+				A3951005B2F5025802D70245 /* Intents.swift */,
+				58CCCCF330C8A5B995B4CB2A /* KENNEY-LICENSE.txt */,
+				B4D04446C9C2DED1DE27ACF3 /* Keychain.swift */,
+				3C438DB3A11159FDC988FA79 /* LocalAI.swift */,
+				CCFB364E570A4729905BBEDD /* LumenClient.swift */,
+				65764CC159DDCE7928E41346 /* LumenCompanion.entitlements */,
+				B1B5812BEC31A961C492F0A2 /* LumenCompanionApp.swift */,
+				32C61AA75ECB9C307CF81190 /* LumenFiles.swift */,
+				2A0F2E7D9D917BB1F4785958 /* MarkdownView.swift */,
+				50FECD71161304AECBF99C46 /* MessagesView.swift */,
+				6D3AB666C24E72F0D7F63AA1 /* MessengerView.swift */,
+				D5248B18FE8A3A0ECCAC3A16 /* Models.swift */,
+				8B4E6079E160A3524D43821B /* PairingView.swift */,
+				F77BC3393F255BE938AC7AB7 /* PushManager.swift */,
+				52369494CC75B31C89506BF7 /* QRScannerView.swift */,
+				4FEA1948E66C863B9C23A341 /* Sensors.swift */,
+				89A0D71A5BA62D040A29E1F2 /* SensorsView.swift */,
+				843BDA68AC4A5C4B87C03A76 /* ServerStore.swift */,
+				C52A060A56BB16E8B1FEF91B /* SetupView.swift */,
+				BEB4F24CDB97D232FF57494C /* Sheets.swift */,
+				96358A4238978F32FF566278 /* ShortcutIntents.swift */,
+				D4B8A78A7850D0F3FEB3BBC0 /* SpeechService.swift */,
+				5BD7134E2AB42569AAE56C15 /* SystemIntents.swift */,
+				7064B1E57FE4E6CA8F7A0162 /* Theme.swift */,
+				44892B2B1264020235C714A2 /* VaultView.swift */,
+				7F9F9EE0ADB35DD3FEDC5D24 /* WatchBridge.swift */,
+			);
+			path = LumenCompanion;
+			sourceTree = "<group>";
+		};
+		88A2D31D8E0001BB06E3DFBF = {
+			isa = PBXGroup;
+			children = (
+				611B4FD43EB4E9C206A79C4E /* LumenCompanion */,
+				D6EE84983F2B7C07E05B5CD4 /* LumenCompanionTests */,
+				FBB3E3371C0EFE4C4D06F9B0 /* LumenShare */,
+				9B4B14FDD65280A2B1FFF772 /* LumenWatch */,
+				12EC9A32DA889BB8970CDCCA /* LumenWatchWidgets */,
+				FC58FAA9E1AEA7EB89EC227C /* LumenWidgets */,
+				1E5E3A786ADF0D1B58BE296A /* Shared */,
+				A07E4B68A28D44EBD908CEBB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9B4B14FDD65280A2B1FFF772 /* LumenWatch */ = {
+			isa = PBXGroup;
+			children = (
+				95C8DED6971274CFA3CF1563 /* Assets.xcassets */,
+				9DD7717D7CF605F9687AD91B /* Info.plist */,
+				EFB4C309CB7DB585229BB30B /* Localizable.xcstrings */,
+				23435E3B54B6225A3CF36591 /* LumenWatch.entitlements */,
+				221FA62D000474ED4461E038 /* LumenWatchApp.swift */,
+			);
+			path = LumenWatch;
+			sourceTree = "<group>";
+		};
+		A07E4B68A28D44EBD908CEBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F5621D1C49FD09FF1613431B /* LumenCompanion.app */,
+				9BC7F67E6970CF60ED1C272D /* LumenCompanionTests.xctest */,
+				9E8357BB9E44E9313C2E5BE9 /* LumenShare.appex */,
+				6997D1CAEF0FA4A3D16D2055 /* LumenWatch.app */,
+				55403BBB7C24A3D0F85D45B0 /* LumenWatchWidgets.appex */,
+				A2578CD05B0C8B1A8681530D /* LumenWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D6EE84983F2B7C07E05B5CD4 /* LumenCompanionTests */ = {
+			isa = PBXGroup;
+			children = (
+				B54C4425F6A912CA7B949002 /* SecurityTests.swift */,
+			);
+			path = LumenCompanionTests;
+			sourceTree = "<group>";
+		};
+		FBB3E3371C0EFE4C4D06F9B0 /* LumenShare */ = {
+			isa = PBXGroup;
+			children = (
+				48A1935ADFAB80EFA57AF146 /* Info.plist */,
+				CF6FBAF0FE089809E7A14C02 /* LumenShare.entitlements */,
+				2DB4600B65F6D68F431CF0D0 /* ShareViewController.swift */,
+			);
+			path = LumenShare;
+			sourceTree = "<group>";
+		};
+		FC58FAA9E1AEA7EB89EC227C /* LumenWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				E6BE0F78D8D713F2A001CFB5 /* Info.plist */,
+				39D82C9BD8186AE34BA87547 /* LumenWidgets.entitlements */,
+				7A7CBE881CF5A79EAB70C89E /* LumenWidgets.swift */,
+				3A00EAA90E0117FB36C0A6D1 /* StatusWidget.swift */,
+			);
+			path = LumenWidgets;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		06ACD69175FDE32D99A49928 /* LumenCompanion */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D7EB0641A8D648CBC7230B98 /* Build configuration list for PBXNativeTarget "LumenCompanion" */;
+			buildPhases = (
+				9EA180285C4A565694D6EE7D /* Sources */,
+				71801D887BD3EFD2828D79F1 /* Resources */,
+				D88647650532E18D689586F0 /* Embed Foundation Extensions */,
+				ABE1EE687887E3319D6AC7AD /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B629932A12ED2A9B4E6B105E /* PBXTargetDependency */,
+				D1D0B3F0CFF9B5EDB5F34D00 /* PBXTargetDependency */,
+				DE8F4CE6ED6AEC070480505B /* PBXTargetDependency */,
+			);
+			name = LumenCompanion;
+			packageProductDependencies = (
+			);
+			productName = LumenCompanion;
+			productReference = F5621D1C49FD09FF1613431B /* LumenCompanion.app */;
+			productType = "com.apple.product-type.application";
+		};
+		182B3EAA1D6A6FD66A79FAB7 /* LumenWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9E8CC97CD1FD3C709833ECD7 /* Build configuration list for PBXNativeTarget "LumenWidgets" */;
+			buildPhases = (
+				6BC2730E2209FB6493A4E81E /* Sources */,
+				CBBEAA01261251553443EB7D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LumenWidgets;
+			packageProductDependencies = (
+			);
+			productName = LumenWidgets;
+			productReference = A2578CD05B0C8B1A8681530D /* LumenWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		39A900D0CD0321B691F803C1 /* LumenCompanionTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A3CAAFD99B1E6E65D0FF7C27 /* Build configuration list for PBXNativeTarget "LumenCompanionTests" */;
+			buildPhases = (
+				6E89526982B62ABEB8B68A05 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F7FC64C684C9269B3B25261B /* PBXTargetDependency */,
+			);
+			name = LumenCompanionTests;
+			packageProductDependencies = (
+			);
+			productName = LumenCompanionTests;
+			productReference = 9BC7F67E6970CF60ED1C272D /* LumenCompanionTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4472EA8310463593067F0891 /* LumenWatchWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 635B38C268BAD05B2B3AE910 /* Build configuration list for PBXNativeTarget "LumenWatchWidgets" */;
+			buildPhases = (
+				B9C7EFA5AE2C503C289563E4 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LumenWatchWidgets;
+			packageProductDependencies = (
+			);
+			productName = LumenWatchWidgets;
+			productReference = 55403BBB7C24A3D0F85D45B0 /* LumenWatchWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		50463C3205827ABBD759F605 /* LumenWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 481F3EBAB6FB92A9F4A30579 /* Build configuration list for PBXNativeTarget "LumenWatch" */;
+			buildPhases = (
+				7AAE763529D07217D1F1B66B /* Sources */,
+				D76A9A2252CE67FEA22110DA /* Resources */,
+				06599DC4C253B77732EFA9BB /* Embed Dependencies */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BAD78C5EE3593CC04DDC0B32 /* PBXTargetDependency */,
+			);
+			name = LumenWatch;
+			packageProductDependencies = (
+			);
+			productName = LumenWatch;
+			productReference = 6997D1CAEF0FA4A3D16D2055 /* LumenWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8AA2E4B2B22C45C80D4E3AB2 /* LumenShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB81EAE2B5717B2774A685A3 /* Build configuration list for PBXNativeTarget "LumenShare" */;
+			buildPhases = (
+				8F1486B3A3EB4EAB5C85C29C /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LumenShare;
+			packageProductDependencies = (
+			);
+			productName = LumenShare;
+			productReference = 9E8357BB9E44E9313C2E5BE9 /* LumenShare.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D081FB636FC86E1612A0E32D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					06ACD69175FDE32D99A49928 = {
+						ProvisioningStyle = Automatic;
+					};
+					182B3EAA1D6A6FD66A79FAB7 = {
+						ProvisioningStyle = Automatic;
+					};
+					39A900D0CD0321B691F803C1 = {
+						ProvisioningStyle = Automatic;
+					};
+					4472EA8310463593067F0891 = {
+						ProvisioningStyle = Automatic;
+					};
+					50463C3205827ABBD759F605 = {
+						ProvisioningStyle = Automatic;
+					};
+					8AA2E4B2B22C45C80D4E3AB2 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = A2E34B4075EDAF3D76DCA739 /* Build configuration list for PBXProject "LumenCompanion" */;
+			developmentRegion = fr;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				fr,
+			);
+			mainGroup = 88A2D31D8E0001BB06E3DFBF;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A07E4B68A28D44EBD908CEBB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				06ACD69175FDE32D99A49928 /* LumenCompanion */,
+				182B3EAA1D6A6FD66A79FAB7 /* LumenWidgets */,
+				8AA2E4B2B22C45C80D4E3AB2 /* LumenShare */,
+				50463C3205827ABBD759F605 /* LumenWatch */,
+				4472EA8310463593067F0891 /* LumenWatchWidgets */,
+				39A900D0CD0321B691F803C1 /* LumenCompanionTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		71801D887BD3EFD2828D79F1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4A5CF0607EFE5F48D09ED4A /* Assets.xcassets in Resources */,
+				56772614146565ECD58620C6 /* InfoPlist.xcstrings in Resources */,
+				ED35D236FD955CC2DCF163AE /* KENNEY-LICENSE.txt in Resources */,
+				2170F1AF44130CD14D7351CC /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CBBEAA01261251553443EB7D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C26C4B0CF0A00CB0D5FFD34B /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D76A9A2252CE67FEA22110DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C06A19950A15C262EE62259A /* Assets.xcassets in Resources */,
+				3B48FB73E490F8E0B0688D8B /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6BC2730E2209FB6493A4E81E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				64CF39AF34C0C0DD6ED6ADAE /* Controls.swift in Sources */,
+				D3E0BF76E3C3B8C1D7ECDE33 /* LumenActivity.swift in Sources */,
+				64E8CC313EEEE7BCA2DE940C /* LumenWidgets.swift in Sources */,
+				80D1C81B5C50CB739B46D56A /* SharedStore.swift in Sources */,
+				BE8E1A41D23F4926DEF38F11 /* StatusWidget.swift in Sources */,
+				C5408C717EE651757C61B8AE /* Vault.swift in Sources */,
+				183D99090FA32267CA60D24B /* VaultIntents.swift in Sources */,
+				FF850350B1265D69A9A37CBA /* WidgetIntents.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6E89526982B62ABEB8B68A05 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89BECC364E84EF0BEF9ECB22 /* SecurityTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7AAE763529D07217D1F1B66B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C596C5DB492C63B381C1809E /* LumenWatchApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8F1486B3A3EB4EAB5C85C29C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E572040BABD24D45912CAADA /* ShareViewController.swift in Sources */,
+				8968D496483C64EF09F51983 /* SharedStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA180285C4A565694D6EE7D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FAF5CECD09152B59120BC34 /* AgentAvatarView.swift in Sources */,
+				17A615A8B61C61056C2745BC /* AgentsView.swift in Sources */,
+				65D0040334B65477B07C2EF1 /* BiometricKey.swift in Sources */,
+				4B24A228A74B99213E8749E8 /* CertificateTrust.swift in Sources */,
+				46945A2DDB5DA79EB100DCBE /* ChatView.swift in Sources */,
+				0EE6B3C6E08F7EA7CD52BA14 /* Composer.swift in Sources */,
+				7D63164A1AFC411510DB2F08 /* Controls.swift in Sources */,
+				30FF7100B15550949DEDDC88 /* DataHub.swift in Sources */,
+				3FAA89223978D62105861B94 /* Discovery.swift in Sources */,
+				112BACA069CA858162A6C9AD /* HaloView.swift in Sources */,
+				083174F18AFC3539A349FE9A /* Iconography.swift in Sources */,
+				98D83562D7AB1BA2C53BAD84 /* Intents.swift in Sources */,
+				2380E16845B6F5F417F56356 /* Keychain.swift in Sources */,
+				5A71121F61B8E63A8ED8238E /* LocalAI.swift in Sources */,
+				5970998DDDE535717001ACCC /* LumenActivity.swift in Sources */,
+				22560038363B5793FED10192 /* LumenClient.swift in Sources */,
+				B127F8BB8BB08B7F2E73BCD5 /* LumenCompanionApp.swift in Sources */,
+				CB396A6373EC4F2AEF5CEA15 /* LumenFiles.swift in Sources */,
+				D3F4F1E7D56E296CE08E105A /* MarkdownView.swift in Sources */,
+				3BCB4E350F11E1025C4F8C00 /* MessagesView.swift in Sources */,
+				C807E82315D1AEFD5DC31CB0 /* MessengerView.swift in Sources */,
+				802D5F959403252150093A56 /* Models.swift in Sources */,
+				EAB91336A1E5718B4D730A57 /* PairingView.swift in Sources */,
+				CDFF53909A28F97ED340269B /* PushManager.swift in Sources */,
+				106118B5911963F22712BD6B /* QRScannerView.swift in Sources */,
+				B32330B9E38F8768C751E32A /* Sensors.swift in Sources */,
+				7543AC0222CBB08869222C15 /* SensorsView.swift in Sources */,
+				42930A4428993D9FEF2CFED7 /* ServerStore.swift in Sources */,
+				4BC89587B5C98D4338C2A51D /* SetupView.swift in Sources */,
+				26F250756C3B8DB4A48BC72F /* SharedStore.swift in Sources */,
+				D1731672776D8F603623DB4B /* Sheets.swift in Sources */,
+				88D5F0338C7421396DE3E13D /* ShortcutIntents.swift in Sources */,
+				166F75AB26FEA1693D13B248 /* SpeechService.swift in Sources */,
+				79A6DA5ACAFE6E2618F31C49 /* SystemIntents.swift in Sources */,
+				10416A8D6B8761C7FD46EF76 /* Theme.swift in Sources */,
+				BE126169EA1B02203979B6D9 /* Vault.swift in Sources */,
+				7C77F383D150639DAD8C65E7 /* VaultIntents.swift in Sources */,
+				624F19CD3D1D870B405FEE99 /* VaultView.swift in Sources */,
+				57A9CD8F97C92CFCE92D4438 /* WatchBridge.swift in Sources */,
+				5B26471A3A71D90C8B97DEBA /* WidgetIntents.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9C7EFA5AE2C503C289563E4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0A55F8E9F1E76CC5B5D204A9 /* LumenWatchWidgets.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B629932A12ED2A9B4E6B105E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 182B3EAA1D6A6FD66A79FAB7 /* LumenWidgets */;
+			targetProxy = 9161F1B90CC1F287061D9838 /* PBXContainerItemProxy */;
+		};
+		BAD78C5EE3593CC04DDC0B32 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4472EA8310463593067F0891 /* LumenWatchWidgets */;
+			targetProxy = E7B6295E1DCF3810A6B2F284 /* PBXContainerItemProxy */;
+		};
+		D1D0B3F0CFF9B5EDB5F34D00 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8AA2E4B2B22C45C80D4E3AB2 /* LumenShare */;
+			targetProxy = 52E1EC994015F76A007E180B /* PBXContainerItemProxy */;
+		};
+		DE8F4CE6ED6AEC070480505B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 50463C3205827ABBD759F605 /* LumenWatch */;
+			targetProxy = 1579F946A5BB1443C4C40947 /* PBXContainerItemProxy */;
+		};
+		F7FC64C684C9269B3B25261B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 06ACD69175FDE32D99A49928 /* LumenCompanion */;
+			targetProxy = FFDC2828AEF15F7803B64783 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		03B14BC89AFB0633C318B92F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 3V4XRB3274;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LumenCompanion.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LumenCompanion";
+			};
+			name = Debug;
+		};
+		0B2795D84457004083B1A91F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 0.3.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		1A8600D4506CA9CA8315E87D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LumenWidgets/LumenWidgets.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumenWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		20DE1A07E4283268E59FCBAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LumenCompanion.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LumenCompanion";
+			};
+			name = Release;
+		};
+		4F75C4FC88CA96309F8A5B58 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 0.3.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		766EC857E2CEF87B01905F6A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LumenShare/LumenShare.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumenShare/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion.share;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7B61D09DF2FBED70B8F05B0B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = LumenWatch/LumenWatch.entitlements;
+				DEVELOPMENT_TEAM = 3V4XRB3274;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumenWatch/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion.watchkitapp;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		8826188411EEDA30C7A98B00 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = LumenWatch/LumenWatch.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumenWatch/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion.watchkitapp;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		91F5EEA47FA3EEF2D240F7B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LumenShare/LumenShare.entitlements;
+				DEVELOPMENT_TEAM = 3V4XRB3274;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumenShare/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion.share;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A193D7A23D2977FAFA507039 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = LumenCompanion/LumenCompanion.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3V4XRB3274;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumenCompanion/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-weak_framework",
+					FoundationModels,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA0F4CFDB4A8F997FBD485DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LumenWatchWidgets/LumenWatchWidgets.entitlements;
+				DEVELOPMENT_TEAM = 3V4XRB3274;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumenWatchWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion.watchkitapp.widgets;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		C2D9004251861BB4C2B7F6FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LumenWidgets/LumenWidgets.entitlements;
+				DEVELOPMENT_TEAM = 3V4XRB3274;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumenWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F82DD70504D0B49005B3D02A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LumenWatchWidgets/LumenWatchWidgets.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumenWatchWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion.watchkitapp.widgets;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		F94EFC8B91CE405CA8615429 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = LumenCompanion/LumenCompanion.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumenCompanion/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-weak_framework",
+					FoundationModels,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.oneil974.lumen.companion;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		481F3EBAB6FB92A9F4A30579 /* Build configuration list for PBXNativeTarget "LumenWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7B61D09DF2FBED70B8F05B0B /* Debug */,
+				8826188411EEDA30C7A98B00 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		635B38C268BAD05B2B3AE910 /* Build configuration list for PBXNativeTarget "LumenWatchWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0F4CFDB4A8F997FBD485DA /* Debug */,
+				F82DD70504D0B49005B3D02A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9E8CC97CD1FD3C709833ECD7 /* Build configuration list for PBXNativeTarget "LumenWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2D9004251861BB4C2B7F6FF /* Debug */,
+				1A8600D4506CA9CA8315E87D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A2E34B4075EDAF3D76DCA739 /* Build configuration list for PBXProject "LumenCompanion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F75C4FC88CA96309F8A5B58 /* Debug */,
+				0B2795D84457004083B1A91F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A3CAAFD99B1E6E65D0FF7C27 /* Build configuration list for PBXNativeTarget "LumenCompanionTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				03B14BC89AFB0633C318B92F /* Debug */,
+				20DE1A07E4283268E59FCBAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BB81EAE2B5717B2774A685A3 /* Build configuration list for PBXNativeTarget "LumenShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91F5EEA47FA3EEF2D240F7B1 /* Debug */,
+				766EC857E2CEF87B01905F6A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D7EB0641A8D648CBC7230B98 /* Build configuration list for PBXNativeTarget "LumenCompanion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A193D7A23D2977FAFA507039 /* Debug */,
+				F94EFC8B91CE405CA8615429 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D081FB636FC86E1612A0E32D /* Project object */;
+}

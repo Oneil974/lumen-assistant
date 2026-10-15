@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!-- Éditeur de code de Lumen — un mini Visual Studio Code à la sauce shadcn/ui.
+     Barre d'activité (Explorateur, Recherche, Versions, IA), onglets de
+     fichiers, fil d'Ariane, ligne courante, barre d'état, palette de commandes
+     (⌘⇧P) et ouverture rapide (⌘P). Le panneau IA a son PROPRE backend et son
+     propre modèle pour le code (cf. ai-backend.js), indépendants de Lumen. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Éditeur de code</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=5" />
+    <script type="module" src="./main.js?v=5" defer></script>
+    <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- ===== Barre de titre ===== -->
+      <header class="titlebar">
+        <div class="brand"><span class="brand-ic" id="brand-ic"></span><span class="brand-title">Éditeur</span></div>
+        <button class="cmd-search" id="btn-quick-open" title="Ouvrir un fichier (⌘P)">
+          <span class="cmd-search-ic" id="cmd-search-ic"></span>
+          <span class="cmd-search-txt" id="cmd-search-txt">Rechercher des fichiers</span>
+          <kbd>⌘P</kbd>
+        </button>
+        <div class="spacer"></div>
+        <button class="btn btn-ghost ic-btn" id="btn-ai-folder" title="Modifier tout le dossier avec l'IA (contexte HTML/CSS/JS complet)"><span class="lbl">IA dossier</span></button>
+        <button class="btn btn-ghost ic-btn" id="btn-preview" title="Aperçu de l'app HTML (⌘↵)"><span class="lbl">Aperçu</span></button>
+        <button class="btn btn-ghost icon-only" id="btn-theme" title="Thème clair/sombre"></button>
+        <button class="btn btn-ghost icon-only" id="btn-toggle-chat" title="Panneau IA (⌘I)"></button>
+        <button class="btn btn-primary" id="btn-save" title="Enregistrer (⌘S)">Enregistrer</button>
+      </header>
+
+      <main class="workbench">
+        <!-- ===== Barre d'activité ===== -->
+        <nav class="activitybar" id="activitybar">
+          <button class="act" data-view="explorer" title="Explorateur (⌘⇧E)"></button>
+          <button class="act" data-view="search" title="Rechercher dans les fichiers (⌘⇧F)"></button>
+          <button class="act" data-view="history" id="btn-history" title="Versions du fichier"></button>
+          <div class="spacer"></div>
+          <button class="act" data-view="ai" title="Assistant de code (⌘I)"></button>
+          <button class="act" id="btn-palette" title="Palette de commandes (⌘⇧P)"></button>
+        </nav>
+
+        <!-- ===== Barre latérale ===== -->
+        <aside class="sidebar" id="sidebar">
+          <!-- Explorateur -->
+          <section class="side-view" data-view="explorer">
+            <div class="side-head">
+              <span class="side-title">Explorateur</span>
+              <span class="spacer"></span>
+              <button class="icon-btn" id="btn-new-file" title="Nouveau fichier"></button>
+              <button class="icon-btn" id="btn-new-folder" title="Nouveau dossier"></button>
+              <button class="icon-btn" id="btn-import" title="Importer des fichiers (assets…)"></button>
+              <button class="icon-btn" id="btn-refresh-tree" title="Rafraîchir l'arborescence"></button>
+            </div>
+            <div class="side-sub">
+              <select id="sandbox-select" class="select select-block" title="Sandbox"></select>
+            </div>
+            <div class="side-section" id="open-editors-head">Éditeurs ouverts</div>
+            <div class="open-editors" id="open-editors"></div>
+            <div class="side-section">Fichiers</div>
+            <div class="files" id="files"></div>
+            <input type="file" id="ed-file-input" multiple hidden />
+          </section>
+
+          <!-- Recherche dans les fichiers -->
+          <section class="side-view" data-view="search" hidden>
+            <div class="side-head"><span class="side-title">Rechercher</span></div>
+            <div class="side-sub search-box">
+              <input id="search-input" class="input" placeholder="Rechercher" spellcheck="false" />
+              <div class="search-opts">
+                <button class="chip-toggle" id="search-case" title="Respecter la casse">Aa</button>
+                <button class="chip-toggle" id="search-regex" title="Expression régulière">.*</button>
+              </div>
+            </div>
+            <div class="search-state" id="search-state"></div>
+            <div class="search-results" id="search-results"></div>
+          </section>
+
+          <!-- Versions (snapshots de sandbox) -->
+          <section class="side-view" data-view="history" id="history" hidden>
+            <div class="side-head"><span class="side-title">Versions</span><span class="spacer"></span><button class="icon-btn" id="history-close" title="Fermer"></button></div>
+            <div class="history-list" id="history-list"></div>
+          </section>
+        </aside>
+        <div class="resizer" id="sidebar-resizer" title="Redimensionner"></div>
+
+        <!-- ===== Groupe d'éditeurs ===== -->
+        <section class="editor-group">
+          <div class="tabs" id="tabs"></div>
+          <div class="breadcrumbs" id="breadcrumbs">
+            <span class="path" id="open-path"></span>
+            <span class="dirty" id="dirty" hidden>●</span>
+          </div>
+          <div class="edit-area">
+            <div class="welcome" id="welcome">
+              <div class="welcome-card">
+                <div class="welcome-ic" id="welcome-ic"></div>
+                <h2>Éditeur de code</h2>
+                <p>Ouvrez un fichier dans l'explorateur, ou utilisez les raccourcis.</p>
+                <div class="welcome-keys">
+                  <span>Ouvrir un fichier</span><kbd>⌘P</kbd>
+                  <span>Palette de commandes</span><kbd>⌘⇧P</kbd>
+                  <span>Rechercher dans les fichiers</span><kbd>⌘⇧F</kbd>
+                  <span>Assistant de code</span><kbd>⌘I</kbd>
+                  <span>Enregistrer</span><kbd>⌘S</kbd>
+                </div>
+              </div>
+            </div>
+            <div class="editor" id="editor" hidden>
+              <div class="gutter" id="gutter"></div>
+              <div class="code-wrap">
+                <div class="cur-line" id="cur-line"></div>
+                <pre class="highlight" id="highlight" aria-hidden="true"><code></code></pre>
+                <textarea id="code" class="code-input" spellcheck="false" wrap="off"
+                  autocapitalize="off" autocomplete="off"></textarea>
+              </div>
+            </div>
+            <!-- Vue diff (historique) -->
+            <div class="diff-view" id="diff-view" hidden></div>
+          </div>
+        </section>
+
+        <!-- ===== Assistant de code ===== -->
+        <aside class="chat" id="chat" hidden>
+          <div class="side-head">
+            <span class="side-title">Assistant de code</span>
+            <span class="spacer"></span>
+            <button class="icon-btn" id="chat-clear" title="Nouvelle discussion"></button>
+            <button class="icon-btn" id="chat-close" title="Fermer"></button>
+          </div>
+          <div class="chat-model">
+            <button class="model-pill" id="chat-model" title="Backend et modèle pour le code"></button>
+          </div>
+          <div class="chat-log" id="chat-log">
+            <div class="chat-empty" id="chat-empty">
+              <b>Posez une question sur votre code.</b>
+              <span>Le fichier ouvert (ou la sélection) est joint automatiquement. Les blocs de code proposés s'insèrent en un clic.</span>
+            </div>
+          </div>
+          <div class="chat-compose">
+            <div class="chat-ctx" id="chat-ctx"></div>
+            <textarea id="chat-input" class="input chat-input" rows="3" placeholder="Demander, expliquer, corriger… (↵ pour envoyer)"></textarea>
+            <div class="chat-actions">
+              <label class="chat-attach"><input type="checkbox" id="chat-with-file" checked /> <span>Joindre le fichier</span></label>
+              <span class="spacer"></span>
+              <button class="btn btn-ghost" id="chat-stop" hidden>Arrêter</button>
+              <button class="btn btn-primary" id="chat-send">Envoyer</button>
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <!-- ===== Barre d'état ===== -->
+      <footer class="statusbar">
+        <button class="sb-item" id="sb-sandbox" title="Sandbox"></button>
+        <span class="sb-item" id="sb-dirty"></span>
+        <span class="spacer"></span>
+        <span class="sb-item" id="sb-pos">Ln 1, Col 1</span>
+        <span class="sb-item">Espaces : 2</span>
+        <span class="sb-item">UTF-8</span>
+        <span class="sb-item" id="sb-lang">Texte brut</span>
+        <button class="sb-item sb-ai" id="sb-model" title="Backend et modèle pour le code"></button>
+      </footer>
+    </div>
+
+    <!-- Popover : backend & modèle pour le code -->
+    <div class="popover" id="model-pop" hidden>
+      <div class="pop-head">Backend et modèle pour le code</div>
+      <label class="field"><span>Backend</span>
+        <select id="mp-source" class="select select-block"></select>
+      </label>
+      <label class="field" id="mp-model-row"><span id="mp-model-label">Modèle</span>
+        <input id="mp-model" class="input" list="mp-models" spellcheck="false" placeholder="Nom du modèle" />
+        <datalist id="mp-models"></datalist>
+      </label>
+      <div class="mp-list" id="mp-list"></div>
+      <p class="pop-hint" id="mp-hint"></p>
+      <div class="pop-actions">
+        <button class="btn btn-ghost" id="mp-reset" title="Revenir au backend de Lumen">Suivre Lumen</button>
+        <span class="spacer"></span>
+        <button class="btn btn-primary" id="mp-apply">Appliquer</button>
+      </div>
+    </div>
+
+    <!-- Palette de commandes / ouverture rapide -->
+    <div class="palette-ov" id="palette" hidden>
+      <div class="palette">
+        <input id="palette-input" class="palette-input" spellcheck="false" />
+        <div class="palette-list" id="palette-list"></div>
+      </div>
+    </div>
+
+    <!-- Menu contextuel de l'arborescence (clic droit sur un fichier/dossier) -->
+    <div class="ctx-menu" id="tree-menu" hidden></div>
+
+    <!-- Modale : modifier tout un dossier avec l'IA -->
+    <div class="overlay" id="folder-ai-overlay" hidden>
+      <div class="mini-modal" style="width:min(640px,94vw)">
+        <h3>Modifier le dossier avec l'IA</h3>
+        <div class="fai-folder" id="fai-folder"></div>
+        <textarea id="fai-instr" rows="3" class="ta" placeholder="Ex. : ajoute un mode sombre, refactorise app.js, corrige le bug d'affichage, crée un fichier utils.js…"></textarea>
+        <div class="fai-controls">
+          <select id="fai-mode" class="select" title="Mode IA">
+            <option value="edit">Modifier avec diff</option>
+            <option value="agent">Agent de code</option>
+          </select>
+          <label class="fai-iter" id="fai-iter-wrap" hidden>Étapes max
+            <input type="number" id="fai-iters" min="2" max="30" value="12" />
+          </label>
+          <span class="spacer"></span>
+          <span class="fai-model" id="fai-model"></span>
+        </div>
+        <div class="fai-log" id="fai-log" hidden></div>
+        <div class="fai-result" id="fai-result" hidden></div>
+        <div class="mini-actions">
+          <span class="ai-state" id="fai-state"></span><span class="spacer"></span>
+          <button class="btn btn-outline" id="fai-cancel">Fermer</button>
+          <button class="btn btn-outline" id="fai-run">Préparer les diffs</button>
+          <button class="btn btn-primary" id="fai-apply" hidden disabled>Aucun changement accepté</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu contextuel (clic droit sur une sélection) -->
+    <div class="ctx-menu" id="ctx-menu" hidden>
+      <button data-act="ask" data-ic="sparkles">Demander à l'IA…</button>
+      <button data-act="ai" data-ic="sparkles">Modifier la sélection avec l'IA…</button>
+      <button data-act="explain" data-ic="message">Expliquer la sélection</button>
+      <button data-act="chat" data-ic="message">Envoyer à l'assistant</button>
+      <button data-act="copy" data-ic="copy">Copier</button>
+    </div>
+
+    <!-- Modale instruction IA -->
+    <div class="overlay" id="ai-overlay" hidden>
+      <div class="mini-modal">
+        <h3 id="ai-title">Modifier la sélection avec l'IA</h3>
+        <pre class="sel-preview" id="ai-sel"></pre>
+        <textarea id="ai-instr" rows="3" class="ta" placeholder="Ex. : ajoute la gestion des erreurs, renomme en camelCase, traduis les commentaires…"></textarea>
+        <div class="mini-actions">
+          <span class="ai-state" id="ai-state"></span><span class="spacer"></span>
+          <button class="btn btn-outline" id="ai-cancel">Annuler</button>
+          <button class="btn btn-primary" id="ai-run">Proposer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale revue du diff IA -->
+    <div class="overlay" id="review-overlay" hidden>
+      <div class="review-modal">
+        <h3>Proposition de l'IA</h3>
+        <div class="diff-view" id="review-diff"></div>
+        <div class="mini-actions">
+          <span class="spacer"></span>
+          <button class="btn btn-outline" id="review-reject">Refuser</button>
+          <button class="btn btn-primary" id="review-accept">Appliquer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

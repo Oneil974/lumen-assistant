@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<!-- Atelier ML : entraîne des modèles localement dans le navigateur. Tabulaire
+     (régression linéaire, régression logistique, réseau de neurones MLP) et
+     Texte (embeddings transformers.js gelés + tête linéaire). On crée le
+     dataset, on règle l'entraînement, on entraîne, on teste, puis on exporte le
+     modèle (JSON) dans une sandbox — utilisable ensuite par le bloc Fluxo
+     « Prédire (ML) ». -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Atelier ML</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=4" />
+    <script type="module" src="./main.js" defer></script>
+    <script type="module" src="./sk.js" defer></script>
+    <script type="module" src="./vision.js?v=1" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M12 7.5v4M11 13l-4 2.6M13 13l4 2.6"/></svg></span>
+          <div><div class="brand-title">Atelier ML <span class="beta-badge">Beta</span></div><div class="brand-sub" id="status">Tabulaire local et texte avec transformers.js</div></div>
+        </div>
+        <div class="spacer"></div>
+        <nav class="tabs">
+          <button class="tab active" data-tab="tab-tab">Tabulaire</button>
+          <button class="tab" data-tab="tab-text">Texte (classification)</button>
+          <button class="tab" data-tab="tab-sk">scikit-learn (Python)</button>
+          <button class="tab" data-tab="tab-vision">Vision (YOLO)</button>
+        </nav>
+      </header>
+
+
+      <!-- ===================== VISION (YOLO) ===================== -->
+      <!-- Étiquetage d'images (boîtes + classes) et détection avec des modèles
+           libres (YOLOv10, RT-DETR, YOLOS, DETR) exécutés localement ; export
+           d'un dataset au format YOLO pour l'entraînement. -->
+      <main class="page vision-page" id="tab-vision" hidden>
+        <section class="col v-images">
+          <h3>1 · Images</h3>
+          <select id="v-sandbox" class="inp"></select>
+          <select id="v-folder" class="inp"></select>
+          <div class="row gap">
+            <button class="btn tiny" id="v-import">Importer des images…</button>
+            <button class="btn tiny ghost" id="v-refresh" title="Recharger">⟳</button>
+          </div>
+          <input type="file" id="v-file" accept="image/*" multiple hidden />
+          <div class="v-stats muted" id="v-stats"></div>
+          <div class="v-list" id="v-list"></div>
+        </section>
+
+        <section class="col v-editor">
+          <div class="row gap v-bar">
+            <button class="btn tiny" id="v-prev" title="Image précédente (←)">←</button>
+            <span class="v-name" id="v-name">—</span>
+            <button class="btn tiny" id="v-next" title="Image suivante (→)">→</button>
+            <span class="spacer"></span>
+            <button class="btn tiny" id="v-clear" title="Effacer toutes les boîtes de l'image">Tout effacer</button>
+          </div>
+          <div class="v-stage" id="v-stage">
+            <div class="v-canvas" id="v-canvas">
+              <img id="v-img" alt="" draggable="false" />
+              <svg id="v-svg" viewBox="0 0 1 1" preserveAspectRatio="none"></svg>
+              <div class="v-labels" id="v-labels"></div>
+            </div>
+            <div class="v-empty muted" id="v-empty">Choisissez une sandbox contenant des images, ou importez-en.</div>
+          </div>
+          <p class="muted v-help">Glissez sur l'image pour tracer une zone. Clic : sélectionner · glisser : déplacer · coins : redimensionner · Suppr : effacer · 1-9 : classe de la boîte sélectionnée et des suivantes · Échap : désélectionner · ← → : image.</p>
+        </section>
+
+        <section class="col v-side">
+          <h3>2 · Classes</h3>
+          <div class="v-classes" id="v-classes"></div>
+          <div class="row gap">
+            <input id="v-new-class" class="inp" placeholder="Nouvelle classe (ex. voiture)" />
+            <button class="btn tiny" id="v-add-class">Ajouter</button>
+          </div>
+
+          <h3>3 · Détection (modèles libres)</h3>
+          <select id="v-model" class="inp"></select>
+          <div class="v-custom" id="v-custom" hidden>
+            <input id="v-custom-id" class="inp" placeholder="Identifiant Hugging Face (ONNX)" />
+            <select id="v-custom-kind" class="inp">
+              <option value="pipeline">Famille DETR / RT-DETR / YOLOS</option>
+              <option value="yolov10">Famille YOLOv10</option>
+            </select>
+          </div>
+          <label class="v-thr">Seuil de confiance <b id="v-thr-val">40 %</b><input type="range" id="v-thr" min="5" max="95" value="40" /></label>
+          <div class="row gap">
+            <button class="btn primary" id="v-detect">Détecter</button>
+            <button class="btn" id="v-accept" disabled>Accepter les suggestions</button>
+          </div>
+          <button class="btn tiny" id="v-auto">Pré-annoter toutes les images sans boîte</button>
+          <div class="muted v-model-status" id="v-model-status"></div>
+
+          <h3>4 · Exporter pour l'entraînement</h3>
+          <input id="v-ds-name" class="inp" value="mon-dataset" />
+          <label class="v-thr">Part de validation <b id="v-val-val">20 %</b><input type="range" id="v-val" min="5" max="50" value="20" /></label>
+          <label class="row gap v-check"><input type="checkbox" id="v-negatives" /> Inclure les images sans objet (exemples négatifs)</label>
+          <button class="btn primary" id="v-export">Exporter au format YOLO</button>
+          <div class="muted" id="v-export-status"></div>
+        </section>
+      </main>
+
+      <!-- ===================== TABULAIRE ===================== -->
+      <main class="page" id="tab-tab">
+        <section class="col data">
+          <h3>1 · Dataset</h3>
+          <div class="row gap">
+            <select id="t-synth"><option value="">Générer un exemple…</option><option value="linreg">Régression (bruitée)</option><option value="blobs">Classification (2 classes)</option><option value="iris3">Classification (3 classes)</option></select>
+            <label class="filebtn">Importer CSV<input type="file" id="t-csv" accept=".csv" hidden /></label>
+            <button class="btn" id="t-from-table" type="button">Depuis une table</button>
+          </div>
+          <div class="tablewrap"><table id="t-table"></table></div>
+          <div class="row gap">
+            <button class="btn" id="t-addrow">＋ Ligne</button>
+            <button class="btn" id="t-addcol">＋ Colonne</button>
+            <span class="muted" id="t-shape"></span>
+          </div>
+        </section>
+
+        <section class="col cfg">
+          <h3>2 · Modèle & entraînement</h3>
+          <label class="field"><span>Type de modèle</span>
+            <select id="t-model">
+              <option value="linear">Régression linéaire</option>
+              <option value="logistic">Régression logistique (classification)</option>
+              <option value="mlp">Réseau de neurones (MLP)</option>
+            </select>
+          </label>
+          <label class="field" id="t-hidden-f" hidden><span>Couches cachées</span>
+            <input type="text" id="t-hidden" value="16" placeholder="ex. 16 ou 32,16" />
+          </label>
+          <label class="field" id="t-task-f" hidden><span>Tâche</span>
+            <select id="t-task"><option value="regression">Régression</option><option value="classification">Classification</option></select>
+          </label>
+          <div class="grid2">
+            <label class="field"><span>Taux d'apprentissage</span><input type="number" id="t-lr" value="0.05" step="0.01" min="0.0001" /></label>
+            <label class="field"><span>Époques</span><input type="number" id="t-epochs" value="300" step="50" min="1" /></label>
+          </div>
+          <label class="field"><span>Part de test</span><input type="range" id="t-split" min="0" max="40" value="20" /><output id="t-split-out">20%</output></label>
+          <button class="btn primary big" id="t-train">▶ Entraîner</button>
+          <canvas id="t-loss" class="loss" width="360" height="120"></canvas>
+          <div class="metrics" id="t-metrics"></div>
+        </section>
+
+        <section class="col test">
+          <h3>3 · Tester & exporter</h3>
+          <div id="t-inputs" class="inputs"></div>
+          <button class="btn" id="t-predict" disabled>Prédire</button>
+          <div class="pred" id="t-pred">—</div>
+          <hr/>
+          <label class="field"><span>Nom du modèle</span><input type="text" id="t-name" value="mon_modele" /></label>
+          <label class="field"><span>Sorties ONNX</span>
+            <select id="t-onnx-q" multiple size="2">
+              <option value="fp32" selected>FP32 portable</option>
+              <option value="8" selected>Quantifié 8-bit</option>
+            </select>
+          </label>
+          <div class="row gap">
+            <select id="t-sandbox" class="grow"></select>
+            <button class="btn" id="t-save" disabled>💾 Sauver JSON</button>
+          </div>
+          <button class="btn primary" id="t-onnx" disabled>Télécharger ONNX</button>
+          <button class="btn ghost" id="t-download" disabled>⬇ Télécharger JSON</button>
+          <div class="muted" id="t-saved"></div>
+        </section>
+      </main>
+
+      <!-- ===================== SCIKIT-LEARN (PYODIDE) ===================== -->
+      <!-- Le studio « façon RpiML » : datasets CSV rangés dans une sandbox,
+           algorithmes scikit-learn entraînés dans l'interpréteur Python de Lumen
+           (Pyodide, en Web Worker), journal d'entraînement en direct, modèles
+           nommés avec leurs métriques, test, export (joblib / ONNX / kit Pi) et
+           déploiement SSH vers un Raspberry Pi. -->
+      <main class="page" id="tab-sk" hidden>
+        <section class="col data">
+          <h3>1 · Datasets</h3>
+          <div class="row gap">
+            <select id="sk-sandbox" class="grow"></select>
+            <button class="btn tiny" id="sk-refresh" title="Recharger">⟳</button>
+          </div>
+          <div class="row gap">
+            <label class="filebtn grow">Importer CSV<input type="file" id="sk-import" accept=".csv,.tsv,.txt" hidden /></label>
+            <button class="btn" id="sk-new-text">＋ Dataset texte</button>
+            <button class="btn ghost" id="sk-sample">Exemple</button>
+          </div>
+          <div class="sk-list" id="sk-datasets"></div>
+          <div id="sk-editor" class="sk-editor" hidden>
+            <div class="row gap"><input type="text" id="sk-ed-name" placeholder="nom_du_dataset" class="grow" /><button class="btn tiny" id="sk-ed-close">✕</button></div>
+            <div class="tablewrap sk-edit-table"><table id="sk-ed-table"></table></div>
+            <div class="row gap">
+              <button class="btn tiny" id="sk-ed-add">＋ Ligne</button>
+              <span class="muted" id="sk-ed-info"></span>
+              <span class="spacer"></span>
+              <button class="btn primary tiny" id="sk-ed-save">💾 Enregistrer</button>
+            </div>
+          </div>
+          <div id="sk-preview" class="sk-preview" hidden>
+            <div class="row gap"><b id="sk-pv-name"></b><span class="muted" id="sk-pv-shape"></span></div>
+            <label class="field"><span>Colonne cible</span><select id="sk-target"></select></label>
+            <div class="tablewrap sk-pv-table"><table id="sk-pv-table"></table></div>
+            <div class="muted" id="sk-pv-classes"></div>
+          </div>
+        </section>
+        <section class="col cfg">
+          <h3>2 · Entraînement</h3>
+          <div class="sk-runtime" id="sk-runtime"><span class="dot"></span><span id="sk-runtime-txt">Python : non démarré</span><span class="spacer"></span><button class="btn tiny" id="sk-runtime-btn">Démarrer</button></div>
+          <label class="field"><span>Algorithme</span>
+            <select id="sk-algo">
+              <option value="logistic_regression">Régression logistique</option>
+              <option value="decision_tree">Arbre de décision</option>
+              <option value="random_forest">Forêt aléatoire</option>
+              <option value="gradient_boosting">Gradient boosting</option>
+              <option value="svm">SVM</option>
+              <option value="knn">k plus proches voisins</option>
+              <option value="naive_bayes">Naive Bayes</option>
+              <option value="linear_regression">Régression linéaire (cible numérique)</option>
+              <option value="random_forest_regressor">Forêt aléatoire (régression)</option>
+            </select>
+          </label>
+          <div class="grid2" id="sk-params">
+            <label class="field" data-p="n_estimators"><span>Arbres</span><input type="number" id="sk-p-trees" value="100" min="1" /></label>
+            <label class="field" data-p="max_depth"><span>Profondeur max (0 = libre)</span><input type="number" id="sk-p-depth" value="0" min="0" /></label>
+            <label class="field" data-p="C"><span>C (régularisation)</span><input type="number" id="sk-p-c" value="1" step="0.1" min="0.01" /></label>
+            <label class="field" data-p="kernel"><span>Noyau SVM</span><select id="sk-p-kernel"><option value="linear">linéaire</option><option value="rbf" selected>RBF</option></select></label>
+            <label class="field" data-p="k"><span>k voisins</span><input type="number" id="sk-p-k" value="5" min="1" /></label>
+            <label class="field" data-p="lr"><span>Taux d'apprentissage</span><input type="number" id="sk-p-lr" value="0.1" step="0.01" min="0.001" /></label>
+          </div>
+          <label class="field"><span>Part de test</span><input type="range" id="sk-split" min="5" max="50" value="20" /><output id="sk-split-out">20%</output></label>
+          <label class="field"><span>Nom du modèle</span><input type="text" id="sk-name" placeholder="ex. commandes_robot" /></label>
+          <label class="chk"><input type="checkbox" id="sk-cv" /> Validation croisée (5 plis) en plus du test</label>
+          <button class="btn primary big" id="sk-train" disabled>▶ Entraîner</button>
+          <div class="metrics" id="sk-metrics"></div>
+          <div class="sk-confusion" id="sk-confusion"></div>
+          <details class="advanced" id="sk-log-box"><summary>Journal d'entraînement</summary><pre class="sk-log" id="sk-log"></pre></details>
+        </section>
+        <section class="col test">
+          <h3>3 · Modèles entraînés</h3>
+          <div class="sk-list" id="sk-models"></div>
+          <div id="sk-model" class="sk-model" hidden>
+            <div class="row gap"><b id="sk-m-name"></b><span class="muted" id="sk-m-meta"></span></div>
+            <div class="muted" id="sk-m-metrics"></div>
+            <div class="row gap">
+              <button class="btn tiny" id="sk-m-download">⬇ Kit (.zip)</button>
+              <button class="btn tiny" id="sk-m-onnx" hidden>⬇ ONNX</button>
+              <button class="btn tiny" id="sk-m-json" hidden>⬇ Fluxo (.mlmodel.json)</button>
+              <button class="btn tiny ghost" id="sk-m-delete">🗑</button>
+            </div>
+            <hr/>
+            <div id="sk-inputs" class="inputs"></div>
+            <label class="field" id="sk-text-f" hidden><span>Texte à classer</span><input type="text" id="sk-text" placeholder="Ex. : allume la caméra" /></label>
+            <button class="btn" id="sk-predict">Prédire (local)</button>
+            <div class="pred" id="sk-pred">—</div>
+            <details class="advanced">
+              <summary>Raspberry Pi · déploiement SSH et test à distance</summary>
+              <div class="grid2">
+                <label class="field"><span>Hôte</span><input type="text" id="sk-pi-host" placeholder="raspberrypi.local" /></label>
+                <label class="field"><span>Utilisateur</span><input type="text" id="sk-pi-user" value="pi" /></label>
+                <label class="field"><span>Port SSH</span><input type="number" id="sk-pi-port" value="22" /></label>
+                <label class="field"><span>Dossier distant</span><input type="text" id="sk-pi-dir" value="~/models" /></label>
+              </div>
+              <div class="muted">Authentification par clé SSH (ssh-copy-id) — aucun mot de passe n'est stocké.</div>
+              <div class="row gap">
+                <button class="btn tiny" id="sk-pi-check">Vérifier l'accès</button>
+                <button class="btn tiny" id="sk-pi-env">Préparer l'environnement</button>
+                <button class="btn primary tiny" id="sk-pi-deploy">Déployer</button>
+                <button class="btn tiny" id="sk-pi-start">Démarrer le serveur</button>
+              </div>
+              <div class="row gap">
+                <input type="text" id="sk-pi-url" placeholder="http://raspberrypi.local:8010/" class="grow" />
+                <button class="btn tiny" id="sk-pi-predict">Prédire à distance</button>
+              </div>
+              <pre class="sk-log small" id="sk-pi-log"></pre>
+            </details>
+          </div>
+        </section>
+      </main>
+      <!-- ===================== TEXTE ===================== -->
+      <main class="page text-page" id="tab-text" hidden>
+        <section class="col data">
+          <h3>1 · Dataset texte</h3>
+          <div class="row gap">
+            <input type="text" id="x-classname" placeholder="Nom de classe…" />
+            <button class="btn" id="x-addclass">＋ Classe</button>
+          </div>
+          <div class="row gap">
+            <label class="filebtn grow">Importer CSV texte,label<input type="file" id="x-csv" accept=".csv,.txt" hidden /></label>
+            <button class="btn ghost" id="x-synth">Charger exemple sentiments</button>
+          </div>
+          <label class="field"><span>Texte</span><textarea id="x-text" rows="5" placeholder="Phrase, avis, ticket support…"></textarea></label>
+          <div class="row gap">
+            <select id="x-label" class="grow"></select>
+            <button class="btn primary" id="x-add">Ajouter l'exemple</button>
+          </div>
+          <div id="x-classes" class="classes"></div>
+        </section>
+
+        <section class="col cfg">
+          <h3>2 · Entraînement local</h3>
+          <!-- Le moteur (transformers.js + poids ONNX quantifiés) n'est PAS inclus
+               dans le build : téléchargé au clic puis mis en cache (hors-ligne
+               ensuite). L'inférence tourne dans un Web Worker : l'UI ne gèle pas. -->
+          <label class="field"><span>Modèle d'embeddings (téléchargé à la demande)</span>
+            <select id="x-tjs-model">
+              <option value="Xenova/multilingual-e5-small" selected>multilingual-e5-small (~35 Mo, FR/multi)</option>
+              <option value="Xenova/paraphrase-multilingual-MiniLM-L12-v2">paraphrase-multilingual-MiniLM-L12-v2 (~50 Mo, FR/multi)</option>
+              <option value="Xenova/all-MiniLM-L6-v2">all-MiniLM-L6-v2 (~23 Mo, anglais)</option>
+            </select>
+          </label>
+          <label class="field"><span>Part validation (%)</span><input type="number" id="x-val" value="20" min="0" max="50" /></label>
+          <div class="row gap">
+            <button class="btn" id="x-tjs-dl">⬇ Télécharger le moteur</button>
+            <button class="btn primary" id="x-tjs-train" disabled>▶ Entraîner localement</button>
+            <button class="btn ghost" id="x-tjs-clean">Nettoyer cache ML</button>
+          </div>
+          <div class="muted" id="x-tjs-status">Embeddings gelés (quantifiés q8) + tête linéaire entraînée dans l'app. 100 % local.</div>
+          <canvas id="x-loss" class="loss" width="360" height="120"></canvas>
+          <div class="chart-legend"><span class="lg accent">— perte (apprentissage)</span><span class="lg ok">— exactitude (validation)</span></div>
+          <div class="metrics" id="x-metrics"></div>
+        </section>
+
+        <section class="col test">
+          <h3>3 · Tester &amp; exporter</h3>
+          <label class="field"><span>Tester une phrase</span><input type="text" id="x-tjs-input" placeholder="Texte à classer…" /></label>
+          <button class="btn" id="x-tjs-predict" disabled>Prédire</button>
+          <div class="pred" id="x-tjs-pred">—</div>
+          <hr/>
+          <label class="field"><span>Nom du modèle</span><input type="text" id="x-name" value="texte_distilbert" /></label>
+          <div class="row gap">
+            <select id="x-sandbox" class="grow"></select>
+            <button class="btn" id="x-tjs-save" disabled>💾 Sauver JSON</button>
+          </div>
+          <button class="btn ghost" id="x-tjs-download" disabled>⬇ Télécharger JSON</button>
+          <div class="muted" id="x-saved"></div>
+          <hr/>
+          <details class="advanced">
+            <summary>Avancé : kit Python (fine-tuning DistilBERT) &amp; analyse LLM</summary>
+            <p class="muted">Pour aller au-delà de la tête linéaire locale : exporte le dataset + un script PyTorch qui fine-tune DistilBERT puis produit un ONNX FP32/INT8 et un rapport de monitoring.</p>
+            <label class="field"><span>Modèle Hugging Face (kit Python)</span><input type="text" id="x-base" value="distilbert-base-multilingual-cased" /></label>
+            <div class="grid2">
+              <label class="field"><span>Longueur max</span><input type="number" id="x-maxlen" value="128" min="16" step="16" /></label>
+              <label class="field"><span>Époques</span><input type="number" id="x-epochs" value="5" min="1" /></label>
+            </div>
+            <div class="grid2">
+              <label class="field"><span>Batch</span><input type="number" id="x-batch" value="16" min="1" /></label>
+              <label class="field"><span>Taux d'apprentissage</span><input type="number" id="x-lr" value="0.001" step="0.0005" min="0.00001" /></label>
+            </div>
+            <label class="field"><span>Mode</span>
+              <select id="x-mode">
+                <option value="frozen">DistilBERT gelé + régression linéaire</option>
+                <option value="finetune">Fine-tuning complet (plus lourd)</option>
+              </select>
+            </label>
+            <button class="btn primary" id="x-export" disabled>Télécharger dataset + script</button>
+            <div class="muted" id="x-status">Le script entraîne, exporte ONNX FP32 puis quantifie en INT8 (ONNX Runtime CPU).</div>
+            <hr/>
+            <label class="field"><span>Rapport d'entraînement (optionnel)</span><textarea id="x-report" rows="5" placeholder="Collez training_report.json ou metrics.jsonl — sinon le LLM analyse l'entraînement local."></textarea></label>
+            <div class="row gap">
+              <button class="btn" id="x-prompt">Télécharger prompt LLM</button>
+              <button class="btn primary" id="x-explain">Expliquer avec le LLM</button>
+            </div>
+            <div class="metrics llm-out" id="x-llm"></div>
+          </details>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

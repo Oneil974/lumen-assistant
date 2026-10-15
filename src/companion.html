@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Lumen" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>Lumen — Compagnon</title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/icons/lumen-180.png" />
+    <script src="/lib/theme-init.js"></script>
+  <link rel="stylesheet" href="./lib/tokens.css?v=5" />
+<link rel="stylesheet" href="/companion.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Barre supérieure : trois zones fixes, comme les applications de chat
+         mobiles — navigation à gauche, sélecteur de modèle au centre, nouvelle
+         discussion à droite. -->
+    <header class="topbar">
+      <button class="icon-btn" id="btn-convos" aria-label="Conversations">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+      </button>
+
+      <button class="model-pill" id="btn-backend" aria-label="Backend et modèle">
+        <span class="model-pill-name" id="model-name">Lumen</span>
+        <span class="model-pill-sub" id="model-sub"></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+
+      <button class="icon-btn" id="btn-messages" aria-label="Messages">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-agents" aria-label="Activité des agents">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        <span class="badge" id="agents-badge" hidden></span>
+      </button>
+      <button class="icon-btn" id="btn-new" aria-label="Nouvelle discussion">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"/></svg>
+      </button>
+    </header>
+
+    <!-- Halo : la capsule du bureau, sur le téléphone. Elle flotte sous la
+         barre, montre l'agent au travail et ses appels d'outils au fil de
+         l'eau, et se déplie sur le déroulé complet quand on la touche.
+         Alimentée par le WebSocket (companion-halo.js). -->
+    <div id="halo" hidden></div>
+
+    <!-- Messages : mode messagerie simplifié (lib/messenger-ui.js). Plein
+         écran ; mémorisé, il devient l'écran d'accueil de l'app. -->
+    <div id="mx-root" class="mx-overlay" hidden></div>
+
+    <!-- Bandeau d'état : n'apparaît que quand quelque chose cloche (hors ligne,
+         reconnexion). En marche normale la barre reste vide, comme ailleurs. -->
+    <div class="statusbar" id="statusbar" hidden><span id="state-label"></span></div>
+
+    <main class="messages" id="messages">
+      <div class="empty" id="empty-hint">
+        <div class="empty-title">Comment puis-je vous aider ?</div>
+        <div class="empty-sub">Vos messages sont traités par votre ordinateur.</div>
+        <div class="suggestions" id="suggestions">
+          <button class="suggestion" data-prompt="Résume ma journée">Résume ma journée</button>
+          <button class="suggestion" data-prompt="Qu'est-ce qui tourne sur mon ordinateur ?">Qu'est-ce qui tourne sur mon ordinateur ?</button>
+          <button class="suggestion" data-prompt="Aide-moi à rédiger un message">Aide-moi à rédiger un message</button>
+        </div>
+      </div>
+      <div class="typing" id="typing" hidden><span></span><span></span><span></span></div>
+    </main>
+
+    <footer class="composer-wrap">
+      <div class="attachments" id="attachments" hidden></div>
+      <div class="composer">
+        <textarea id="input" rows="1" placeholder="Message à Lumen" enterkeyhint="send"></textarea>
+        <div class="composer-row">
+          <div class="composer-left">
+            <button class="ghost-btn" id="btn-attach" aria-label="Joindre un fichier">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg>
+            </button>
+            <!-- L'appareil photo est le seul capteur que l'ordinateur n'a pas : c'est
+                 la vraie raison d'ouvrir Lumen depuis un téléphone. -->
+            <button class="ghost-btn" id="btn-camera" aria-label="Prendre une photo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4l-1.5-2Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+            </button>
+            <button class="chip-btn" id="btn-voicecmd" aria-label="Commander le bureau" title="Commander le bureau">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+              <span>Bureau</span>
+            </button>
+            <button class="chip-btn" id="btn-orchestrate" aria-label="Réponse orchestrée" title="Réponse orchestrée" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8 7.5 11 16M16 7.5 13 16M8.5 6h7"/></svg>
+              <span>Orchestré</span>
+            </button>
+            <button class="chip-btn" id="btn-mode" aria-label="Mode de discussion" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h6"/></svg>
+              <span id="mode-tag">Chat</span>
+            </button>
+          </div>
+          <div class="composer-right"><button class="chip-btn" id="btn-vault" aria-label="Coffre personnel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></svg></button>
+            <button class="ghost-btn" id="btn-more" aria-label="Réglages">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
+              <span class="badge" id="more-badge" hidden></span>
+            </button>
+            <button class="ghost-btn" id="btn-mic" aria-label="Dictée">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg>
+            </button>
+            <button class="send-btn" id="btn-send" aria-label="Envoyer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="file-input" hidden accept=".pdf,.docx,.txt,.md,.csv,.json,.log,.rtf,image/*" />
+    </footer>
+  </div>
+
+  <!-- Tiroir latéral : conversations (comme la barre latérale du bureau). -->
+  <div class="overlay" id="drawer-backdrop" hidden></div>
+  <aside class="drawer" id="drawer" hidden aria-label="Conversations">
+    <div class="drawer-head">
+      <span class="brand">Lumen<span class="conn-dot" id="conn-dot" title="Déconnecté"></span></span>
+      <button class="icon-btn" id="drawer-close" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <button class="ghost-row" id="convo-new">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg>
+      <span>Nouvelle discussion</span>
+    </button>
+    <button class="ghost-row" id="convo-capture">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+      <span>Capture rapide</span>
+    </button>
+    <div class="section-label">Récentes</div>
+    <div class="list" id="convo-list"></div>
+  </aside>
+
+  <!-- Feuilles inférieures (motif « drawer » de shadcn/ui). -->
+  <div class="overlay" id="sheet-backdrop" hidden></div>
+
+  <aside class="sheet" id="backend-sheet" hidden aria-label="Backend et modèle">
+    <div class="grabber"></div>
+    <div class="sheet-head"><span>Backend</span><button class="icon-btn sheet-x" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body" id="backend-body"></div>
+  </aside>
+
+  <aside class="sheet" id="mode-sheet" hidden aria-label="Mode de discussion">
+    <div class="grabber"></div>
+    <div class="sheet-head"><span>Mode</span><button class="icon-btn sheet-x" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body" id="mode-body"></div>
+  </aside>
+
+  <aside class="sheet" id="more-sheet" hidden aria-label="Réglages">
+    <div class="grabber"></div>
+    <div class="sheet-head"><span>Réglages</span><button class="icon-btn sheet-x" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body">
+      <div class="section-label">Lecture à voix haute</div>
+      <div class="segmented" id="speak-seg" role="group" aria-label="Lecture auto">
+        <button data-mode="off">Aucune</button>
+        <button data-mode="phone">Cet appareil</button>
+        <button data-mode="desktop">Ordinateur</button>
+        <button data-mode="both">Les deux</button>
+      </div>
+      <div class="field">
+        <label for="voice-select">Voix de cet appareil</label>
+        <div class="field-row">
+          <select id="voice-select"><option value="">Voix par défaut</option></select>
+          <button class="outline-btn" id="voice-test">Test</button>
+        </div>
+      </div>
+      <div class="section-label">Langue</div>
+      <!-- Le téléphone ne connaît pas la langue réglée sur l'ordinateur :
+           « Automatique » suit celle de l'appareil (companion-i18n.js). -->
+      <div class="segmented" id="lang-seg" role="group" aria-label="Langue">
+        <button data-lang="auto">Automatique</button>
+        <button data-lang="fr">Français</button>
+        <button data-lang="en">English</button>
+      </div>
+      <div class="section-label">Apparence</div>
+      <div class="segmented" id="theme-seg" role="group" aria-label="Thème">
+        <button data-theme="light">Clair</button>
+        <button data-theme="dark">Sombre</button>
+      </div>
+      <!-- Couleur d'accent : chaque pastille porte l'attribut `data-ui-accent`,
+           donc sa propre valeur de `--accent-primary` — elle s'affiche dans sa
+           vraie couleur sans qu'aucune ne soit écrite ici. -->
+      <div class="swatches" id="accent-swatches" role="group" aria-label="Couleur d'accent"></div>
+      <div class="section-label">Activité</div>
+      <button class="ghost-row" id="menu-notifs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span>Notifications</span>
+        <span class="badge inline" id="menu-notif-badge" hidden></span>
+      </button>
+    </div>
+  </aside>
+
+  <aside class="sheet" id="notif-sheet" hidden aria-label="Notifications">
+    <div class="grabber"></div>
+    <div class="sheet-head"><span>Notifications</span><button class="icon-btn sheet-x" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body">
+      <button class="outline-btn wide" id="notif-clear">Tout effacer</button>
+      <div class="list" id="notif-list"></div>
+    </div>
+  </aside>
+
+  <!-- Capture rapide : noter sans ouvrir de conversation. Sur un téléphone on
+       capture bien plus souvent qu'on ne dialogue. -->
+  <aside class="sheet" id="capture-sheet" hidden aria-label="Capture rapide">
+    <div class="grabber"></div>
+    <div class="sheet-head"><span>Capture rapide</span><button class="icon-btn sheet-x" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body">
+      <p class="capture-intro">Capturez une idée. Retrouvez l’essentiel.</p>
+      <div class="capture-editor">
+        <div class="capture-toolbar" role="group" aria-label="Outils de la note">
+          <button class="outline-btn" id="capture-list" type="button">Liste</button>
+          <button class="outline-btn" id="capture-import" type="button">Importer un texte</button>
+          <button class="icon-btn" id="capture-expand" type="button" aria-label="Agrandir la note" aria-pressed="false">↗</button>
+        </div>
+        <input id="capture-title" type="text" maxlength="120" placeholder="Titre de la note" aria-label="Titre de la note" />
+        <textarea id="capture-text" rows="5" placeholder="Une idée, une course, un rappel…"></textarea>
+        <div class="capture-editor-foot"><span id="capture-count">0 mot</span><button class="outline-btn" id="capture-refine" type="button">Corriger avec l’IA</button></div>
+      </div>
+      <input id="capture-file" type="file" accept="text/plain,text/markdown,.txt,.md" hidden />
+      <div class="capture-review" id="capture-review" hidden>
+        <strong>Proposition de correction</strong>
+        <p id="capture-proposal"></p>
+        <div class="capture-toolbar"><button class="outline-btn" id="capture-accept" type="button">Appliquer</button><button class="outline-btn" id="capture-reject" type="button">Garder l’original</button></div>
+      </div>
+      <p class="capture-status" id="capture-status" role="status" aria-live="polite"></p>
+      <div class="segmented" id="capture-kind" role="group" aria-label="Destination">
+        <button data-kind="note" class="active">Note</button>
+        <button data-kind="task">Agent</button>
+        <button data-kind="reminder">Rappel</button>
+        <button data-kind="card">Tableau</button>
+      </div>
+      <!-- Destinataire : sans agent, une capture ne serait jamais traitée. -->
+      <div class="field" id="capture-agent-row">
+        <label for="capture-agent">Quel agent s'en charge ?</label>
+        <select id="capture-agent"></select>
+        <div class="capture-agent-preview" id="capture-agent-preview"></div>
+      </div>
+      <div class="field" id="capture-when-row" hidden>
+        <label for="capture-when">Dans combien de temps ?</label>
+        <select id="capture-when">
+          <option value="3600000">1 heure</option>
+          <option value="10800000">3 heures</option>
+          <option value="86400000">Demain</option>
+          <option value="604800000">La semaine prochaine</option>
+        </select>
+      </div>
+      <button class="primary-btn wide" id="capture-send">Enregistrer</button>
+    </div>
+  </aside>
+
+  <!-- Activité des agents : ce qui tourne, ce qui a fini, ce qui ATTEND une
+       décision — c'est cette dernière liste qui justifie l'écran. -->
+  <aside class="sheet tall" id="agents-sheet" hidden aria-label="Agents">
+    <div class="grabber"></div>
+    <div class="sheet-head"><span>Agents</span><button class="icon-btn sheet-x" data-close aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="sheet-body" id="agents-body">
+      <div class="agents-empty">Chargement…</div>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Appairage TOTP : masqué tant que le téléphone n'a pas de jeton valide. -->
+  <div class="pair-overlay" id="pair-overlay" hidden>
+    <div class="pair-card">
+      <div class="pair-brand">Lumen</div>
+      <!-- Identité reconnue : dès que l'identifiant désigne un profil, on montre
+           son avatar et son nom. On sait alors à QUI l'on se connecte — et une
+           faute de frappe se voit avant de chercher un code. -->
+      <div class="pair-identity" id="pair-identity" hidden>
+        <div class="pair-avatar" id="pair-avatar"></div>
+        <div class="pair-name" id="pair-name"></div>
+      </div>
+      <h2>Connexion</h2>
+      <p class="pair-hint">Saisissez votre nom d'utilisateur Lumen, puis le code à 6 chiffres affiché dans Lumen → Paramètres → Compagnon mobile (ou donné par votre application d'authentification).</p>
+      <input type="text" id="pair-id" placeholder="Votre nom" autocapitalize="words" autocorrect="off" autocomplete="username" name="username" />
+      <!-- `one-time-code` : iOS et Android proposent alors le code TOTP stocké
+           dans le gestionnaire de mots de passe, sans quitter l'écran. -->
+      <input type="text" id="pair-code" placeholder="Code à 6 chiffres" inputmode="numeric" maxlength="6" autocomplete="one-time-code" name="otp" pattern="[0-9]*" />
+      <!-- Seconde étape : le code TOTP se lit dans les Paramètres de Lumen, il
+           ne prouve pas qu'on connaît la session. Le mot de passe est chiffré
+           pour une clé éphémère du serveur avant de partir (HTTPS requis). -->
+      <div class="pair-password" id="pair-password-step" hidden>
+        <p class="pair-hint">Code accepté. Saisissez maintenant le mot de passe de votre session Lumen.</p>
+        <input type="password" id="pair-password" placeholder="Mot de passe de la session" autocomplete="current-password" name="password" />
+      </div>
+      <button class="primary-btn" id="pair-submit">Se connecter</button>
+      <div class="pair-error" id="pair-error"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/companion-bootstrap.js"></script>
+<section id="vault-sheet" class="sheet vault-sheet" hidden><div class="sheet-head"><span>Coffre personnel</span><button class="icon-btn sheet-x" data-close aria-label="Fermer le coffre">✕</button></div><iframe id="vault-frame" title="Coffre personnel" referrerpolicy="no-referrer"></iframe></section>
+</body>
+</html>

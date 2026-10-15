@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<!-- Moodboard de Lumen — app créative premium. Chaque objet (brief, accroche,
+     images hero/galerie/mises en page, palette, typo, éléments, logos) peut être
+     ajouté manuellement OU généré par l'IA, objet par objet ou en tableau complet.
+     Texte : Ollama (api/chat). Images : API Bonsai (une par une). Persistance
+     localStorage. Charte « Apple friendly » de la plateforme. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Moodboard</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./moodboard.css?v=4" />
+    <script type="module" src="./moodboard.js" defer></script>
+      <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop (dtTheme partagé
+         via localStorage). Appliqué tôt pour éviter tout flash de thème. -->
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="app-switch">Création &amp; Design <span class="chev">▾</span></div>
+        <div class="ai-status" id="ai-status" title="État des moteurs IA">
+          <span class="ai-chip" id="chip-text"><span class="dot"></span>Texte</span>
+          <span class="ai-chip" id="chip-image"><span class="dot"></span>Image</span>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn ai" id="btn-compose" title="Générer un tableau complet avec l'IA">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><path d="m6.3 6.3 2.8 2.8M14.9 14.9l2.8 2.8M17.7 6.3l-2.8 2.8M9.1 14.9l-2.8 2.8"/></svg>
+          Composer avec l'IA
+        </button>
+        <button class="btn-soft" id="btn-share" title="Copier un résumé partageable">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5 8.6 10.5"/></svg>
+          Partager
+        </button>
+        <span id="creative-bar"></span>
+        <button class="btn primary" id="btn-export" title="Exporter le moodboard complet, images comprises (JSON)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          JSON
+        </button>
+      </header>
+
+      <div class="layout">
+        <aside class="sidebar">
+          <div class="nav-item active" data-target="top">
+            <span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 5v2M12 17v2M5 12h2M17 12h2"/></svg></span>
+            Aperçu
+          </div>
+          <div class="nav-item" data-target="sec-moodboard">
+            <span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span>
+            Moodboard
+          </div>
+          <div class="nav-item" data-target="sec-panels">
+            <span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.2 0-1.1.9-2 2-2h2.5A4 4 0 0 0 22 12 10 10 0 0 0 12 2z"/></svg></span>
+            Palette &amp; Typo
+          </div>
+          <div class="nav-item" data-target="sec-elements">
+            <span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 9.2 8.6 2 9.3l5.5 4.8L5.8 21 12 17.3 18.2 21l-1.7-6.9L22 9.3l-7.2-.7z"/></svg></span>
+            Éléments
+          </div>
+          <div class="nav-item" data-target="sec-layouts">
+            <span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>
+            Mises en page
+          </div>
+
+          <div class="side-sep">Projets</div>
+          <div id="project-list"><!-- projets injectés --></div>
+          <button class="new-folder" id="btn-new-project">＋ Nouveau projet</button>
+        </aside>
+
+        <main class="content" id="content">
+          <span id="top"></span>
+          <div class="proj-head">
+            <div class="proj-logo"></div>
+            <div style="flex:1; min-width:0;">
+              <input class="proj-title" id="proj-title" value="Campagne été 2025" spellcheck="false" />
+              <div class="proj-meta">
+                <span class="badge">Brouillon</span>
+                <input class="proj-tags-input" id="proj-tags" value="Lancement · Inspiration · Sérénité" spellcheck="false" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Brief + hero moodboard -->
+          <section class="brief-row" id="sec-moodboard">
+            <div class="card brief-card">
+              <div class="card-head"><h3>Brief créatif</h3><button class="ai-btn" id="ai-brief" title="Rédiger avec l'IA">✦ IA</button></div>
+              <textarea class="brief-text" id="brief" spellcheck="false" placeholder="Décris la direction créative, le ton, la cible, les supports… ou clique « ✦ IA »."></textarea>
+              <div class="brief-foot">
+                <span id="brief-credit">Brouillon</span>
+                <span class="spacer" style="flex:1"></span>
+              </div>
+            </div>
+            <div class="hero-grid" id="hero-grid"><!-- tiles injectées --></div>
+          </section>
+
+          <!-- Galerie moodboard -->
+          <section>
+            <div class="section-title">Moodboard
+              <span class="spacer"></span>
+              <button class="link-btn" data-import="images">＋ Importer</button>
+              <button class="ai-btn" data-ai-image="images">✦ Image IA</button>
+            </div>
+            <div class="mb-grid" id="mb-grid"></div>
+          </section>
+
+          <!-- Palette / Typo / Éléments / Logos -->
+          <section class="panels" id="sec-panels">
+            <div class="card">
+              <div class="card-head"><h3>Palette de couleurs</h3><button class="ai-btn" id="ai-palette" title="Générer une palette avec l'IA">✦ IA</button></div>
+              <div class="swatches-wrap"><div class="swatches" id="swatches"></div></div>
+              <div class="card-foot row">
+                <button class="btn-soft" id="btn-extract">Extraire des images</button>
+                <button class="btn-soft" id="btn-add-swatch">＋ Couleur</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><h3>Typographie</h3><button class="ai-btn" id="ai-type" title="Suggérer une typo avec l'IA">✦ IA</button></div>
+              <div class="type-preview">
+                <span class="type-aa" id="type-aa">Aa</span>
+                <span class="type-aa thin" id="type-aa2">Aa</span>
+              </div>
+              <input class="proj-title" id="font-name" value="Satoshi" spellcheck="false" style="font-size:14px;font-weight:600;" />
+              <div class="type-name" id="type-note">Police d'affichage</div>
+            </div>
+
+            <div class="card" id="sec-elements">
+              <div class="card-head"><h3>Éléments &amp; icônes</h3>
+                <span class="head-tools">
+                  <button class="icon-mini" data-import="icons" title="Importer">＋</button>
+                  <button class="ai-btn" data-ai-image="icons" title="Générer avec l'IA">✦ IA</button>
+                </span>
+              </div>
+              <div class="icons-grid" id="icons-grid"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><h3>Logos &amp; marques</h3>
+                <span class="head-tools">
+                  <button class="icon-mini" data-import="logos" title="Importer">＋</button>
+                  <button class="ai-btn" data-ai-image="logos" title="Générer avec l'IA">✦ IA</button>
+                </span>
+              </div>
+              <div class="logos-grid" id="logos-grid"></div>
+            </div>
+          </section>
+
+          <!-- Mises en page -->
+          <section id="sec-layouts">
+            <div class="section-title">Mises en page
+              <span class="spacer"></span>
+              <button class="link-btn" data-import="layouts">＋ Importer</button>
+              <button class="ai-btn" data-ai-image="layouts">✦ Variante IA</button>
+            </div>
+            <div class="layouts-grid" id="layouts-grid"></div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- ===== Modale : composer un tableau complet ===== -->
+    <div class="modal-scrim" id="compose-modal" hidden>
+      <div class="modal">
+        <header class="modal-head">
+          <h2>Composer un moodboard</h2>
+          <button class="icon-btn" id="compose-close">✕</button>
+        </header>
+        <div class="modal-body">
+          <label class="field-label">Thème / intention</label>
+          <textarea id="compose-theme" class="modal-textarea" rows="3" spellcheck="false"
+            placeholder="Ex. « Campagne voyage estival, évasion et sérénité, premium, lumière naturelle »"></textarea>
+          <div class="compose-opts">
+            <label class="ck"><input type="checkbox" id="ck-text" checked /> Brief, accroche, palette &amp; typo</label>
+            <label class="ck"><input type="checkbox" id="ck-images" checked /> Images du moodboard</label>
+            <label class="opt-inline">Nombre d'images
+              <input type="number" id="compose-count" min="0" max="6" value="4" />
+            </label>
+          </div>
+          <div class="compose-progress" id="compose-progress" hidden>
+            <div class="cp-bar"><div class="cp-fill" id="cp-fill"></div></div>
+            <div class="cp-label" id="cp-label"></div>
+          </div>
+        </div>
+        <footer class="modal-foot">
+          <button class="btn-soft" id="compose-cancel">Annuler</button>
+          <button class="btn ai" id="compose-go">✦ Générer le tableau</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ===== Modale : prompt d'image IA ===== -->
+    <div class="modal-scrim" id="img-modal" hidden>
+      <div class="modal small">
+        <header class="modal-head">
+          <h2 id="img-modal-title">Générer une image</h2>
+          <button class="icon-btn" id="img-close">✕</button>
+        </header>
+        <div class="modal-body">
+          <label class="field-label">Description de l'image</label>
+          <textarea id="img-prompt" class="modal-textarea" rows="3" spellcheck="false"
+            placeholder="Décris l'image à générer…"></textarea>
+          <div class="img-opts">
+            <label class="opt-inline">Format
+              <select id="img-format">
+                <option value="512x512">Carré</option>
+                <option value="768x512">Paysage</option>
+                <option value="512x768">Portrait</option>
+              </select>
+            </label>
+            <label class="opt-inline">Étapes
+              <input type="number" id="img-steps" min="1" max="64" value="4" />
+            </label>
+          </div>
+        </div>
+        <footer class="modal-foot">
+          <button class="btn-soft" id="img-cancel">Annuler</button>
+          <button class="btn ai" id="img-go">✦ Générer</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ===== Lightbox : aperçu plein cadre ===== -->
+    <div class="lightbox" id="lightbox" hidden>
+      <button class="lb-close" id="lb-close" title="Fermer">✕</button>
+      <img id="lb-img" alt="" />
+    </div>
+
+    <!-- ===== Modale : importer depuis la sandbox ===== -->
+    <div class="modal-scrim" id="sb-modal" hidden>
+      <div class="modal">
+        <header class="modal-head">
+          <h2>Importer depuis la sandbox</h2>
+          <button class="icon-btn" id="sb-close">✕</button>
+        </header>
+        <div class="sb-toolbar">
+          <select id="sb-select" class="sb-pick"></select>
+          <div class="sb-crumbs" id="sb-crumbs"></div>
+        </div>
+        <div class="modal-body sb-body">
+          <div class="sb-grid" id="sb-grid"></div>
+          <div class="sb-empty" id="sb-empty" hidden>Aucune image ici.</div>
+        </div>
+        <footer class="modal-foot">
+          <span class="sb-count" id="sb-count"></span>
+          <span class="spacer" style="flex:1"></span>
+          <button class="btn-soft" id="sb-cancel">Annuler</button>
+          <button class="btn primary" id="sb-import">Importer la sélection</button>
+        </footer>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

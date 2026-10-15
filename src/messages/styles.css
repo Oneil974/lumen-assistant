@@ -1,0 +1,86 @@
+/* Messagerie — coquille propre : pas de barre latérale d'app, la liste des
+   conversations EST la barre latérale. */
+@import url("../lib/app-shell.css?v=2");
+
+body { margin: 0; }
+.msg { display: grid; grid-template-columns: 290px 1fr; height: 100vh; }
+@media (max-width: 860px) { .msg { grid-template-columns: 1fr; } .threads { display: none; } }
+
+.threads { border-right: 1px solid var(--border); display: flex; flex-direction: column; min-width: 0; background: var(--surface); }
+.threads-head { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 13px 14px; border-bottom: 1px solid var(--border); font-weight: 640; font-size: 13.5px; }
+.thread-list { flex: 1; overflow: auto; }
+.threads-foot { display: flex; align-items: center; gap: 7px; padding: 9px 14px;
+  border-top: 1px solid var(--border); font-size: 11.5px; color: var(--text-muted); }
+.threads-foot .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); }
+.threads-foot .dot.on { background: var(--success, #30d158); }
+
+.thread-row { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  border: 0; background: none; color: var(--text); font: inherit; padding: 10px 14px; cursor: pointer;
+  border-bottom: 1px solid var(--border); }
+.tr-av { position: relative; flex: none; display: inline-flex; }
+.tr-presence { position: absolute; right: -1px; bottom: -1px; width: 9px; height: 9px; border-radius: 50%; background: var(--success, #30d158); border: 2px solid var(--surface); }
+.tr-txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+.thread-row:hover { background: var(--sel); }
+.thread-row.on { background: var(--sel); box-shadow: inset 3px 0 0 var(--accent); }
+.tr-name { font-size: 13.5px; font-weight: 620; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tr-sub { font-size: 11.5px; color: var(--text-muted); }
+
+.thread { display: flex; flex-direction: column; min-width: 0; }
+.thread-head { display: flex; align-items: center; gap: 10px; padding: 11px 18px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.th-sub { display: flex; align-items: center; gap: 5px; }
+.th-sub .lock { display: inline-flex; } .th-sub .lock svg { width: 11px; height: 11px; }
+.th-name { font-size: 14.5px; font-weight: 650; }
+/* La garantie s'affiche en permanence : c'est ce qui la rend crédible. */
+.th-sub { font-size: 11.5px; color: var(--text-muted); }
+
+.stream { flex: 1; overflow: auto; padding: 18px; display: flex; flex-direction: column; gap: 9px; }
+.bubble { max-width: min(640px, 74%); border: 1px solid var(--border); border-radius: 16px;
+  padding: 9px 13px; background: var(--surface); align-self: flex-start; }
+.bubble.mine { align-self: flex-end; background: var(--primary, var(--accent)); border-color: transparent; color: var(--primary-foreground, var(--on-accent)); }
+.b-who { font-size: 11px; font-weight: 620; color: var(--text-muted); margin-bottom: 2px; }
+.b-body { font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
+.b-at { font-size: 10.5px; opacity: .62; margin-top: 3px; text-align: right; }
+/* Un message qu'on ne peut pas ouvrir se dit, il ne disparaît pas. */
+.unreadable { font-style: italic; opacity: .7; font-size: 12.5px; }
+
+.composer { display: flex; gap: 9px; padding: 12px 18px; border-top: 1px solid var(--border); align-items: flex-end; }
+.composer textarea { flex: 1; resize: none; min-height: 38px; max-height: 160px; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); background: var(--surface); color: var(--text); font: inherit;
+  font-size: 13.5px; padding: 9px 12px; }
+.composer textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--sel); }
+
+.pick { display: flex; flex-direction: column; max-height: 300px; overflow: auto; margin-bottom: 12px; }
+.pick-row { display: flex; align-items: center; gap: 9px; padding: 7px 4px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.pick-row input { accent-color: var(--accent); }
+.pk-name { font-size: 13px; font-weight: 600; }
+.pk-h { font-size: 11.5px; color: var(--text-muted); flex: 1; }
+.pk-warn { font-size: 10.5px; color: var(--text-muted); }
+
+.f { display: flex; flex-direction: column; gap: 4px; }
+.f-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.empty { padding: 26px; text-align: center; color: var(--text-muted); font-size: 13px; margin: auto; }
+.empty.small { padding: 16px; font-size: 12.5px; }
+.unlinked { display: grid; place-items: center; height: 100vh; padding: 30px; text-align: center; grid-column: 1 / -1; }
+.unlinked-card { display: flex; flex-direction: column; align-items: center; gap: 8px; max-width: 480px; padding: 30px 28px; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--surface); box-shadow: var(--shadow-1); }
+.ul-ic { width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--radius-lg); background: var(--sel); color: var(--primary, var(--accent-ink)); margin-bottom: 4px; }
+.ul-ic svg { width: 20px; height: 20px; }
+.ul-title { font-size: 16px; font-weight: 650; }
+.ul-sub { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+.unlinked-card .btn { margin-top: 10px; }
+.composer-field { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.composer-field small { padding-left: 10px; color: var(--text-muted); font-size: 10px; }
+.composer textarea { width: 100%; }
+.composer { flex-wrap: wrap; }
+.attach-row { order: -1; display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-muted); font-size: 11px; }
+.attach-row[hidden] { display: none; }
+.attach-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.attach-row button { margin-left: auto; border: 0; background: transparent; cursor: pointer; font-size: 17px; }
+.attach-btn { flex: 0 0 38px; padding: 0; font-size: 20px; }
+.attachment-download { display: flex; align-items: center; gap: 10px; max-width: min(340px, 100%); padding: 10px 12px; margin-top: 8px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); text-align: left; cursor: pointer; }
+.attachment-download > span:first-child { display: grid; place-items: center; width: 30px; height: 30px; border-radius: var(--radius-sm); background: var(--sel); color: var(--accent-ink); font-size: 19px; }
+.attachment-download > span:last-child { display: grid; min-width: 0; gap: 2px; }
+.attachment-download strong, .attachment-download small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.attachment-download strong { font-size: 12px; }
+.attachment-download small { color: var(--text-muted); font-size: 10px; }
+.attachment-download:disabled { opacity: .6; cursor: wait; }

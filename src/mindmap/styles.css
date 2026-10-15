@@ -1,0 +1,150 @@
+/* Mindmap — même esthétique « Apple friendly » que le Kanban et l'explorateur
+   (variables identiques, surfaces translucides, ombres douces). */
+:root {
+  --node-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.05);
+  --grid: rgba(0, 0, 0, 0.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-dt-theme="light"]) {
+  --node-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --grid: rgba(255, 255, 255, 0.04);
+}
+}
+:root[data-dt-theme="dark"] {
+  --node-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --grid: rgba(255, 255, 255, 0.04);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  font: 14px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; user-select: none;
+  overflow: hidden;
+}
+.app { display: flex; flex-direction: column; height: 100vh; }
+.spacer { flex: 1; }
+
+/* ===== Barre du haut ===== */
+.topbar {
+  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+  background: var(--surface); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border); z-index: 5;
+}
+.brand { display: flex; align-items: center; gap: 8px; }
+.brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 18%, transparent); }
+.map-name {
+  font-weight: 650; font-size: 15px; color: var(--text); background: transparent;
+  border: 1px solid transparent; border-radius: var(--radius-md); padding: 4px 8px; width: 200px;
+}
+.map-name:hover { background: var(--surface-2); }
+.map-name:focus { outline: none; border-color: var(--accent); background: var(--surface-2); }
+
+.btn-soft {
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+  border-radius: var(--radius-md); padding: 7px 12px; font-size: 13px; cursor: pointer; white-space: nowrap;
+  transition: filter .12s, background .12s;
+}
+.btn-soft:hover { background: var(--surface); }
+.btn-soft.primary { background: var(--accent); color: var(--primary-foreground); border-color: transparent; }
+.btn-soft.primary:hover { filter: brightness(1.06); }
+
+/* ===== Toile ===== */
+.canvas-wrap {
+  position: relative; flex: 1; overflow: hidden; cursor: grab;
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+.canvas-wrap.panning { cursor: grabbing; }
+.edges, .nodes {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+  transform-origin: 0 0; overflow: visible;
+}
+.edges { pointer-events: none; }
+.edges path { fill: none; stroke: var(--text-muted); stroke-width: 2; opacity: .55; }
+.edges path.tmp { stroke: var(--accent); stroke-dasharray: 5 4; opacity: .9; }
+
+.node {
+  position: absolute; transform: translate(-50%, -50%);
+  min-width: 90px; max-width: 230px; padding: 9px 13px;
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: var(--node-shadow); cursor: grab; text-align: center;
+  font-size: 13px; line-height: 1.35; word-break: break-word; backdrop-filter: blur(8px);
+}
+.node.root { font-weight: 700; font-size: 15px; padding: 12px 18px; border-width: 2px; }
+.node.dragging { cursor: grabbing; z-index: 50; }
+.node.selected { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 25%, transparent), var(--node-shadow); }
+.node .txt { outline: none; }
+.node .txt[contenteditable="true"] { cursor: text; min-width: 40px; }
+/* poignée de création de lien */
+.node .handle {
+  position: absolute; right: -7px; top: 50%; transform: translateY(-50%);
+  width: 14px; height: 14px; border-radius: 50%; background: var(--accent);
+  border: 2px solid var(--bg); cursor: crosshair; opacity: 0; transition: opacity .12s;
+}
+.node:hover .handle, .node.selected .handle { opacity: 1; }
+.node .del {
+  position: absolute; left: -7px; top: -7px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--destructive); color: #fff; border: none; font-size: 11px; line-height: 14px;
+  cursor: pointer; opacity: 0; transition: opacity .12s; padding: 0;
+}
+.node:hover .del, .node.selected .del { opacity: 1; }
+
+.hint {
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  color: var(--text-muted); font-size: 12px; background: var(--surface);
+  padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); pointer-events: none;
+}
+
+/* ===== Modale IA ===== */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.32); backdrop-filter: blur(3px);
+  display: grid; place-items: center; z-index: 100;
+}
+.mini-modal {
+  width: min(520px, 92vw); background: var(--surface); backdrop-filter: blur(28px);
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
+}
+.mini-modal h3 { margin: 0 0 4px; font-size: 16px; }
+.muted { color: var(--text-muted); font-size: 12.5px; margin: 0 0 12px; }
+.ta {
+  width: 100%; resize: vertical; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--surface-2); color: var(--text); padding: 10px 12px; font: inherit;
+}
+.ta:focus { outline: none; border-color: var(--accent); }
+.mini-actions { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+.ai-state { color: var(--text-muted); font-size: 12.5px; }
+
+/* ===== Menu « plus » ===== */
+.menu-pop {
+  position: absolute; top: 50px; right: 14px; z-index: 120;
+  background: var(--surface); backdrop-filter: blur(24px); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 6px; min-width: 180px;
+}
+.menu-pop button {
+  display: block; width: 100%; text-align: left; background: transparent; border: none;
+  color: var(--text); padding: 8px 10px; border-radius: var(--radius-md); font-size: 13px; cursor: pointer;
+}
+.menu-pop button:hover { background: var(--surface-2); }
+.menu-sep { height: 1px; background: var(--border); margin: 5px 8px; }
+
+/* Sélecteur sandbox (réutilise .overlay/.mini-modal) */
+.pick-list { display: flex; flex-direction: column; gap: 4px; max-height: 50vh; overflow: auto; margin: 4px 0; }
+.pick-item {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px; width: 100%;
+  text-align: left; background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text); padding: 9px 12px; border-radius: var(--radius-lg); cursor: pointer;
+}
+.pick-item:hover { background: var(--surface); border-color: var(--accent); }
+.pi-label { font-weight: 600; font-size: 13.5px; }
+.pi-sub { font-size: 11.5px; color: var(--text-muted); }
+
+.toast {
+  position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+  background: rgba(20,20,22,0.92); color: #fff; padding: 9px 16px; border-radius: 999px;
+  font-size: 13px; z-index: 200; box-shadow: var(--shadow);
+}

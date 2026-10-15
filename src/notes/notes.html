@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!-- Notes de Lumen — façon Notes d'Apple, en plus simple. Liste à gauche, éditeur
+     à droite (titre + corps). Génération et réécriture de contenu par l'IA via
+     llmChat. Persistance locale (localStorage). -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Notes</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=5" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop (dtTheme partagé
+         via localStorage). Appliqué tôt pour éviter tout flash de thème. -->
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="side-brand"><span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg></span><span class="brand-title">Notes</span></div>
+        <div class="side-head">
+          <input id="search" class="search" placeholder="Rechercher…" />
+          <button class="btn-icon" id="btn-new" title="Nouvelle note">＋</button>
+        </div>
+        <div class="tag-bar" id="tag-bar"></div>
+        <div class="note-list" id="note-list"></div>
+        <button class="btn-soft side-graph" id="btn-graph" title="Voir les liens entre vos notes">⌬ Graphe des notes</button>
+      </aside>
+
+      <main class="editor">
+        <header class="ed-bar">
+          <span class="when" id="ed-when"></span>
+          <div class="spacer"></div>
+          <button class="btn-soft" id="btn-capture" title="Insérer une capture de l'écran">⌗ Capture</button>
+          <button class="btn-soft" id="btn-math" title="Insérer une formule LaTeX ($…$ en ligne, $$…$$ en bloc)">∑ Formule</button>
+          <button class="btn-soft" id="btn-insert-file" title="Citer ou intégrer un document, une présentation ou un classeur Lumen">▦ Fichier</button>
+          <button class="btn-soft" id="btn-live" title="Bloc vivant : un agent le tient à jour selon un rythme et des sources">↻ Bloc vivant</button>
+          <button class="btn-soft" id="btn-split" title="Éditer avec l'aperçu à côté">◫ Côte à côte</button>
+          <button class="btn-soft" id="btn-preview" title="Basculer entre édition et aperçu Markdown">👁 Aperçu</button>
+          <button class="btn-soft" id="btn-ai">✨ Générer avec l'IA</button>
+          <button class="btn-soft" id="btn-rewrite" title="Réécrire / améliorer la note">✦ Réécrire</button>
+          <span id="creative-bar"></span>
+          <button class="btn-soft" id="btn-share" title="Envoyer cette note vers une autre app de Lumen">↗ Envoyer vers…</button>
+          <button class="btn-soft danger" id="btn-del" title="Supprimer">🗑</button>
+        </header>
+        <input id="title" class="title" placeholder="Titre" spellcheck="false" />
+        <div class="panes" id="panes">
+          <textarea id="body" class="content" placeholder="Commencez à écrire… Tapez / pour insérer un bloc (encadré, dépliant, colonnes, bloc vivant, fichier Lumen), @ pour confier la suite à un agent. Markdown, [[liens]], #tags et $formules$ pris en charge."></textarea>
+          <div id="preview" class="content md-body" hidden></div>
+        </div>
+        <div class="link-menu" id="link-menu" hidden></div>
+        <section class="links-panel" id="links-panel" hidden>
+          <div class="links-col"><h4>Liens entrants</h4><div id="backlinks"></div></div>
+          <div class="links-col"><h4>Mentions non liées</h4><div id="mentions"></div></div>
+          <div class="links-col"><h4>Liens sortants</h4><div id="outlinks"></div></div>
+        </section>
+        <div class="empty" id="empty" hidden>Aucune note. Cliquez sur ＋ pour en créer une.</div>
+      </main>
+    </div>
+
+    <!-- Modale génération IA -->
+    <div class="overlay" id="ai-overlay" hidden>
+      <div class="mini-modal">
+        <h3 id="ai-title">Générer du contenu avec l'IA</h3>
+        <textarea id="ai-prompt" rows="4" class="ta" placeholder="Ex. : rédige un compte-rendu de réunion sur le lancement produit, avec points d'action…"></textarea>
+        <div class="mini-actions">
+          <span class="ai-state" id="ai-state"></span><span class="spacer"></span>
+          <label class="chk"><input type="checkbox" id="ai-replace" /> Remplacer le contenu</label>
+          <button class="btn-soft" id="ai-cancel">Annuler</button>
+          <button class="btn-soft primary" id="ai-run">Générer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historique des versions d'une note -->
+    <div class="overlay" id="hist-overlay" hidden>
+      <div class="mini-modal hist-modal">
+        <h3>Historique des versions</h3>
+        <p class="hist-hint">Une version est archivée à chaque séance d'écriture et avant chaque modification par l'IA. Restaurer archive aussi l'état actuel.</p>
+        <div class="hist-body">
+          <div class="hist-list" id="hist-list"></div>
+          <div class="hist-view md-body" id="hist-view"></div>
+        </div>
+        <div class="mini-actions">
+          <span class="spacer"></span>
+          <button class="btn-soft" id="hist-close">Fermer</button>
+          <button class="btn-soft primary" id="hist-restore">Restaurer cette version</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphe des liens entre notes -->
+    <div class="overlay" id="graph-overlay" hidden>
+      <div class="mini-modal graph-modal">
+        <h3>Graphe des notes</h3>
+        <p class="hist-hint">Chaque point est une note, chaque trait un lien [[…]]. Cliquez sur une note pour l'ouvrir.</p>
+        <canvas id="graph" width="900" height="540"></canvas>
+        <div class="mini-actions"><span class="spacer"></span><button class="btn-soft" id="graph-close">Fermer</button></div>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

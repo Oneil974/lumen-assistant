@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!-- Documents / Présentations hors du bureau : l'éditeur créatif (creative-editor.js)
+     monté plein cadre, pour le mode application (?kind=document|presentation). -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Documents</title>
+    <script>try { if (!window.__TAURI__ && window.parent !== window) window.__TAURI__ = window.parent.__TAURI__; } catch (e) {}</script>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=5" />
+    <link rel="stylesheet" href="./desktop.css?v=29" />
+    <script src="/lib/frontend-log-init.js" data-prefix="office"></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: var(--background); }
+      #office-root { position: fixed; inset: 0; display: flex; flex-direction: column; }
+      #office-root > .dt-win-body { flex: 1; min-height: 0; }
+      #office-empty { margin: auto; font: 14px system-ui; color: var(--muted-foreground); text-align: center; padding: 24px; }
+    </style>
+    <script type="module" src="./office.js?v=1"></script>
+  </head>
+  <body><div id="office-root"></div></body>
+</html>

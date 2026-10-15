@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lumen — Accès rapide</title><script src="/lib/theme-init.js"></script>
+<link rel="stylesheet" href="/lib/tokens.css"><link rel="stylesheet" href="/quick-prompt.css">
+<script type="module" src="/quick-prompt.js"></script></head>
+<body><main id="panel">
+  <form id="prompt-form"><span class="mark" aria-hidden="true">✦</span>
+    <textarea id="prompt" rows="1" autofocus maxlength="12000" aria-label="Question rapide" placeholder="Une question, simplement…"></textarea>
+    <button id="send" type="submit" aria-label="Envoyer">↵</button><button id="close" type="button" aria-label="Fermer">×</button>
+  </form>
+  <div id="answer" role="region" aria-label="Réponse" tabindex="0" hidden></div>
+  <footer><span id="backend"></span><span id="status" role="status"></span><button id="copy" type="button" hidden>Copier</button><span class="hint">Échap pour fermer</span></footer>
+</main></body></html>

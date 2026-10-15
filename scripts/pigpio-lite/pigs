@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+"""pigs — client compatible pour pigpio-lite (Raspberry Pi 5).
+
+Remplace en tout point la commande `pigs` de pigpio pour le sous-ensemble de
+commandes utilisé par les blocs Raspberry Pi de Lumen/Fluxo. Transmet ses
+arguments au démon pigpio-lite (socket Unix) et imprime la réponse :
+
+  - succès : la valeur éventuelle sur stdout, code de sortie 0 ;
+  - erreur : le message sur stderr, code de sortie 1.
+
+Installer dans le PATH AVANT le vrai pigs (ex. /usr/local/bin/pigs) pour que les
+blocs Fluxo l'utilisent sans modification.
+"""
+
+import os
+import socket
+import sys
+
+SOCK_PATH = os.environ.get("PIGPIO_LITE_SOCK", "/run/pigpio-lite.sock")
+
+
+def main(argv):
+    if not argv:
+        sys.stderr.write("usage : pigs <commande> [args…]\n")
+        return 1
+    try:
+        s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        s.connect(SOCK_PATH)
+    except OSError as e:
+        sys.stderr.write(
+            f"pigs : démon pigpio-lite injoignable ({SOCK_PATH}) : {e}. "
+            "Lance-le : sudo systemctl enable --now pigpio-lite\n"
+        )
+        return 1
+    try:
+        s.sendall((" ".join(argv) + "\n").encode("utf-8"))
+        data = b""
+        while not data.endswith(b"\n"):
+            chunk = s.recv(4096)
+            if not chunk:
+                break
+            data += chunk
+    finally:
+        s.close()
+
+    resp = data.decode("utf-8", "replace").strip()
+    if resp.startswith("OK"):
+        payload = resp[2:].strip()
+        if payload:
+            sys.stdout.write(payload + "\n")
+        return 0
+    msg = resp[3:].strip() if resp.startswith("ERR") else (resp or "erreur inconnue")
+    sys.stderr.write(f"pigs : {msg}\n")
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

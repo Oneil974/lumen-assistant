@@ -1,0 +1,123 @@
+/* Relia (CRM & facturation) — coquille Pro partagée (lib/app-shell.css) +
+   les pièces propres à l'app : éditeur de document, conformité, tags,
+   projets (cartes, Kanban, Gantt). Aucune couleur en dur hors états
+   sémantiques dérivés des jetons. */
+@import url("../lib/app-shell.css?v=2");
+
+.field { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+.modal-head .spacer, .modal-foot .spacer { flex: 1; }
+
+/* ---------- Éditeur de document ---------- */
+.doc-head-grid { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.doc-lines { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+table.lines th, table.lines td { padding: 6px 8px; }
+table.lines input, table.lines select { border: 1px solid transparent; border-radius: var(--radius-sm); background: none; color: var(--text); font: inherit; font-size: 13px; padding: 5px 6px; width: 100%; }
+table.lines input:focus, table.lines select:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+table.lines input.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.lines .line-total { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.lines-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; margin-top: -10px; border: 1px solid var(--border); border-top: 0; border-radius: 0 0 var(--radius-lg) var(--radius-lg); background: var(--surface-2); }
+.doc-lines { border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; }
+.empty .btn { margin-top: 10px; }
+.lines-actions .select { max-width: 320px; }
+.doc-bottom { display: grid; grid-template-columns: 1fr 300px; gap: 16px; align-items: start; }
+@media (max-width: 820px) { .doc-bottom { grid-template-columns: 1fr; } }
+.notes { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--text-muted); }
+.doc-totals { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px 14px; display: flex; flex-direction: column; gap: 7px; background: var(--surface-2); }
+.doc-totals .t-row { display: flex; justify-content: space-between; font-size: 13px; font-variant-numeric: tabular-nums; }
+.doc-totals .t-row.grand { font-size: 16px; font-weight: 680; padding-top: 7px; border-top: 1px solid var(--border); }
+.doc-totals .t-vat { font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; }
+
+/* ---------- Contrôles de conformité ---------- */
+.issues { display: flex; flex-direction: column; gap: 6px; }
+.issue { display: flex; gap: 9px; align-items: flex-start; font-size: 12.5px; padding: 9px 11px; border-radius: var(--radius-md); border: 1px solid var(--border); }
+.issue.error { border-color: color-mix(in oklab, var(--red) 45%, var(--border)); background: color-mix(in oklab, var(--red) 8%, transparent); }
+.issue.warn { border-color: color-mix(in oklab, orange 40%, var(--border)); background: color-mix(in oklab, orange 8%, transparent); }
+.issue .i-tag { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; opacity: .75; }
+.compliance { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.compliance .c-row { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; }
+.compliance .c-row .badge { flex: none; }
+.compliance p { margin: 0; color: var(--text-muted); font-size: 12.5px; line-height: 1.55; }
+
+/* ---------- Tags ---------- */
+/* Barre de filtres : les tags de la vue, cliquables et cumulables. */
+.tagbar { display: flex; flex-wrap: wrap; gap: 6px; }
+.tagbar:empty { display: none; }
+.tag-pill { border: 1px solid var(--border); border-radius: var(--radius-full); background: var(--surface); color: var(--text-muted); font: inherit; font-size: 12px; padding: 3px 11px; cursor: pointer; }
+.tag-pill:hover { border-color: var(--accent); color: var(--accent-ink); }
+.tag-pill.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+.tag-pill.clear { border-style: dashed; }
+/* Marqueur en tableau : discret, il ne doit pas concurrencer la donnée. */
+.tag-dot { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: var(--radius-full); background: var(--sel); color: var(--accent-ink); white-space: nowrap; }
+/* Champ de saisie : jetons + une entrée qui autocomplète sur l'existant. */
+.tags-field { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); padding: 5px 7px; }
+.tags-field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--sel); }
+.tag-chips { display: contents; }
+.tag-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 2px 4px 2px 9px; border-radius: var(--radius-full); background: var(--sel); color: var(--accent-ink); }
+.tag-x { border: none; background: none; color: inherit; font-size: 13px; line-height: 1; cursor: pointer; padding: 0 3px; opacity: .65; }
+.tag-x:hover { opacity: 1; }
+.tags-field .tag-input { flex: 1; min-width: 120px; border: none; background: none; color: var(--text); font: inherit; font-size: 13.5px; padding: 3px 2px; }
+.tags-field .tag-input:focus { outline: none; box-shadow: none; }
+
+.export-choices { display: flex; flex-direction: column; gap: 8px; }
+
+
+/* ===================== Projets & tâches ===================== */
+
+.warn-txt { color: var(--red); font-weight: 600; }
+
+/* Barre d'avancement, partagée par les projets, les cartes et le Gantt. */
+.bar { height: 6px; border-radius: var(--radius-full); background: var(--surface-2); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+
+.project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.project-card { display: flex; flex-direction: column; gap: 9px; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--surface); box-shadow: var(--shadow); padding: 14px 16px; cursor: pointer; }
+.project-card:hover { border-color: var(--accent); }
+.p-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.p-name { font-weight: 640; font-size: 14.5px; }
+.p-client { font-size: 12px; color: var(--text-muted); }
+.p-meta, .p-dates, .p-money { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--text-muted); }
+.p-money strong { color: var(--text); font-variant-numeric: tabular-nums; }
+
+/* ---- Kanban ---- */
+.kanban { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(240px, 1fr); gap: 12px; align-items: start; overflow-x: auto; padding-bottom: 6px; }
+.k-col { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--surface-2); min-height: 160px; }
+.k-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 13px; font-size: 13px; font-weight: 640; border-bottom: 1px solid var(--border); }
+.k-body { display: flex; flex-direction: column; gap: 8px; padding: 10px; min-height: 90px; }
+.k-card { display: flex; flex-direction: column; gap: 7px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); padding: 10px 12px; cursor: grab; }
+.k-card:hover { border-color: var(--accent); }
+.k-card.dragging { opacity: .45; }
+.k-title { font-size: 13.5px; font-weight: 600; }
+.k-sub { font-size: 11.5px; color: var(--text-muted); }
+.k-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 11.5px; }
+.k-empty { border: 1px dashed var(--border); border-radius: var(--radius-lg); padding: 16px 10px; text-align: center; font-size: 12px; color: var(--text-muted); }
+
+/* ---- Gantt ---- */
+.gantt { padding: 8px 14px 14px; overflow-x: auto; }
+.g-row { display: flex; align-items: center; gap: 12px; min-height: 30px; }
+.g-row[data-act] { cursor: pointer; border-radius: var(--radius-md); }
+.g-row[data-act]:hover { background: var(--sel); }
+.g-label { width: 190px; flex: none; font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g-group-name { font-weight: 640; }
+.g-group { display: flex; align-items: center; gap: 12px; min-height: 26px; margin-top: 8px; }
+.g-track { position: relative; flex: 1; min-width: 420px; height: 22px; }
+.g-line { position: absolute; top: -4px; bottom: -4px; width: 1px; background: var(--border); }
+.g-today { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--red); opacity: .7; }
+.g-mark { position: absolute; top: 4px; font-size: 10.5px; color: var(--text-muted); transform: translateX(3px); white-space: nowrap; }
+.g-scale { min-height: 24px; }
+.g-bar { position: absolute; top: 3px; height: 16px; border-radius: var(--radius-full); background: color-mix(in oklab, var(--accent) 30%, transparent); border: 1px solid var(--accent); overflow: hidden; display: flex; align-items: center; }
+.g-bar.done { background: color-mix(in oklab, var(--accent) 55%, transparent); }
+.g-bar.late { border-color: var(--red); background: color-mix(in oklab, var(--red) 22%, transparent); }
+.g-fill { position: absolute; left: 0; top: 0; bottom: 0; background: color-mix(in oklab, var(--accent) 45%, transparent); }
+.g-bar-txt { position: relative; padding: 0 8px; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Une tâche terminée s'efface sans disparaître. */
+.grid tr.done td { opacity: .58; }
+.grid tr.done strong { text-decoration: line-through; }
+.task-check { accent-color: var(--accent); }
+
+/* Le volet Assistant est ancré à droite : on lui laisse la place. */
+body { padding-right: 0; }
+
+/* Identité en tableau : avatar + nom + sous-ligne. */
+.cell-id { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.cell-id .mut { font-size: 12px; font-weight: 400; }

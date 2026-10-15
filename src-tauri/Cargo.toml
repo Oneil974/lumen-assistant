@@ -1,0 +1,193 @@
+[package]
+name = "tauri-app"
+version = "0.3.0"
+description = "Lumen — local AI workspace, applications and agents"
+authors = ["Mickael Hoarau"]
+edition = "2021"
+rust-version = "1.89"
+license = "GPL-3.0-or-later"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "tauri_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[features]
+default = ["pro"]
+# Build « Lumen Pi » : active les blocs Raspberry Pi du moteur Fluxo et la saveur
+# plateforme (source Ollama forcée, Apple masqué). `cargo build --features rpi`.
+rpi = ["fluxo-engine/rpi"]
+# Build desktop Linux standard : UI sans intégrations Apple visibles, sans les
+# blocs matériels Raspberry Pi. `cargo build --features linux-standard`.
+linux-standard = []
+# Build « Lumen Pro » : ajoute les applications destinées aux usages
+# professionnels — Relia (CRM), Réunion (visio LAN), DB Studio (modélisation de
+# base, SQLite ou PostgreSQL), Reporting, et le centre de sources de données
+# (connecteurs PostgreSQL/MySQL/SQL Server, API REST de lecture, MCP). Sans ce flag, ces apps n'existent
+# nulle part dans l'UI (ni launcher, ni dock, ni Spotlight, ni documentation) et
+# leurs commandes Rust ne sont pas enregistrées.
+#   cargo build --features pro     /     npm run tauri build -- --features pro
+# Compilée PAR DÉFAUT depuis la 0.2 : le flag n'ouvre plus rien tout seul, il
+# rend seulement le code Pro présent dans le binaire ; c'est la licence
+# (src/license.rs) qui décide de ce qui est visible.
+pro = ["dep:postgres", "dep:mysql", "dep:tiberius", "dep:tokio-util"]
+# Atelier des agents : MIS EN SOMMEIL (03/09/2026). Le code reste — `src/village`
+# fournit encore sprites et assets à l'app Agents, et `open_atelier` /
+# `atelier_enabled` restent enregistrés — mais plus AUCUN menu n'y mène : ni hub
+# Équipage, ni boîte à outils, ni documentation. Activer ce flag ne remet donc
+# pas l'app : il faudra d'abord rebrancher les entrées retirées. Ne pas l'ajouter
+# aux builds de release.
+atelier = []
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# `unstable` : fenêtres à plusieurs webviews (onglets natifs du navigateur, browser.rs).
+tauri = { version = "2", features = ["macos-private-api", "tray-icon", "unstable"] }
+tauri-plugin-opener = "2"
+# Intégration native macOS : hotkey global, instance unique.
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+tokio = { version = "1", features = ["sync", "rt-multi-thread", "macros", "net", "time"] }
+tokio-cron-scheduler = "0.13"
+# Compagnon iPhone : petit serveur HTTP/WebSocket sur le réseau local.
+axum = { version = "0.7", features = ["ws"] }
+futures-util = "0.3"
+# Lumen XR (casque Meta Quest) : WebXR n'existe que dans un contexte sécurisé,
+# donc le compagnon expose AUSSI un écouteur HTTPS à certificat auto-signé,
+# généré au premier lancement (rcgen) et servi via rustls — pas d'OpenSSL.
+rcgen = { version = "0.13", default-features = false, features = ["ring", "pem"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12"] }
+rustls-pemfile = "2"
+hyper = "1"
+hyper-util = { version = "0.1", features = ["server-auto", "tokio", "service"] }
+local-ip-address = "0.6"
+# Décodage des images générées (Image Playground) envoyées en Base64 par le routeur.
+base64 = "0.22"
+# Authentification du compagnon : TOTP (RFC 6238) + jeton de session signé HMAC.
+totp-rs = { version = "5", features = ["otpauth"] }
+hmac = "0.12"
+sha2 = "0.10"
+getrandom = "0.2"
+# QR code (SVG, sans dépendance image) + clé d'association base32 pour l'app
+# Mots de passe macOS / un authenticator.
+qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+base32 = "0.5"
+# Moteur d'automatisation Fluxo, vendorisé dans ce repo (src-tauri/crates/fluxo-engine)
+# pour que Lumen ne dépende plus du dossier Fluxo voisin.
+fluxo-engine = { path = "crates/fluxo-engine" }
+# Appels Ollama côté serveur pour la boucle agentique (function calling headless).
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "json", "multipart", "http2"] }
+# Flash série des cartes MicroPython (Pico W) : raw REPL pour téléverser main.py.
+# Sur Linux, l'énumération des ports requiert libudev (paquet libudev-dev).
+serialport = "4"
+# Flash de firmware ESP32 / ESP32-CAM (.bin) en pur Rust (remplace esptool).
+# default-features=false retire le `cli` (clap/indicatif…) ; on garde la lib série.
+espflash = { version = "4", default-features = false, features = ["serialport"] }
+# Export PDF des fichiers de sandbox (Markdown & cie). Pure Rust, sans parser PDF
+# transitif vulnérable.
+# Édition Pro — DB Studio : moteur PostgreSQL optionnel (client synchrone, pur
+# Rust). Activé par la feature `pro` ; sans elle, la dépendance n'est même pas
+# compilée et l'app ne parle qu'à SQLite.
+postgres = { version = "0.19", features = ["with-serde_json-1"], optional = true }
+# Centre de sources de données (Pro) — moteurs MySQL et SQL Server, compilés
+# uniquement en édition Pro comme PostgreSQL. Tous deux en TLS rustls : aucune
+# dépendance système (pas d'OpenSSL) sur les trois plateformes.
+mysql = { version = "28", default-features = false, features = ["minimal", "rustls-tls-ring"], optional = true }
+tiberius = { version = "0.13", default-features = false, features = ["tds73", "rustls", "chrono"], optional = true }
+tokio-util = { version = "0.7", features = ["compat"], optional = true }
+# Connecteurs fichiers du centre de sources : classeurs Excel (xlsx/xls/ods) et
+# CSV. Purs Rust, présents dans toutes les éditions.
+calamine = "0.36"
+csv = "1"
+pdf-writer = "0.15"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "gif", "webp"] }
+miniz_oxide = "0.8"
+pulldown-cmark = { version = "0.12", default-features = false, features = ["html"] }
+# RAG : base vectorielle locale et portable (SQLite compilé en dur + extension
+# sqlite-vec pour la recherche par similarité). Aucune dépendance système.
+rusqlite = { version = "0.32", features = ["bundled"] }
+sqlite-vec = "0.1"
+# Extraction de texte des PDF pour l'ingestion RAG (pur Rust).
+pdf-extract = "0.12"
+# Second extracteur PDF, déjà dans le graphe via pdf-extract (aucun coût de
+# compilation supplémentaire) : il passe par le CMap ToUnicode là où
+# pdf-extract se fie à l'encodage interne des polices Type 1C. Voir
+# `extract_pdf_text` dans rag.rs.
+lopdf = "0.42"
+# Outils natifs des agents : analyse d'URL (garde-fou réseau local de la
+# recherche web) et lecture des échéances ISO 8601 produites par les modèles.
+# Déjà présents dans le graphe de dépendances — ici en dépendance directe.
+url = "2"
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+# Sauvegarde globale : archive .lumenbackup (ZIP deflate, sans dépendance C).
+# Vérification hors ligne des clés de licence Lumen Pro (signature Ed25519).
+ed25519-dalek = { version = "2", default-features = false, features = ["std"] }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+# Presse-papiers du menu contextuel du navigateur (« Copier l'adresse du lien »…).
+# Déjà dans le graphe (dépendance transitive) : texte seul.
+arboard = { version = "3.6", default-features = false }
+# Client WebSocket vers Lumen Server (liaison réseau du poste). rustls, donc
+# aucune dépendance TLS système sur les trois plateformes.
+tungstenite = { version = "0.24", default-features = false, features = ["rustls-tls-webpki-roots", "handshake"] }
+# App Email — SMTP d'envoi (lettre) et TLS brut pour le client IMAP maison
+# (src/mail.rs). TOUT est en rustls : ce projet a déjà payé le prix d'OpenSSL
+# une fois (cf. push.rs, retiré parce qu'il cassait le build Windows), on ne le
+# réintroduit pas pour du courriel. `imap` 2.x, lui, impose native-tls — d'où le
+# client IMAP écrit à la main, volontairement réduit à ce dont l'app a besoin.
+lettre = { version = "0.11", default-features = false, features = [
+  "smtp-transport", "rustls-tls", "builder", "hostname", "ring",
+] }
+rustls = { version = "0.23", default-features = false, features = ["std", "ring", "tls12"] }
+rustls-pki-types = "1"
+webpki-roots = "0.26"
+
+# Web Push maison (src/push.rs) : VAPID (ES256) + aes128gcm en pur Rust.
+# `web-push`/`ece` imposaient OpenSSL, absent des postes Windows (MSVC).
+# Annonce Bonjour/mDNS du compagnon (« _lumen._tcp ») : l'app iOS trouve
+# Lumen sur le Wi-Fi sans adresse à taper. Pur Rust.
+mdns-sd = "0.13"
+p256 = { version = "0.13", default-features = false, features = ["ecdsa", "ecdh", "std"] }
+hkdf = "0.12"
+aes-gcm = "0.10"
+
+# Mise à jour automatique. Desktop uniquement : l'updater n'a pas de sens sur
+# mobile (les stores s'en chargent) et `process` ne sert qu'au redémarrage
+# après installation.
+# statvfs pour la jauge « espace libre » de l'app Stockage (cf. storage.rs).
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+# Accès direct à la WebView WebKitGTK (réglages média + signal
+# permission-request, cf. src/webview_media.rs). Même version/feature que
+# celles tirées par tauri/wry pour ne pas dupliquer la crate.
+[target.'cfg(target_os = "linux")'.dependencies]
+webkit2gtk = { version = "2", features = ["v2_40"] }
+
+# Capsule Halo en style « Encoche » : niveau de fenêtre au-dessus de la barre
+# des menus et mesure de l'encoche (NSScreen.auxiliaryTopLeft/RightArea).
+# Mêmes versions que celles tirées par tao, rien de plus à compiler.
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-app-kit = { version = "0.3", features = ["NSScreen"] }
+objc2-foundation = { version = "0.3", features = ["NSGeometry", "NSArray"] }
+# Clé maîtresse des clés API dans le Trousseau (cf. src/secrets.rs). Déjà
+# tirée par la pile TLS : aucune compilation en plus.
+security-framework = "3"
+
+[target.'cfg(any(target_os = "macos", target_os = "windows", target_os = "linux"))'.dependencies]
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
+
+# espflash uses object 0.39; bridge its optional Zstd decoder to the patched release.
+[patch.crates-io]
+object = { path = "crates/object" }

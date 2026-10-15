@@ -3,7 +3,7 @@
 **English** · [Français](README.fr.md)
 
 <p align="center">
-  <img src="assets/Lumen_Bar.png" alt="Lumen — floating prompt bar with an animated robot avatar" width="690">
+  <img src="docs/assets/preview.png" alt="Lumen — floating prompt bar with an animated robot avatar" width="690">
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/your%20data-stays%20on%20your%20machine-ff54a3" alt="Private by default">
 </p>
 
-<p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
+<p align="center"><img src="docs/assets/readme-divider.svg" alt="" width="700"></p>
 
 **A local-first desktop AI assistant — a living, private, agentic chat bar that grows into a full desktop.**
 
@@ -112,7 +112,7 @@ Every app is a package you install, update or remove from the Catalogue, and ope
 
 A dedicated Raspberry Pi build: **GPIO** Fluxo blocks (pigpiod) to drive real hardware, local voices, floating bar and full-screen mode — a fully local voice and home-automation assistant on a Pi.
 
-<p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
+<p align="center"><img src="docs/assets/readme-divider.svg" alt="" width="700"></p>
 
 ## Download
 
@@ -148,8 +148,32 @@ Details: **[scripts/README.md](scripts/README.md)**.
 
 ## Privacy
 
-In local mode, **no data leaves your machine**: model, inference, memory, documents and databases all stay on your disk. Web search and cloud API mode are optional and off by default; the API key, when there is one, never leaves the backend.
+With a local model, inference and your working data can remain on your machine. Web, mail, cloud APIs, model downloads, updates and configured network integrations communicate with their respective services. See the [privacy policy](docs/privacy-policy.md) and the configured provider before sending sensitive data.
 
-<p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
+<p align="center"><img src="docs/assets/readme-divider.svg" alt="" width="700"></p>
 
-This repository hosts the landing page and the application binaries (via *Releases*). The source code is not published here.
+## Source code and license
+
+This repository contains Lumen's source code, website and release downloads. Original code and documentation are licensed under **GPL-3.0-or-later**; distributed derivatives must retain the applicable copyleft obligations. Third-party libraries, models and artwork keep their own licenses. See [LICENSE.md](LICENSE.md), [COPYING](COPYING) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Build from source
+
+Requires **Node.js 22.12+**, npm, **Rust stable 1.89+**, and the native prerequisites for your platform. Build instructions for macOS, Windows, Linux and Raspberry Pi, optional runtimes and application packages are in [BUILDING.md](BUILDING.md) (French).
+
+```bash
+npm ci
+npm run tauri dev
+```
+
+Build the bundled inference engines separately when needed:
+
+```bash
+npm run build:llama
+npm run build:whisper
+npm run build:frontend
+npm run apps:package
+```
+
+Models and native runtime binaries are downloaded or built separately. The Catalogue offers **Kev GGUF** decision models and **GLM-OCR / PaddleOCR-VL GGUF** for local scanning in Studies. Quick questions use a discreet window: **Cmd+Alt+P** on macOS or **Ctrl+Alt+P** on Windows/Linux (fallback Alt+Shift+P).
+
+Contributions: [CONTRIBUTING.md](CONTRIBUTING.md). Report vulnerabilities privately through [SECURITY.md](SECURITY.md). This source publication is not a new binary release; existing audit limitations and platform validation are documented in [docs/open-source-preparation.md](docs/open-source-preparation.md).

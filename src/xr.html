@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Lumen XR</title>
+  <meta name="theme-color" content="#0b0c10" />
+  <link rel="manifest" href="/xr.webmanifest" />
+  <link rel="icon" href="/icons/lumen-192.png" />
+  <style>
+    :root { color-scheme: dark; --bg: #0b0c10; --fg: #f4f5f8; --dim: rgba(235,238,245,.62); --glass: rgba(28,30,38,.72); --line: rgba(255,255,255,.14); --accent: #9961ff; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden;
+      font: 16px/1.45 -apple-system, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    #stage, #stage canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+    .hud { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: min(560px, calc(100% - 32px));
+      background: var(--glass); border: 1px solid var(--line); border-radius: 22px; padding: 18px 20px;
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 20px 60px rgba(0,0,0,.45); }
+    body.in-xr .hud { display: none; }
+    h1 { font-size: 20px; margin: 0 0 2px; letter-spacing: -.01em; }
+    p { margin: 0; color: var(--dim); font-size: 14px; }
+    .row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    button, input { font: inherit; }
+    button { flex: 1; min-width: 140px; min-height: 48px; border-radius: 999px; border: 0; cursor: pointer;
+      background: var(--fg); color: #111; font-weight: 600; }
+    button.alt { background: rgba(255,255,255,.12); color: var(--fg); }
+    button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    input { width: 100%; min-height: 46px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line);
+      background: rgba(0,0,0,.3); color: var(--fg); }
+    label { display: block; font-size: 13px; color: var(--dim); margin: 12px 0 6px; }
+    .conn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--dim); }
+    .conn::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #ff5470; }
+    .conn.ok::before { background: #61f2c7; }
+    .err { color: #ff8095; min-height: 1.2em; margin-top: 8px; font-size: 13px; }
+    .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    #xr-note { margin-top: 10px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <section class="hud" id="home">
+    <div class="top"><h1>Lumen XR</h1><span class="conn" id="conn">Connexion…</span></div>
+    <p>L'orbe et vos conversations, dans la pièce. Pincez l'orbe pour lui parler, dites « Regarde… » pour lui montrer quelque chose.</p>
+    <div class="row">
+      <button id="enter-ar" hidden>Entrer en réalité mixte</button>
+      <button id="enter-vr" class="alt" hidden>Mode VR</button>
+    </div>
+    <p id="xr-note"></p>
+  </section>
+
+  <section class="hud" id="pair" hidden>
+    <h1>Associer le casque</h1>
+    <p>Saisissez votre identifiant Lumen et le code à 6 chiffres affiché dans Réglages › Compagnon.</p>
+    <form id="pair-form" autocomplete="off">
+      <label for="pair-id">Identifiant</label>
+      <input id="pair-id" autocapitalize="none" spellcheck="false" required />
+      <label for="pair-code">Code</label>
+      <input id="pair-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" required />
+      <!-- Seconde étape (profil protégé) : mot de passe de la session, envoyé
+           sur la connexion HTTPS du casque. -->
+      <label for="pair-password" id="pair-password-label" hidden>Mot de passe de la session</label>
+      <input id="pair-password" type="password" autocomplete="current-password" hidden />
+      <div class="err" id="pair-error"></div>
+      <div class="row"><button type="submit">Associer</button></div>
+    </form>
+  </section>
+
+  <script type="module" src="/xr.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+/* Réunion — ce qui lui est propre. La coquille vient de lib/app-shell.css. */
+@import url("../lib/app-shell.css?v=2");
+
+.lobby { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+@media (max-width: 960px) { .lobby { grid-template-columns: 1fr; } }
+.invite { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface-2); padding: 12px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.invite .i-label { width: 100%; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+.invite .i-code { font: 13.5px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 6px 10px; }
+.invite .hint { width: 100%; }
+
+/* ---------- La scène ---------- */
+.stage { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: stretch; min-height: 540px; }
+@media (max-width: 1040px) { .stage { grid-template-columns: 1fr; } }
+.stage-main { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.tiles { display: grid; grid-template-columns: repeat(var(--cols, 2), 1fr); gap: 12px; }
+.tile { position: relative; margin: 0; aspect-ratio: 16 / 10; border-radius: var(--radius-xl); overflow: hidden; background: var(--surface-2); border: 1px solid var(--border); }
+.tile.talking { border-color: var(--accent); box-shadow: 0 0 0 2px var(--sel); }
+.tile video { width: 100%; height: 100%; object-fit: cover; display: block; background: #000; }
+.tile.no-video video { display: none; }
+.tile .avatar { position: absolute; inset: 0; display: none; place-items: center; font-size: 34px; font-weight: 640; color: var(--accent-ink); background: var(--sel); }
+.tile.no-video .avatar { display: grid; }
+.tile figcaption .t-muted svg { width: 13px; height: 13px; display: block; }
+.tile figcaption { position: absolute; left: 10px; bottom: 10px; display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600;
+  background: rgb(0 0 0 / .48); color: #fff; padding: 4px 10px; border-radius: var(--radius-full); backdrop-filter: blur(6px); }
+
+.controls { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.ctrl { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 74px; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--surface); color: var(--text); font: inherit; padding: 9px 10px; cursor: pointer; }
+.ctrl svg { width: 19px; height: 19px; }
+.ctrl span { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+.ctrl:hover { border-color: var(--accent); }
+.ctrl.on { background: var(--sel); border-color: var(--accent); }
+.ctrl.on span { color: var(--accent-ink); }
+.ctrl.off { opacity: .75; }
+.ctrl.rec { border-color: var(--red); }
+.ctrl.rec span { color: var(--red); }
+.ctrl.danger:hover { border-color: var(--red); }
+.ctrl.danger:hover span { color: var(--red); }
+
+/* ---------- Panneau latéral ---------- */
+.side-panel { display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--surface); padding: 12px; min-height: 0; }
+.side-panel .seg { align-self: stretch; }
+.side-panel .seg button { flex: 1; }
+.panel-body { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 9px; min-height: 240px; }
+.msg { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface-2); padding: 8px 11px; }
+.msg .m-head { display: flex; justify-content: space-between; gap: 8px; font-size: 11.5px; color: var(--text-muted); }
+.msg .m-author { font-weight: 640; color: var(--text); }
+.msg .m-text { font-size: 13.5px; line-height: 1.5; white-space: pre-wrap; margin-top: 3px; }
+.sys { text-align: center; font-size: 12px; color: var(--text-muted); }
+.line { display: grid; grid-template-columns: 44px 1fr; gap: 4px 8px; font-size: 13px; line-height: 1.5; }
+.line .l-at { color: var(--text-muted); font-variant-numeric: tabular-nums; font-size: 11.5px; }
+.line .l-who { grid-column: 2; font-weight: 640; font-size: 12px; }
+.line .l-text { grid-column: 2; }
+.person { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 6px 2px; border-bottom: 1px solid var(--border); }
+.person .p-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.person .p-name { flex: 1; font-weight: 600; }
+.chat-form { display: flex; gap: 8px; }
+
+/* Bandeau d'accès média : ce qui manque, et comment le donner. */
+.media-banner { display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  border: 1px solid color-mix(in oklab, var(--red) 35%, var(--border));
+  background: color-mix(in oklab, var(--red) 8%, var(--surface));
+  color: var(--text); border-radius: var(--radius-lg); padding: 10px 13px; font-size: 12.5px; line-height: 1.5; }
+.media-banner[hidden] { display: none; }
+.media-banner span { flex: 1; min-width: 220px; }

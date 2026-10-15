@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Sélection d'une zone</title>
+    <style>
+      /* La surface recouvre l'écran : elle ne doit rien hériter ni déborder. */
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #000; cursor: crosshair; user-select: none; }
+      #stage { position: fixed; inset: 0; }
+      /* L'aperçu est affiché en `contain` : la zone utile est letterboxée dès
+         que l'écran capturé et la fenêtre n'ont pas le même rapport. Les
+         coordonnées envoyées au backend sont donc rapportées à CETTE image,
+         jamais à la fenêtre. */
+      #shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+      /* Voile sombre partout SAUF sur la sélection, dessinée en `clip-path`. */
+      #veil { position: absolute; inset: 0; background: rgba(6, 8, 16, 0.55); }
+      #box { position: absolute; display: none; border: 1.5px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.5), 0 8px 30px rgba(0,0,0,.45); }
+      #size { position: absolute; transform: translateY(-24px); font: 500 12px/1 ui-sans-serif, system-ui, sans-serif; color: #fff; background: rgba(0,0,0,.65); padding: 4px 7px; border-radius: 5px; white-space: nowrap; }
+      #hint { position: absolute; left: 50%; top: 28px; transform: translateX(-50%); font: 500 13px/1.4 ui-sans-serif, system-ui, sans-serif; color: #fff; background: rgba(0,0,0,.62); padding: 9px 15px; border-radius: 10px; backdrop-filter: blur(6px); pointer-events: none; }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <img id="shot" alt="" />
+      <div id="veil"></div>
+      <div id="box"><span id="size"></span></div>
+      <div id="hint"></div>
+    </div>
+    <script type="module" src="screen-select.js"></script>
+  </body>
+</html>

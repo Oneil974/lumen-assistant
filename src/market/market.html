@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!-- Catalogue : le point d'entrée unique pour installer ce que Lumen sait exécuter
+     — modèles GGUF (llama.cpp), voix locales (Piper/Kokoro), workflows Fluxo et
+     avatars 3D GLB. Chaque onglet parle au backend déjà en place ; le Catalogue
+     n'invente aucun stockage, il rassemble les catalogues.
+
+     Mise en page façon boutique : rayons et catégories dans le panneau latéral,
+     carrousel éditorial en tête de rayon, grille de fiches en dessous. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Catalogue</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js?v=3" defer></script>
+    <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="../lib/confirm.css?v=3" />
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- ===== Panneau latéral : rayons puis catégories du rayon actif ===== -->
+      <aside class="side">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8H3l1.5-4h15z"/><path d="M4.5 8v11a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1V8"/><path d="M9 12h6"/></svg></span>
+          <div>
+            <div class="brand-title">Catalogue</div>
+            <div class="brand-sub">Tout ce qui s'installe dans Lumen</div>
+          </div>
+        </div>
+        <input class="search" id="search" placeholder="Rechercher…" />
+        <nav class="sections" id="sections"></nav>
+        <div class="side-sep"></div>
+        <div class="side-head" id="cats-title">Catégories</div>
+        <nav class="cats" id="cats"></nav>
+        <div class="side-foot" id="side-foot"></div>
+      </aside>
+
+      <!-- ===== Rayon ===== -->
+      <main class="stage">
+        <header class="stage-head">
+          <div>
+            <h1 class="stage-title" id="stage-title">Modèles</h1>
+            <div class="stage-sub" id="status">Chargement…</div>
+          </div>
+        </header>
+
+        <!-- Carrousel éditorial (masqué quand le rayon n'a rien à mettre en avant). -->
+        <section class="hero" id="hero" hidden>
+          <div class="hero-track" id="hero-track"></div>
+          <button class="hero-nav prev" id="hero-prev" aria-label="Précédent">‹</button>
+          <button class="hero-nav next" id="hero-next" aria-label="Suivant">›</button>
+          <div class="hero-dots" id="hero-dots"></div>
+        </section>
+
+        <!-- ===== Applications ===== -->
+        <!-- Le rayon principal depuis la 0.2 : Lumen n'embarque plus que son
+             noyau, tout le reste s'installe et se désinstalle ici. -->
+        <section class="panel" id="panel-apps" hidden>
+          <p class="note" id="apps-repo-note"></p>
+          <div class="grid" id="grid-apps"></div>
+        </section>
+
+        <!-- ===== Mises à jour des applications ===== -->
+        <section class="panel" id="panel-updates" hidden>
+          <div class="upd-head">
+            <p class="note" id="updates-note"></p>
+            <div class="upd-actions">
+              <button class="btn" id="btn-updates-check">Vérifier</button>
+              <button class="btn primary" id="btn-updates-all" hidden>Tout mettre à jour</button>
+            </div>
+          </div>
+          <div class="upd-list" id="list-updates"></div>
+        </section>
+
+        <!-- ===== Modèles GGUF (llama.cpp) ===== -->
+        <section class="panel" id="panel-models">
+          <div class="grid" id="grid-models"></div>
+        </section>
+
+        <!-- ===== Voix locales ===== -->
+        <section class="panel" id="panel-voices" hidden>
+          <div class="grid" id="grid-voices"></div>
+        </section>
+
+        <!-- ===== Workflows Fluxo ===== -->
+        <section class="panel" id="panel-workflows" hidden>
+          <p class="note">Un workflow installé s'ouvre dans Fluxo → Designer, où vous pouvez l'adapter.</p>
+          <div class="grid" id="grid-workflows"></div>
+        </section>
+
+        <!-- ===== Avatars 3D ===== -->
+        <section class="panel" id="panel-avatars" hidden>
+          <div class="notice" id="avatar-current">Avatar personnalisé : chargement…</div>
+          <div class="row">
+            <input class="field" id="avatar-url" placeholder="https://exemple.com/mon-avatar.glb" />
+            <button class="btn primary" id="btn-avatar-url">Installer depuis une URL</button>
+            <button class="btn" id="btn-avatar-file">Importer un fichier…</button>
+            <button class="btn ghost danger" id="btn-avatar-remove">Supprimer l'avatar</button>
+            <input type="file" id="avatar-file" accept=".glb" hidden />
+          </div>
+          <p class="note">
+            Un avatar Lumen est un fichier <strong>.glb</strong> de moins de 25 Mo contenant quatre
+            animations aux noms exacts : <code>Lumen_Idle</code>, <code>Lumen_Thinking</code>,
+            <code>Lumen_Speaking</code>, <code>Lumen_Action</code> (<code>Lumen_Heartbeat</code> est
+            optionnelle). Un GLB qui ne les porte pas est refusé à l'installation. Une fois installé,
+            activez-le dans Paramètres → Apparence → Avatar.
+          </p>
+          <div class="grid" id="grid-avatars"></div>
+        </section>
+
+        <!-- ===== Sources ===== -->
+        <section class="panel" id="panel-source" hidden>
+          <p class="note">
+            Le Catalogue s'appuie sur trois listes qui <strong>s'additionnent</strong> : celle
+            embarquée dans l'application (toujours disponible, même hors ligne), la
+            <strong>liste officielle Lumen</strong> publiée dans le dépôt du projet et mise à jour
+            sans nouvelle version de l'app, et enfin votre propre manifeste si vous en indiquez un.
+            Rien n'est téléchargé tant que vous ne cliquez pas sur « Installer ».
+          </p>
+          <div class="row">
+            <input class="field" id="source-url" placeholder="https://exemple.com/ma-liste.json" />
+            <button class="btn primary" id="btn-source-load">Ajouter ma source</button>
+            <button class="btn ghost" id="btn-source-clear">Retirer ma source</button>
+            <button class="btn" id="btn-source-refresh">Actualiser la liste officielle</button>
+          </div>
+          <div class="notice pre" id="source-state">Chargement des listes…</div>
+          <p class="note">Format attendu :</p>
+          <pre class="code" id="manifest-doc"></pre>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+/* Modale de confirmation partagée (cf. lib/confirm.js). Neutre : emprunte les
+   jetons de l'app hôte, avec des replis autonomes. */
+.lumen-confirm {
+  position: fixed; inset: 0; z-index: 99500;
+  display: grid; place-items: center; padding: 22px;
+  background: rgba(10, 10, 14, 0.42);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  font: 13px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  color: var(--text, #1c1c1e);
+}
+.lumen-confirm * { box-sizing: border-box; }
+.lumen-confirm-card {
+  width: min(420px, 100%);
+  display: flex; flex-direction: column; gap: 9px;
+  padding: 18px 18px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.1));
+  background: var(--surface, #fdfdff);
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.55);
+  animation: lumenConfirmIn 0.16s cubic-bezier(0.32, 0.72, 0, 1);
+}
+@keyframes lumenConfirmIn { from { opacity: 0; transform: translateY(6px) scale(0.99); } }
+.lumen-confirm-title { font-size: 14.5px; font-weight: 650; }
+.lumen-confirm-body { font-size: 12.5px; line-height: 1.5; color: var(--text-muted, #6b6b70); white-space: pre-wrap; }
+.lumen-confirm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+.lumen-confirm-btn {
+  font: inherit; font-size: 12.5px; font-weight: 550;
+  padding: 8px 15px; cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.12));
+  background: var(--surface-2, #fff);
+  color: var(--text, #1c1c1e);
+}
+.lumen-confirm-btn:hover { filter: brightness(0.97); }
+.lumen-confirm-btn.primary { border-color: transparent; background: var(--accent, var(--primary)); color: var(--primary-foreground, #fff); }
+.lumen-confirm-btn.danger { border-color: transparent; background: var(--red, var(--destructive)); color: #fff; }
+.lumen-confirm-btn.primary:hover, .lumen-confirm-btn.danger:hover { filter: brightness(1.07); }
+
+/* Champ de saisie de `promptSheet` — même carte, une ligne de plus. */
+.lumen-prompt-input {
+  font: inherit; font-size: 13.5px;
+  padding: 8px 11px; width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.14));
+  background: var(--surface-2, #fff);
+  color: var(--text, #1c1c1e);
+  resize: vertical;
+}
+.lumen-prompt-input:focus {
+  outline: none;
+  border-color: var(--accent, var(--primary));
+  box-shadow: 0 0 0 3px var(--sel, rgba(10, 132, 255, 0.18));
+}

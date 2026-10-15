@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!-- Village des agents de Lumen. Visualisation isométrique « cozy » : un agent =
+     un avatar pixel art. L'état (au repos / au travail / endormi) est dérivé des
+     données réelles (agent_list, agent_activity) et rafraîchi via l'événement
+     `agents-updated`. Clic sur un avatar = fiche + actions. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Atelier des agents</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="village">
+      <canvas id="scene"></canvas>
+
+      <!-- Bandeau d'en-tête flottant -->
+      <header class="hud-top">
+        <span class="hud-brand">
+          <span class="hud-title">Atelier des agents</span>
+          <span class="hud-sub">Vos agents au travail, en direct</span>
+        </span>
+        <span class="hud-stats">
+          <span class="stat stat-work"><i class="dot"></i><b id="stat-work">0</b> au travail</span>
+          <span class="stat stat-idle"><i class="dot"></i><b id="stat-idle">0</b> au repos</span>
+          <span class="stat stat-sleep"><i class="dot"></i><b id="stat-sleep">0</b> en veille</span>
+        </span>
+        <span class="hud-count" id="hud-count"></span>
+      </header>
+
+      <!-- Contrôles flottants -->
+      <div class="hud-tools">
+        <div class="tool-seg" role="group" aria-label="Zoom">
+          <button class="tool-btn" id="zoom-out" title="Zoom arrière" aria-label="Zoom arrière">−</button>
+          <button class="tool-btn" id="zoom-reset" title="Recentrer" aria-label="Recentrer">⌖</button>
+          <button class="tool-btn" id="zoom-in" title="Zoom avant" aria-label="Zoom avant">+</button>
+        </div>
+        <button class="tool-btn" id="toggle-fullscreen" title="Plein écran (écran dédié)" aria-label="Plein écran">⛶</button>
+        <button class="tool-btn wide accent" id="toggle-build" title="Mode construction">Construire</button>
+      </div>
+
+      <!-- Panneau de construction (dock latéral droit) : outils en haut,
+           configuration à gauche, assets filtrables à droite. -->
+      <aside class="build-dock" id="build-dock" hidden>
+        <div class="dock-toolbar">
+          <span class="dock-title">🔨 Construction</span>
+          <div class="dock-tool-btns">
+            <button class="dock-tool" data-brush="pan" title="Déplacer le canevas">✋</button>
+            <button class="dock-tool active" data-brush="select" title="Sélectionner / déplacer">↖</button>
+            <button class="dock-tool" data-brush="erase" title="Gomme : supprimer l'élément cliqué">🩹</button>
+            <button class="dock-tool danger" id="dock-clear" title="Tout nettoyer">🧹</button>
+          </div>
+          <button class="card-close" id="dock-close" aria-label="Fermer">✕</button>
+        </div>
+
+        <div class="dock-body">
+          <!-- Configuration (gauche) -->
+          <div class="dock-config">
+            <div class="dock-sec-title" id="dock-config-title">Nouvel élément</div>
+
+            <label class="dock-field">Type
+              <select id="cfg-type" class="asset-select">
+                <option value="object">Objet divers</option>
+                <option value="special">Objet spécial (IA)</option>
+                <option value="decor">Décoration</option>
+                <option value="wall">Mur</option>
+                <option value="floor">Sol</option>
+                <option value="zone">Bloc agent</option>
+              </select>
+            </label>
+
+            <label class="dock-field" id="cfg-zone-row" hidden>Bloc
+              <select id="cfg-zone" class="asset-select"></select>
+            </label>
+
+            <div class="dock-special" id="cfg-special" hidden>
+              <label class="dock-field">Fonction
+                <select id="cfg-fn" class="asset-select">
+                  <option value="image">🖼️ Image (génération)</option>
+                  <option value="text">📝 Texte (génération)</option>
+                  <option value="tool">🛠️ Tool</option>
+                </select>
+              </label>
+              <label class="dock-field">Config
+                <textarea id="cfg-fn-config" class="dock-textarea" rows="2" placeholder="Prompt, nom du tool, note…"></textarea>
+              </label>
+            </div>
+
+            <label class="dock-field" id="cfg-layer-row">Layer
+              <select id="cfg-layer" class="asset-select">
+                <option value="object">Objet</option>
+                <option value="wall">Mur</option>
+              </select>
+            </label>
+
+            <label class="dock-check" id="cfg-solid-row"><input type="checkbox" id="cfg-solid" /> Collision</label>
+            <label class="dock-check" id="cfg-floor-default-row" hidden><input type="checkbox" id="cfg-floor-default" /> Sol par défaut partout</label>
+
+            <div class="dock-size" id="cfg-size-row">
+              <label class="dock-field dock-range">Échelle <input type="range" id="cfg-scale" min="0.4" max="1.4" step="0.05" /></label>
+              <div class="dock-nums">
+                <label class="dock-num">L <input type="number" id="cfg-w" min="1" max="6" value="1" title="Largeur (cases)" /></label>
+                <label class="dock-num">H <input type="number" id="cfg-h" min="1" max="6" value="1" title="Hauteur (cases)" /></label>
+              </div>
+            </div>
+
+            <div class="dock-selected" id="cfg-selected" hidden>
+              <button class="card-btn" id="cfg-skin-clear" hidden>Skin par défaut</button>
+              <button class="card-btn danger" id="cfg-delete">Retirer l'élément</button>
+            </div>
+
+            <p class="dock-hint" id="dock-hint">Choisis un asset à droite, puis clique la scène.</p>
+          </div>
+
+          <!-- Assets (droite) -->
+          <div class="dock-assets">
+            <div class="dock-assets-head">
+              <select id="dock-category" class="asset-select asset-category"></select>
+              <button class="card-btn" id="dock-import" title="Importer une image">＋ Importer</button>
+              <input type="file" id="asset-file" accept="image/*" hidden />
+            </div>
+            <div class="drag-drop-zone dock-drop" id="drag-drop-zone">
+              <span class="drag-drop-text">Glisse une image ici</span>
+            </div>
+            <div class="dock-grid" id="dock-grid"></div>
+            <p class="card-feedback" id="asset-feedback"></p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Fiche d'un objet spécial (clic hors édition) -->
+      <aside class="special-card" id="special-card" hidden>
+        <button class="card-close" id="special-close" aria-label="Fermer">✕</button>
+        <div class="special-head">
+          <span class="special-icon" id="special-icon">✨</span>
+          <div class="special-headtxt">
+            <span class="special-title">Objet spécial</span>
+            <span class="special-fn" id="special-fn"></span>
+          </div>
+        </div>
+        <p class="special-config" id="special-config"></p>
+
+        <div class="special-sec">
+          <span class="special-sec-title">Déclencher une tâche</span>
+          <select id="special-agent" class="asset-select"></select>
+          <textarea id="special-prompt" class="dock-textarea" rows="2"></textarea>
+          <div class="special-actions">
+            <button class="card-btn" id="special-run">Assigner</button>
+            <button class="card-btn primary" id="special-run-now">Lancer</button>
+          </div>
+          <p class="special-feedback" id="special-feedback"></p>
+        </div>
+
+        <div class="special-sec">
+          <span class="special-sec-title">Historique d'utilisation</span>
+          <div class="special-history" id="special-history"></div>
+        </div>
+      </aside>
+
+      <!-- État vide -->
+      <div class="empty" id="empty" hidden>
+        <div class="empty-card">
+          <p class="empty-title">L'atelier est vide</p>
+          <p class="empty-sub">Crée un agent dans l'app <b>Agents</b> et il apparaîtra ici.</p>
+        </div>
+      </div>
+
+      <!-- Panneau d'infos d'un agent -->
+      <aside class="card" id="card" hidden>
+        <button class="card-close" id="card-close" aria-label="Fermer">✕</button>
+        <div class="card-head">
+          <span class="card-avatar" id="card-avatar"></span>
+          <div class="card-headtxt">
+            <span class="card-name" id="card-name"></span>
+            <span class="card-state" id="card-state"></span>
+          </div>
+        </div>
+
+        <!-- Bandeau de progression -->
+        <div class="card-level" id="card-level"></div>
+
+        <!-- Onglets -->
+        <div class="card-tabs">
+          <button class="card-tab active" id="tab-info">Infos</button>
+          <button class="card-tab" id="tab-mem">Mémoire</button>
+        </div>
+
+        <!-- Onglet Infos -->
+        <div id="pane-info">
+          <div class="card-section">
+            <span class="card-label">Activité</span>
+            <p class="card-activity" id="card-activity">—</p>
+          </div>
+          <div class="card-section">
+            <span class="card-label">Tâches en file</span>
+            <div class="card-tasks" id="card-tasks"></div>
+          </div>
+          <div class="card-actions">
+            <input type="text" id="card-taskinput" class="card-input" placeholder="Donner une tâche…" />
+            <button class="card-btn" id="card-assign">Assigner</button>
+            <button class="card-btn primary" id="card-run">Lancer maintenant</button>
+            <button class="card-btn ghost" id="card-open">Ouvrir la fiche</button>
+          </div>
+          
+          <!-- Interaction Sociale -->
+          <div class="card-section card-social">
+            <span class="card-label">Interaction sociale</span>
+            <div class="card-social-row">
+              <select id="card-social-target" class="asset-select"></select>
+              <button class="card-btn primary" id="card-social-visit">Envoyer en visite</button>
+            </div>
+          </div>
+
+          <p class="card-feedback" id="card-feedback"></p>
+        </div>
+
+        <!-- Onglet Mémoire (rempli par main.js) -->
+        <div id="pane-mem" hidden></div>
+      </aside>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!-- App « Stockage » de Lumen. Ce que Lumen occupe sur le disque, sa
+     répartition par catégorie (à la façon du panneau Stockage de macOS), le
+     nettoyage de ce qui se retélécharge, et la sauvegarde à la carte.
+     Toutes les mesures viennent du backend (storage.rs / backup.rs) : rien
+     n'est estimé côté interface. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Stockage</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/confirm.css?v=3" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 11v8c0 1.66 4 3 9 3s9-1.34 9-3v-8"/></svg></span>
+          <div>
+            <div class="brand-title">Stockage</div>
+            <div class="brand-sub" id="root-path">—</div>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn-soft" id="btn-refresh" title="Recalculer">⟳ Actualiser</button>
+      </header>
+
+      <div class="body">
+        <!-- Vue d'ensemble : jauge segmentée + légende -->
+        <section class="panel">
+          <div class="usage-head">
+            <div>
+              <div class="usage-total" id="usage-total">—</div>
+              <div class="usage-sub" id="usage-sub">Espace occupé par Lumen</div>
+            </div>
+            <div class="usage-disk" id="usage-disk"></div>
+          </div>
+          <div class="bar" id="bar" role="img" aria-label="Répartition du stockage"></div>
+          <div class="legend" id="legend"></div>
+        </section>
+
+        <!-- Détail par catégorie -->
+        <section class="panel">
+          <h2>Répartition</h2>
+          <div class="cats" id="cats"></div>
+          <p class="empty" id="cats-empty" hidden>Rien à afficher.</p>
+        </section>
+
+        <!-- Sauvegarde à la carte -->
+        <section class="panel">
+          <h2>Sauvegarde</h2>
+          <p class="hint">Choisissez ce qui doit entrer dans l'archive <code>.lumenbackup</code>.
+            Les modèles, les voix et les journaux en sont exclus : ils se retéléchargent ou se régénèrent.</p>
+          <div class="picks" id="picks"></div>
+          <div class="backup-row">
+            <span class="estimate" id="estimate">—</span>
+            <span class="spacer"></span>
+            <button class="btn-soft" id="btn-all">Tout cocher</button>
+            <button class="btn-soft" id="btn-none">Tout décocher</button>
+            <button class="btn-soft primary" id="btn-backup">Créer la sauvegarde</button>
+          </div>
+          <div class="result" id="backup-result" hidden></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

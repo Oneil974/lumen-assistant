@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lumen — Coffre personnel</title><script src="/lib/theme-init.js"></script><link rel="stylesheet" href="../lib/tokens.css"><link rel="stylesheet" href="./styles.css"><script type="module" src="./main.js"></script></head>
+<body><div class="workspace">
+ <aside class="sidebar"><div class="brand"><span class="brand-mark" data-icon="database"></span><div><strong>Coffre personnel</strong><small>Vos données, votre espace</small></div></div>
+ <button class="nav-item active" data-scope="all"><span data-icon="layout-grid"></span>Vue d’ensemble<span class="count" id="all-count">0</span></button>
+ <button class="nav-item" id="sources-btn" aria-label="Applications et sandboxs"><span data-icon="layers"></span><span>Applications & sandboxs</span></button>
+ <div class="nav-heading">COLLECTIONS<button id="add-collection" aria-label="Créer une collection" data-icon="plus"></button></div><nav id="collection-nav" aria-label="Collections"></nav>
+ <div class="sidebar-bottom"><span data-icon="shield"></span><div><strong>Un espace personnel</strong><p>Vous choisissez ce que l’IA peut lire et modifier, collection par collection.</p></div></div>
+ </aside>
+ <main class="main"><header class="topbar"><div id="breadcrumb">Mon coffre</div><div class="top-actions"><button id="refresh" class="icon-btn" aria-label="Actualiser" data-icon="refresh-cw"></button><button id="import-btn" class="secondary"><span data-icon="upload"></span>Importer</button><button id="export-btn" class="secondary"><span data-icon="download"></span>Exporter</button><button id="new-record" class="primary"><span data-icon="plus"></span>Nouvelle fiche</button></div></header>
+ <div class="content-scroll"><section class="hero"><div><span class="eyebrow" id="eyebrow">UN COFFRE QUI PREND FORME</span><h1 id="title">Une place pour chaque donnée.</h1><p id="description">Rassemblez vos informations en collections. Parcourez-les comme des dossiers, utilisez-les comme une base de données.</p></div><div id="hero-meta" class="hero-meta"></div></section>
+ <section id="collection-cards" class="collection-cards" aria-label="Vos collections"></section>
+ <div class="data-heading"><div><h2 id="records-title">Toutes les données</h2><span id="result-count"></span></div><button id="ask-btn" class="secondary"><span data-icon="sparkles"></span>Interroger avec Lumen</button><button id="structure-btn" class="secondary"><span data-icon="sliders-horizontal"></span>Structure & accès IA</button></div>
+ <div class="data-toolbar"><label class="search"><span data-icon="search"></span><input id="search" type="search" placeholder="Rechercher dans les fiches et leurs champs…" aria-label="Rechercher"></label><select id="field-filter" aria-label="Filtrer un champ" hidden></select><select id="field-value" aria-label="Valeur du champ" hidden></select><select id="type-filter" aria-label="Filtrer par type"><option value="">Tous les types</option><option value="dict">Fiches</option><option value="text">Texte</option><option value="number">Nombre</option><option value="list">Liste</option><option value="bool">Oui / non</option></select><select id="sort" aria-label="Trier"><option value="recent">Plus récentes</option><option value="name">Nom</option><option value="oldest">Plus anciennes</option></select><div class="view-switch" aria-label="Vue"><button id="view-cards" class="active" aria-label="Vue cartes" data-icon="layout-grid"></button><button id="view-table" aria-label="Vue tableau" data-icon="table"></button></div></div>
+ <div id="records" class="records"></div><div id="load-more" class="load-more"></div>
+ <section id="empty" class="empty" hidden><span data-icon="folder-plus"></span><h2>Un premier espace pour vos idées.</h2><p>Commencez avec une collection prête à l’emploi, ou imaginez la vôtre.</p><div id="starter-templates"></div></section>
+ <div id="status" class="status" role="status" aria-live="polite"></div>
+ </div></main>
+ <aside class="inspector" id="inspector" hidden aria-label="Détail de la fiche"></aside>
+ </div><dialog id="collection-dialog"></dialog><dialog id="import-dialog"></dialog>
+ <input id="import-file" type="file" accept="application/json,.json" hidden>
+</body></html>

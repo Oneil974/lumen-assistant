@@ -1,0 +1,6 @@
+html, body, #package-window { width: 100%; height: 100%; margin: 0; }
+body { background: var(--background); color: var(--foreground); }
+#package-window .dt-appframe { display: block; width: 100%; height: 100%; border: 0; }
+.package-empty { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center; }
+.package-empty h1 { margin: 0; font-size: 22px; font-weight: 500; }
+.package-empty p { margin: 0 0 8px; color: var(--muted-foreground); }

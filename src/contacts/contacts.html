@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!-- Carnet d'adresses de Lumen. Un seul magasin (contacts.json), alimenté à la
+     main ET par fusion : correspondants du courrier, clients de Relia, pairs
+     Telegram. Les suggestions ne sont jamais importées d'office. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Contacts</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=1" />
+    <script type="module" src="./main.js" defer></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="side-head">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <span class="title">Contacts</span>
+          <span class="count" id="count"></span>
+        </div>
+        <div class="side-actions">
+          <button class="btn-primary" id="btn-new">Nouveau</button>
+          <button class="btn-soft" id="btn-merge" title="Chercher des contacts dans le courrier, Relia et Telegram">Fusionner</button>
+        </div>
+        <div class="filters">
+          <button class="chip active" data-filter="all">Tous</button>
+          <button class="chip" data-filter="favorite">Favoris</button>
+          <input type="search" id="search" placeholder="Rechercher…" />
+        </div>
+        <div class="list" id="list"></div>
+        <div class="side-foot" id="status"></div>
+      </aside>
+
+      <main class="detail">
+        <div class="detail-empty" id="detail-empty">
+          <h2>Aucun contact sélectionné</h2>
+          <p>Choisissez une fiche, créez-en une, ou lancez la fusion pour récupérer les personnes déjà connues de Lumen.</p>
+        </div>
+
+        <form class="card" id="card" hidden autocomplete="off">
+          <header class="card-head">
+            <span class="avatar" id="avatar"></span>
+            <div class="card-id">
+              <input type="text" id="f-name" class="name-input" placeholder="Nom" />
+              <div class="card-sub"><span id="f-origin"></span></div>
+            </div>
+            <button type="button" class="star" id="btn-fav" title="Favori">☆</button>
+          </header>
+          <div class="fields">
+            <label>Adresse e-mail<input type="email" id="f-email" placeholder="nom@exemple.fr" /></label>
+            <label>Téléphone<input type="tel" id="f-phone" placeholder="+33…" /></label>
+            <label>Société<input type="text" id="f-company" /></label>
+            <label>Fonction<input type="text" id="f-role" /></label>
+            <label class="wide">Note<textarea id="f-note" rows="4"></textarea></label>
+          </div>
+          <footer class="card-actions">
+            <button type="button" class="btn-primary" id="btn-save">Enregistrer</button>
+            <button type="button" class="btn-soft" id="btn-mail">Écrire un e-mail</button>
+            <span class="spacer"></span>
+            <button type="button" class="btn-soft danger" id="btn-delete">Supprimer</button>
+          </footer>
+        </form>
+      </main>
+    </div>
+
+    <!-- Fusion -->
+    <div class="overlay" id="merge-overlay" hidden>
+      <div class="sheet">
+        <h2>Contacts trouvés ailleurs dans Lumen</h2>
+        <p class="sheet-hint">
+          Ces personnes apparaissent dans votre courrier, dans Relia ou dans
+          Telegram, mais pas encore dans le carnet. Cochez celles que vous
+          voulez garder — rien n'est importé sans votre accord.
+        </p>
+        <div class="merge-list" id="merge-list"></div>
+        <div class="sheet-actions">
+          <button class="btn-soft" id="m-all">Tout cocher</button>
+          <span class="spacer"></span>
+          <button class="btn-soft" id="m-cancel">Annuler</button>
+          <button class="btn-primary" id="m-import">Importer</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

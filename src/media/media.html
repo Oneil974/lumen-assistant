@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<!-- Médias de Lumen : lecteur vidéo/musique et studio de montage façon CapCut
+     (pistes multiples, transitions, filtres, textes animés, sous-titres
+     automatiques, voix off, assistant IA). Les fichiers sont lus en continu
+     depuis les sandboxes par le schéma lumenmedia:// (src-tauri/src/media.rs). -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Médias</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/confirm.css" />
+    <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js?v=2"></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app" id="app" data-tab="player">
+      <header class="topbar">
+        <div class="brand"><span data-ic="play"></span><span>Médias</span></div>
+        <div class="seg" role="tablist">
+          <button class="seg-btn is-on" data-tab="player" role="tab">Lecteur</button>
+          <button class="seg-btn" data-tab="editor" role="tab">Montage</button>
+        </div>
+        <div class="topbar-ed">
+          <input class="title-input" id="ed-title" value="Mon montage" aria-label="Titre du montage" />
+          <div class="menu-wrap">
+            <button class="btn ghost sm" id="ed-projects" title="Projets de montage"><span data-ic="folder"></span>Projets</button>
+            <div class="menu" id="projects-menu" hidden></div>
+          </div>
+          <span class="spacer"></span>
+          <button class="btn ghost icon sm" id="ed-undo" title="Annuler (⌘Z)"><span data-ic="undo-2"></span></button>
+          <button class="btn ghost icon sm" id="ed-redo" title="Rétablir (⇧⌘Z)"><span data-ic="redo-2"></span></button>
+          <button class="btn outline sm" id="ed-ai" title="Assistant de montage (⌘J)"><span data-ic="sparkles"></span>Assistant</button>
+          <button class="btn primary sm" id="ed-export"><span data-ic="upload"></span>Exporter</button>
+        </div>
+      </header>
+
+      <div class="lock-banner" id="lock-banner" hidden>
+        <span data-ic="lock"></span>
+        <span>Vos sandboxes sont verrouillées : déverrouillez la session pour voir, monter et exporter vos médias.</span>
+        <button class="btn primary sm" id="btn-unlock">Déverrouiller</button>
+      </div>
+
+      <!-- Bibliothèque : déplacée entre le lecteur et le panneau « Médias » du montage. -->
+      <div class="libbox" id="libbox">
+        <input class="input" id="search" type="search" placeholder="Rechercher un fichier" />
+        <div class="filters">
+          <button class="chip is-on" data-kind="all">Tout</button>
+          <button class="chip" data-kind="video">Vidéos</button>
+          <button class="chip" data-kind="audio">Musique</button>
+          <button class="chip" data-kind="image">Images</button>
+        </div>
+        <nav class="lib" id="lib"></nav>
+        <div class="side-foot">
+          <button class="btn outline sm wide" id="btn-import"><span data-ic="upload"></span>Importer des fichiers…</button>
+          <input type="file" id="file-input" accept="video/*,audio/*,image/*" multiple hidden />
+          <small class="muted" id="ffmpeg-state"></small>
+        </div>
+      </div>
+
+      <!-- Lecteur -->
+      <section class="view view-player" id="view-player">
+        <aside class="side" id="lib-host-player"></aside>
+        <main class="player-main">
+          <div class="stage" id="player-stage">
+            <div class="empty" id="player-empty"><h2>Lecteur</h2><p>Choisissez une vidéo ou un morceau à gauche. Double-clic : ajouter à la file d'attente.</p></div>
+            <video id="video" controls playsinline crossorigin="anonymous" hidden></video>
+            <div class="audio-card" id="audio-card" hidden>
+              <div class="disc" id="disc"></div>
+              <div class="audio-title" id="audio-title"></div>
+              <audio id="audio" controls crossorigin="anonymous"></audio>
+            </div>
+          </div>
+          <div class="player-bar">
+            <button class="btn ghost icon sm" id="p-prev" title="Précédent"><span data-ic="skip-back"></span></button>
+            <button class="btn ghost icon sm" id="p-next" title="Suivant"><span data-ic="skip-forward"></span></button>
+            <label class="muted">Vitesse <select class="select sm" id="p-rate"><option>0.5</option><option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option><option>2</option></select></label>
+            <label class="chk"><input type="checkbox" id="p-loop" /> Répéter</label>
+            <label class="chk"><input type="checkbox" id="p-shuffle" /> Aléatoire</label>
+            <span class="spacer"></span>
+            <button class="btn outline sm" id="p-to-editor" title="Ajouter ce fichier au montage"><span data-ic="plus"></span>Au montage</button>
+          </div>
+          <div class="queue-head">File d'attente</div>
+          <div class="queue" id="queue"></div>
+        </main>
+      </section>
+
+      <!-- Montage -->
+      <section class="view view-editor" id="view-editor" hidden>
+        <div class="ed-top">
+          <aside class="res">
+            <nav class="res-rail" id="res-rail">
+              <button class="rail-btn is-on" data-res="media"><span data-ic="film"></span><small>Médias</small></button>
+              <button class="rail-btn" data-res="audio"><span data-ic="music"></span><small>Audio</small></button>
+              <button class="rail-btn" data-res="text"><span data-ic="type"></span><small>Texte</small></button>
+              <button class="rail-btn" data-res="stickers"><span data-ic="smile"></span><small>Stickers</small></button>
+              <button class="rail-btn" data-res="filters"><span data-ic="palette"></span><small>Filtres</small></button>
+              <button class="rail-btn" data-res="transitions"><span data-ic="blend"></span><small>Transitions</small></button>
+              <button class="rail-btn" data-res="ai"><span data-ic="sparkles"></span><small>IA</small></button>
+            </nav>
+            <div class="res-panel" id="res-panel">
+              <div class="res-pane" data-pane="media">
+                <div id="lib-host-editor" class="lib-host-editor"></div>
+                <div class="pane-actions">
+                  <button class="btn outline sm" id="add-color"><span data-ic="square"></span>Fond de couleur</button>
+                </div>
+              </div>
+              <div class="res-pane" data-pane="audio" hidden></div>
+              <div class="res-pane" data-pane="text" hidden></div>
+              <div class="res-pane" data-pane="stickers" hidden></div>
+              <div class="res-pane" data-pane="filters" hidden></div>
+              <div class="res-pane" data-pane="transitions" hidden></div>
+              <div class="res-pane" data-pane="ai" hidden></div>
+            </div>
+          </aside>
+          <div class="preview-wrap">
+            <div class="stage-ed" id="stage-ed">
+              <div class="canvas-box" id="canvas-box">
+                <canvas id="ed-canvas"></canvas>
+                <div class="sel-layer" id="sel-layer"></div>
+              </div>
+            </div>
+            <div class="transport">
+              <span class="time" id="ed-time">0:00.0 / 0:00.0</span>
+              <span class="spacer"></span>
+              <button class="btn ghost icon sm" id="ed-back" title="Début (↖)"><span data-ic="skip-back"></span></button>
+              <button class="btn primary icon" id="ed-play" title="Lecture / pause (Espace)"><span data-ic="play"></span></button>
+              <button class="btn ghost icon sm" id="ed-fwd" title="Fin"><span data-ic="skip-forward"></span></button>
+              <span class="spacer"></span>
+              <select class="select sm" id="ed-aspect" title="Format"></select>
+            </div>
+          </div>
+          <aside class="inspector" id="inspector"></aside>
+        </div>
+        <div class="tl-toolbar" id="tl-toolbar">
+          <button class="btn ghost icon sm" data-tool="split" title="Couper à la tête de lecture (S)"><span data-ic="scissors"></span></button>
+          <button class="btn ghost icon sm" data-tool="delete" title="Supprimer (Suppr)"><span data-ic="trash-2"></span></button>
+          <button class="btn ghost icon sm" data-tool="duplicate" title="Dupliquer (⌘D)"><span data-ic="copy"></span></button>
+          <button class="btn ghost icon sm" data-tool="freeze" title="Figer l'image (image fixe de 3 s)"><span data-ic="snowflake"></span></button>
+          <button class="btn ghost icon sm" data-tool="detach" title="Détacher l'audio du clip"><span data-ic="audio-lines"></span></button>
+          <button class="btn ghost icon sm" data-tool="marker" title="Ajouter un repère (M)"><span data-ic="bookmark"></span></button>
+          <span class="tl-sep"></span>
+          <button class="btn ghost sm" data-tool="text" title="Ajouter un texte"><span data-ic="type"></span>Texte</button>
+          <button class="btn ghost sm" data-tool="record" title="Enregistrer une voix off depuis la tête de lecture"><span data-ic="mic"></span>Voix off</button>
+          <span class="spacer"></span>
+          <button class="btn ghost icon sm is-on" data-tool="snap" title="Aimantation"><span data-ic="magnet"></span></button>
+          <button class="btn ghost icon sm" data-tool="zoom-out" title="Dézoomer"><span data-ic="zoom-out"></span></button>
+          <input type="range" class="range" id="tl-zoom" min="8" max="300" value="60" aria-label="Zoom de la timeline" />
+          <button class="btn ghost icon sm" data-tool="zoom-in" title="Zoomer"><span data-ic="zoom-in"></span></button>
+          <button class="btn ghost sm" data-tool="fit" title="Tout afficher">Ajuster</button>
+        </div>
+        <div class="timeline" id="timeline">
+          <div class="tl-content" id="tl-content"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Paramètres d'export -->
+    <div class="modal" id="export-settings" hidden>
+      <form class="modal-card" id="export-form">
+        <h3>Exporter la vidéo</h3>
+        <div class="grid2">
+          <label class="f">Résolution
+            <select class="select" name="quality"><option value="480">480p</option><option value="720">720p</option><option value="1080">1080p (Full HD)</option><option value="1440">1440p (2K)</option><option value="2160">2160p (4K)</option></select>
+          </label>
+          <label class="f">Images/s
+            <select class="select" name="fps"><option value="24">24</option><option value="25">25</option><option value="30">30</option><option value="60">60</option></select>
+          </label>
+          <label class="f">Sandbox
+            <select class="select" name="sandbox"></select>
+          </label>
+          <label class="f">Nom du fichier
+            <input class="input" name="name" />
+          </label>
+        </div>
+        <p class="muted small" id="export-info"></p>
+        <div class="modal-actions"><span class="grow"></span><button type="button" class="btn outline" data-close>Annuler</button><button type="submit" class="btn primary">Exporter</button></div>
+      </form>
+    </div>
+    <div class="modal" id="export-modal" hidden>
+      <div class="modal-card">
+        <h3 id="export-title">Export en cours</h3>
+        <p class="muted" id="export-state">Préparation…</p>
+        <div class="bar"><i id="export-bar"></i></div>
+        <div class="modal-actions" id="export-actions"><span class="grow"></span><button class="btn outline" id="export-cancel">Annuler</button></div>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

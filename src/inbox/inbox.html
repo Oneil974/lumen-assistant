@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!-- Messagerie interne « façon e-mail » de Lumen. Les agents y postent des
+     messages quand ils terminent une tâche (backend inbox.rs, branché dans
+     agents.rs). Répondre à un message crée une tâche dans la todo de l'agent
+     expéditeur, avec l'historique utile du message + la demande de l'utilisateur. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Messagerie</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop (dtTheme partagé
+         via localStorage). Appliqué tôt pour éviter tout flash de thème. -->
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="side-head">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h5l2 3h4l2-3h5"/><path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M8 8.5h8M8 11h5"/></svg></span>
+          <span class="title">Boîte de réception</span>
+          <span class="unread" id="unread"></span>
+          <button class="btn-soft compose-btn" id="btn-compose" title="Nouveau message à un agent">✎ Nouveau</button>
+        </div>
+        <div class="filters">
+          <button class="chip active" data-filter="all">Tous</button>
+          <button class="chip" data-filter="unread">Non lus</button>
+        </div>
+        <div class="msg-list" id="msg-list"></div>
+      </aside>
+
+      <main class="reader">
+        <div class="reader-empty" id="reader-empty">Sélectionnez un message.</div>
+
+        <div class="reader-content" id="reader-content" hidden>
+          <header class="rd-head">
+            <div>
+              <div class="rd-subject" id="rd-subject"></div>
+              <div class="rd-meta" id="rd-meta"></div>
+            </div>
+            <div class="spacer"></div>
+            <button class="btn-soft danger" id="btn-del">Supprimer</button>
+          </header>
+          <div class="rd-body" id="rd-body"></div>
+
+          <section class="reply">
+            <div class="reply-head">Répondre <span class="muted">— votre réponse créera une tâche pour cet agent</span></div>
+            <textarea id="reply-text" class="ta" rows="3" placeholder="Ex. : reprends ce point en détaillant les coûts, puis propose un plan."></textarea>
+            <div class="reply-actions">
+              <label class="reply-due" title="Date d'exécution : l'agent ne verra la tâche qu'à partir de ce jour. Vide = tout de suite.">
+                <span class="muted">Exécuter le</span>
+                <input type="date" id="reply-date" class="input reply-date-input" />
+              </label>
+              <span class="ai-state" id="reply-state"></span>
+              <span class="spacer"></span>
+              <button class="btn-soft primary" id="btn-reply">Créer la tâche</button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- Composer : nouveau message vers un agent (l'IA en fait une tâche todo) -->
+    <div class="overlay" id="compose-overlay" hidden>
+      <div class="mini-modal">
+        <h3>Nouveau message à un agent</h3>
+        <p class="muted">Votre demande passe par l'IA, qui la transforme en tâche claire ajoutée à la todo de l'agent destinataire.</p>
+        <label class="fld">Destinataire (agent)
+          <select id="compose-agent" class="select"></select>
+        </label>
+        <label class="fld">Objet (optionnel)
+          <input id="compose-subject" class="input" placeholder="Ex. : Rapport hebdo" />
+        </label>
+        <label class="fld">Message / demande
+          <textarea id="compose-body" class="ta" rows="4" placeholder="Ex. : prépare une synthèse des ventes de la semaine et propose 3 actions."></textarea>
+        </label>
+        <div class="mini-actions">
+          <span class="ai-state" id="compose-state"></span>
+          <span class="spacer"></span>
+          <button class="btn-soft" id="compose-cancel">Annuler</button>
+          <button class="btn-soft primary" id="compose-send">Envoyer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

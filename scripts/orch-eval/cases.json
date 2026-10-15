@@ -1,0 +1,429 @@
+[
+  {
+    "id": "salutation",
+    "query": "Salut Lumen, ça va ?",
+    "script": {
+      "answer": "Très bien, merci ! Et toi ?"
+    },
+    "expect": {
+      "noTools": true
+    }
+  },
+  {
+    "id": "culture",
+    "query": "Explique-moi la photosynthèse en deux phrases.",
+    "script": {
+      "analyze": {
+        "intent": "explication",
+        "needs_tools": false,
+        "needs_data": false,
+        "complexity": "simple",
+        "subquestions": []
+      },
+      "answer": "La photosynthèse transforme la lumière en énergie chimique. Les plantes captent le CO2 et rejettent de l'oxygène."
+    },
+    "expect": {
+      "noTools": true,
+      "answer": [
+        "lumi[eè]re|lumineuse",
+        "oxyg[eè]ne|CO2|carbone"
+      ]
+    }
+  },
+  {
+    "id": "meteo",
+    "query": "Quel temps fait-il à Lyon aujourd'hui ?",
+    "script": {
+      "categories": [
+        "live"
+      ],
+      "calls": [
+        [
+          {
+            "name": "weather_now",
+            "args": {
+              "place": "Lyon"
+            }
+          }
+        ]
+      ],
+      "answer": "Selon la météo, il fait 17 °C à Lyon avec des averses [1]."
+    },
+    "expect": {
+      "tools": [
+        "weather_now"
+      ],
+      "answer": [
+        "17"
+      ],
+      "cites": true,
+      "answerNot": [
+        "kanban",
+        "\\bCV\\b"
+      ]
+    }
+  },
+  {
+    "id": "journee-parallele",
+    "query": "Résume ma journée : agenda, mails et météo à Paris.",
+    "script": {
+      "categories": [
+        "apps",
+        "mail",
+        "live"
+      ],
+      "calls": [
+        [
+          {
+            "name": "day_overview",
+            "args": {
+              "date": "today"
+            }
+          },
+          {
+            "name": "mail_search",
+            "args": {
+              "query": "non lus"
+            }
+          },
+          {
+            "name": "weather_now",
+            "args": {
+              "place": "Paris"
+            }
+          }
+        ]
+      ],
+      "answer": "Réunion à 10 h [1], mail de Claire [2], 17 °C à Paris [3]."
+    },
+    "slowTools": {
+      "day_overview": 200,
+      "mail_search": 200,
+      "weather_now": 200
+    },
+    "expect": {
+      "tools": [
+        "day_overview",
+        "mail_search",
+        "weather_now"
+      ],
+      "parallel": true,
+      "cites": true,
+      "answerNot": [
+        "kanban",
+        "\\bCV\\b"
+      ]
+    }
+  },
+  {
+    "id": "repli-corpus",
+    "query": "Que dit mon CV sur mes compétences ?",
+    "script": {
+      "categories": [
+        "knowledge",
+        "files"
+      ],
+      "calls": [
+        [
+          {
+            "name": "search_documents",
+            "args": {
+              "query": "CV compétences"
+            }
+          }
+        ]
+      ],
+      "answer": "Ton CV cite Rust, Swift et l'IA locale [1]."
+    },
+    "expect": {
+      "tools": [
+        "search_documents",
+        "data_search"
+      ],
+      "answer": [
+        "Rust"
+      ]
+    }
+  },
+  {
+    "id": "kanban",
+    "query": "Qu'est-ce qui est en cours sur mon Kanban ?",
+    "script": {
+      "categories": [
+        "apps"
+      ],
+      "calls": [
+        [
+          {
+            "name": "app_data",
+            "args": {
+              "app": "kanban"
+            }
+          }
+        ]
+      ],
+      "answer": "En cours : Notarisation macOS et App iOS [1]."
+    },
+    "expect": {
+      "tools": [
+        "app_data"
+      ],
+      "answer": [
+        "Notarisation"
+      ],
+      "cites": true
+    }
+  },
+  {
+    "id": "actualite",
+    "query": "Quand sort macOS 27 ?",
+    "script": {
+      "categories": [
+        "web"
+      ],
+      "calls": [
+        [
+          {
+            "name": "web_search",
+            "args": {
+              "query": "date de sortie macOS 27"
+            }
+          }
+        ]
+      ],
+      "answer": "macOS 27 est sorti le 15 septembre 2026 [1]."
+    },
+    "expect": {
+      "tools": [
+        "web_search"
+      ],
+      "answer": [
+        "15 septembre|September 15"
+      ],
+      "answerNot": [
+        "kanban",
+        "\\bCV\\b"
+      ]
+    }
+  },
+  {
+    "id": "action-serie",
+    "query": "Rappelle-moi d'appeler la banque demain et retiens que je préfère le thé.",
+    "script": {
+      "categories": [
+        "memory"
+      ],
+      "calls": [
+        [
+          {
+            "name": "create_reminder",
+            "args": {
+              "text": "Appeler la banque",
+              "when": "demain"
+            }
+          },
+          {
+            "name": "memory_remember",
+            "args": {
+              "text": "préfère le thé"
+            }
+          }
+        ]
+      ],
+      "answer": "C'est noté : rappel créé pour demain, et je retiens que tu préfères le thé."
+    },
+    "expect": {
+      "tools": [
+        "create_reminder",
+        "memory_remember"
+      ]
+    }
+  },
+  {
+    "id": "revision",
+    "query": "Quel temps demain à Paris ?",
+    "script": {
+      "categories": [
+        "live"
+      ],
+      "calls": [
+        [
+          {
+            "name": "weather_now",
+            "args": {
+              "place": "Paris"
+            }
+          }
+        ]
+      ],
+      "answer": "Demain à Paris : 30 °C et orage.",
+      "verify": {
+        "grounded": false,
+        "complete": true,
+        "issues": [
+          "« 30 °C et orage » contredit la donnée [1] : 21 °C, ensoleillé"
+        ]
+      }
+    },
+    "expect": {
+      "tools": [
+        "weather_now"
+      ]
+    }
+  },
+  {
+    "id": "sommeil-coffre",
+    "query": "Regarde dans le coffre mes données de sommeil",
+    "script": {
+      "categories": [
+        "vault"
+      ],
+      "calls": [
+        [
+          {
+            "name": "data_metrics",
+            "args": {
+              "query": "sommeil"
+            }
+          }
+        ]
+      ],
+      "answer": "Tu as dormi 8,3 h la nuit dernière, contre 6,9 h la nuit précédente [1]."
+    },
+    "expect": {
+      "tools": [
+        "data_metrics"
+      ],
+      "answer": [
+        "8[,.]3"
+      ],
+      "answerNot": [
+        "aucune indication",
+        "\\{\\\""
+      ],
+      "cites": true
+    }
+  },
+  {
+    "id": "agenda-iphone",
+    "query": "Qu'est-ce que j'ai de prévu cette semaine ?",
+    "script": {
+      "categories": [
+        "vault"
+      ],
+      "calls": [
+        [
+          {
+            "name": "data_agenda",
+            "args": {
+              "period": "week"
+            }
+          }
+        ]
+      ],
+      "answer": "Cette semaine : dentiste lundi à 14 h 30 et l'anniversaire de Magalie jeudi [1]."
+    },
+    "expect": {
+      "tools": [
+        "data_agenda"
+      ],
+      "answer": [
+        "[Aa]nniversaire",
+        "[Dd]entiste"
+      ],
+      "cites": true
+    }
+  },
+  {
+    "id": "image-coffre",
+    "query": "Montre-moi la photo du salon",
+    "script": {
+      "categories": [
+        "vault"
+      ],
+      "calls": [
+        [
+          {
+            "name": "data_search",
+            "args": {
+              "query": "salon",
+              "type": "image"
+            }
+          }
+        ]
+      ],
+      "answer": "Voici la photo du salon [1] :\n\n![salon.jpg](lumenmedia://localhost/sb1/Photos/salon.jpg)"
+    },
+    "expect": {
+      "tools": [
+        "data_search"
+      ],
+      "answer": [
+        "!\\[salon\\.jpg\\]\\(lumenmedia://localhost/sb1/Photos/salon\\.jpg\\)"
+      ]
+    }
+  },
+  {
+    "id": "pdf-coffre",
+    "query": "Donne-moi le devis de la cuisine en PDF",
+    "script": {
+      "categories": [
+        "vault"
+      ],
+      "calls": [
+        [
+          {
+            "name": "data_search",
+            "args": {
+              "query": "devis cuisine"
+            }
+          }
+        ]
+      ],
+      "answer": "Le devis de la cuisine s'élève à 8 450 € TTC [1] : [Devis_cuisine.pdf](lumenmedia://localhost/sb1/Docs/Devis_cuisine.pdf)"
+    },
+    "expect": {
+      "tools": [
+        "data_search"
+      ],
+      "answer": [
+        "\\[Devis_cuisine\\.pdf\\]\\(lumenmedia://",
+        "8 ?450"
+      ]
+    }
+  },
+  {
+    "id": "petit-contexte-apple",
+    "model": "apple-on-device",
+    "query": "Quel est le budget validé du projet Orion dans le rapport ?",
+    "script": {
+      "categories": [
+        "other"
+      ],
+      "calls": [
+        [
+          {
+            "name": "long_report",
+            "args": {
+              "query": "budget Orion"
+            }
+          }
+        ]
+      ],
+      "compact": "Budget validé du projet Orion : 48 500 €.",
+      "answer": "Le budget validé du projet Orion est de 48 500 € [1]."
+    },
+    "expect": {
+      "tools": [
+        "long_report"
+      ],
+      "steps": [
+        "compact"
+      ],
+      "answer": [
+        "48 ?500"
+      ],
+      "maxPromptTokens": 4096
+    }
+  }
+]

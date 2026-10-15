@@ -1,0 +1,129 @@
+[
+ {
+  "id": "remplir-sous-schema",
+  "query": "Il pleut à Lyon ?",
+  "decider": {
+   "toolPick": "weather_now",
+   "effort": "simple"
+  },
+  "tools": {
+   "weather_now": "Lyon : 17 °C, averses."
+  },
+  "script": {
+   "categories": [
+    "live"
+   ],
+   "fill": {
+    "place": "Lyon"
+   },
+   "calls": [],
+   "answer": "Oui, des averses à Lyon, 17 °C [1]."
+  },
+  "expect": {
+   "tools": [
+    "weather_now"
+   ],
+   "notes": [
+    "arguments remplis sous schéma"
+   ],
+   "answer": [
+    "17"
+   ]
+  }
+ },
+ {
+  "id": "verif-par-code",
+  "query": "Quel temps fait-il à Lyon ?",
+  "tools": {
+   "weather_now": "Lyon : 17 °C, averses."
+  },
+  "script": {
+   "categories": [
+    "live"
+   ],
+   "calls": [
+    [
+     {
+      "name": "weather_now",
+      "args": {
+       "place": "Lyon"
+      }
+     }
+    ]
+   ],
+   "answer": "Il fait 25 °C à Lyon [1]."
+  },
+  "expect": {
+   "steps": [
+    "verify",
+    "revise"
+   ],
+   "answer": [
+    "pas pu vérifier"
+   ]
+  }
+ },
+ {
+  "id": "verif-par-code-ok",
+  "query": "Quel temps fait-il à Lyon ?",
+  "tools": {
+   "weather_now": "Lyon : 17,4 °C, averses, vent 23 km/h."
+  },
+  "script": {
+   "categories": [
+    "live"
+   ],
+   "calls": [
+    [
+     {
+      "name": "weather_now",
+      "args": {
+       "place": "Lyon"
+      }
+     }
+    ]
+   ],
+   "answer": "Il fait 17 °C à Lyon avec un vent de 23 km/h [1]."
+  },
+  "expect": {
+   "steps": [
+    "verify"
+   ],
+   "notSteps": [
+    "revise"
+   ],
+   "answer": [
+    "17"
+   ]
+  }
+ },
+ {
+  "id": "decoupage-complexe",
+  "query": "Compare le coût sur 5 ans d'une voiture électrique à 35 000 € et d'une thermique à 25 000 €, puis recommande.",
+  "decider": {
+   "effort": "complex"
+  },
+  "script": {
+   "analyze": {
+    "intent": "comparatif",
+    "needs_tools": false,
+    "needs_data": false,
+    "complexity": "complex",
+    "subquestions": []
+   },
+   "split": [
+    "Coût de l'électrique sur 5 ans ?",
+    "Coût de la thermique sur 5 ans ?",
+    "Laquelle recommander ?"
+   ],
+   "step": "Étape résolue avec calcul.",
+   "answer": "L'électrique revient moins cher sur 5 ans."
+  },
+  "expect": {
+   "steps": [
+    "steps"
+   ],
+   "noTools": true
+  }
+ }
+]

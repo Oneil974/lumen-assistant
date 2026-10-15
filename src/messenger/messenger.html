@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!-- Messages : discuter avec Lumen et ses agents comme dans une messagerie.
+     Le moteur est côté Rust (messenger.rs) ; cette page n'est qu'un hôte pour
+     l'interface partagée (lib/messenger-ui.js), aussi utilisée par le
+     compagnon web. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Messages</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <style>
+      html, body { margin: 0; height: 100%; background: var(--background); color: var(--foreground); }
+      #app { height: 100%; }
+      /* Sur grand écran : la liste à gauche, la discussion à droite. */
+      @media (min-width: 820px) {
+        #app.mx { flex-direction: row; }
+        #app .mx-list { flex: 0 0 360px; width: 360px; max-width: 40%; border-right: 1px solid var(--border); display: flex !important; }
+        #app .mx-chat[hidden] { display: flex; }
+        #app .mx-chat[hidden] > * { visibility: hidden; }
+        #app .mx-chat .mx-head [data-act="back"] { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

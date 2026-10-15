@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="./lib/tokens.css?v=5" />
+<link rel="stylesheet" href="legal/license.css?v=3" />
+    <link rel="stylesheet" href="lib/screen-prompt.css?v=3" />
+    <link rel="stylesheet" href="styles.css?v=24" />
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+    <!-- Habillage doré de l\'édition Pro : après la peau plate, pour la surcharger. -->
+    <link rel="stylesheet" href="/lib/pro-skin.css?v=8" />
+    <!-- Mode « application » (fenêtre façon ChatGPT) : inerte hors html.shell-app. -->
+    <link rel="stylesheet" href="/lib/app-mode.css?v=7" />
+    <link rel="stylesheet" href="/lib/confirm.css" />
+    <style>
+      .message-bubble.assistant {
+        position: relative !important;
+        padding-right: 44px !important;
+      }
+      .msg-speak-btn {
+        position: absolute !important;
+        top: 10px !important;
+        right: 10px !important;
+        background: rgba(255, 255, 255, 0.18) !important;
+        border: 1px solid rgba(255, 255, 255, 0.28) !important;
+        color: #ffffff !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 26px !important;
+        height: 26px !important;
+        border-radius: 50% !important;
+        z-index: 99 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      body.theme-light-forced .msg-speak-btn {
+        background: rgba(0, 0, 0, 0.08) !important;
+        border-color: rgba(0, 0, 0, 0.12) !important;
+        color: #1c1c1e !important;
+      }
+      .msg-speak-btn svg {
+        display: block !important;
+        width: 14px !important;
+        height: 14px !important;
+      }
+    </style>
+    <script src="/lib/frontend-log-init.js"></script>
+    <script type="module" src="/main.js?v=26" defer></script>
+    <script type="module" src="/orb.js?v=30" defer></script>
+    <script type="module" src="/orb-bridge.js?v=7" defer></script>
+  </head>
+  <body>
+    <!-- Ambient back light glowing effect -->
+    <div class="glowing-orb"></div>
+
+    <div class="bar-stage" id="bar-stage">
+
+      <!-- Companion orb (glass sphere + animated color core) -->
+      <div class="orb-wrap" id="orb-wrap">
+        <div class="orb-shadow"></div>
+        <div class="orb-container" id="orb-container">
+          <div class="orb-frost"></div>
+          <canvas id="orb-canvas"></canvas>
+          <div class="orb-eyes" id="orb-eyes"><span></span><span></span></div>
+          <!-- Zone de préhension : invisible, circulaire (le `border-radius`
+               borne aussi le test de survol), posée au-dessus des couches de
+               rendu. Elle rend l'orbe saisissable pour déplacer la fenêtre sans
+               modifier son apparence ni capter les clics dans les coins vides. -->
+          <div class="orb-grab" id="orb-grab" title="Déplacer Lumen" data-i18n-title="tt_orb_drag"></div>
+        </div>
+      </div>
+
+      <!-- Bar + overlay panels (positioning context so panels sit below the bar) -->
+      <div class="bar-area" id="bar-area">
+
+      <!-- Barre de commande de Lumen (capsule) -->
+      <div class="search-bar" id="search-bar">
+        <!-- Left buttons: Settings, History, and Status Dot -->
+        <div class="left-controls">
+          <button class="icon-btn settings-btn" id="btn-settings" title="Paramètres" data-i18n-title="tt_settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <span class="status-dot online" id="status-indicator"></span>
+          </button>
+          <button class="icon-btn history-btn" id="btn-history" title="Historique des conversations" data-i18n-title="tt_history">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </button>
+          <button class="icon-btn messages-btn" id="btn-messages" title="Messages" data-i18n-title="tt_messages">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>
+          </button>
+          <button class="icon-btn notifications-btn" id="btn-notifications" title="Centre de notifications" data-i18n-title="tt_notifications">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notif-badge" id="notif-badge" hidden>0</span>
+          </button>
+          <button class="icon-btn theme-toggle-btn" id="btn-theme-toggle" title="Changer de thème (Clair/Sombre)" data-i18n-title="tt_theme">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+          <button class="icon-btn action-mode-btn" id="btn-action-mode" title="Mode Action Direct (Routeur)" data-i18n-title="tt_action" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </button>
+          <button class="icon-btn autospeak-btn" id="btn-autospeak" title="Énoncer automatiquement les réponses" data-i18n-title="tt_autospeak">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          </button>
+          <button class="icon-btn memory-btn" id="btn-memory" title="Mémoire : laisser l'IA se souvenir" data-i18n-title="tt_memory_tool">
+            <span class="ic" data-icon="memory"></span>
+          </button>
+          <button class="icon-btn memory-btn orchestrate-btn" id="btn-orchestrate" title="Réponse orchestrée : analyse, outils, vérification" data-i18n-title="tt_orchestrate">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8 7.5 11 16M16 7.5 13 16M8.5 6h7"/></svg>
+          </button>
+          <button class="icon-btn heartbeat-btn" id="btn-heartbeat" title="Heartbeat : tâche d'arrière-plan programmée" data-i18n-title="tt_heartbeat">
+            <span class="ic" data-icon="heartbeat"></span>
+          </button>
+          <button class="icon-btn action-mode-btn" id="btn-fluxo-tools" title="Actions Fluxo via l'IA (function calling)" data-i18n-title="tt_fluxo_tools" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4 2.6-2.6z"></path></svg>
+          </button>
+          <button class="icon-btn fluxo-btn" id="btn-fluxo" title="Automatisations Fluxo" data-i18n-title="tt_fluxo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg>
+          </button>
+          <button class="icon-btn os-btn" id="btn-lumen-os" title="Ouvrir Lumen Desktop" data-i18n-title="tt_lumen_os">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>
+          </button>
+          <!-- Changer de mode d'affichage : barre flottante / application / bureau. -->
+          <button class="icon-btn shell-mode-btn" id="btn-shell-mode" title="Changer de mode d'affichage" data-i18n-title="tt_shell_mode">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>
+          </button>
+          <!-- Ouvre le gestionnaire d'agents (masqué en source Apple Intelligence, comme l'onglet réglages). -->
+          <button class="icon-btn agents-btn" id="btn-agents" title="Boîte à outils — modules Lumen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5h18V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M8 9.5V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3.5"></path><path d="M3 13.5h6v1.5h6v-1.5h6"></path></svg>
+          </button>
+          <!-- Mode Ollama unifié : destination du prompt (chat / routeur / outils / workflow) -->
+          <button class="mode-btn" id="btn-ollama-mode" title="Mode : destination du prompt" data-i18n-title="tt_ollama_mode" style="display: none;">
+            <span class="mode-ic" id="ollama-mode-ic"></span>
+            <span class="mode-label" id="ollama-mode-label"></span>
+          </button>
+          <!-- Connaissances du dossier de discussions (mode application) : instructions + documents en contexte. -->
+          <button class="mode-btn" id="btn-project-kb" title="Connaissances du projet" hidden>
+            <span class="mode-ic"></span>
+            <span class="mode-label"></span>
+          </button>
+          <!-- Overflow menu toggle (shown only when some buttons are collapsed).
+               Un + et non des curseurs : le menu AJOUTE des outils à la barre,
+               il ne règle rien. Même glyphe que « Plus d'outils » de la barre de
+               chat du bureau, pour que le geste soit le même partout. -->
+          <button class="icon-btn more-btn" id="btn-more" title="Plus d'outils" data-i18n-title="tt_more" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          </button>
+        </div>
+
+        <!-- Center: Input field -->
+        <textarea id="chat-input" rows="1" placeholder="Posez une question..." data-i18n-ph="ph_chat"
+                  autocomplete="off" autocapitalize="sentences" spellcheck="false"></textarea>
+
+        <!-- Micro discret, collé au champ de saisie : la dictée passe par le
+             backend choisi dans les Réglages (raccourci Apple « Dicter le
+             texte » sur macOS, ou Whisper local — seul choix hors macOS). -->
+        <button class="icon-btn dictation-btn inline-mic" id="btn-dictation" title="Dictée vocale" data-i18n-title="tt_dictation">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+        </button>
+        <!-- Aperçu des images jointes (modèles multimodaux Ollama) -->
+        <div class="attach-preview" id="attach-preview" hidden></div>
+        <!-- Bouton joindre une image + sélecteur de fichier (caché) -->
+        <button class="icon-btn attach-btn" id="btn-attach" title="Joindre une image ou un document" data-i18n-title="tt_attach">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+        </button>
+        <!-- Masqué visuellement mais PAS en `display:none` : WKWebView refuse
+             d'ouvrir le sélecteur d'un champ qui n'est pas rendu. -->
+        <input type="file" id="image-input" accept=".pdf,.docx,.txt,.md,.csv,.json,.log,.rtf,image/*" multiple class="visually-hidden-input" />
+
+        <!-- Quick Model Selector Toggle -->
+        <div class="quick-model-toggle" id="model-toggle-pill" title="Changer de modèle / source" data-i18n-title="tt_model_toggle">
+          <span id="model-toggle-label">LFM 350M</span>
+        </div>
+        <!-- Préchargement du modèle (discret) : juste à côté du sélecteur de modèle,
+             visible en source Ollama uniquement. -->
+        <button class="model-preload-btn" id="btn-preload-inline" title="Charger le modèle en mémoire" data-i18n-title="tt_preload_model" style="display: none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-7.5-4"/><path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 7.5 4"/><polyline points="21 3 21 7 17 7"/><polyline points="3 21 3 17 7 17"/></svg>
+        </button>
+
+        <!-- Right: Actions -->
+        <div class="action-group">
+          <!-- Submit button (Arrow icon) -->
+          <button class="submit-btn" id="send-btn" title="Envoyer" data-i18n-title="tt_send">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+          <!-- Subtle close button (X icon) -->
+          <button class="close-btn" id="win-close" title="Fermer" data-i18n-title="tt_close">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Overflow toolbar: collapsed tool buttons deploy here, below the bar -->
+      <div class="toolbar-overflow" id="toolbar-overflow"></div>
+
+      <!-- Menu du mode Ollama : liste les destinations (rempli par main.js) -->
+      <div class="mode-menu" id="ollama-mode-menu" hidden></div>
+
+      <!-- Panneau « Backend IA » : source + modèle + think (rempli par main.js) -->
+      <div class="mode-menu" id="backend-menu" hidden></div>
+
+      <!-- Chat history area (expands below search bar, very transparent) -->
+      <div class="messages-container" id="messages-container">
+        <div class="messages-header-actions">
+          <span class="chat-status-label" id="active-chat-label" data-i18n="lbl_active_chat">Discussion active</span>
+          <!-- Context usage indicator -->
+          <span class="context-meter" id="context-meter" hidden>
+            <span class="context-meter-bar"><span class="context-meter-fill" id="context-meter-fill"></span></span>
+            <span class="context-meter-label" id="context-meter-label">0%</span>
+          </span>
+          <!-- Clean chat / Trash button -->
+          <button class="icon-btn-text clear-chat-btn" id="btn-clear-chat" title="Nettoyer la discussion" data-i18n-title="tt_clear_chat">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            <span data-i18n="btn_clear">Effacer</span>
+          </button>
+        </div>
+        <div class="messages-list" id="messages-list">
+          <!-- Messages will be appended here dynamically -->
+        </div>
+      </div>
+
+      <!-- Conversations History Panel overlay -->
+      <div class="settings-panel" id="history-panel">
+        <div class="settings-header">
+          <h2 data-i18n="h_history">Conversations sauvegardées</h2>
+          <button class="icon-btn" id="btn-close-history">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="settings-body">
+          <div class="conversations-list-container" id="conversations-list-container">
+            <!-- Saved conversations list will render here -->
+          </div>
+          <button class="settings-save-btn secondary-action" id="btn-new-chat" data-i18n="btn_new_chat">Nouvelle conversation</button>
+        </div>
+      </div>
+
+      <!-- Heartbeat notifications panel overlay -->
+      <div class="settings-panel" id="notifications-panel">
+        <div class="settings-header">
+          <h2 data-i18n="h_notifications">Centre de notifications</h2>
+          <button class="icon-btn" id="btn-close-notifications">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="settings-body">
+          <div class="notifications-list-container" id="notifications-list-container">
+            <!-- Heartbeat results render here -->
+          </div>
+          <button class="settings-save-btn secondary-action" id="btn-clear-notifications" data-i18n="btn_clear_all">Tout effacer</button>
+        </div>
+      </div>
+
+      <!-- Boîte à outils : launcher des modules Lumen, intégré sous la barre
+           (même style translucide que les panneaux discussion/notifications). -->
+      <div class="settings-panel toolbox-panel" id="toolbox-panel">
+        <div class="settings-header">
+          <h2 data-i18n="h_toolbox">Boîte à outils</h2>
+          <div class="settings-header-actions">
+            <!-- Choix des apps affichées : la grille passe en mode cases à
+                 cocher sur tout le catalogue, la sélection est mémorisée. -->
+            <button class="icon-btn" id="btn-toolbox-edit" aria-pressed="false" title="Personnaliser">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+            </button>
+            <button class="icon-btn" id="btn-close-toolbox">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+        </div>
+        <p class="setting-hint toolbox-edit-hint" id="toolbox-edit-hint" hidden></p>
+        <div class="toolbox-grid" id="toolbox-grid"></div>
+      </div>
+
+      <!-- Fluxo automations panel overlay -->
+      <div class="settings-panel" id="fluxo-panel">
+        <div class="settings-header">
+          <h2 data-i18n="h_fluxo">Automatisations Fluxo</h2>
+          <button class="icon-btn" id="btn-close-fluxo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="settings-body">
+          <p class="fluxo-hint" data-i18n-html="fluxo_hint">Lance un workflow Fluxo. Le texte de la barre est transmis comme entrée (<code>{{input}}</code>) ; le résultat s'affiche dans la discussion.</p>
+          <div class="conversations-list-container" id="fluxo-list-container">
+            <!-- Fluxo workflows render here -->
+          </div>
+          <button class="settings-save-btn secondary-action" id="btn-refresh-fluxo" data-i18n="btn_refresh_fluxo">Actualiser la liste</button>
+        </div>
+      </div>
+
+      <!-- Settings panel overlay -->
+      <div class="settings-panel" id="settings-panel">
+        <div class="settings-header">
+          <h2 data-i18n="h_settings">Configuration</h2>
+          <button class="icon-btn" id="btn-close-settings">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="settings-body">
+          <!-- Tabs -->
+          <div class="settings-tabs" id="settings-tabs">
+            <button type="button" class="settings-tab active" data-tab="general" data-i18n="tab_general">Général</button>
+            <button type="button" class="settings-tab" data-tab="agent" data-i18n="tab_agent">Agents & automatisations</button>
+            <button type="button" class="settings-tab" data-tab="profile" data-i18n="tab_profile">Profil</button>
+            <button type="button" class="settings-tab" data-tab="memory" data-i18n="tab_memory">Mémoire</button>
+            <button type="button" class="settings-tab" data-tab="companion" data-i18n="tab_companion">Compagnon</button>
+            <button type="button" class="settings-tab" data-tab="avatar" data-i18n="tab_avatar">Avatar</button>
+          </div>
+          <!-- Variante compacte (barre étroite) : un menu déroulant remplace les onglets -->
+          <select class="settings-tab-dropdown" id="settings-tab-dropdown">
+            <option value="general" data-i18n="tab_general">Général</option>
+            <option value="agent" data-i18n="tab_agent">Agents & automatisations</option>
+            <option value="profile" data-i18n="tab_profile">Profil</option>
+            <option value="memory" data-i18n="tab_memory">Mémoire</option>
+            <option value="companion" data-i18n="tab_companion">Compagnon</option>
+            <option value="avatar" data-i18n="tab_avatar">Avatar</option>
+          </select>
+
+          <!-- General tab -->
+          <div class="settings-tab-pane active" data-pane="general">
+          <!-- Language selector -->
+          <div class="setting-item">
+            <label for="select-language" data-i18n="lbl_language">Langue / Language</label>
+            <select id="select-language">
+              <option value="fr">Français</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+
+          <!-- AI Source Selector -->
+          <div class="setting-item" id="ai-source-row">
+            <label for="select-ai-source" data-i18n="lbl_ai_source">Source d'IA</label>
+            <select id="select-ai-source">
+              <option value="ollama" data-i18n="opt_ollama">Ollama local</option>
+              <option value="llama" data-i18n="opt_llama">llama.cpp / llama-server (GGUF)</option>
+              <option value="shortcut" data-i18n="opt_shortcut">Raccourcis macOS (Modèle Apple)</option>
+              <option value="api" data-i18n="opt_api">API cloud (ChatGPT / OpenAI-compatible)</option>
+              <!-- macOS 27 : visible seulement si la passerelle et Apple Intelligence répondent. -->
+              <option value="applefm" data-i18n="opt_applefm" hidden>Apple Foundation Models (macOS 27)</option>
+              <!-- Édition Pro, visible seulement quand ce poste est lié à un serveur. -->
+              <option value="lumen" data-i18n="opt_lumen" hidden>Lumen Server</option>
+            </select>
+          </div>
+
+          <!-- Apple Foundation Models : passerelle locale lumen-applefm (port 11437). -->
+          <div id="settings-group-applefm" style="display:none">
+            <div class="setting-item">
+              <label for="select-applefm-model" data-i18n="lbl_applefm_model">Modèle Apple</label>
+              <select id="select-applefm-model">
+                <option value="apple-on-device" data-i18n="opt_applefm_on_device">Apple Intelligence (sur l'appareil)</option>
+                <option value="apple-private-cloud" data-i18n="opt_applefm_pcc">Private Cloud Compute</option>
+              </select>
+            </div>
+            <p class="setting-hint" id="applefm-status" role="status"></p>
+            <p class="setting-hint" data-i18n="hint_applefm_backend">Le modèle d'Apple Intelligence répond sur ce Mac, sans clé ni connexion, à travers la passerelle locale de Lumen (port 11437). Fenêtre de 4 096 jetons : préférez des conversations courtes. Private Cloud Compute exige un entitlement Apple accordé à l'application.</p>
+          </div>
+
+          <!-- Lumen Server : inférence sur le serveur lié, jeton d'appareil côté Rust. -->
+          <div id="settings-group-lumen" style="display:none">
+            <div class="setting-item">
+              <label data-i18n="lbl_lumen_server">Serveur lié</label>
+              <div class="setting-hint" id="lumen-server-url" style="font-family:ui-monospace,monospace"></div>
+            </div>
+            <div class="setting-item">
+              <label for="input-lumen-model" data-i18n="lbl_lumen_model">Modèle du serveur</label>
+              <input type="text" id="input-lumen-model" placeholder="ex. lfm2.5-7b" spellcheck="false" />
+            </div>
+            <p class="setting-hint" data-i18n="hint_lumen_backend">L'inférence part vers le Lumen Server auquel ce poste est lié, avec son jeton d'appareil. Aucune clé à saisir : révoquer la liaison coupe l'accès.</p>
+          </div>
+
+          <!-- API cloud (compatible OpenAI : ChatGPT, etc.) -->
+          <div id="settings-group-api" style="display:none">
+            <div class="setting-item">
+              <label for="input-api-key" data-i18n="lbl_api_key">Clé API</label>
+              <input type="password" id="input-api-key" placeholder="sk-…" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="setting-item">
+              <label for="input-api-base" data-i18n="lbl_api_base">URL de base de l'API</label>
+              <input type="text" id="input-api-base" placeholder="https://api.openai.com/v1" spellcheck="false" />
+            </div>
+            <div class="setting-item">
+              <label for="input-api-model" data-i18n="lbl_api_model">Modèle</label>
+              <input type="text" id="input-api-model" placeholder="gpt-4o-mini" spellcheck="false" />
+            </div>
+            <p class="setting-hint" data-i18n="hint_api_key">La clé est stockée localement sur cet appareil et envoyée uniquement au fournisseur d'API choisi. Compatible avec tout point d'accès « OpenAI » (OpenAI, Groq, OpenRouter, etc.).</p>
+          </div>
+
+          <!-- System prompt (sent before the first user message) -->
+          <div class="setting-item">
+            <label for="input-system-prompt" data-i18n="lbl_system_prompt">Prompt système (envoyé avant le 1ᵉʳ message)</label>
+            <textarea id="input-system-prompt" rows="3" placeholder="Ex : Tu es un assistant concis qui répond en français." data-i18n-ph="ph_system_prompt"></textarea>
+          </div>
+
+          <!-- Ollama Configurations -->
+          <div id="settings-group-ollama">
+            <div class="setting-item">
+              <label for="input-ollama-url" data-i18n="lbl_ollama_url">URL d'Ollama</label>
+              <input type="text" id="input-ollama-url" placeholder="http://localhost:11434" />
+            </div>
+            <div class="setting-item">
+              <label for="select-model" data-i18n="lbl_model">Modèle Ollama</label>
+              <select id="select-model">
+                <option value="" data-i18n="opt_loading_models">Chargement des modèles...</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <div class="loaded-models-head">
+                <label data-i18n="lbl_loaded_models">Modèles chargés en mémoire</label>
+                <button type="button" id="btn-refresh-loaded" class="loaded-refresh-btn" title="Rafraîchir" data-i18n-title="tt_refresh_loaded">⟳</button>
+              </div>
+              <div id="loaded-models-list" class="loaded-models-list"></div>
+            </div>
+            <div class="fluxo-card-row">
+              <div class="fluxo-card-row-text">
+                <div class="fluxo-card-row-label" data-i18n="lbl_ollama_think">Mode raisonnement (think)</div>
+                <div class="fluxo-card-row-hint" data-i18n="hint_ollama_think">Laisse Ollama ou llama-server faire réfléchir le modèle avant de répondre. Nécessite un modèle et un template compatibles.</div>
+              </div>
+              <label class="ios-switch" title="Mode raisonnement">
+                <input type="checkbox" id="checkbox-ollama-think" />
+                <span class="ios-slider"></span>
+              </label>
+            </div>
+            <div class="fluxo-card-row">
+              <div class="fluxo-card-row-text">
+                <div class="fluxo-card-row-label" data-i18n="lbl_orchestrate">Réponse orchestrée</div>
+                <div class="fluxo-card-row-hint" data-i18n="hint_orchestrate">En mode Discussion, chaque réponse passe par plusieurs étapes validées : analyse de la demande, choix des catégories d'outils et de données, appel des outils, rédaction puis vérification. Plus lent, mais plus sûr et plus complet. Les étapes sont visibles dans le fil.</div>
+              </div>
+              <label class="ios-switch" title="Réponse orchestrée">
+                <input type="checkbox" id="checkbox-orchestrate" />
+                <span class="ios-slider"></span>
+              </label>
+            </div>
+            <div class="fluxo-card-row">
+              <div class="fluxo-card-row-text">
+                <div class="fluxo-card-row-label" data-i18n="lbl_orchestrate_fast">Modèle rapide pour les décisions</div>
+                <div class="fluxo-card-row-hint" data-i18n="hint_orchestrate_fast">Facultatif. Nom d'un petit modèle du même backend (ex. LFM2.5-350M) pour l'analyse, le choix des outils et la vérification ; le modèle principal garde la rédaction. Vide = un seul modèle.</div>
+              </div>
+              <input type="text" id="input-orchestrate-fast" placeholder="LFM2.5-350M…" spellcheck="false" style="max-width:190px" />
+            </div>
+            <div class="fluxo-card-row">
+              <div class="fluxo-card-row-text">
+                <div class="fluxo-card-row-label" data-i18n="lbl_orchestrate_strong">Modèle de renfort</div>
+                <div class="fluxo-card-row-hint" data-i18n="hint_orchestrate_strong">Facultatif, sur Ollama ou API : modèle du même fournisseur utilisé après un échec. Vide = modèle principal.</div>
+              </div>
+              <input type="text" id="input-orchestrate-strong" placeholder="Nom du modèle" spellcheck="false" style="max-width:190px" />
+            </div>
+            <div class="fluxo-card-row">
+              <div class="fluxo-card-row-text">
+                <div class="fluxo-card-row-label" data-i18n="lbl_sandbox_access">Accès de l'IA à tes sandboxes</div>
+                <div class="fluxo-card-row-hint" data-i18n="hint_sandbox_access">Lumen demande ton accord avant de lire une sandbox. Retire ici les accès donnés avec « Toujours autoriser ».</div>
+              </div>
+              <button type="button" class="settings-save-btn secondary-action" id="btn-reset-sandbox-access" data-i18n="btn_sandbox_access_reset">Retirer les autorisations</button>
+            </div>
+            <div class="fluxo-card-row">
+              <div class="fluxo-card-row-text">
+                <div class="fluxo-card-row-label" data-i18n="lbl_access_log">Journal des accès de l'IA</div>
+                <div class="fluxo-card-row-hint" data-i18n="hint_access_log">Ce que l'IA a lu ou modifié (fichiers, notes, applications, bases), quand et depuis où.</div>
+              </div>
+              <button type="button" class="settings-save-btn secondary-action" id="btn-access-log" data-i18n="btn_access_log">Voir le journal</button>
+            </div>
+            <div class="setting-item">
+              <label for="input-ollama-num-ctx" data-i18n="lbl_ollama_num_ctx">Taille du contexte (tokens)</label>
+              <input type="number" id="input-ollama-num-ctx" min="0" step="512" placeholder="0 = défaut du modèle" />
+              <div class="fluxo-card-row-hint" data-i18n="hint_ollama_num_ctx">Surcharge la fenêtre de contexte du modèle. 0 = valeur par défaut. Une grande valeur augmente la mémoire utilisée.</div>
+            </div>
+            <div class="setting-item">
+              <label for="input-ollama-keep-alive" data-i18n="lbl_ollama_keep_alive">Maintien en mémoire (keep-alive)</label>
+              <input type="text" id="input-ollama-keep-alive" placeholder="5m" />
+              <div class="fluxo-card-row-hint" data-i18n="hint_ollama_keep_alive">Durée pendant laquelle le modèle reste chargé après usage (ex. 30s, 5m, 1h). -1 = toujours, 0 = décharger aussitôt.</div>
+            </div>
+          </div>
+
+          <div class="settings-section-title" data-i18n="sec_bonsai">Génération d'image</div>
+          <div class="setting-item">
+            <label for="select-image-provider">Moteur d'image</label>
+            <select id="select-image-provider">
+              <option value="bonsai">Bonsai local</option>
+              <option value="ollama" data-i18n="opt_image_ollama">Ollama local</option>
+              <option value="openai" data-i18n="opt_image_openai">GPT (OpenAI)</option>
+              <!-- Révélée par refreshPlaygroundOption() quand Image Playground
+                   (macOS 27, Apple Intelligence) répond présent. -->
+              <option value="playground" data-i18n="opt_image_playground" hidden>Image Playground (Apple)</option>
+            </select>
+          </div>
+          <!-- Modèles du moteur choisi (Bonsai ternary/binary, modèles d'image
+               Ollama installés, modèles d'image OpenAI). -->
+          <div class="setting-item">
+            <label for="select-image-model" data-i18n="lbl_image_model">Modèle</label>
+            <select id="select-image-model"></select>
+          </div>
+          <p class="setting-hint">OpenAI utilise la clé et l'URL API cloud définies dans l'onglet Général.</p>
+          <p class="setting-hint" id="playground-status" hidden></p>
+          <p class="setting-hint" data-i18n="hint_bonsai">Moteur PrismML Bonsai Image 4B (Apple Silicon ou GPU NVIDIA), optionnel : le moteur se télécharge depuis le dépôt Lumen, les modèles Ternary (qualité) et Binary (1 bit, plus léger) depuis Hugging Face.</p>
+          <p class="setting-hint" id="bonsai-status"></p>
+          <div class="bonsai-models" id="bonsai-models"></div>
+          <button class="settings-save-btn secondary-action bonsai-local-only" id="btn-bonsai-start" data-i18n="btn_bonsai_start">Lancer l'API Bonsai</button>
+          <div class="setting-item">
+            <label for="input-bonsai-url" data-i18n="lbl_bonsai_url">URL du backend Bonsai</label>
+            <input type="text" id="input-bonsai-url" placeholder="http://127.0.0.1:8800" />
+          </div>
+          <p class="setting-hint" data-i18n="hint_bonsai_url">Laisse vide pour détecter automatiquement l'API locale. Renseigne une URL (ex. backend distant) pour l'utiliser à la place.</p>
+          <button class="settings-save-btn secondary-action" id="btn-bonsai-url-save" data-i18n="btn_bonsai_url_save">Enregistrer l'URL</button>
+
+          <!-- Synthèse vocale Piper locale, multiplateforme -->
+          <div id="tts-settings">
+            <div class="settings-section-title" data-i18n="sec_tts">Synthèse vocale (Piper)</div>
+            <p class="setting-hint" data-i18n="hint_tts">Voix neuronale locale sur macOS, Windows, Linux et Raspberry Pi. Installe d'abord Piper avec le script de ta plateforme, puis télécharge une voix.</p>
+            <div class="setting-item">
+              <label for="select-tts-voice" data-i18n="lbl_tts_voice">Voix active</label>
+              <select id="select-tts-voice"></select>
+            </div>
+            <div class="setting-item">
+              <div class="loaded-models-head">
+                <label data-i18n="lbl_tts_catalog">Voix disponibles (téléchargement)</label>
+                <button type="button" id="btn-tts-refresh" class="loaded-refresh-btn" title="Rafraîchir">⟳</button>
+              </div>
+              <div id="tts-catalog" class="loaded-models-list"></div>
+            </div>
+            <div class="setting-item">
+              <button type="button" id="btn-tts-test" class="settings-save-btn" style="margin-top:2px" data-i18n="btn_tts_test">Tester la voix</button>
+              <div class="fluxo-card-row-hint" id="tts-status"></div>
+            </div>
+          </div>
+
+          <!-- Action engine for Ollama : Fluxo. Le designer s'ouvre désormais depuis
+               la fenêtre Agents (section Skills), pas depuis les réglages. Ce groupe
+               reste présent (référencé par toggleSettingsGroups) mais sans contenu. -->
+          <div id="settings-group-fluxo" style="display: none;"></div>
+
+          <div class="setting-item">
+            <label class="field-label" for="select-speech-backend"><span class="field-icon" style="--ic:#30d158" data-icon="speaker"></span><span data-i18n="lbl_speech_backend">Moteur vocal</span></label>
+            <select id="select-speech-backend">
+              <option value="auto" data-i18n="opt_speech_auto">Automatique</option>
+              <option value="piper" data-i18n="opt_speech_piper">Piper local</option>
+              <option value="shortcut" data-i18n="opt_speech_shortcut">Raccourci Apple</option>
+              <option value="system" data-i18n="opt_speech_system">Synthèse vocale du système</option>
+            </select>
+          </div>
+
+          <!-- macOS Shortcuts Configurations -->
+          <div id="settings-group-shortcut" style="display: none;">
+            <div class="settings-subhead" data-i18n="sub_shortcut">Moteur d'actions : Apple Shortcuts</div>
+            <div class="setting-item">
+              <label class="field-label" for="input-shortcut-name"><span class="field-icon" style="--ic:#af52de" data-icon="sparkles"></span><span data-i18n="lbl_shortcut_name">Nom du Raccourci macOS</span></label>
+              <input type="text" id="input-shortcut-name" placeholder="Modèle Apple" />
+            </div>
+            <div class="setting-item">
+              <label class="field-label" for="input-action-router"><span class="field-icon" style="--ic:#ff9f0a" data-icon="bolt"></span><span data-i18n="lbl_action_router">Raccourci Routeur d'Actions</span></label>
+              <input type="text" id="input-action-router" placeholder="Action Router" />
+            </div>
+            <div class="setting-item">
+              <div class="router-doc-wrap" data-i18n-html="router_doc_html"></div>
+            </div>
+            <div class="setting-item">
+              <label class="field-label" for="input-speak-shortcut"><span class="field-icon" style="--ic:#34c759" data-icon="speaker"></span><span data-i18n="lbl_speak_shortcut">Raccourci pour Énoncer le texte</span></label>
+              <input type="text" id="input-speak-shortcut" placeholder="Speak Text" />
+            </div>
+            <div class="setting-item">
+              <label class="field-label" for="input-dictate-shortcut"><span class="field-icon" style="--ic:#ff375f" data-icon="mic"></span><span data-i18n="lbl_dictate_shortcut">Raccourci pour la Dictée vocale</span></label>
+              <input type="text" id="input-dictate-shortcut" placeholder="Dictate Text" />
+            </div>
+          </div>
+
+          <!-- Opacité du verre : masqué depuis le passage à la peau plate — les
+               surfaces sont pleines, ce curseur ne pilote plus rien. Le champ
+               reste dans le DOM (main.js et la fenêtre Réglages lisent sa
+               valeur) plutôt que d'ajouter des gardes partout. -->
+          <div class="setting-item" hidden>
+            <label for="slider-transparency"><span data-i18n="lbl_opacity">Opacité du verre</span> (<span id="label-transparency-val">4%</span>)</label>
+            <input type="range" id="slider-transparency" min="1" max="30" value="4" />
+          </div>
+          <div class="setting-item">
+            <label for="select-bar-size" data-i18n="lbl_bar_size">Taille de la barre</label>
+            <select id="select-bar-size">
+              <option value="petit" data-i18n="opt_size_small">Petite (520px)</option>
+              <option value="moyen" data-i18n="opt_size_medium">Moyenne (680px)</option>
+              <option value="grand" data-i18n="opt_size_large">Grande (840px)</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label for="select-theme" data-i18n="lbl_theme">Thème de l'interface</label>
+            <select id="select-theme">
+              <option value="dark" data-i18n="opt_theme_dark">Mode Sombre (Verre noir, texte clair)</option>
+              <option value="light" data-i18n="opt_theme_light">Mode Clair (Verre blanc, texte sombre)</option>
+            </select>
+          </div>
+          <div class="setting-item checkbox-row platform-opaque-only" hidden>
+            <input type="checkbox" id="checkbox-bar-opaque" />
+            <label for="checkbox-bar-opaque">Mode opaque de l’interface</label>
+          </div>
+          <div class="setting-item checkbox-row">
+            <input type="checkbox" id="checkbox-startup-lumen-os" />
+            <label for="checkbox-startup-lumen-os">Lancer directement en mode Lumen Desktop</label>
+          </div>
+          <div class="setting-item checkbox-row">
+            <input type="checkbox" id="checkbox-always-on-top" />
+            <label for="checkbox-always-on-top" data-i18n="lbl_always_on_top">Toujours au-dessus de toutes les applications</label>
+          </div>
+          <!-- Capsule Halo : bandeau persistant en haut de l'écran (fenêtre `island`). -->
+          <div class="setting-item checkbox-row">
+            <input type="checkbox" id="checkbox-halo" />
+            <label for="checkbox-halo" data-i18n="lbl_halo_bar">Capsule Halo — bandeau vivant en haut de l'écran</label>
+          </div>
+          <p class="setting-hint" data-i18n="hint_halo_bar">Agents en cours, notifications et heure, en haut de l'écran. Position et durée d'affichage se règlent dans Réglages → Notifications.</p>
+          <div class="setting-item checkbox-row">
+            <input type="checkbox" id="checkbox-debug" />
+            <label for="checkbox-debug" data-i18n="lbl_debug">Mode debug — afficher le prompt complet envoyé au modèle</label>
+          </div>
+
+          <!-- Contrat de licence : relecture à tout moment (accepté au premier lancement). -->
+          <div class="setting-item">
+            <label data-i18n="lbl_license">Licence &amp; conditions d'utilisation</label>
+            <button type="button" class="settings-save-btn secondary-action" id="btn-show-license" data-i18n="btn_show_license">Lire le contrat de licence</button>
+            <p class="setting-hint" id="license-status"></p>
+          </div>
+          </div><!-- /general pane -->
+
+          <!-- Sandbox & agent tab : tout l'agentique regroupé -->
+          <div class="settings-tab-pane" data-pane="agent">
+            <!-- Sandboxes & agents : nécessitent le « function calling » d'Ollama,
+                 indisponible en source Apple Intelligence. Masqué dans ce mode pour
+                 ne laisser que le Heartbeat (cf. toggleSettingsGroups). -->
+            <div id="group-sandbox-agents">
+              <div class="settings-section-title" data-i18n="sec_sandbox_agent">Sandbox & agents</div>
+              <button class="settings-save-btn secondary-action" id="btn-open-sandbox" data-i18n="btn_open_sandbox">Ouvrir les sandboxes</button>
+              <p class="setting-hint" data-i18n="hint_sandbox">Espaces de travail fichiers isolés et limités en taille, où l'agent peut créer et analyser des fichiers.</p>
+              <button class="settings-save-btn secondary-action" id="btn-open-agents" data-i18n="btn_open_agents">Gérer les agents</button>
+              <p class="setting-hint" data-i18n="hint_agents">Crée des agents avec une sandbox, des skills (workflows) et une todo list ; ils travaillent au Heartbeat.</p>
+            </div>
+
+            <!-- Heartbeat : déclencheur programmé (CRON) -->
+            <div class="settings-section-title" data-i18n="sec_heartbeat">Heartbeat (tâche d'arrière-plan programmée)</div>
+            <p class="setting-hint" data-i18n="hint_heartbeat">Exécute un raccourci macOS à intervalle régulier. Placez le process de votre choix dans ce raccourci (synchro, rappel, automatisation…).</p>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-heartbeat" />
+              <label for="checkbox-heartbeat" data-i18n="lbl_heartbeat_enable">Activer le heartbeat</label>
+            </div>
+            <div class="setting-item">
+              <label class="field-label" for="input-heartbeat-shortcut"><span class="field-icon" style="--ic:#ff4d6d" data-icon="heartbeat"></span><span data-i18n="lbl_heartbeat_shortcut">Raccourci macOS à déclencher</span></label>
+              <input type="text" id="input-heartbeat-shortcut" placeholder="Heartbeat" />
+            </div>
+            <div class="setting-item">
+              <label for="select-heartbeat-frequency" data-i18n="lbl_heartbeat_freq">Fréquence d'exécution</label>
+              <select id="select-heartbeat-frequency">
+                <option value="0 * * * * *" data-i18n="opt_freq_min">Toutes les minutes</option>
+                <option value="0 */5 * * * *" data-i18n="opt_freq_5">Toutes les 5 minutes</option>
+                <option value="0 */15 * * * *" data-i18n="opt_freq_15">Toutes les 15 minutes</option>
+                <option value="0 */30 * * * *" data-i18n="opt_freq_30">Toutes les 30 minutes</option>
+                <option value="0 0 * * * *" data-i18n="opt_freq_hour">Toutes les heures</option>
+                <option value="0 0 */6 * * *" data-i18n="opt_freq_6h">Toutes les 6 heures</option>
+                <option value="0 0 9 * * *" data-i18n="opt_freq_9am">Tous les jours à 9h</option>
+                <option value="custom" data-i18n="opt_freq_custom">Personnalisé (expression CRON)…</option>
+              </select>
+            </div>
+            <div class="setting-item" id="heartbeat-cron-row" style="display: none;">
+              <label for="input-heartbeat-cron" data-i18n="lbl_cron">Expression CRON (sec min heure jour mois jour-semaine)</label>
+              <input type="text" id="input-heartbeat-cron" placeholder="0 */10 * * * *" />
+            </div>
+            <div class="setting-item">
+              <label for="input-heartbeat-input" data-i18n="lbl_heartbeat_input">Entrée envoyée au raccourci (optionnel)</label>
+              <input type="text" id="input-heartbeat-input" placeholder="Laisser vide si non utilisé" data-i18n-ph="ph_heartbeat_input" />
+            </div>
+          </div><!-- /agent pane -->
+
+          <!-- Avatar tab -->
+          <div class="settings-tab-pane" data-pane="avatar">
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-orb" />
+              <label for="checkbox-orb" data-i18n="lbl_show_orb">Afficher l'avatar (orbe)</label>
+            </div>
+            <div class="setting-item" id="orb-theme-row">
+              <label for="select-orb-theme">Personnage Lumen</label>
+              <select id="select-orb-theme"><option value="default">Original</option><option value="soft-white">Nuage · blanc</option><option value="soft-sky">Azur · bleu</option><option value="soft-mint">Sauge · vert</option><option value="soft-coral">Braise · corail</option><option value="soft-violet">Iris · violet</option><option value="soft-raspberry">Framboise · rose</option><option value="soft-amber">Miel · ambre</option></select>
+              <p class="setting-hint">Le même personnage dans la barre, Application et Desktop. Les couleurs de l’interface se règlent dans Général → Apparence.</p>
+              <p class="setting-hint" id="orb-character-hint"></p>
+            </div>
+            <div class="setting-item" id="orb-size-row">
+              <label for="slider-orb-size"><span data-i18n="lbl_orb_size">Taille de l'avatar</span> (<span id="label-orb-size-val">116</span> px)</label>
+              <input type="range" id="slider-orb-size" min="70" max="180" value="116" />
+            </div>
+            <div class="setting-item" id="orb-core-scale-row">
+              <label for="slider-orb-core"><span data-i18n="lbl_orb_core">Taille de la sphère intérieure / épaisseur du verre</span> (<span id="label-orb-core-val">82</span>%)</label>
+              <input type="range" id="slider-orb-core" min="55" max="98" value="82" />
+            </div>
+            <div class="setting-item" id="orb-pulse-row">
+              <label for="slider-orb-pulse"><span data-i18n="lbl_orb_pulse">Amplitude de la pulsation (synthèse vocale)</span> (<span id="label-orb-pulse-val">100</span>%)</label>
+              <input type="range" id="slider-orb-pulse" min="0" max="250" value="100" />
+            </div>
+            <div class="setting-item" id="orb-glass-row">
+              <label for="select-orb-glass" data-i18n="lbl_orb_glass">Type de verre de l'orbe</label>
+              <select id="select-orb-glass">
+                <option value="thin" data-i18n="opt_glass_thin">Fin (par défaut)</option>
+                <option value="crystal" data-i18n="opt_glass_crystal">Cristal (net & brillant)</option>
+                <option value="frosted" data-i18n="opt_glass_frosted">Givré (dépoli, diffus)</option>
+                <option value="bubble" data-i18n="opt_glass_bubble">Bulle de savon (irisé)</option>
+                <option value="none" data-i18n="opt_glass_none">Sans verre (cœur seul)</option>
+              </select>
+            </div>
+            <div class="setting-item" id="orb-colors-row">
+              <label data-i18n="lbl_orb_colors">Couleurs des blobs de l'avatar</label>
+              <div class="orb-color-pickers">
+                <input type="color" id="orb-color-0" value="#ff54a3" />
+                <input type="color" id="orb-color-1" value="#9961ff" />
+                <input type="color" id="orb-color-2" value="#47a3ff" />
+                <input type="color" id="orb-color-3" value="#61f2c7" />
+                <input type="color" id="orb-color-4" value="#ff9e6b" />
+                <button type="button" class="orb-colors-reset" id="btn-orb-colors-reset" title="Réinitialiser" data-i18n-title="tt_reset">↺</button>
+              </div>
+            </div>
+
+            <!-- Orbe physique (ESP32) -->
+            <div class="settings-section-title" data-i18n="sec_orb_device">Appareil physique (orbe ESP32 / Lumen Controller)</div>
+            <p class="setting-hint" data-i18n="hint_orb_device">Secoue l'orbe pour afficher son IP à l'écran, ou lis celle imprimée par le Lumen Controller sur sa console série au démarrage, puis saisis-la ici pour synchroniser thème, état, modèle et dictée. Les deux appareils partagent le même pont, sur le port 8787.</p>
+            <div class="setting-item" id="orb-device-row">
+              <label for="input-orb-host" data-i18n="lbl_orb_host">Adresse IP de l'orbe (ESP32)</label>
+              <input type="text" id="input-orb-host" placeholder="192.168.1.50" inputmode="decimal" style="width:100%; box-sizing:border-box;" />
+              <button type="button" class="settings-save-btn secondary-action" id="btn-orb-connect" data-i18n="btn_orb_connect" style="margin-top:8px;">Connecter</button>
+              <p class="setting-hint" id="orb-device-status" data-i18n="hint_orb_device_status">Non connecté.</p>
+            </div>
+
+            <!-- Heartbeat radial pulse -->
+            <div class="settings-section-title" data-i18n="sec_orb_pulse">Pulsation du Heartbeat</div>
+            <p class="setting-hint" data-i18n="hint_orb_pulse">Une onde colorée se propage sur la sphère à chaque déclenchement du Heartbeat.</p>
+            <div class="setting-item checkbox-row" id="orb-heartbeat-row">
+              <input type="checkbox" id="checkbox-orb-heartbeat" />
+              <label for="checkbox-orb-heartbeat" data-i18n="lbl_orb_heartbeat">Activer la pulsation radiale</label>
+            </div>
+            <div class="setting-item" id="orb-pulse-strength-row">
+              <label for="slider-orb-pulse-strength"><span data-i18n="lbl_orb_pulse_strength">Intensité de la pulsation</span> (<span id="label-orb-pulse-strength-val">100</span>%)</label>
+              <input type="range" id="slider-orb-pulse-strength" min="20" max="250" value="100" />
+            </div>
+            <div class="setting-item" id="orb-pulse-speed-row">
+              <label for="slider-orb-pulse-speed"><span data-i18n="lbl_orb_pulse_speed">Vitesse de la pulsation</span> (<span id="label-orb-pulse-speed-val">100</span>%)</label>
+              <input type="range" id="slider-orb-pulse-speed" min="40" max="250" value="100" />
+            </div>
+            <button type="button" class="settings-save-btn secondary-action" id="btn-orb-pulse-preview" data-i18n="btn_orb_pulse_preview">Tester la pulsation</button>
+          </div><!-- /avatar pane -->
+
+          <!-- Profile tab : éditeur Apple-friendly de la mémoire utilisateur -->
+          <div class="settings-tab-pane" data-pane="profile">
+            <div class="profile-hero">
+              <div class="profile-avatar" id="profile-avatar">L</div>
+              <div class="profile-hero-text">
+                <div class="profile-hero-name" id="profile-hero-name" data-i18n="profile_hero_default">Votre profil</div>
+                <div class="profile-hero-sub" data-i18n="profile_hero_sub">Ce que Lumen retient de vous. Privé, stocké sur votre appareil.</div>
+              </div>
+            </div>
+
+            <!-- Identité -->
+            <div class="ios-group-title" data-i18n="profile_sec_identity">Identité</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <label for="profile-name" data-i18n="profile_name">Prénom</label>
+                <input type="text" id="profile-name" placeholder="—" />
+              </div>
+              <div class="ios-row">
+                <label for="profile-callme" data-i18n="profile_callme">M'appeler</label>
+                <input type="text" id="profile-callme" placeholder="—" />
+              </div>
+              <div class="ios-row">
+                <label for="profile-role" data-i18n="profile_role">Rôle / métier</label>
+                <input type="text" id="profile-role" placeholder="—" />
+              </div>
+            </div>
+
+            <!-- Préférences de réponse -->
+            <div class="ios-group-title" data-i18n="profile_sec_prefs">Préférences de réponse</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <span data-i18n="profile_tone">Style</span>
+                <div class="ios-segmented" id="profile-tone" data-value="balanced">
+                  <button type="button" data-val="concise" data-i18n="profile_tone_concise">Concis</button>
+                  <button type="button" data-val="balanced" class="active" data-i18n="profile_tone_balanced">Équilibré</button>
+                  <button type="button" data-val="detailed" data-i18n="profile_tone_detailed">Détaillé</button>
+                </div>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="profile_address">M'adresser en</span>
+                <div class="ios-segmented" id="profile-address" data-value="tu">
+                  <button type="button" data-val="tu" class="active" data-i18n="profile_address_tu">Tutoiement</button>
+                  <button type="button" data-val="vous" data-i18n="profile_address_vous">Vouvoiement</button>
+                </div>
+              </div>
+              <div class="ios-row">
+                <label for="profile-language" data-i18n="profile_language">Langue des réponses</label>
+                <select id="profile-language">
+                  <option value="auto" data-i18n="profile_lang_auto">Automatique</option>
+                  <option value="fr">Français</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="profile_emoji">Emoji dans les réponses</span>
+                <label class="ios-switch"><input type="checkbox" id="profile-emoji" /><span class="ios-slider"></span></label>
+              </div>
+            </div>
+
+            <!-- Centres d'intérêt -->
+            <div class="ios-group-title" data-i18n="profile_sec_interests">Centres d'intérêt</div>
+            <div class="ios-group">
+              <div class="ios-row ios-row-block">
+                <div class="chips" id="profile-interests"></div>
+                <input type="text" id="profile-interest-add" class="chip-input" placeholder="Ajouter…" data-i18n-ph="profile_interest_ph" />
+              </div>
+            </div>
+
+            <!-- Objectifs -->
+            <div class="ios-group-title" data-i18n="profile_sec_goals">Objectifs du moment</div>
+            <div class="ios-group">
+              <div class="ios-row ios-row-block">
+                <textarea id="profile-goals" rows="2" placeholder="—" data-i18n-ph="profile_goals_ph"></textarea>
+              </div>
+            </div>
+
+            <!-- Souvenirs de Lumen -->
+            <div class="ios-group-title" data-i18n="profile_sec_memories">Ce que Lumen a retenu</div>
+            <div class="ios-group" id="profile-memories"></div>
+            <div class="ios-group">
+              <div class="ios-row ios-row-block">
+                <input type="text" id="profile-memory-add" class="chip-input" placeholder="Ajouter un souvenir…" data-i18n-ph="profile_memory_ph" />
+              </div>
+            </div>
+
+            <!-- Confidentialité -->
+            <div class="ios-group-title" data-i18n="profile_sec_privacy">Confidentialité</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <span data-i18n="profile_use">Laisser Lumen utiliser mon profil</span>
+                <label class="ios-switch"><input type="checkbox" id="profile-use" checked /><span class="ios-slider"></span></label>
+              </div>
+              <button type="button" class="ios-row ios-row-action" id="profile-export" data-i18n="profile_export">Exporter le profil (JSON)</button>
+              <button type="button" class="ios-row ios-row-action danger" id="profile-clear" data-i18n="profile_clear">Effacer tout le profil</button>
+            </div>
+            <p class="setting-hint" data-i18n-html="profile_footer">Accessible à vos raccourcis via <code>GET /mem/user/profile</code> et <code>POST /mem/user/memories?op=append</code> — Lumen peut donc apprendre tout seul.</p>
+          </div><!-- /profile pane -->
+
+          <!-- Memory tab -->
+          <div class="settings-tab-pane" data-pane="memory">
+            <p class="setting-hint" data-i18n-html="hint_memory">Mémoire partagée et <strong>optionnelle</strong> : todo, états, mémoire utilisateur et stockage commun. Accessible à vos raccourcis via HTTP sur <code>http://127.0.0.1:8765/mem/&lt;clé&gt;</code> (GET / PUT / POST / DELETE) — jamais imposée au fonctionnement de Lumen.</p>
+
+            <div class="setting-item">
+              <label for="select-memory-ns" data-i18n="lbl_memory_ns">Espace de noms</label>
+              <select id="select-memory-ns">
+                <option value="" data-i18n="opt_ns_all">Tous</option>
+                <option value="todo/">todo/</option>
+                <option value="state/">state/</option>
+                <option value="user/">user/</option>
+                <option value="store/">store/</option>
+              </select>
+            </div>
+
+            <div id="memory-list" class="memory-list"></div>
+            <p class="setting-hint" id="memory-empty" data-i18n="memory_empty" style="display:none;">Aucune entrée pour l'instant.</p>
+
+            <div class="settings-section-title" data-i18n="sec_memory_add">Ajouter / modifier une entrée</div>
+            <div class="setting-item">
+              <label for="input-memory-key" data-i18n="lbl_memory_key">Clé (ex. <code>todo/courses</code>)</label>
+              <input type="text" id="input-memory-key" placeholder="store/ma-cle" />
+            </div>
+            <div class="setting-item">
+              <label for="input-memory-value" data-i18n="lbl_memory_value">Valeur (texte ou JSON)</label>
+              <textarea id="input-memory-value" rows="3" placeholder='"ma valeur" ou {"fait": true}' data-i18n-ph="ph_memory_value"></textarea>
+            </div>
+            <div class="setting-item">
+              <button type="button" class="settings-save-btn secondary-action" id="btn-memory-save" data-i18n="btn_memory_save">Enregistrer l'entrée</button>
+            </div>
+          </div><!-- /memory pane -->
+
+          <!-- Companion tab : tout ce qui concerne le compagnon mobile -->
+          <div class="settings-tab-pane" data-pane="companion">
+            <div class="profile-hero">
+              <div class="profile-avatar" data-icon="chat" style="background:linear-gradient(135deg,#34c759,#30b0c7)"></div>
+              <div class="profile-hero-text">
+                <div class="profile-hero-name" data-i18n="sec_companion">Compagnon mobile</div>
+                <div class="profile-hero-sub" data-i18n="hint_companion">Sur votre téléphone ou votre tablette (même réseau Wi-Fi, ou via VPN), ouvrez cette adresse dans le navigateur pour piloter Lumen à distance. L'accès est protégé par un code à usage unique (TOTP). La voix (énoncer / dictée) est gérée par l'appareil.</div>
+              </div>
+            </div>
+
+            <div class="ios-group-title" data-i18n="companion_sec_access">Accès</div>
+            <div class="ios-group">
+              <div class="ios-row ios-row-block">
+                <span data-i18n="lbl_companion_url">Adresse à ouvrir sur le mobile</span>
+                <code id="companion-url" class="companion-url" title="">—</code>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_companion_id">Nom à saisir sur le mobile</span>
+                <code id="companion-identifier" class="companion-key">—</code>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_companion_code">Code d'appairage</span>
+                <div class="companion-code-row">
+                  <code id="companion-code" class="companion-code">——————</code>
+                  <span id="companion-code-countdown" class="companion-code-countdown">30s</span>
+                </div>
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n="hint_companion_code">Saisissez l'identifiant et ce code sur le mobile au premier appairage. Une session est ensuite mémorisée sur l'appareil.</p>
+
+            <div class="ios-group-title" data-i18n="companion_sec_pair">Appairage rapide</div>
+            <div class="ios-group">
+              <div class="ios-row ios-row-block" style="align-items:center;">
+                <div id="companion-qr" class="companion-qr" title=""></div>
+              </div>
+              <div class="ios-row ios-row-block">
+                <span data-i18n="lbl_companion_key">Clé d'association</span>
+                <code id="companion-key" class="companion-key" title="">—</code>
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n="hint_companion_qr">Scannez ce QR avec l'app <strong>Mots de passe</strong> de macOS, ou un authenticator (TOTP). Le code à 6 chiffres y apparaîtra automatiquement à chaque appairage.</p>
+
+            <div class="ios-group-title" data-i18n="companion_sec_security">Sécurité</div>
+            <div class="ios-group">
+              <button type="button" class="ios-row ios-row-action danger" id="btn-companion-regenerate" data-i18n="btn_companion_regen">Révoquer & régénérer le secret</button>
+            </div>
+          </div><!-- /companion pane -->
+
+          <button class="settings-save-btn secondary-action" id="btn-open-help" data-i18n="btn_help">Aide & documentation</button>
+          <button class="settings-save-btn secondary-action" id="btn-open-onboarding" data-i18n="btn_onboarding">Assistant de configuration des raccourcis</button>
+          <button class="settings-save-btn" id="btn-save-settings" data-i18n="btn_save">Enregistrer</button>
+        </div>
+      </div>
+
+      <!-- Onboarding / Setup wizard overlay -->
+      <div class="settings-panel onboarding-panel" id="onboarding-panel">
+        <div class="settings-header">
+          <h2 id="onboarding-title">Bienvenue dans Lumen</h2>
+          <select id="onboarding-lang" class="onboarding-lang" title="Langue / Language">
+            <option value="fr">FR</option>
+            <option value="en">EN</option>
+          </select>
+          <button class="icon-btn" id="btn-close-onboarding" title="Fermer" data-i18n-title="tt_close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <!-- Step progress dots -->
+        <div class="onboarding-steps" id="onboarding-dots"></div>
+
+        <div class="onboarding-body">
+          <!-- Step 0: Welcome -->
+          <div class="onboarding-step" data-step="0">
+            <div class="onboarding-hero">
+              <div class="onboarding-hero-icon">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              </div>
+              <h3 data-i18n="ob_welcome_h3">Configurons Lumen ensemble</h3>
+              <p id="ob-welcome-p" data-i18n="ob_welcome_p">En quelques étapes, nous allons installer les raccourcis macOS dont Lumen a besoin et t'expliquer comment activer les fonctionnalités d'IA d'Apple.</p>
+              <p class="onboarding-note" data-i18n="ob_welcome_note">Tu pourras relancer cet assistant à tout moment depuis les Paramètres.</p>
+            </div>
+            <div class="onboarding-source-choice">
+              <div class="onboarding-source-q" data-i18n="ob_source_q">Quelle source d'IA veux-tu utiliser ?</div>
+              <button type="button" class="source-card" data-source="shortcut">
+                <span class="source-card-head">
+                  <span class="source-card-title" data-i18n="ob_source_ai_title">Modèle Apple</span>
+                  <span class="source-card-badge" data-i18n="ob_recommended">Recommandé</span>
+                </span>
+                <span class="source-card-desc" data-i18n="ob_source_ai_desc">Sur l'appareil, privé, déjà installé sur ton Mac.</span>
+              </button>
+              <button type="button" class="source-card" data-source="ollama">
+                <span class="source-card-head">
+                  <span class="source-card-title" data-i18n="ob_source_ollama_title">Ollama (local)</span>
+                </span>
+                <span class="source-card-desc" data-i18n="ob_source_ollama_desc">Tes propres modèles open-source via Ollama.</span>
+              </button>
+              <button type="button" class="source-card" data-source="llama">
+                <span class="source-card-head">
+                  <span class="source-card-title" data-i18n="ob_source_llama_title">llama.cpp / llama-server</span>
+                </span>
+                <span class="source-card-desc" data-i18n="ob_source_llama_desc">Tes modèles GGUF gérés localement par Lumen.</span>
+              </button>
+              <button type="button" class="source-card" data-source="api">
+                <span class="source-card-head">
+                  <span class="source-card-title" data-i18n="ob_source_api_title">OpenAI API</span>
+                </span>
+                <span class="source-card-desc" data-i18n="ob_source_api_desc">ChatGPT ou tout fournisseur compatible OpenAI, avec ta clé API.</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 1: Install shortcuts (mode Modèle Apple uniquement) -->
+          <div class="onboarding-step" data-step="1" data-mode="apple" hidden>
+            <p class="onboarding-intro" data-i18n-html="ob_s1_intro">Installe les 5 raccourcis via iCloud. Pour chacun : clique sur <strong>Installer</strong>, puis <strong>Ajouter le raccourci</strong> dans la fenêtre macOS. Clique ensuite sur <strong>Vérifier</strong>.</p>
+            <p class="onboarding-note" data-i18n-html="ob_s1_note">Ces raccourcis servent à la source <strong>Modèle Apple</strong> (réponses, énonciation, dictée, mode Action). Si tu utilises <strong>Ollama</strong>, ils ne sont pas nécessaires.</p>
+            <div class="shortcut-cards" id="shortcut-cards"></div>
+            <button class="onboarding-secondary-btn" id="btn-recheck-shortcuts" data-i18n="ob_recheck">Tout vérifier</button>
+          </div>
+
+          <!-- Step 2: IA d'Apple (mode Modèle Apple uniquement) -->
+          <div class="onboarding-step" data-step="2" data-mode="apple" hidden>
+            <p class="onboarding-intro" data-i18n="ob_s2_intro">Les fonctionnalités d'IA d'Apple doivent être activées dans macOS pour que la source « Modèle Apple » fonctionne.</p>
+            <ol class="onboarding-doc">
+              <li data-i18n-html="ob_s2_li1">Ouvre les <strong>Réglages Système</strong> (bouton ci-dessous).</li>
+              <li data-i18n-html="ob_s2_li2">Va dans les <strong>réglages d'IA d'Apple</strong> (section Siri).</li>
+              <li data-i18n-html="ob_s2_li3">Active les <strong>fonctionnalités d'IA</strong> et attends le téléchargement des modèles (quelques minutes).</li>
+              <li data-i18n-html="ob_s2_li4">Assure-toi que ta région et la langue sont compatibles (ces fonctionnalités ne sont pas disponibles partout).</li>
+            </ol>
+            <button class="onboarding-secondary-btn" id="btn-open-ai-settings" data-i18n="ob_open_ai_settings">Ouvrir les réglages d'IA d'Apple</button>
+            <p class="onboarding-note" data-i18n="ob_s2_note">Astuce : si le bouton n'ouvre pas exactement la bonne section, ouvre les Réglages Système et cherche les réglages d'IA d'Apple.</p>
+          </div>
+
+          <!-- Step 7: Configuration Ollama (mode Ollama uniquement) -->
+          <div class="onboarding-step" data-step="7" data-mode="ollama" hidden>
+            <p class="onboarding-intro" data-i18n="ob_ollama_intro">Connecte Lumen à ton serveur Ollama local et choisis le modèle à utiliser.</p>
+            <ol class="onboarding-doc">
+              <li data-i18n-html="ob_ollama_li1">Installe et lance <strong>Ollama</strong> (ollama.com), puis télécharge un modèle (ex. <code>ollama pull qwen2.5</code>).</li>
+              <li data-i18n-html="ob_ollama_li2">Renseigne l'URL du serveur (par défaut <code>http://localhost:11434</code>) et choisis le modèle.</li>
+            </ol>
+            <div class="setting-item">
+              <label for="ob-ollama-url" data-i18n="lbl_ollama_url">URL du serveur Ollama</label>
+              <input type="text" id="ob-ollama-url" placeholder="http://localhost:11434" />
+            </div>
+            <div class="setting-item">
+              <label for="ob-ollama-model" data-i18n="lbl_model">Modèle Ollama</label>
+              <select id="ob-ollama-model"><option value="" data-i18n="opt_loading_models">Chargement des modèles...</option></select>
+            </div>
+            <button class="onboarding-secondary-btn" id="btn-ob-refresh-models" data-i18n="ob_ollama_refresh">Rafraîchir la liste des modèles</button>
+            <p class="onboarding-note" id="ob-ollama-status" data-i18n="ob_ollama_note">Une pastille verte sur l'icône Paramètres indiquera que la connexion est prête.</p>
+          </div>
+
+          <!-- Step 3: Toolbar buttons -->
+          <div class="onboarding-step" data-step="3" hidden>
+            <p class="onboarding-intro" data-i18n="ob_s3_intro">Voici les boutons de la barre :</p>
+            <ul class="feature-list">
+              <li><span class="feature-ic" data-icon="gear"></span><div data-i18n-html="ob_s3_settings"><strong>Paramètres</strong> — source d'IA, modèles, thème, prompt système, etc. La pastille de couleur indique l'état de connexion (vert = prêt, rouge = hors-ligne / modèle Ollama manquant).</div></li>
+              <li><span class="feature-ic" data-icon="chat"></span><div data-i18n-html="ob_s3_history"><strong>Historique</strong> — retrouve et rouvre tes conversations sauvegardées (avec le modèle utilisé).</div></li>
+              <li><span class="feature-ic" data-icon="bell"></span><div data-i18n-html="ob_s3_notif"><strong>Notifications</strong> — affiche les résultats renvoyés par les tâches du <strong>Heartbeat</strong>.</div></li>
+              <li><span class="feature-ic" data-icon="moon"></span><div data-i18n-html="ob_s3_theme"><strong>Thème clair / sombre</strong> — bascule l'apparence verre clair ou sombre.</div></li>
+              <li><span class="feature-ic" data-icon="bolt"></span><div data-i18n-html="ob_s3_action"><strong>Mode Action</strong> (Modèle Apple) — envoie via ton Routeur d'Actions au lieu d'une réponse classique. Jaune = activé.</div></li>
+              <li><span class="feature-ic" data-icon="speaker"></span><div data-i18n-html="ob_s3_autospeak"><strong>Énoncer automatiquement</strong> — lit à voix haute chaque réponse dès sa réception. Vert = activé.</div></li>
+              <li><span class="feature-ic" data-icon="heartbeat"></span><div data-i18n-html="ob_s3_heartbeat"><strong>Heartbeat</strong> — active/désactive une tâche d'arrière-plan programmée. Rouge pulsé = actif.</div></li>
+              <li><span class="feature-ic" data-icon="mic"></span><div data-i18n-html="ob_s3_dictation"><strong>Dictée vocale</strong> — place le curseur dans la barre et lance la dictée (raccourci Apple ou Whisper local).</div></li>
+            </ul>
+            <p class="onboarding-note" data-i18n-html="ob_s3_note">Selon la <strong>taille de la barre</strong> (Paramètres → Taille de la barre), certains boutons se replient dans le menu <strong>Plus d'outils</strong> à droite. En mode <em>grand</em>, tout est affiché.</p>
+          </div>
+
+          <!-- Step 4: Features & tips -->
+          <div class="onboarding-step" data-step="4" hidden>
+            <p class="onboarding-intro" data-i18n="ob_s4_intro">Fonctions utiles dans la discussion :</p>
+            <ul class="feature-list">
+              <li><span class="feature-ic" data-icon="speaker"></span><div data-i18n-html="ob_s4_speak"><strong>Énoncer un message</strong> — l'icône haut-parleur sur chaque réponse la lit à voix haute.</div></li>
+              <li><span class="feature-ic" data-icon="retry"></span><div data-i18n-html="ob_s4_retry"><strong>Réessayer</strong> — sous une réponse en erreur, relance la requête en retirant l'erreur du contexte.</div></li>
+              <li><span class="feature-ic" data-icon="doc"></span><div data-i18n-html="ob_s4_markdown"><strong>Markdown</strong> — les réponses sont mises en forme (titres, listes, gras, code…).</div></li>
+              <li><span class="feature-ic" data-icon="terminal"></span><div data-i18n-html="ob_s4_sysprompt"><strong>Prompt système</strong> — dans les Paramètres, définis des instructions envoyées avant ton 1ᵉʳ message.</div></li>
+              <li><span class="feature-ic" data-icon="chip"></span><div data-i18n-html="ob_s4_modelpill"><strong>Pastille modèle</strong> — à droite de la barre.</div></li>
+              <li><span class="feature-ic" data-icon="move"></span><div data-i18n-html="ob_s4_drag"><strong>Déplacement</strong> — glisse la barre n'importe où, jusqu'en haut de l'écran ; elle reste au-dessus des autres apps.</div></li>
+              <li><span class="feature-ic" data-icon="cursor"></span><div data-i18n-html="ob_s4_clickthrough"><strong>Passe-clic</strong> — les zones vides autour de l'orbe et de la barre laissent passer les clics vers le bureau.</div></li>
+            </ul>
+          </div>
+
+          <!-- Step 5: Heartbeat -->
+          <div class="onboarding-step" data-step="5" hidden>
+            <p class="onboarding-intro" data-i18n-html="ob_s5_intro">Le <strong>Heartbeat</strong> déclenche un raccourci macOS à intervalle régulier (un « CRON » intégré). Idéal pour automatiser une tâche d'arrière-plan.</p>
+            <ol class="onboarding-doc">
+              <li data-i18n-html="ob_s5_li1">Crée un raccourci dans l'app <strong>Raccourcis</strong> (nommé <strong>Heartbeat</strong> par défaut) contenant le process à exécuter automatiquement.</li>
+              <li data-i18n-html="ob_s5_li2">Ouvre les <strong>Paramètres</strong> de Lumen → section <strong>Heartbeat</strong>.</li>
+              <li data-i18n-html="ob_s5_li3">Coche <strong>Activer le heartbeat</strong>, indique le nom de ton raccourci et choisis la <strong>fréquence d'exécution</strong>.</li>
+              <li data-i18n-html="ob_s5_li4">Tu peux aussi l'activer/désactiver via le bouton Heartbeat de la barre.</li>
+              <li data-i18n-html="ob_s5_li5">À chaque exécution, le résultat est collecté dans la cloche de notifications.</li>
+            </ol>
+            <p class="onboarding-note" data-i18n-html="ob_s5_note">Astuce : fais en sorte que ton raccourci <strong>renvoie un texte</strong> en sortie pour le retrouver dans la cloche.</p>
+          </div>
+
+          <!-- Step 6: Done -->
+          <div class="onboarding-step" data-step="6" hidden>
+            <div class="onboarding-hero">
+              <div class="onboarding-hero-icon success">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <h3 data-i18n-html="ob_done_h3">Tout est prêt&nbsp;!</h3>
+              <p data-i18n-html="ob_done_p">Lumen est configuré. Tu peux commencer à discuter. Bonne utilisation&nbsp;!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer navigation -->
+        <div class="onboarding-footer">
+          <button class="onboarding-nav-btn ghost" id="btn-onboarding-prev" data-i18n="ob_prev">Précédent</button>
+          <button class="onboarding-nav-btn primary" id="btn-onboarding-next" data-i18n="ob_next">Suivant</button>
+        </div>
+      </div>
+
+      </div><!-- /bar-area -->
+
+    </div>
+  </body>
+</html>

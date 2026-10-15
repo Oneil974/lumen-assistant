@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Hub</title>
+<!--
+  Coquille générique des hubs packagés.
+
+  Un hub n'est pas une application : c'est un toit posé sur plusieurs pages qui
+  partagent un sujet. Cette page ne connaît aucune d'elles — elle lit la liste
+  d'onglets dans le manifeste de son propre paquet (`window.__LUMEN_APP__.tabs`,
+  injecté par appserve.rs) et se contente de les monter dans des iframes.
+
+  Les onglets sont montés PARESSEUSEMENT et jamais démontés : charger les quatre
+  pages d'un hub à l'ouverture le rendrait lent pour rien, mais les décharger en
+  changeant d'onglet ferait perdre ce qu'on était en train d'écrire.
+-->
+<link rel="stylesheet" href="../lib/tokens.css" />
+<link rel="stylesheet" href="../lib/ui.css" />
+<link rel="stylesheet" href="../lib/flat.css" />
+<style>
+  html, body { height: 100%; margin: 0; background: var(--background, #fff); color: var(--foreground, #111); }
+  body { display: flex; flex-direction: column; font: 13px/1.5 system-ui, -apple-system, sans-serif; }
+  .hub-tabs {
+    display: flex; gap: 2px; padding: 6px 8px; flex-shrink: 0;
+    border-bottom: 1px solid var(--border, rgba(0,0,0,.1));
+    background: var(--card, rgba(0,0,0,.02));
+  }
+  .hub-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border: 0; border-radius: 8px;
+    background: transparent; color: inherit; font: inherit; cursor: pointer;
+  }
+  .hub-tab:hover { background: var(--muted, rgba(0,0,0,.05)); }
+  .hub-tab[aria-selected="true"] { background: var(--primary, #0a84ff); color: #fff; }
+  .hub-tab small { opacity: .7; font-size: 11px; }
+  .hub-panels { flex: 1; position: relative; min-height: 0; }
+  .hub-panels iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .hub-panels iframe[hidden] { display: none; }
+  .hub-empty { padding: 32px; text-align: center; opacity: .6; }
+</style>
+</head>
+<body>
+<nav class="hub-tabs" role="tablist" id="tabs"></nav>
+<div class="hub-panels" id="panels"></div>
+<script type="module">
+  const app = window.__LUMEN_APP__ || {};
+  const tabs = Array.isArray(app.tabs) ? app.tabs : [];
+  const tabBar = document.getElementById("tabs");
+  const panels = document.getElementById("panels");
+  document.title = app.name || "Hub";
+
+  if (!tabs.length) {
+    panels.innerHTML = '<div class="hub-empty">Ce hub ne déclare aucun onglet.</div>';
+  }
+
+  const frames = new Map();
+  const buttons = new Map();
+
+  function show(id) {
+    for (const [key, frame] of frames) frame.hidden = key !== id;
+    for (const [key, btn] of buttons) btn.setAttribute("aria-selected", String(key === id));
+    const tab = tabs.find((t) => t.id === id);
+    if (!frames.has(id) && tab) {
+      const frame = document.createElement("iframe");
+      // Les pages d'un hub viennent du MÊME paquet, donc de la même origine :
+      // elles partagent naturellement le pont IPC injecté à la racine.
+      frame.src = tab.url;
+      frame.title = tab.name;
+      frames.set(id, frame);
+      panels.appendChild(frame);
+      for (const [key, f] of frames) f.hidden = key !== id;
+    }
+    // Le hub relaie le titre au shell : la fenêtre affiche « Muse — Notes ».
+    window.lumen?.ui?.setTitle?.(`${app.name} — ${tab?.name ?? ""}`.trim());
+    try { localStorage.setItem(`hubTab:${app.id}`, id); } catch {}
+  }
+
+  for (const tab of tabs) {
+    const btn = document.createElement("button");
+    btn.className = "hub-tab";
+    btn.type = "button";
+    btn.setAttribute("role", "tab");
+    btn.innerHTML = `<span>${tab.name}</span>`;
+    if (tab.hint) btn.title = tab.hint;
+    btn.addEventListener("click", () => show(tab.id));
+    buttons.set(tab.id, btn);
+    tabBar.appendChild(btn);
+  }
+
+  // On rouvre le hub sur l'onglet quitté : revenir à Muse pour retrouver
+  // systématiquement « Notes » alors qu'on travaillait sur la carte est une
+  // petite contrariété, mais elle se répète à chaque ouverture.
+  let initial = tabs[0]?.id;
+  try {
+    const saved = localStorage.getItem(`hubTab:${app.id}`);
+    if (saved && tabs.some((t) => t.id === saved)) initial = saved;
+  } catch {}
+  // Un onglet demandé explicitement (« ouvre l'analyse de Prisme ») l'emporte
+  // sur le dernier onglet visité : c'est une intention, pas une habitude.
+  const asked = new URLSearchParams(location.hash.slice(1)).get("tab");
+  if (asked && tabs.some((t) => t.id === asked)) initial = asked;
+  if (initial) show(initial);
+</script>
+</body>
+</html>

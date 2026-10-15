@@ -1,0 +1,103 @@
+/* Shared character renderer: prompt bar, Application, Desktop.
+   Couches (de l'extérieur vers l'intérieur) :
+     .lumen-soft        conteneur (container query : tailles proportionnelles)
+     .lumen-soft-pose   posture de l'état (pencher, grossir, incliner) — en TRANSITION
+     .lumen-soft-body   corps rond : flottement / parole — en ANIMATION
+       .lumen-soft-face (regard) > i i, .lumen-soft-mouth, .lumen-soft-blush, .lumen-soft-shine
+     .lumen-soft-ring, .lumen-soft-dots, .lumen-soft-zz  effets autour
+   Le corps reste un CERCLE : les déformations ne sont que des écrasements
+   brefs et symétriques (volume conservé), jamais une forme de base ovale. */
+/* Échelle des expressions, comme pour l'orbe de verre (orb.js) : E = largeur
+   de l'œil, H = hauteur, S = trait commun (0,75 E) des arcs, de l'œil fermé, du
+   sommeil et de la bouche fermée. Unités de conteneur : tout suit la taille. */
+.lumen-soft { position:absolute; inset:5%; z-index:3; pointer-events:none; container-type:size; --E:7cqmin; --H:23cqmin; --S:calc(var(--E) * .75); --look-x:0%; --look-y:0%; --soft-voice:1; --soft-strength:1; --soft-pulse-time:1.6s; --spring:cubic-bezier(.34,1.56,.64,1); }
+.lumen-soft[hidden] { display:none!important; }
+.lumen-soft-pose { position:absolute; inset:0; transition:transform .45s var(--spring); }
+.lumen-soft-body { position:absolute; inset:0; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 34% 24%,color-mix(in srgb,var(--soft-color) 55%,white),var(--soft-color) 50%,var(--soft-shade) 100%); box-shadow:inset 0 2.5cqmin 5cqmin rgb(255 255 255 / 60%),inset 0 -4cqmin 9cqmin color-mix(in srgb,var(--soft-shade) 45%,transparent),0 5cqmin 12cqmin rgb(0 0 0 / 10%); animation:lsFloat var(--soft-tempo) ease-in-out infinite; }
+.lumen-soft-shine { position:absolute; left:20%; top:12%; width:30%; height:18%; border-radius:50%; background:radial-gradient(closest-side,rgb(255 255 255 / 75%),transparent); filter:blur(.6cqmin); opacity:.75; animation:lsShine calc(var(--soft-tempo) * 1.7) ease-in-out infinite; }
+.lumen-soft-face { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:12%; transform:translate(var(--look-x),var(--look-y)); transition:transform .35s cubic-bezier(.2,.8,.2,1); }
+.lumen-soft-face i { width:var(--E); height:var(--H); border-radius:99px; background:var(--soft-eyes); animation:lsBlink 6.4s infinite; transform-origin:center; transition:height .25s var(--spring),width .25s var(--spring),border-radius .2s,translate .3s ease; }
+.lumen-soft-face i+i { animation-delay:.06s; }
+.lumen-soft-mouth { position:absolute; left:50%; top:69%; width:calc(var(--E) * 2.4); height:var(--S); translate:-50% -50%; border-radius:99px; background:var(--soft-eyes); opacity:0; transition:opacity .2s; }
+.lumen-soft-blush { position:absolute; left:22%; right:22%; top:62%; height:8%; border-radius:50%; background:radial-gradient(closest-side,var(--soft-shade),transparent); opacity:.18; transition:opacity .4s; }
+.lumen-soft-ring { position:absolute; inset:-3%; border:1.2cqmin solid var(--soft-shade); border-radius:50%; opacity:0; }
+.lumen-soft-dots { position:absolute; right:-4%; top:-2%; display:flex; gap:3cqmin; opacity:0; transition:opacity .25s; }
+.lumen-soft-dots b { width:5cqmin; height:5cqmin; border-radius:50%; background:var(--soft-shade); }
+.lumen-soft-zz { position:absolute; right:2%; top:-6%; font:700 13cqmin/1 system-ui,sans-serif; color:var(--soft-shade); opacity:0; }
+[data-orb-renderer="soft"] > canvas, [data-orb-renderer="soft"] > .orb-eyes, [data-orb-renderer="soft"] > .orb-frost, [data-orb-renderer="soft"] > .orb-mouth { visibility:hidden!important; }
+
+/* ---- États ---- */
+/* Écoute : se penche vers toi, grands yeux attentifs, halo qui respire. */
+[data-orb-renderer="soft"][data-state="listening"] .lumen-soft-pose { transform:scale(1.05) translateY(-1.5%); }
+[data-orb-renderer="soft"][data-state="listening"] .lumen-soft-face i { height:calc(var(--H) * 1.17); width:calc(var(--E) * 1.07); }
+[data-orb-renderer="soft"][data-state="listening"] .lumen-soft-ring { animation:lsListen 1.8s ease-in-out infinite; }
+/* Réflexion : regard en l'air, balancement lent, trois points qui rebondissent. */
+[data-orb-renderer="soft"][data-state="thinking"] .lumen-soft-pose { transform:rotate(-4deg); }
+[data-orb-renderer="soft"][data-state="thinking"] .lumen-soft-body { animation:lsThink 2.6s ease-in-out infinite; }
+[data-orb-renderer="soft"][data-state="thinking"] .lumen-soft-face { transform:translate(-5%,-9%); }
+[data-orb-renderer="soft"][data-state="thinking"] .lumen-soft-face i:first-child { height:calc(var(--H) * .74); }
+[data-orb-renderer="soft"][data-state="thinking"] .lumen-soft-dots, [data-orb-renderer="soft"][data-action] .lumen-soft-dots { opacity:1; }
+[data-orb-renderer="soft"][data-state="thinking"] .lumen-soft-dots b, [data-orb-renderer="soft"][data-action] .lumen-soft-dots b { animation:lsDot 1.1s ease-in-out infinite; }
+.lumen-soft-dots b:nth-child(2) { animation-delay:.15s!important; }
+.lumen-soft-dots b:nth-child(3) { animation-delay:.3s!important; }
+/* Parole : petit rebond rythmé (volume conservé) et bouche qui s'anime. */
+[data-orb-renderer="soft"][data-state="speaking"] .lumen-soft-body { animation:lsTalk .34s ease-in-out infinite alternate; }
+[data-orb-renderer="soft"][data-state="speaking"] .lumen-soft-mouth { opacity:1; animation:lsMouth .19s ease-in-out infinite alternate; }
+[data-orb-renderer="soft"][data-state="speaking"] .lumen-soft-face { transform:translate(0,-4%); }
+/* Action en cours (outil, agent). */
+[data-orb-renderer="soft"][data-action] .lumen-soft-body { animation:lsWork .9s ease-in-out infinite; }
+
+/* ---- Humeurs ---- */
+[data-orb-renderer="soft"][data-mood="joy"] .lumen-soft-pose { animation:lsHop .75s var(--spring) both; }
+[data-orb-renderer="soft"][data-mood="joy"] .lumen-soft-face i, .lumen-soft.is-finished .lumen-soft-face i { box-sizing:border-box; width:calc(var(--E) * 2.4); height:calc(var(--E) * 1.3); background:transparent; border:var(--S) solid var(--soft-eyes); border-bottom:0; border-radius:99px 99px 0 0; animation:none; position:relative; }
+/* Embouts ronds des yeux en arc : une bordure se termine à angle droit, ces
+   deux pastilles de la même épaisseur rendent aux extrémités l'arrondi des
+   yeux de base. */
+[data-orb-renderer="soft"][data-mood="joy"] .lumen-soft-face i::before, [data-orb-renderer="soft"][data-mood="joy"] .lumen-soft-face i::after,
+.lumen-soft.is-finished .lumen-soft-face i::before, .lumen-soft.is-finished .lumen-soft-face i::after { content:""; position:absolute; bottom:calc(var(--S) / -2); left:calc(var(--S) * -1); width:var(--S); height:var(--S); border-radius:50%; background:var(--soft-eyes); }
+[data-orb-renderer="soft"][data-mood="joy"] .lumen-soft-face i::after, .lumen-soft.is-finished .lumen-soft-face i::after { left:auto; right:calc(var(--S) * -1); }
+[data-orb-renderer="soft"][data-mood="joy"] .lumen-soft-blush, .lumen-soft.is-finished .lumen-soft-blush { opacity:.42; }
+[data-orb-renderer="soft"][data-mood="surprised"] .lumen-soft-pose { animation:lsPop .5s var(--spring) both; }
+[data-orb-renderer="soft"][data-mood="surprised"] .lumen-soft-face i { height:calc(var(--E) * 1.9); width:calc(var(--E) * 1.9); border-radius:50%; animation:none; }
+[data-orb-renderer="soft"][data-mood="surprised"] .lumen-soft-mouth { opacity:1; width:calc(var(--E) * 1.3); height:calc(var(--E) * 1.3); border-radius:50%; transform:none; animation:none; }
+[data-orb-renderer="soft"][data-mood="ask"] .lumen-soft-pose { transform:rotate(9deg); }
+[data-orb-renderer="soft"][data-mood="ask"] .lumen-soft-face i:first-child { height:calc(var(--H) * .64); translate:0 -12%; }
+[data-orb-renderer="soft"][data-mood="sleep"] .lumen-soft-face i { height:var(--S); width:calc(var(--E) * 2); animation:none; translate:0 calc(var(--E) * .7); }
+[data-orb-renderer="soft"][data-mood="sleep"] .lumen-soft-body { animation:lsFloat calc(var(--soft-tempo) * 1.6) ease-in-out infinite; }
+[data-orb-renderer="soft"][data-mood="sleep"] .lumen-soft-zz { animation:lsZz 2.6s ease-out infinite; }
+[data-orb-renderer="soft"][data-mood="sad"] .lumen-soft-face { transform:translate(var(--look-x),9%); }
+[data-orb-renderer="soft"][data-mood="sad"] .lumen-soft-face i { height:calc(var(--H) * .5); }
+/* Amour et étourdi : mêmes formes et proportions que l'orbe de verre (orb.js). */
+[data-orb-renderer="soft"][data-mood="love"] .lumen-soft-face i { height:calc(var(--E) * 1.7); width:calc(var(--E) * 1.7); border-radius:50%; animation:lsLove .7s ease-in-out infinite alternate; }
+[data-orb-renderer="soft"][data-mood="dizzy"] .lumen-soft-face i { box-sizing:content-box; height:calc(var(--E) * .9); width:calc(var(--E) * .9); border-radius:50%; background:transparent; border:var(--S) solid var(--soft-eyes); border-right-color:transparent; animation:lsDizzy .55s linear infinite; position:relative; }
+[data-orb-renderer="soft"][data-mood="dizzy"] .lumen-soft-face i::before, [data-orb-renderer="soft"][data-mood="dizzy"] .lumen-soft-face i::after { content:""; position:absolute; left:calc(var(--E) * .658); top:calc(var(--E) * -.508); width:var(--S); height:var(--S); border-radius:50%; background:var(--soft-eyes); }
+[data-orb-renderer="soft"][data-mood="dizzy"] .lumen-soft-face i::after { top:calc(var(--E) * .658); }
+[data-orb-renderer="soft"][data-mood="dizzy"] .lumen-soft-pose { animation:lsJelly .9s ease-in-out infinite; }
+[data-orb-renderer="soft"][data-mood="sad"] .lumen-soft-pose { transform:translateY(3%) scale(.97); }
+
+/* ---- Réactions ponctuelles ---- */
+.lumen-soft.is-finished .lumen-soft-pose { animation:lsHop .8s var(--spring); }
+.lumen-soft.is-poked .lumen-soft-pose { animation:lsJelly .7s ease-out; }
+.lumen-soft.is-pulsing .lumen-soft-ring { animation:lsPulse var(--soft-pulse-time) ease-out; }
+.lumen-soft.is-paused *, [data-orb-renderer="soft"][data-soft-disabled="true"] .lumen-soft * { animation-play-state:paused!important; }
+
+@keyframes lsFloat { 0%,100% { transform:translateY(0) scale(1) rotate(calc(-.5 * var(--soft-tilt))); } 50% { transform:translateY(-2.5%) scale(1.012) rotate(calc(.5 * var(--soft-tilt))); } }
+@keyframes lsShine { 0%,100% { transform:translate(0,0); opacity:.7; } 50% { transform:translate(6%,4%); opacity:.9; } }
+/* Clignement par découpe arrondie (clip-path … round) et non par scaleY :
+   écraser l'œil aplatissait ses bouts ronds ; la découpe garde une pilule. */
+@keyframes lsBlink { 0%,40%,44%,86%,90%,94%,100% { clip-path:inset(-40% -80% round 99px); } 42%,88% { clip-path:inset(calc(50% - var(--S) / 2) 0 round 99px); } 92% { clip-path:inset(calc(50% - var(--S) / 2) 0 round 99px); } }
+@keyframes lsListen { 0%,100% { opacity:calc(.18 * var(--soft-strength)); transform:scale(1); } 50% { opacity:calc(.42 * var(--soft-strength)); transform:scale(1.05); } }
+@keyframes lsThink { 0%,100% { transform:rotate(-3deg) translateY(0); } 50% { transform:rotate(3deg) translateY(-2%); } }
+@keyframes lsDot { 0%,60%,100% { transform:translateY(0); opacity:.45; } 30% { transform:translateY(-70%); opacity:1; } }
+@keyframes lsTalk { from { transform:scale(1.012,.985) translateY(0); } to { transform:scale(calc(1 - .012 * var(--soft-voice)),calc(1 + .022 * var(--soft-voice))) translateY(-1%); } }
+/* La bouche s'ouvre en hauteur (pas par scaleY, qui écrasait ses arrondis). */
+@keyframes lsMouth { from { height:var(--S); width:calc(var(--E) * 2.4); } to { height:calc(var(--S) + var(--E) * 1.05 * var(--soft-voice)); width:calc(var(--E) * 2.15); } }
+@keyframes lsWork { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-2.5%) scale(1.015); } }
+@keyframes lsHop { 0% { transform:translateY(0) scale(1); } 22% { transform:translateY(2%) scale(1.06,.94); } 48% { transform:translateY(-10%) scale(.96,1.05); } 72% { transform:translateY(0) scale(1.04,.96); } 100% { transform:translateY(0) scale(1); } }
+@keyframes lsPop { 0% { transform:scale(1); } 35% { transform:scale(1.13); } 100% { transform:scale(1.04); } }
+@keyframes lsJelly { 0%,100% { transform:scale(1) rotate(0); } 20% { transform:scale(1.08,.92) rotate(-5deg); } 45% { transform:scale(.95,1.06) rotate(4deg); } 70% { transform:scale(1.02,.98) rotate(-1deg); } }
+@keyframes lsLove { to { scale:1.25; } }
+@keyframes lsDizzy { to { rotate:360deg; } }
+@keyframes lsZz { 0% { opacity:0; transform:translate(0,10%) scale(.6); } 30% { opacity:.8; } 100% { opacity:0; transform:translate(30%,-60%) scale(1); } }
+@keyframes lsPulse { 0% { opacity:calc(.7 * var(--soft-strength)); transform:scale(.96); } 100% { opacity:0; transform:scale(calc(1 + .22 * var(--soft-strength))); } }
+@media (prefers-reduced-motion:reduce) { .lumen-soft * { animation:none!important; transition:none!important; } }

@@ -1,0 +1,151 @@
+/* Catalogue — mise en page en rayons : panneau latéral (rayons + catégories),
+   carrousel éditorial, grille de fiches. Aucune couleur en dur hors des
+   dégradés éditoriaux fournis par le catalogue : tout le reste vient des
+   jetons de tokens.css, pour suivre le thème et l'accent de l'orbe. */
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{font:14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+.app{display:grid;grid-template-columns:236px 1fr;height:100vh}
+
+/* ===== Panneau latéral ===== */
+.side{display:flex;flex-direction:column;gap:10px;padding:14px 12px;border-right:1px solid var(--border);background:var(--surface);overflow:auto}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;padding:0 4px}
+.brand>div{min-width:0}
+.brand-ic{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:var(--radius-lg);background:var(--sel);color: var(--accent-ink)}
+.brand-ic svg{width:19px;height:19px}
+.brand-title{font-weight:700;font-size:15px}
+.brand-sub{font-size:11.5px;color:var(--text-muted)}
+.side-sep{height:1px;background:var(--border);margin:2px 4px}
+.side-head{font-size:11px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);padding:0 8px}
+.side-foot{margin-top:auto;padding:8px;font-size:11.5px;color:var(--text-muted);line-height:1.5}
+
+.sections,.cats{display:flex;flex-direction:column;gap:2px}
+.nav-item{display:flex;align-items:center;gap:9px;width:100%;border:none;background:transparent;color:var(--text);font:inherit;text-align:left;padding:7px 9px;border-radius:var(--radius-md);cursor:pointer}
+.nav-item:hover{background:var(--surface-2)}
+.nav-item.active{background:var(--sel);color: var(--accent-ink);font-weight:600}
+.nav-item .ic{width:17px;height:17px;flex:none;display:grid;place-items:center}
+.nav-item .ic svg{width:17px;height:17px}
+.nav-item .lb{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-item .n{font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums}
+.nav-item.active .n{color: var(--accent-ink)}
+.cats .nav-item{padding-left:12px;font-size:13px}
+
+/* ===== Rayon ===== */
+.stage{display:flex;flex-direction:column;min-width:0;overflow:auto}
+.stage-head{flex:none;display:flex;align-items:flex-end;gap:12px;padding:18px 22px 10px}
+.stage-title{margin:0;font-size:24px;font-weight:750;letter-spacing:-.01em}
+.stage-sub{font-size:12.5px;color:var(--text-muted);margin-top:3px}
+.stage-sub.err{color:var(--red)}
+
+/* ===== Carrousel =====
+   Lames typographiques : surface du thème, accent pour l'intitulé et l'action.
+   Aucune image, aucune couleur décorative. */
+.hero{flex:none;position:relative;margin:6px 22px 4px;border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;background:var(--surface)}
+.hero-track{display:flex;transition:transform .45s cubic-bezier(.22,.61,.36,1)}
+.slide{position:relative;flex:0 0 100%;min-height:196px;display:flex;align-items:flex-end;padding:22px 54px;background:var(--surface)}
+.slide-txt{max-width:640px;display:flex;flex-direction:column;gap:7px}
+.slide-eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color: var(--accent-ink)}
+.slide-title{font-size:26px;font-weight:750;line-height:1.15;letter-spacing:-.01em}
+.slide-sub{font-size:13px;line-height:1.5;color:var(--text-muted)}
+.slide .btn{margin-top:6px;align-self:flex-start}
+.hero-nav{position:absolute;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-size:17px;line-height:1;cursor:pointer;display:grid;place-items:center}
+.hero-nav:hover{color:var(--text);background:var(--surface-2)}
+.hero-nav.prev{left:12px}
+.hero-nav.next{right:12px}
+.hero-dots{position:absolute;right:16px;bottom:14px;display:flex;gap:6px}
+.hero-dot{width:7px;height:7px;border-radius:50%;border:none;padding:0;background:var(--border);cursor:pointer}
+.hero-dot.active{background:var(--accent);width:18px;border-radius:4px}
+
+/* ===== Contenu ===== */
+.panel{flex:none;display:flex;flex-direction:column;min-height:0}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 22px 0}
+.search{border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-2);color:var(--text);padding:7px 10px;font:inherit;width:100%}
+.field{flex:1;min-width:240px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-2);color:var(--text);padding:7px 10px;font:inherit}
+.search:focus,.field:focus{outline:none;border-color:var(--accent)}
+.note{margin:12px 22px 0;font-size:12.5px;color:var(--text-muted);line-height:1.5;max-width:760px}
+.note code{font-size:12px;background:var(--surface-2);border-radius:4px;padding:1px 5px}
+.notice{margin:12px 22px 0;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);font-size:12.5px;color:var(--text-muted)}
+.notice.pre{white-space:pre-line;line-height:1.6}
+.code{margin:8px 22px 20px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface-2);font:12px ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre;overflow:auto;color:var(--text-muted)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;padding:16px 22px 24px;align-content:start}
+.card{border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--surface);box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:9px;transition:border-color .15s,transform .15s}
+.card:hover{border-color:color-mix(in oklab, var(--primary) 35%, var(--border))}
+.card-head{display:flex;gap:11px;align-items:flex-start}
+/* Vignette : monogramme sur surface teintée d'accent. */
+.thumb{width:52px;height:52px;flex:none;border-radius:14px;overflow:hidden;display:grid;place-items:center;background:color-mix(in oklab, var(--primary) 12%, var(--surface-2));color: var(--accent-ink);font-weight:750;font-size:17px;letter-spacing:-.02em}
+.card-id{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.card-top{display:flex;align-items:flex-start;gap:8px}
+.card-name{font-weight:650;font-size:14.5px;flex:1;min-width:0}
+.tag{font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--surface-2);color:var(--text-muted);white-space:nowrap}
+.tag.ok{background:color-mix(in oklab, var(--primary) 16%, transparent);color: var(--accent-ink)}
+.card-meta{font-size:11.5px;color:var(--text-muted)}
+/* Badges d'aptitude : contour discret, teinte d'accent, jamais de à-plat vif. */
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid color-mix(in oklab, var(--primary) 30%, var(--border));color: var(--accent-ink);background:color-mix(in oklab, var(--primary) 7%, transparent);white-space:nowrap}
+.card-desc{font-size:12.5px;line-height:1.45}
+.needs{font-size:11.5px;color:var(--text-muted);font-style:italic}
+.card-actions{display:flex;gap:6px;margin-top:auto;flex-wrap:wrap;align-items:center}
+
+.bar{height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .2s linear}
+
+.btn{border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:var(--radius-md);padding:6px 11px;font-size:12.5px;font-weight:550;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--surface)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.primary{background:var(--accent);border-color:transparent;color:var(--primary-foreground)}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--red)}
+.btn.tiny{padding:5px 9px;font-size:12px}
+.link{font-size:12px;color: var(--accent-ink);text-decoration:none}
+.link:hover{text-decoration:underline}
+.dl-state{font-size:12px;color: var(--accent-ink)}
+.empty{grid-column:1/-1;text-align:center;color:var(--text-muted);padding:60px 20px}
+
+/* Fenêtre étroite : le panneau latéral repasse au-dessus du contenu. */
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .side{border-right:none;border-bottom:1px solid var(--border);max-height:44vh}
+  .sections,.cats{flex-direction:row;flex-wrap:wrap}
+  .slide{min-height:180px}
+}
+
+/* ===== Rayon « Applications » ==============================================
+   Les capacités demandées par un paquet sont affichées sur la carte, AVANT
+   l'installation : c'est le seul moment où quelqu'un peut décider en
+   connaissance de cause. Les découvrir une par une à l'usage, sous forme de
+   dialogues, serait les découvrir trop tard. */
+.card-caps {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  opacity: .65;
+}
+.card-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.card-actions .btn.danger { color: var(--destructive, #e5484d); }
+.card-title .tag {
+  display: inline-block; margin-left: 6px; padding: 1px 6px;
+  border-radius: 6px; font-size: 10px; font-weight: 600;
+  background: var(--primary, #0a84ff); color: #fff; vertical-align: middle;
+}
+
+/* Rayon Applications : en-têtes de groupe dans la grille, pastille « installée ». */
+.grid-group{grid-column:1/-1;display:flex;align-items:center;gap:8px;margin:10px 0 -4px;font-size:12px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
+.grid-group:first-child{margin-top:0}
+.grid-group .ic{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:var(--radius-sm);background:var(--sel);color:var(--accent-ink)}
+.grid-group .ic svg{width:13px;height:13px}
+.grid-group .n{font-weight:500;color:var(--text-muted);opacity:.8}
+.installed-dot{color:var(--success);font-weight:600}
+/* Mises à jour */
+.upd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.upd-actions{display:flex;gap:8px;margin:10px 22px 0}
+.upd-list{display:flex;flex-direction:column;gap:10px;padding:16px 22px 28px;max-width:860px}
+.upd-row{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-lg,12px);background:var(--surface)}
+.upd-row .card-icon{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:10px;color:#fff}
+.upd-row .card-icon svg{width:20px;height:20px}
+.upd-body{flex:1;min-width:0}
+.upd-body .card-sub b{color:var(--text);font-weight:600}
+.upd-changes{margin:6px 0 0;font-size:12px;color:var(--text-muted);line-height:1.45;overflow-wrap:anywhere}
+.upd-empty{display:flex;align-items:center;gap:8px;color:var(--text-muted);font-size:13px}
+.upd-empty svg{width:16px;height:16px;color:#30d158}

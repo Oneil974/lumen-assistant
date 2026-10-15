@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!-- Relia — CRM de Lumen : articles & stock, clients, devis, factures Factur-X.
+     Les données vivent dans la base SQLite « ERP » (cf. store.js) : elles sont
+     donc visibles telles quelles depuis Prisme, Fluxo et les agents. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Relia</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=6" />
+    <script type="module" src="./main.js?v=6" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="../lib/confirm.css?v=1" />
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+    <!-- Habillage doré de l\'édition Pro : après la peau plate, pour la surcharger. -->
+    <link rel="stylesheet" href="/lib/pro-skin.css?v=8" />
+</head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>
+          </span>
+          <div><div class="brand-title">Relia</div><div class="brand-sub" id="brand-sub">CRM local</div></div>
+        </div>
+        <nav class="nav" id="nav">
+          <button data-view="dashboard" class="active"><span class="nav-ic" data-icon="layout-dashboard"></span>Tableau de bord</button>
+          <button data-view="articles"><span class="nav-ic" data-icon="layout-grid"></span>Articles &amp; stock</button>
+          <button data-view="clients"><span class="nav-ic" data-icon="users"></span>Clients</button>
+          <button data-view="projects"><span class="nav-ic" data-icon="folder"></span>Projets</button>
+          <button data-view="tasks"><span class="nav-ic" data-icon="list-checks"></span>Tâches</button>
+          <button data-view="quotes"><span class="nav-ic" data-icon="square-pen"></span>Devis</button>
+          <button data-view="invoices"><span class="nav-ic" data-icon="wallet"></span>Factures</button>
+          <button data-view="settings"><span class="nav-ic" data-icon="settings"></span>Société &amp; conformité</button>
+        </nav>
+        <div class="side-foot">
+          <div class="dot-line"><span class="dot"></span>SQLite local · base « ERP »</div>
+          <div class="side-note">Vos tables sont réutilisables depuis Prisme, Fluxo et les agents.</div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div><h1 id="view-title">Tableau de bord</h1><p id="view-sub">Votre activité en un coup d'œil</p></div>
+          <div class="top-actions" id="top-actions"></div>
+        </header>
+        <div class="scroll" id="scroll">
+          <section class="view active" id="view-dashboard">
+            <div class="kpi-grid" id="kpis"></div>
+            <div class="two-col">
+              <section class="card">
+                <div class="card-head"><h2>Derniers devis</h2><button class="link" data-goto="quotes">Tout voir</button></div>
+                <div id="recent-quotes" class="list"></div>
+              </section>
+              <section class="card">
+                <div class="card-head"><h2>Dernières factures</h2><button class="link" data-goto="invoices">Tout voir</button></div>
+                <div id="recent-invoices" class="list"></div>
+              </section>
+            </div>
+            <section class="card">
+              <div class="card-head"><h2>Prochaines échéances</h2><button class="link" data-goto="tasks">Toutes les tâches</button></div>
+              <div id="task-focus" class="list"></div>
+            </section>
+            <section class="card">
+              <div class="card-head"><h2>Alertes de stock</h2><button class="link" data-goto="articles">Gérer les articles</button></div>
+              <div id="stock-alerts" class="list"></div>
+            </section>
+            <section class="card">
+              <div class="card-head"><h2>Conformité — facturation électronique</h2></div>
+              <div id="compliance" class="compliance"></div>
+            </section>
+          </section>
+
+          <section class="view" id="view-articles">
+            <div class="toolbar">
+              <input id="article-search" class="input" placeholder="Rechercher un article, une référence, un tag…" />
+              <label class="check"><input type="checkbox" id="article-low" /> Sous le seuil d'alerte</label>
+            </div>
+            <div class="tagbar" id="article-tagbar"></div>
+            <div class="card table-card"><table class="grid" id="articles-table"></table></div>
+          </section>
+
+          <section class="view" id="view-clients">
+            <div class="toolbar"><input id="client-search" class="input" placeholder="Rechercher un client, un tag…" /></div>
+            <div class="tagbar" id="client-tagbar"></div>
+            <div class="card table-card"><table class="grid" id="clients-table"></table></div>
+          </section>
+
+          <section class="view" id="view-projects">
+            <div class="toolbar">
+              <input id="project-search" class="input" placeholder="Rechercher un projet, un client, un tag…" />
+              <select id="project-status" class="select"><option value="">Tous les statuts</option><option>Prospect</option><option>En cours</option><option>En pause</option><option>Terminé</option><option>Annulé</option></select>
+            </div>
+            <div class="tagbar" id="project-tagbar"></div>
+            <div class="project-grid" id="projects-grid"></div>
+          </section>
+
+          <section class="view" id="view-tasks">
+            <div class="toolbar">
+              <input id="task-search" class="input" placeholder="Rechercher une tâche, un responsable…" />
+              <select id="task-project" class="select"></select>
+              <select id="task-status" class="select"><option value="">Tous les statuts</option><option>À faire</option><option>En cours</option><option>En revue</option><option>Terminé</option></select>
+              <label class="check"><input type="checkbox" id="task-late" /> En retard</label>
+              <span class="spacer"></span>
+              <div class="seg" id="task-mode">
+                <button data-mode="list" class="active">Liste</button>
+                <button data-mode="kanban">Kanban</button>
+                <button data-mode="gantt">Gantt</button>
+              </div>
+            </div>
+            <div class="tagbar" id="task-tagbar"></div>
+            <div id="tasks-host"></div>
+          </section>
+
+          <section class="view" id="view-quotes">
+            <div class="toolbar">
+              <input id="quote-search" class="input" placeholder="Rechercher un devis, un tag…" />
+              <select id="quote-status" class="select"><option value="">Tous les statuts</option><option>Brouillon</option><option>Envoyé</option><option>Accepté</option><option>Refusé</option><option>Facturé</option></select>
+            </div>
+            <div class="tagbar" id="quote-tagbar"></div>
+            <div class="card table-card"><table class="grid" id="quotes-table"></table></div>
+          </section>
+
+          <section class="view" id="view-invoices">
+            <div class="toolbar">
+              <input id="invoice-search" class="input" placeholder="Rechercher une facture, un tag…" />
+              <select id="invoice-status" class="select"><option value="">Tous les statuts</option><option>Brouillon</option><option>Émise</option><option>Partiellement payée</option><option>Payée</option><option>Annulée</option></select>
+            </div>
+            <div class="tagbar" id="invoice-tagbar"></div>
+            <div class="card table-card"><table class="grid" id="invoices-table"></table></div>
+          </section>
+
+          <section class="view" id="view-settings">
+            <form id="settings-form" class="card form-card">
+              <h2>Identité de l'émetteur</h2>
+              <p class="hint">Ces informations sont des mentions obligatoires : elles alimentent le PDF et le XML Factur-X.</p>
+              <div class="form-grid">
+                <label>Raison sociale<input name="Raison sociale" required /></label>
+                <label>Forme juridique<input name="Forme juridique" placeholder="SAS, SARL, EI…" /></label>
+                <label>Capital social<input name="Capital" placeholder="10 000 €" /></label>
+                <label>SIREN<input name="SIREN" placeholder="9 chiffres" /></label>
+                <label>SIRET<input name="SIRET" placeholder="14 chiffres" /></label>
+                <label>RCS / RM<input name="RCS" placeholder="RCS Paris 123 456 789" /></label>
+                <label>Code APE<input name="Code APE" /></label>
+                <label>TVA intracommunautaire<input name="TVA intracom" placeholder="FR00123456789" /></label>
+                <label class="wide">Adresse<input name="Adresse" /></label>
+                <label>Code postal<input name="Code postal" /></label>
+                <label>Ville<input name="Ville" /></label>
+                <label>Pays<input name="Pays" value="FR" /></label>
+                <label>Email<input name="Email" type="email" /></label>
+                <label>Téléphone<input name="Téléphone" /></label>
+              </div>
+              <h2>Paiement</h2>
+              <div class="form-grid">
+                <label>IBAN<input name="IBAN" /></label>
+                <label>BIC<input name="BIC" /></label>
+                <label>Mode de paiement<select name="Mode paiement"><option>Virement</option><option>Prélèvement</option><option>Carte bancaire</option><option>Chèque</option><option>Espèces</option></select></label>
+                <label>Conditions de paiement<input name="Conditions paiement" placeholder="Paiement à 30 jours" /></label>
+                <label>Taux de pénalités de retard (%/an)<input name="Taux pénalités" type="number" step="0.01" min="0" /></label>
+                <label>Indemnité de recouvrement (€)<input name="Indemnité recouvrement" type="number" step="1" min="0" /></label>
+                <label class="wide">Escompte<input name="Escompte" placeholder="Aucun escompte pour paiement anticipé" /></label>
+              </div>
+              <h2>Régime &amp; facturation électronique</h2>
+              <div class="form-grid">
+                <label>Régime de TVA<select name="Régime TVA"><option>Réel normal</option><option>Réel simplifié</option><option>Franchise en base</option></select></label>
+                <label class="check-field"><input type="checkbox" name="TVA sur les débits" /> Option pour le paiement de la TVA d'après les débits</label>
+                <label>Profil Factur-X<select name="Profil Factur-X"><option>EN 16931</option><option>BASIC</option><option>EXTENDED</option></select></label>
+                <label>Plateforme (PDP / OD)<input name="Identifiant PDP" placeholder="Nom ou identifiant de votre plateforme agréée" /></label>
+                <label class="wide">Mentions complémentaires<textarea name="Mentions" rows="2" placeholder="Assurance RC pro, adhésion à un centre de gestion agréé…"></textarea></label>
+              </div>
+              <div class="form-actions"><button class="btn primary" type="submit">Enregistrer</button><span id="settings-status" class="hint"></span></div>
+            </form>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- Fiche article / client -->
+    <div class="backdrop" id="record-modal" hidden>
+      <div class="modal">
+        <div class="modal-head"><h4 id="record-title">Fiche</h4><button class="modal-close" data-close>×</button></div>
+        <form class="modal-body" id="record-form"></form>
+        <div class="modal-foot"><button class="btn ghost" data-close>Annuler</button><button class="btn primary" id="record-save">Enregistrer</button></div>
+      </div>
+    </div>
+
+    <!-- Éditeur de document (devis / facture) -->
+    <div class="backdrop" id="doc-modal" hidden>
+      <div class="modal wide-modal">
+        <div class="modal-head"><h4 id="doc-title">Devis</h4><span class="pill" id="doc-number"></span><span class="spacer"></span><button class="modal-close" data-close>×</button></div>
+        <div class="modal-body" id="doc-body">
+          <div class="form-grid doc-head-grid" id="doc-head"></div>
+          <div class="doc-lines">
+            <table class="grid lines" id="doc-lines"></table>
+          </div>
+          <!-- Hors du bloc à `overflow: hidden` : sous WebKit (app), la barre
+               d'ajout était rognée et le devis ne pouvait plus recevoir de ligne. -->
+          <div class="lines-actions">
+            <select class="select" id="doc-article"><option value="">Ajouter un article du catalogue…</option></select>
+            <button class="btn ghost" id="doc-add-free" type="button">+ Ligne libre</button>
+          </div>
+          <div class="doc-bottom">
+            <label class="notes">Notes / conditions particulières<textarea id="doc-notes" rows="3"></textarea></label>
+            <div class="doc-totals" id="doc-totals"></div>
+          </div>
+          <div id="doc-issues" class="issues"></div>
+        </div>
+        <div class="modal-foot" id="doc-actions"></div>
+      </div>
+    </div>
+
+    <!-- Détail d'un projet : avancement, temps, devis et factures liés -->
+    <div class="backdrop" id="project-modal" hidden>
+      <div class="modal wide-modal">
+        <div class="modal-head"><h4 id="project-title">Projet</h4><span class="pill" id="project-client"></span><span class="spacer"></span><button class="modal-close" data-close>×</button></div>
+        <div class="modal-body" id="project-body"></div>
+        <div class="modal-foot" id="project-actions"></div>
+      </div>
+    </div>
+
+    <!-- Export -->
+    <div class="backdrop" id="export-modal" hidden>
+      <div class="modal">
+        <div class="modal-head"><h4>Exporter la facture</h4><button class="modal-close" data-close>×</button></div>
+        <div class="modal-body">
+          <p class="hint">Le PDF Factur-X embarque le XML <code>factur-x.xml</code> : un seul fichier lisible par vous et par votre plateforme de dématérialisation.</p>
+          <label class="field">Sandbox de destination<select id="export-sandbox" class="select"></select></label>
+          <label class="field">Dossier<input id="export-dir" class="input" value="factures" /></label>
+          <div class="export-choices">
+            <label class="check"><input type="checkbox" id="export-pdf" checked /> PDF Factur-X (PDF + XML embarqué)</label>
+            <label class="check"><input type="checkbox" id="export-xml" checked /> XML CII seul (dépôt sur plateforme)</label>
+          </div>
+          <div id="export-status" class="hint"></div>
+        </div>
+        <div class="modal-foot"><button class="btn ghost" data-close>Fermer</button><button class="btn primary" id="export-go">Exporter</button></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+/* Studio de voix — esthétique « Apple friendly », catalogue + dock de test. */
+*{box-sizing:border-box}[hidden]{display:none!important}html,body{
+  height:100%;
+  margin:0;
+}
+body{font:14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+.app{display:flex;flex-direction:column;height:100vh}
+.spacer{flex:1}
+
+.topbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface);backdrop-filter:blur(20px)}
+.brand{display:flex;align-items:center;gap:10px;flex:1 1 200px;min-width:0}
+.brand>div{min-width:0}
+.brand-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-ic{width:34px;height:34px;display:grid;place-items:center;border-radius:var(--radius-lg);background:var(--sel);color: var(--accent-ink)}
+.brand-ic svg{width:19px;height:19px}
+.brand-title{font-weight:700;font-size:15px}
+.brand-sub{font-size:12px;color:var(--text-muted)}
+.search{width:180px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-2);color:var(--text);padding:7px 10px;font:inherit}
+.search:focus{outline:none;border-color:var(--accent)}
+.sel{border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-2);color:var(--text);padding:7px 8px;font:inherit;cursor:pointer}
+.chk{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--text-muted);white-space:nowrap}
+
+.grid{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;padding:16px;align-content:start}
+.card{border:1px solid var(--border);border-radius:var(--radius-xl);background:var(--surface);box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:8px;transition:border-color .15s}
+.card.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--sel)}
+.card-top{display:flex;align-items:flex-start;gap:8px}
+.card-name{font-weight:650;font-size:14px;flex:1;min-width:0}
+.tag{font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--surface-2);color:var(--text-muted);white-space:nowrap}
+.tag.piper{background:color-mix(in oklab, var(--primary) 16%, transparent);color: var(--accent-ink)}
+.tag.kokoro{background:color-mix(in oklab, var(--primary) 16%, transparent);color: var(--accent-ink)}
+.card-meta{font-size:12px;color:var(--text-muted);display:flex;gap:8px;flex-wrap:wrap}
+.card-actions{display:flex;gap:6px;margin-top:auto;flex-wrap:wrap}
+.btn{border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:var(--radius-md);padding:6px 11px;font-size:12.5px;font-weight:550;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--surface)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.primary{background:var(--accent);border-color:transparent;color: var(--primary-foreground)}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--red)}
+.btn.tiny{padding:5px 9px;font-size:12px}
+.dl-state{font-size:12px;color: var(--accent-ink)}
+
+.dock{display:flex;gap:14px;padding:14px 16px;border-top:1px solid var(--border);background:var(--surface);backdrop-filter:blur(20px)}
+.dock-text{flex:1;min-height:64px;max-height:120px;resize:vertical;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface-2);color:var(--text);padding:10px 12px;font:inherit}
+.dock-text:focus{outline:none;border-color:var(--accent)}
+.dock-side{display:flex;flex-direction:column;justify-content:space-between;gap:8px;min-width:200px}
+.dock-voice{font-size:12px;color:var(--text-muted)}
+.dock-voice strong{display:block;font-size:13.5px;color:var(--text);margin-top:2px}
+.dock-btns{display:flex;gap:6px}
+.empty{grid-column:1/-1;text-align:center;color:var(--text-muted);padding:60px 20px}

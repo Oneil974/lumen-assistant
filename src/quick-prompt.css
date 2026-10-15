@@ -1,0 +1,8 @@
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text,#25252a);color-scheme:light dark}
+*{box-sizing:border-box}body{margin:0;padding:8px;background:transparent}
+#panel{background:var(--surface,#fafafa);border:1px solid color-mix(in srgb,currentColor 14%,transparent);border-radius:15px;padding:11px 13px;box-shadow:0 5px 18px #0002}
+form{display:flex;gap:10px;align-items:center}.mark{opacity:.6;font-size:19px}
+textarea{flex:1;min-width:0;resize:none;border:0;outline:0;background:transparent;color:inherit;font:inherit;font-size:14px;line-height:24px;max-height:72px}
+button{border:0;background:transparent;color:inherit;cursor:pointer;border-radius:6px;padding:4px 7px;font:inherit}button:hover{background:color-mix(in srgb,currentColor 8%,transparent)}button:focus-visible{outline:2px solid var(--primary,#666)}button:disabled{opacity:.35}
+#answer{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55;font-size:13px;border-top:1px solid color-mix(in srgb,currentColor 9%,transparent);margin-top:9px;padding-top:10px;max-height:225px;overflow:auto}
+footer{display:flex;align-items:center;gap:8px;font-size:10px;opacity:.62;margin-top:8px;min-height:18px}#backend{max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hint{margin-left:auto;white-space:nowrap}#copy{font-size:10px}#status.error{color:var(--danger,#b63d3d)}

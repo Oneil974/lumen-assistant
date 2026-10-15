@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!-- Studio Nodal : workflows génératifs en nœuds, façon ComfyUI (texte, image,
+     vision, design, audio). Le graphe (graph/) s'exécute dans l'ordre des
+     dépendances, avec cache, file d'exécution ×N et galerie. Les projets
+     vivent dans la sandbox « Canevas », à côté de ceux du Canevas créatif. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Studio Nodal</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/confirm.css" />
+    <link rel="stylesheet" href="./graph/graph.css?v=2" />
+    <link rel="stylesheet" href="./nodal.css?v=1" />
+    <script type="module" src="./nodal.js?v=1"></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="nd-app">
+      <header class="nd-top">
+        <div class="nd-brand">
+          <span class="nd-logo" data-ic="workflow"></span>
+          <div><b>Studio Nodal</b><small>Workflows génératifs en nœuds</small></div>
+        </div>
+        <div class="nd-projects">
+          <select id="project-select" class="nd-select" title="Projet ouvert"></select>
+          <button class="nd-btn" id="btn-new" title="Nouveau projet"><span data-ic="plus"></span>Nouveau</button>
+          <div class="nd-menu-wrap">
+            <button class="nd-btn icon" id="btn-more" title="Plus d'actions"><span data-ic="more"></span></button>
+            <div class="nd-menu" id="more-menu" hidden>
+              <button data-act="rename"><span data-ic="pencil"></span>Renommer</button>
+              <button data-act="duplicate"><span data-ic="copy"></span>Dupliquer</button>
+              <div class="nd-menu-sep"></div>
+              <button data-act="delete" class="danger"><span data-ic="trash-2"></span>Supprimer</button>
+            </div>
+          </div>
+        </div>
+        <span class="nd-grow"></span>
+        <div class="nd-menu-wrap">
+          <button class="nd-btn" id="btn-engines" title="Moteurs de génération"><span data-ic="cpu"></span>Moteurs</button>
+          <div class="nd-menu nd-engines" id="engines" hidden>
+            <div class="nd-menu-title">Moteurs de génération</div>
+            <label>Texte
+              <select id="text-backend-select" class="nd-select">
+                <option value="auto">Auto</option>
+                <option value="local">Local</option>
+                <option value="cloud">En ligne</option>
+              </select>
+            </label>
+            <label>Image
+              <select id="image-backend-select" class="nd-select">
+                <option value="bonsai">Bonsai</option>
+                <option value="ollama">Ollama</option>
+                <option value="openai">GPT</option>
+                <option value="playground" hidden>Image Playground</option>
+              </select>
+            </label>
+            <label>Modèle <select id="image-model-select" class="nd-select"></select></label>
+            <label>Taille par défaut <select id="image-size-select" class="nd-select"></select></label>
+          </div>
+        </div>
+        <div class="nd-status" id="status-text" title="Moteurs disponibles">Vérification…</div>
+      </header>
+
+      <div class="nd-body">
+        <aside class="nd-lib" id="lib">
+          <div class="nd-lib-head">
+            <input class="nd-input" id="lib-q" type="search" placeholder="Rechercher un nœud…" />
+          </div>
+          <div class="nd-lib-list" id="lib-list"></div>
+          <div class="nd-lib-foot">Glissez un nœud sur le graphe, ou cliquez pour l'ajouter au centre. Double-clic dans le graphe : recherche rapide.</div>
+        </aside>
+        <div class="graph-root" id="graph-root"></div>
+      </div>
+    </div>
+    <div class="nd-toast" id="toast" hidden></div>
+  </body>
+</html>

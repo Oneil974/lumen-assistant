@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!-- PDF de Lumen : lire, surligner, annoter, signer. Rendu par pdf.js
+     (lib/vendor/pdfjs), enregistrement annoté par pdf-lib (lib/vendor/pdf-lib.js).
+     Les annotations restent modifiables : elles vivent dans le magasin de l'app
+     tant qu'on n'a pas « aplati » une copie en PDF. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — PDF</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/confirm.css" />
+    <link rel="stylesheet" href="./styles.css?v=1" />
+    <script type="module" src="./main.js"></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="side">
+        <div class="brand"><span class="brand-ic" data-ic="pdf"></span><span>PDF</span></div>
+        <input class="search" id="search" type="search" placeholder="Rechercher un PDF" />
+        <button class="btn-soft wide" id="btn-import">Importer un PDF…</button>
+        <input type="file" id="file-input" accept="application/pdf,.pdf" hidden />
+        <div class="side-label">Vos PDF</div>
+        <nav class="lib" id="lib"></nav>
+      </aside>
+
+      <main class="main">
+        <header class="bar">
+          <div class="doc-title" id="doc-title">Aucun document ouvert</div>
+          <div class="tools" id="tools" role="toolbar" aria-label="Outils d'annotation">
+            <button data-tool="select" title="Sélection (V)" class="is-on"><span data-ic="cursor"></span></button>
+            <button data-tool="highlight" title="Surligner (H)"><span data-ic="pencil"></span></button>
+            <button data-tool="note" title="Note (N)"><span data-ic="sticky-note"></span></button>
+            <button data-tool="text" title="Texte (T)"><span data-ic="type"></span></button>
+            <button data-tool="ink" title="Stylo (P)"><span data-ic="square-pen"></span></button>
+            <button data-tool="sign" title="Signature (S)"><span data-ic="notebook-pen"></span></button>
+            <button data-tool="erase" title="Gomme (E)"><span data-ic="x"></span></button>
+            <span class="colors" id="colors">
+              <button data-color="#ffd60a" style="--c:#ffd60a" class="is-on" title="Jaune"></button>
+              <button data-color="#32d74b" style="--c:#32d74b" title="Vert"></button>
+              <button data-color="#64d2ff" style="--c:#64d2ff" title="Bleu"></button>
+              <button data-color="#ff6482" style="--c:#ff6482" title="Rose"></button>
+            </span>
+          </div>
+          <div class="bar-right">
+            <button class="icon-btn" id="btn-undo" title="Annuler (⌘Z)"><span data-ic="undo"></span></button>
+            <button class="icon-btn" id="zoom-out" title="Dézoomer">−</button>
+            <span class="zoom" id="zoom">100 %</span>
+            <button class="icon-btn" id="zoom-in" title="Zoomer">+</button>
+            <button class="btn-soft" id="btn-ai" title="Résumer, fiches de révision">IA</button>
+            <button class="btn-primary" id="btn-save" title="Enregistrer une copie annotée">Enregistrer</button>
+          </div>
+        </header>
+        <div class="viewer" id="viewer">
+          <div class="empty" id="empty">
+            <h2>Lire, surligner, annoter, signer</h2>
+            <p>Choisissez un PDF à gauche ou importez-en un. Vos annotations sont gardées automatiquement ; « Enregistrer » crée une copie annotée lisible par n'importe quel lecteur PDF.</p>
+          </div>
+          <div class="pages" id="pages"></div>
+        </div>
+      </main>
+
+      <aside class="panel" id="panel" hidden>
+        <div class="panel-head"><b>Annotations</b><span class="count" id="annot-count"></span></div>
+        <div class="annot-list" id="annot-list"></div>
+        <div class="panel-head"><b>Assistant</b></div>
+        <div class="ai">
+          <button class="btn-soft wide" data-ai="summary">Résumer le document</button>
+          <button class="btn-soft wide" data-ai="page">Expliquer cette page</button>
+          <button class="btn-soft wide" data-ai="cards">Créer des fiches de révision</button>
+          <div class="ai-out" id="ai-out"></div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="modal" id="sign-modal" hidden>
+      <div class="modal-card">
+        <h3>Votre signature</h3>
+        <p class="muted">Signez dans le cadre. Elle est gardée sur cet appareil pour les prochaines fois.</p>
+        <canvas id="sign-pad" width="560" height="200"></canvas>
+        <div class="modal-actions">
+          <button class="btn-soft" id="sign-clear">Effacer</button>
+          <span class="grow"></span>
+          <button class="btn-soft" id="sign-cancel">Annuler</button>
+          <button class="btn-primary" id="sign-ok">Utiliser cette signature</button>
+        </div>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

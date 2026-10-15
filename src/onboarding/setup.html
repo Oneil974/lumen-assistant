@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumen — Assistant de configuration</title>
+    <script src="/lib/theme-init.js"></script>
+  <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="styles.css?v=4" />
+  <script src="/lib/frontend-log-init.js" data-prefix="onboarding"></script>
+  <!-- ?v= : bump à chaque modif de main.js (cache WKWebView). -->
+  <script type="module" src="main.js?v=7" defer></script>
+    <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+<body>
+  <div class="setup-shell">
+    <aside class="setup-side">
+      <div class="brand"><div class="logo">L</div><div><strong>Lumen</strong><span data-i18n="onb_brand_sub">Configuration</span></div></div>
+      <div class="onboarding-steps" id="onboarding-dots"></div>
+      <select id="onboarding-lang" class="onboarding-lang" title="Langue / Language"><option value="fr">FR</option><option value="en">EN</option></select>
+    </aside>
+    <main class="setup-main" id="onboarding-panel">
+      <header class="setup-header">
+        <div class="eyebrow" data-i18n="onb_eyebrow">Assistant</div>
+        <h1 id="onboarding-title">Bienvenue dans Lumen</h1>
+      </header>
+        <div class="onboarding-body">
+          <!-- Step 0: Welcome -->
+          <div class="onboarding-step" data-step="0">
+            <div class="onboarding-hero">
+              <div class="onboarding-hero-icon">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              </div>
+              <h3 data-i18n="ob_welcome_h3">Configurons Lumen ensemble</h3>
+              <p id="ob-welcome-p" data-i18n="ob_welcome_p">En quelques étapes, nous allons installer les raccourcis macOS dont Lumen a besoin et t'expliquer comment activer les fonctionnalités d'IA d'Apple.</p>
+              <p class="onboarding-note" data-i18n="ob_welcome_note">Tu pourras relancer cet assistant à tout moment depuis les Paramètres.</p>
+            </div>
+            <div class="onboarding-source-choice">
+              <div class="onboarding-source-q" data-i18n="ob_usage_q">Comment veux-tu utiliser Lumen ?</div>
+              <button type="button" class="source-card source-card-express" data-source="express" id="usage-card-express">
+                <span class="source-card-head">
+                  <span class="source-card-title" data-i18n="ob_usage_express_title">Démarrage express</span>
+                  <span class="source-card-badge" data-i18n="ob_recommended">Recommandé</span>
+                </span>
+                <span class="source-card-desc" data-i18n="ob_usage_express_desc">Un clic : Lumen choisit et installe tout pour ta machine (modèle, routeur, recherche, dictée, voix) avec llama.cpp, 100 % local.</span>
+              </button>
+              <!-- Carte « Modèle Apple » : affichée uniquement si le Mac le supporte (JS).
+                   Elle n'est jamais « recommandée » : llama.cpp l'est sur toutes les versions. -->
+              <button type="button" class="source-card" data-source="shortcut" id="usage-card-apple" hidden>
+                <span class="source-card-head">
+                  <span class="source-card-title" data-i18n="ob_usage_apple_title">Modèle Apple</span>
+                  <span class="source-card-badge" id="usage-badge-apple" data-i18n="ob_recommended" hidden>Recommandé</span>
+                </span>
+                <span class="source-card-desc" data-i18n="ob_usage_apple_desc">Sur l'appareil, via les Raccourcis macOS. Recommandé sur un Mac récent.</span>
+                <span class="source-card-detect" data-i18n="ob_usage_detected_apple" hidden>Détecté : ton Mac prend en charge l'IA d'Apple.</span>
+              </button>
+              <!-- Voie sans installation : le moteur llama.cpp est embarqué dans
+                   Lumen, seul le modèle est à télécharger. C'est elle qui porte
+                   la promesse « Lumen gère tout ». -->
+              <button type="button" class="source-card" data-source="llama" id="usage-card-private">
+                <span class="source-card-head">
+                  <span class="source-card-title" data-i18n="ob_usage_private_title">Privé & hors-ligne</span>
+                  <span class="source-card-badge" id="usage-badge-llama" data-i18n="ob_usage_custom_badge">Sur mesure</span>
+                </span>
+                <span class="source-card-desc" data-i18n="ob_usage_private_desc">Tout reste sur ta machine. Rien à installer : Lumen embarque le moteur, tu choisis simplement un modèle.</span>
+              </button>
+              <button type="button" class="source-card" data-source="ollama" id="usage-card-ollama">
+                <span class="source-card-head">
+                  <span class="source-card-title" data-i18n="ob_usage_ollama_title">Privé, via Ollama</span>
+                </span>
+                <span class="source-card-desc" data-i18n="ob_usage_ollama_desc">Si tu utilises déjà Ollama sur cette machine. Sinon il faut d'abord l'installer depuis son site.</span>
+                <span class="source-card-detect" id="usage-detect-ollama" data-i18n="ob_usage_detected_ollama" hidden>Détecté : Ollama est déjà installé sur cette machine.</span>
+              </button>
+              <button type="button" class="source-card" data-source="api" id="usage-card-power">
+                <span class="source-card-head">
+                  <span class="source-card-title" data-i18n="ob_usage_power_title">Le plus puissant</span>
+                  <span class="source-card-badge warn" data-i18n="ob_usage_power_badge">Non local</span>
+                </span>
+                <span class="source-card-desc" data-i18n="ob_usage_power_desc">Utilise un modèle cloud (ChatGPT/OpenAI). Nécessite une clé API.</span>
+                <span class="source-card-detect warn" data-i18n="ob_usage_power_privacy">Attention : c'est la seule source qui n'est ni locale ni privée. Tes messages quittent ta machine et sont envoyés au fournisseur.</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 9: Profil utilisateur (session Lumen Desktop) -->
+          <div class="onboarding-step" data-step="9" hidden>
+            <p class="onboarding-intro" data-i18n="ob_profile_intro">Crée ton profil : il porte ton workspace (sandboxes, bureau, mémoire). Le mot de passe protège l'ouverture de session — il est vérifié côté système, jamais stocké en clair.</p>
+            <div class="onboarding-step-card">
+              <div class="setting-item">
+                <label for="ob-profile-name" data-i18n="ob_profile_name">Nom du profil</label>
+                <input type="text" id="ob-profile-name" autocomplete="name" />
+              </div>
+              <!-- Révélé seulement si ce profil a DÉJÀ un mot de passe : en
+                   repassant par cette étape, le changer exige de prouver qu'on
+                   connaît l'ancien. -->
+              <div class="setting-item" id="ob-profile-current-row" hidden>
+                <label for="ob-profile-current" data-i18n="ob_profile_current">Mot de passe actuel</label>
+                <input type="password" id="ob-profile-current" autocomplete="current-password" />
+              </div>
+              <div class="setting-item">
+                <label for="ob-profile-pass" data-i18n="ob_profile_pass">Mot de passe (optionnel)</label>
+                <input type="password" id="ob-profile-pass" autocomplete="new-password" />
+              </div>
+              <div class="setting-item">
+                <label for="ob-profile-pass2" data-i18n="ob_profile_pass2">Confirmer le mot de passe</label>
+                <input type="password" id="ob-profile-pass2" autocomplete="new-password" />
+              </div>
+              <p class="onboarding-note" id="ob-profile-status" data-i18n="ob_profile_note">Sans mot de passe, la session s'ouvre d'un simple clic. D'autres profils pourront être ajoutés plus tard dans Paramètres → Profil.</p>
+            </div>
+          </div>
+
+          <!-- Step 1: Install shortcuts (mode Modèle Apple uniquement) -->
+          <div class="onboarding-step" data-step="1" data-mode="apple" hidden>
+            <p class="onboarding-intro" data-i18n-html="ob_s1_intro">Installe les 5 raccourcis via iCloud. Pour chacun : clique sur <strong>Installer</strong>, puis <strong>Ajouter le raccourci</strong> dans la fenêtre macOS. Clique ensuite sur <strong>Vérifier</strong>.</p>
+            <p class="onboarding-note" data-i18n-html="ob_s1_note">Ces raccourcis servent à la source <strong>Modèle Apple</strong> (réponses, énonciation, dictée, mode Action). Si tu utilises <strong>Ollama</strong>, ils ne sont pas nécessaires.</p>
+            <button class="onboarding-secondary-btn" id="btn-install-all-shortcuts" data-i18n="ob_install_all_shortcuts">Tout installer</button>
+            <p class="onboarding-note" data-i18n="ob_install_all_hint">Installe les 5 raccourcis d'un coup, puis vérifie automatiquement.</p>
+            <div class="shortcut-cards" id="shortcut-cards"></div>
+            <button class="onboarding-secondary-btn" id="btn-recheck-shortcuts" data-i18n="ob_recheck">Tout vérifier</button>
+          </div>
+
+          <!-- Step 2: IA d'Apple (mode Modèle Apple uniquement) -->
+          <div class="onboarding-step" data-step="2" data-mode="apple" hidden>
+            <p class="onboarding-intro" data-i18n="ob_s2_intro">Les fonctionnalités d'IA d'Apple doivent être activées dans macOS pour que la source « Modèle Apple » fonctionne.</p>
+            <ol class="onboarding-doc">
+              <li data-i18n-html="ob_s2_li1">Ouvre les <strong>Réglages Système</strong> (bouton ci-dessous).</li>
+              <li data-i18n-html="ob_s2_li2">Va dans les <strong>réglages d'IA d'Apple</strong> (section Siri).</li>
+              <li data-i18n-html="ob_s2_li3">Active les <strong>fonctionnalités d'IA</strong> et attends le téléchargement des modèles (quelques minutes).</li>
+              <li data-i18n-html="ob_s2_li4">Assure-toi que ta région et la langue sont compatibles (ces fonctionnalités ne sont pas disponibles partout).</li>
+            </ol>
+            <button class="onboarding-secondary-btn" id="btn-open-ai-settings" data-i18n="ob_open_ai_settings">Ouvrir les réglages d'IA d'Apple</button>
+            <p class="onboarding-note" data-i18n="ob_s2_note">Astuce : si le bouton n'ouvre pas exactement la bonne section, ouvre les Réglages Système et cherche les réglages d'IA d'Apple.</p>
+          </div>
+
+          <!-- Step 7: Configuration Ollama (mode « Privé & hors-ligne ») -->
+          <div class="onboarding-step" data-step="7" data-mode="ollama" hidden>
+            <p class="onboarding-intro" data-i18n="ob_ollama_auto_intro">Lumen va préparer un moteur d'IA local, privé et gratuit. Aucune ligne de commande.</p>
+
+            <!-- 1. Moteur Ollama : détection + installation guidée -->
+            <div class="onboarding-step-card">
+              <div class="onboarding-step-card-row">
+                <div class="shortcut-card-name">
+                  Ollama
+                  <span class="shortcut-status missing" id="ob-ollama-engine-status" data-i18n="ob_ollama_status_checking">Recherche d'Ollama…</span>
+                </div>
+                <div>
+                  <button class="onboarding-secondary-btn compact" id="btn-ob-install-ollama" data-i18n="ob_ollama_install_btn">Installer Ollama</button>
+                  <button class="onboarding-secondary-btn compact" id="btn-ob-check-ollama" data-i18n="ob_ollama_check">Vérifier</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Modèle recommandé : téléchargement en un clic (sans terminal) -->
+            <div class="onboarding-step-card" id="ob-model-card">
+              <div class="onboarding-step-card-row">
+                <div class="shortcut-card-info">
+                  <div class="shortcut-card-name" data-i18n="ob_model_dl_title">Modèle recommandé</div>
+                  <div class="shortcut-card-desc"><code id="ob-model-name"></code> — <span data-i18n="ob_model_dl_desc">Léger et rapide, idéal pour démarrer.</span></div>
+                </div>
+                <button class="onboarding-secondary-btn compact" id="btn-ob-pull-model" data-i18n="ob_model_dl_btn">Télécharger le modèle</button>
+              </div>
+              <div class="ob-progress" id="ob-pull-progress" hidden><div class="ob-progress-bar" id="ob-pull-progress-bar"></div></div>
+              <p class="onboarding-note" id="ob-pull-status"></p>
+            </div>
+            <!-- Moteur de décision (Tev1-0.8B), tiré par Ollama depuis Hugging Face. -->
+            <div class="onboarding-step-card" id="ob-decision-ollama"></div>
+
+            <!-- Réglages manuels (avancé) : repliés par défaut pour les confirmés -->
+            <details class="onboarding-advanced" id="ob-ollama-advanced">
+              <summary data-i18n="ob_advanced_toggle">Choisir manuellement le moteur (avancé)</summary>
+              <div class="setting-item">
+                <label for="ob-ollama-url" data-i18n="lbl_ollama_url">URL du serveur Ollama</label>
+                <input type="text" id="ob-ollama-url" placeholder="http://localhost:11434" />
+              </div>
+              <div class="setting-item">
+                <label for="ob-ollama-model" data-i18n="lbl_model">Modèle Ollama</label>
+                <select id="ob-ollama-model"><option value="" data-i18n="opt_loading_models">Chargement des modèles...</option></select>
+              </div>
+              <button class="onboarding-secondary-btn" id="btn-ob-refresh-models" data-i18n="ob_ollama_refresh">Rafraîchir la liste des modèles</button>
+            </details>
+            <p class="onboarding-note" id="ob-ollama-status" data-i18n="ob_ollama_note">Une pastille verte sur l'icône Paramètres indiquera que la connexion est prête.</p>
+          </div>
+
+          <!-- Step 10: Modèle GGUF llama.cpp (mode « llama.cpp / llama-server ») -->
+          <div class="onboarding-step" data-step="10" data-mode="llama" hidden>
+            <p class="onboarding-intro" data-i18n="ob_llama_intro">Lumen embarque llama.cpp : choisis un modèle GGUF, il est téléchargé puis servi en local par llama-server. Aucune installation, aucune ligne de commande.</p>
+            <div class="onboarding-step-card">
+              <div class="shortcut-card-name" data-i18n="ob_llama_catalog_title">Modèles open source recommandés</div>
+              <!-- Bandeau matériel : RAM, disque libre et palier conseillé. -->
+              <p class="onboarding-note hw-banner" id="ob-hw-banner"></p>
+              <div id="ob-llama-catalog"></div>
+              <!-- Cadrage honnête : ce que ce palier de modèle sait faire ou non. -->
+              <div id="ob-llama-expectations"></div>
+            </div>
+            <div class="onboarding-step-card">
+              <div class="setting-item">
+                <label for="ob-llama-model" data-i18n="ob_llama_active">Modèle actif</label>
+                <select id="ob-llama-model"><option value="" data-i18n="opt_no_llama_models">Aucun modèle GGUF téléchargé</option></select>
+              </div>
+              <p class="onboarding-note" id="ob-llama-status" data-i18n="ob_llama_note">Le téléchargement peut prendre plusieurs minutes : tu peux le lancer et continuer l'assistant, il se poursuit en arrière-plan.</p>
+            </div>
+            <!-- Moteur de décision (Tev1-0.8B) : aiguillage direct / outils / orchestration. -->
+            <div class="onboarding-step-card" id="ob-decision-llama"></div>
+          </div>
+
+          <!-- Step 11: Clé API (mode « API cloud ») -->
+          <div class="onboarding-step" data-step="11" data-mode="api" hidden>
+            <p class="onboarding-intro" data-i18n="ob_api_intro">Le mode cloud utilise ton propre compte chez un fournisseur compatible OpenAI (OpenAI, Groq, OpenRouter…). Sans clé, Lumen ne pourra pas répondre.</p>
+            <p class="onboarding-note warn" data-i18n-html="ob_api_privacy_warn"><strong>Ce mode n'est pas local et n'est pas privé.</strong> Tout ce que tu écris à Lumen — messages, documents analysés, contenu des apps et des agents — est envoyé au fournisseur choisi et traité sur ses serveurs, selon ses conditions d'utilisation. Un usage payant s'applique. Pour rester 100 % hors-ligne, reviens en arrière et choisis « Privé &amp; hors-ligne » ou « Ollama ».</p>
+            <div class="onboarding-step-card">
+              <div class="setting-item">
+                <label for="ob-api-key" data-i18n="lbl_api_key">Clé API</label>
+                <input type="password" id="ob-api-key" placeholder="sk-…" autocomplete="off" spellcheck="false" />
+              </div>
+              <div class="setting-item">
+                <label for="ob-api-model" data-i18n="lbl_api_model">Modèle</label>
+                <input type="text" id="ob-api-model" placeholder="gpt-4o-mini" spellcheck="false" />
+              </div>
+              <details class="onboarding-advanced">
+                <summary data-i18n="lbl_api_base">URL de base de l'API</summary>
+                <div class="setting-item">
+                  <input type="text" id="ob-api-base" placeholder="https://api.openai.com/v1" spellcheck="false" />
+                </div>
+              </details>
+              <p class="onboarding-note" id="ob-api-status" data-i18n="ob_api_note">La clé est conservée côté application dans un fichier protégé et n'est jamais exposée à l'interface. Elle n'est envoyée qu'au fournisseur choisi.</p>
+            </div>
+          </div>
+
+          <!-- Step 14: Démarrage express (express.js) -->
+          <div class="onboarding-step" data-step="14" hidden><div id="ob-express"></div></div>
+
+          <!-- Step 12: Vérification finale — on parle vraiment au modèle -->
+          <div class="onboarding-step" data-step="12" hidden>
+            <p class="onboarding-intro" data-i18n="ob_test_intro">Dernière étape : on envoie un vrai message avec la configuration choisie, pour vérifier que tout répond avant de te lancer.</p>
+            <div class="onboarding-step-card">
+              <div class="onboarding-step-card-row">
+                <div class="shortcut-card-info">
+                  <div class="shortcut-card-name" data-i18n="ob_test_title">Test de la configuration</div>
+                  <div class="shortcut-card-desc" id="ob-test-summary"></div>
+                </div>
+                <button class="onboarding-secondary-btn compact" id="btn-ob-test" data-i18n="ob_test_btn">Tester maintenant</button>
+              </div>
+              <p class="onboarding-note" id="ob-test-status"></p>
+              <blockquote class="ob-test-answer" id="ob-test-answer" hidden></blockquote>
+              <div id="ob-test-expectations"></div>
+            </div>
+          </div>
+
+          <!-- Step 8: Whisper dictation model -->
+          <div class="onboarding-step" data-step="8" hidden>
+            <p class="onboarding-intro" data-i18n="ob_whisper_intro">Facultatif : la dictée te laisse parler au lieu d'écrire. Tu peux t'en occuper plus tard, Lumen fonctionne très bien sans.</p>
+            <div class="onboarding-step-card">
+              <!-- Interrupteur plutôt que case à cocher : c'est un « activer /
+                   désactiver », pas une option parmi d'autres. -->
+              <label class="ob-switch-row" for="ob-whisper-enable">
+                <span class="ob-switch-text">
+                  <strong data-i18n="lbl_whisper">Dictée locale Whisper (tous OS, hors-ligne)</strong>
+                  <span class="ob-switch-state" id="ob-whisper-state" data-i18n="ob_switch_off">Désactivée</span>
+                </span>
+                <span class="ios-switch"><input type="checkbox" id="ob-whisper-enable" /><span class="ios-slider"></span></span>
+              </label>
+              <p class="onboarding-note" id="ob-whisper-platform"></p>
+              <div id="ob-whisper-catalog"></div>
+              <p class="onboarding-note" id="ob-whisper-status" data-i18n="whisper_status_idle">Le modèle sera téléchargé au premier usage (ou maintenant via ce bouton), puis mis en cache.</p>
+              <button class="onboarding-secondary-btn compact" id="btn-ob-whisper-skip" data-i18n="ob_whisper_skip">Plus tard</button>
+            </div>
+          </div>
+
+          <!-- Step 13: Voix de Lumen (Piper / voix système) -->
+          <div class="onboarding-step" data-step="13" hidden>
+            <p class="onboarding-intro" data-i18n="ob_voice_intro">Lumen peut lire ses réponses à voix haute. La voix système ne demande rien ; les voix Piper sont plus naturelles et fonctionnent hors-ligne, au prix d'un petit téléchargement.</p>
+            <div class="onboarding-step-card">
+              <div class="setting-item">
+                <label for="ob-voice-backend" data-i18n="ob_voice_engine">Moteur vocal</label>
+                <select id="ob-voice-backend">
+                  <option value="auto" data-i18n="ob_voice_auto">Automatique (Piper si disponible)</option>
+                  <option value="piper" data-i18n="ob_voice_piper">Voix locale Piper</option>
+                  <option value="system" data-i18n="ob_voice_system">Voix du système</option>
+                </select>
+              </div>
+              <p class="onboarding-note" id="ob-voice-engine-note"></p>
+              <button class="onboarding-secondary-btn compact" id="btn-ob-voice-install" data-i18n="btn_tts_install" hidden>Installer le moteur vocal</button>
+              <div id="ob-voice-catalog"></div>
+              <div class="onboarding-step-card-row" id="ob-voice-active-row" hidden>
+                <div class="shortcut-card-info">
+                  <div class="shortcut-card-name" data-i18n="ob_voice_active">Voix active</div>
+                  <div class="shortcut-card-desc" id="ob-voice-active"></div>
+                </div>
+                <button class="onboarding-secondary-btn compact" id="btn-ob-voice-test" data-i18n="ob_voice_test">Écouter</button>
+              </div>
+              <p class="onboarding-note" id="ob-voice-status"></p>
+              <button class="onboarding-secondary-btn compact" id="btn-ob-voice-skip" data-i18n="ob_voice_skip">Plus tard</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Toolbar buttons -->
+          <div class="onboarding-step" data-step="3" hidden>
+            <p class="onboarding-intro" data-i18n="ob_s3_intro">Voici les boutons de la barre :</p>
+            <ul class="feature-list">
+              <li><span class="feature-ic" data-icon="gear"></span><div data-i18n-html="ob_s3_settings"><strong>Paramètres</strong> — source d'IA, modèles, thème, prompt système, etc. La pastille de couleur indique l'état de connexion (vert = prêt, rouge = hors-ligne / modèle Ollama manquant).</div></li>
+              <li><span class="feature-ic" data-icon="chat"></span><div data-i18n-html="ob_s3_history"><strong>Historique</strong> — retrouve et rouvre tes conversations sauvegardées (avec le modèle utilisé).</div></li>
+              <li><span class="feature-ic" data-icon="bell"></span><div data-i18n-html="ob_s3_notif"><strong>Notifications</strong> — affiche les résultats renvoyés par les tâches du <strong>Heartbeat</strong>.</div></li>
+              <li><span class="feature-ic" data-icon="moon"></span><div data-i18n-html="ob_s3_theme"><strong>Thème clair / sombre</strong> — bascule l'apparence verre clair ou sombre.</div></li>
+              <li><span class="feature-ic" data-icon="bolt"></span><div data-i18n-html="ob_s3_action"><strong>Mode Action</strong> (Modèle Apple) — envoie via ton Routeur d'Actions au lieu d'une réponse classique. Jaune = activé.</div></li>
+              <li><span class="feature-ic" data-icon="speaker"></span><div data-i18n-html="ob_s3_autospeak"><strong>Énoncer automatiquement</strong> — lit à voix haute chaque réponse dès sa réception. Vert = activé.</div></li>
+              <li><span class="feature-ic" data-icon="heartbeat"></span><div data-i18n-html="ob_s3_heartbeat"><strong>Heartbeat</strong> — active/désactive une tâche d'arrière-plan programmée. Rouge pulsé = actif.</div></li>
+              <li><span class="feature-ic" data-icon="mic"></span><div data-i18n-html="ob_s3_dictation"><strong>Dictée vocale</strong> — place le curseur dans la barre et lance la dictée macOS.</div></li>
+            </ul>
+            <p class="onboarding-note" data-i18n-html="ob_s3_note">Selon la <strong>taille de la barre</strong> (Paramètres → Taille de la barre), certains boutons se replient dans le menu <strong>Plus d'outils</strong> à droite. En mode <em>grand</em>, tout est affiché.</p>
+          </div>
+
+          <!-- Step 4: Features & tips -->
+          <div class="onboarding-step" data-step="4" hidden>
+            <p class="onboarding-intro" data-i18n="ob_s4_intro">Fonctions utiles dans la discussion :</p>
+            <ul class="feature-list">
+              <li><span class="feature-ic" data-icon="speaker"></span><div data-i18n-html="ob_s4_speak"><strong>Énoncer un message</strong> — l'icône haut-parleur sur chaque réponse la lit à voix haute.</div></li>
+              <li><span class="feature-ic" data-icon="retry"></span><div data-i18n-html="ob_s4_retry"><strong>Réessayer</strong> — sous une réponse en erreur, relance la requête en retirant l'erreur du contexte.</div></li>
+              <li><span class="feature-ic" data-icon="doc"></span><div data-i18n-html="ob_s4_markdown"><strong>Markdown</strong> — les réponses sont mises en forme (titres, listes, gras, code…).</div></li>
+              <li><span class="feature-ic" data-icon="terminal"></span><div data-i18n-html="ob_s4_sysprompt"><strong>Prompt système</strong> — dans les Paramètres, définis des instructions envoyées avant ton 1ᵉʳ message.</div></li>
+              <li><span class="feature-ic" data-icon="chip"></span><div data-i18n-html="ob_s4_modelpill"><strong>Pastille modèle</strong> — à droite de la barre.</div></li>
+              <li><span class="feature-ic" data-icon="move"></span><div data-i18n-html="ob_s4_drag"><strong>Déplacement</strong> — glisse la barre n'importe où, jusqu'en haut de l'écran ; elle reste au-dessus des autres apps.</div></li>
+              <li><span class="feature-ic" data-icon="cursor"></span><div data-i18n-html="ob_s4_clickthrough"><strong>Passe-clic</strong> — les zones vides autour de l'orbe et de la barre laissent passer les clics vers le bureau.</div></li>
+            </ul>
+          </div>
+
+          <!-- Step 5: Heartbeat -->
+          <div class="onboarding-step" data-step="5" hidden>
+            <p class="onboarding-intro" data-i18n-html="ob_s5_intro">Le <strong>Heartbeat</strong> exécute une tâche à intervalle régulier (un « CRON » intégré). Idéal pour automatiser une tâche d'arrière-plan.</p>
+            <ol class="onboarding-doc">
+              <li data-i18n-html="ob_s5_li1">Prépare ce que le Heartbeat doit exécuter : un workflow <strong>Fluxo</strong> nommé <strong>Heartbeat</strong> (disponible sur toutes les plateformes)<span class="ob-mac-only">, ou sur Mac, un raccourci de l'app <strong>Raccourcis</strong></span>.</li>
+              <li data-i18n-html="ob_s5_li2">Ouvre les <strong>Paramètres</strong> de Lumen → section <strong>Heartbeat</strong>.</li>
+              <li data-i18n-html="ob_s5_li3">Active le heartbeat<span class="ob-mac-only">, choisis le <strong>moteur</strong> (Fluxo ou Raccourci)</span> et la <strong>fréquence d'exécution</strong>.</li>
+              <li data-i18n-html="ob_s5_li4">Tu peux aussi l'activer/désactiver via le bouton Heartbeat de la barre.</li>
+              <li data-i18n-html="ob_s5_li5">À chaque exécution, le résultat est collecté dans la cloche de notifications.</li>
+            </ol>
+            <p class="onboarding-note" data-i18n-html="ob_s5_note">Astuce : fais en sorte que ton workflow ou raccourci <strong>renvoie un texte</strong> en sortie pour le retrouver dans la cloche.</p>
+          </div>
+
+          <!-- Step 6: Done -->
+          <div class="onboarding-step" data-step="6" hidden>
+            <div class="onboarding-hero">
+              <div class="onboarding-hero-icon success">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <h3 data-i18n-html="ob_done_h3">Tout est prêt&nbsp;!</h3>
+              <p data-i18n-html="ob_done_p">Lumen est configuré. Tu peux commencer à discuter. Bonne utilisation&nbsp;!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer navigation -->
+        <div class="onboarding-footer">
+          <button class="onboarding-nav-btn ghost" id="btn-onboarding-prev" data-i18n="ob_prev">Précédent</button>
+          <button class="onboarding-nav-btn primary" id="btn-onboarding-next" data-i18n="ob_next">Suivant</button>
+        </div>
+
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+Sons d'interface : Kenney « Interface Sounds » 1.0 (www.kenney.nl), licence CC0 1.0.
+Convertis en WAV mono 22 kHz. Correspondance geste → fichier source :
+  open: maximize_006.ogg
+  close: minimize_006.ogg
+  peek: glass_001.ogg
+  tick: tick_002.ogg
+  success: confirmation_002.ogg
+  joy: confirmation_001.ogg
+  error: error_006.ogg
+  ask: question_002.ogg
+  send: select_002.ogg
+  squish: pluck_001.ogg
+  wake: open_001.ogg
+  drop: drop_002.ogg
+Les gestes absents du manifeste (dizzy, sleep) restent synthétisés (lib/ui-sounds.js).

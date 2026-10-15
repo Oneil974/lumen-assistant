@@ -1,0 +1,77 @@
+/* Sources de données — ce qui lui est propre. La coquille (barre latérale,
+   cartes, tableaux, modales) vient de lib/app-shell.css. */
+@import url("../lib/app-shell.css?v=2");
+
+/* Deux colonnes : la liste des sources, et celle en cours d'édition. */
+.split { display: grid; grid-template-columns: 280px 1fr; gap: 16px; align-items: start; }
+@media (max-width: 1020px) { .split { grid-template-columns: 1fr; } }
+.card-body { padding: 14px 16px; }
+.source-list { overflow: hidden; }
+.source-editor { min-width: 0; }
+
+/* Une ligne de liste : nom, sous-titre, et l'état d'exposition à droite. */
+.row { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; background: none; font: inherit; color: var(--text); padding: 9px 12px; cursor: pointer; border-bottom: 1px solid var(--border); }
+.row:last-child { border-bottom: 0; }
+.row:hover { background: var(--sel); }
+.row.on { background: var(--sel); box-shadow: inset 3px 0 0 var(--accent); }
+.row-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+.row-name { font-size: 13px; font-weight: 620; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row-sub { font-size: 11.5px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* L'état d'exposition mérite d'être lisible d'un coup d'œil : c'est lui qui dit
+   si une source est visible des applications et des modèles. */
+.pill { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; }
+.pill.ok { border-color: transparent; background: var(--accent); color: #fff; }
+
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.f { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.f.wide { grid-column: 1 / -1; }
+.f-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.f-hint { font-size: 11.5px; color: var(--text-muted); }
+.f-toggle { flex-direction: row; align-items: center; gap: 8px; }
+.f-toggle input { accent-color: var(--accent); }
+.kind-hint { font-size: 12.5px; color: var(--text-muted); }
+.sec-head { font-size: 12px; font-weight: 600; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 10px; }
+.head-actions { display: flex; gap: 6px; }
+.btn.danger { color: var(--danger, #d9534f); }
+
+/* Les deux interrupteurs qui décident de ce qui sort : exposition, et SQL
+   libre. Ils sont écrits en toutes lettres parce qu'ils engagent. */
+.switches { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.sw { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 10px 12px; cursor: pointer; }
+.sw input { accent-color: var(--accent); margin-top: 3px; }
+.sw span { display: flex; flex-direction: column; gap: 2px; }
+.sw b { font-size: 13px; font-weight: 620; }
+.sw i { font-style: normal; font-size: 11.5px; color: var(--text-muted); }
+.sw input:disabled + span { opacity: 0.5; }
+
+.form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+/* Explorer : la liste à gauche, l'aperçu à droite. */
+.explore-split { display: grid; grid-template-columns: 300px 1fr; min-height: 340px; }
+@media (max-width: 1020px) { .explore-split { grid-template-columns: 1fr; } }
+.explore-split .list { border-right: 1px solid var(--border); max-height: 62vh; overflow: auto; }
+.preview { padding: 12px; min-width: 0; overflow: auto; max-height: 62vh; }
+.peek { font-size: 12px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; margin: 0; }
+.peek-head { font-size: 12px; font-weight: 620; margin-bottom: 8px; }
+.grid-scroll { overflow-x: auto; }
+table.grid { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+table.grid th, table.grid td { border-bottom: 1px solid var(--border); padding: 6px 10px; text-align: left; white-space: nowrap; }
+table.grid th { color: var(--text-muted); font-weight: 620; }
+.muted { color: var(--text-muted); }
+
+/* API : la bannière de lecture seule est la première chose lue de l'écran. */
+.ro-banner { border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius-lg); padding: 9px 12px; font-size: 12.5px; margin-bottom: 12px; }
+.routes-grid td { white-space: normal; }
+.verb { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; width: 1%; }
+.verb.get { color: var(--accent); }
+.verb.post { color: var(--text-muted); }
+.kv { display: flex; align-items: center; gap: 10px; font-size: 12.5px; margin-bottom: 8px; }
+.kv span { color: var(--text-muted); min-width: 72px; }
+.kv code { font-size: 12px; }
+.tok { word-break: break-all; }
+.sample + .sample { margin-top: 14px; }
+.sample-t { font-size: 12px; font-weight: 620; margin-bottom: 5px; }
+.empty { padding: 18px; font-size: 12.5px; color: var(--text-muted); text-align: center; }
+.hint { font-size: 11.5px; color: var(--text-muted); margin-top: 6px; }
+.err { font-size: 12.5px; color: var(--danger, #d9534f); padding: 8px 0; }

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<!-- Gestionnaire d'agents de Lumen. Un agent = nom + sandbox + skills (workflows
+     Fluxo) + todo list + planification CRON. Le runtime (agents.rs) exécute les
+     skills sur les tâches au tick et écrit dans la sandbox confinée. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Agents</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="./styles.css?v=6" />
+    <!-- Filet de sécurité, posé AVANT le module : une erreur au chargement de
+         `main.js` (import cassé, syntaxe) laissait la fenêtre entièrement inerte
+         et MUETTE — les boutons ne réagissaient plus, sans le moindre message,
+         et le diagnostic exigeait d'ouvrir les devtools. On l'affiche à l'écran.
+         Un script classique, parce qu'un module ne peut pas rapporter sa propre
+         mort. -->
+    <script>
+      (function () {
+        function show(what) {
+          var el = document.getElementById("boot-error");
+          if (!el) return;
+          el.hidden = false;
+          el.textContent = "Erreur de chargement : " + what + " — les contrôles de cette fenêtre peuvent être inactifs.";
+        }
+        window.addEventListener("error", function (e) {
+          show((e && (e.message || (e.error && e.error.message))) || "script");
+        });
+        window.addEventListener("unhandledrejection", function (e) {
+          var r = e && e.reason;
+          show((r && (r.message || r)) || "promesse rejetée");
+        });
+      })();
+    </script>
+    <script type="module" src="./main.js" defer></script>
+      <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop (dtTheme partagé
+         via localStorage). Appliqué tôt pour éviter tout flash de thème. -->
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <!-- Rempli par le filet de sécurité ci-dessus. Volontairement en tête du DOM
+         et en position fixe : il doit se voir même si le reste n'est pas peint. -->
+    <div class="boot-error" id="boot-error" hidden></div>
+    <div class="app">
+      <!-- Liste des agents + accès rapides (plaque tournante) -->
+      <aside class="sidebar">
+        <div class="sidebar-head">
+          <span class="brand-wrap">
+            <span class="brand-logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+            <span class="brand">Agents</span>
+          </span>
+          <button class="btn-soft btn-icon" id="btn-diagnostic" title="Diagnostic : traces des modèles, réponses orchestrées, Profiler" aria-label="Diagnostic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></button>
+          <button class="btn-soft btn-icon" id="btn-new-agent" title="Créer un agent vide et le configurer soi-même" aria-label="Nouvel agent vide">+</button>
+        </div>
+
+        <!-- L'assistant passe avant le formulaire vide : c'est le chemin qu'on
+             recommande, il a donc la place et la couleur. « + » reste là pour
+             qui sait déjà ce qu'il veut. -->
+        <div class="sidebar-cta">
+          <button class="btn-cta" id="btn-wizard" title="Décrire l'agent en une phrase et le laisser se configurer">
+            <span class="btn-cta-ic" data-ic="sparkles"></span>
+            <span class="btn-cta-tx"><b>Créer avec l'assistant</b><i>Décrivez, il configure</i></span>
+          </button>
+        </div>
+
+        <div class="agent-list" id="agent-list"></div>
+      </aside>
+
+      <!-- Éditeur d'agent : un en-tête qui dit l'essentiel, puis des onglets.
+           Avant, les quinze réglages se suivaient dans un seul long formulaire :
+           tout était au même niveau, donc rien ne ressortait. Aucun contrôle n'a
+           disparu — ils sont regroupés par intention. -->
+      <main class="editor" id="editor" hidden>
+        <!-- En-tête + onglets dans un même bloc COLLANT : séparés, la barre
+             d'onglets défilait hors de vue dès qu'un panneau était long, alors
+             que l'en-tête restait — d'où l'impression qu'elle disparaissait. -->
+        <div class="editor-top">
+        <header class="hero">
+          <button class="agent-avatar-btn" id="agent-icon" title="Personnaliser l'avatar" aria-label="Avatar de l'agent"><span class="agent-avatar-slot"></span><span class="agent-avatar-edit" data-ic="pencil"></span></button>
+          <div class="hero-id">
+            <input type="text" id="agent-name" class="agent-name" placeholder="Nom de l'agent" />
+            <input type="text" id="agent-description" class="agent-desc" placeholder="À quoi sert cet agent ?" />
+          </div>
+          <div class="hero-actions">
+            <label class="power" title="Activer la planification">
+              <input type="checkbox" id="agent-enabled" />
+              <span class="power-track"><span class="power-thumb"></span></span>
+              <span class="power-label" data-i18n>Actif</span>
+            </label>
+            <button class="btn-hero primary" id="btn-run" title="Lancer une tâche maintenant"><span data-ic="play"></span><span data-i18n>Lancer</span></button>
+            <button class="btn-hero" id="btn-publish-server" title="Publier cet agent sur Lumen Server">Publier</button>
+            <button class="btn-hero" id="btn-queue-server" title="Mettre une tâche dans la file du serveur">File serveur</button>
+            <button class="btn-hero" id="btn-cancel-run" title="Demande une annulation coopérative du run actif"><span data-ic="pause"></span><span data-i18n>Arrêter</span></button>
+            <button class="btn-hero danger" id="btn-delete" title="Supprimer l'agent"><span data-ic="trash"></span></button>
+          </div>
+        </header>
+
+        <nav class="tabs" id="tabs" role="tablist">
+          <button class="tab active" data-tab="tasks" role="tab"><span data-ic="tasklist"></span><span data-i18n>Tâches</span><span class="tab-count" id="count-tasks"></span></button>
+          <button class="tab" data-tab="skills" role="tab"><span data-ic="workflow"></span><span data-i18n>Compétences</span><span class="tab-count" id="count-skills"></span></button>
+          <button class="tab" data-tab="brain" role="tab"><span data-ic="brain"></span><span data-i18n>Cerveau</span></button>
+          <button class="tab" data-tab="autonomy" role="tab"><span data-ic="bolt"></span><span data-i18n>Autonomie</span></button>
+          <button class="tab" data-tab="progress" role="tab"><span data-ic="chart"></span><span data-i18n>Progression</span></button>
+          <button class="tab" data-tab="activity" role="tab"><span data-ic="history"></span><span data-i18n>Activité</span></button>
+        </nav>
+        </div>
+
+
+        <!-- Bannière d'escalade : budget épuisé, boucle en pause -->
+        <div class="escalation" id="escalation" hidden>
+          <div class="esc-text"><span data-ic="pause"></span> <b data-i18n>Escalade</b> — <span id="esc-reason"></span></div>
+          <div class="esc-task" id="esc-task"></div>
+          <div class="esc-actions">
+            <button class="btn-soft primary" id="esc-continue">Continuer (budget ré-armé)</button>
+            <button class="btn-soft danger" id="esc-abort">Abandonner la tâche</button>
+          </div>
+        </div>
+
+
+        <!-- ===== Onglet Tâches ===== -->
+        <section class="panel-tab active" data-panel="tasks">
+          <div class="field">
+            <div class="field-head">
+              <label>Tâches (todo list)</label>
+              <button class="btn-soft" id="btn-calendar" title="Vue calendrier des tâches"><span data-ic="calendar"></span> Calendrier</button>
+            </div>
+            <p class="hint">Une date programme l'exécution : l'agent ne voit la tâche qu'à partir de ce jour. Sans date = disponible tout de suite.</p>
+            <div class="tasks" id="tasks"></div>
+            <span class="tasks-state" id="tasks-state"></span>
+            <div class="task-add">
+              <input type="text" id="task-input" class="input" placeholder="Nouvelle tâche…" />
+              <input type="date" id="task-date" class="input task-date-input" title="Date d'exécution programmée (optionnel)" />
+              <input type="number" id="task-priority" class="input task-priority-input" min="-10" max="10" value="0" title="Priorité (-10 à 10)" />
+              <button class="btn-soft primary" id="btn-add-task">Ajouter</button>
+            </div>
+            <input type="text" id="task-criteria" class="input task-criteria-input" placeholder="Critères d'acceptation séparés par ; (optionnel)" />
+          </div>
+
+          <div class="field">
+            <label>Planification (récurrence)</label>
+            <div id="agent-cron"></div>
+            <p class="hint">L'agent travaille au déclenchement (un tick = une tâche traitée). Choisis un rythme, ou passe en « Expression » pour écrire n'importe quel CRON.</p>
+          </div>
+
+          <div class="grid2">
+            <div class="field">
+              <label>Sandbox attribuée</label>
+              <div class="sandbox-row">
+                <select id="agent-sandbox" class="select"></select>
+                <button class="btn-soft" id="btn-open-sandbox" title="Ouvrir la sandbox de l'agent" disabled><span data-ic="folderOpen"></span> Ouvrir</button>
+              </div>
+              <p class="hint">Espace fichiers isolé où l'agent écrit ses résultats (dossier journal/). Bureau verrouillé, le choix demande le mot de passe de session.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Onglet Compétences ===== -->
+        <section class="panel-tab" data-panel="skills">
+          <div class="field">
+            <div class="field-head">
+              <label>Skills (workflows Fluxo exposés comme outils — l'agent les appelle à la demande)</label>
+              <button class="btn-soft btn-designer" id="btn-open-designer" title="Créer/éditer des workflows dans le designer Fluxo">
+                <span data-ic="designer"></span> Designer Fluxo
+              </button>
+            </div>
+            <div class="skills" id="skills"></div>
+            <div class="skill-add">
+              <select id="skill-select" class="select"></select>
+              <button class="btn-soft" id="btn-add-skill">Ajouter</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Outils de Lumen</label>
+            <p class="hint">Les capacités natives de l'application : maison connectée, recherche web, documents, bases de données, mémoire, rappels, messagerie. Rien n'est exposé tant que ce n'est pas coché. Les outils marqués « sortie » quittent la machine et demandent une approbation.</p>
+            <div id="agent-native-tools"></div>
+          </div>
+
+          <div class="field">
+            <label>Connecteurs MCP</label>
+            <p class="hint">Seuls les connecteurs cochés entrent dans le prompt de cet agent. Un connecteur activé dans les Paramètres mais non coché lui reste invisible.</p>
+            <div class="skills" id="agent-mcp-list"></div>
+          </div>
+        </section>
+
+        <!-- ===== Onglet Cerveau ===== -->
+        <section class="panel-tab" data-panel="brain">
+          <div class="field">
+            <label>Instruction (rôle, objectifs, règles)</label>
+            <textarea id="agent-instruction" class="input" rows="5" placeholder="Tu es un assistant qui… Utilise tes skills pour…"></textarea>
+            <p class="hint">Le « system prompt » de l'agent : il guide la boucle et le choix des skills.</p>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label>Variables</label>
+              <button class="btn-soft" id="btn-var-add" type="button"><span data-ic="plus"></span> Ajouter</button>
+            </div>
+            <div id="agent-vars" class="var-list"></div>
+            <p class="hint">Réglages de l'agent (ville, thèmes, horaires…) plutôt qu'un long texte. Cite-les dans l'instruction avec <code>{{nom}}</code> ; elles sont de toute façon transmises à l'agent.</p>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label>Leçons apprises</label>
+              <button class="btn-soft" id="btn-distill" type="button" title="Générer les leçons depuis l'historique"><span data-ic="brain"></span> Méditer</button>
+            </div>
+            <p class="hint">Distillées depuis ses réussites et ses échecs, puis injectées dans son prompt — à condition que l'apprentissage soit actif (onglet Autonomie).</p>
+            <textarea id="agent-lessons" class="input lessons-edit" rows="4" placeholder="Leçons (générées par « Méditer », ou écrites/éditées à la main)…"></textarea>
+            <p class="hint" id="lessons-meta"></p>
+          </div>
+
+          <div class="grid2">
+            <div class="field">
+              <label>Source d'IA dédiée</label>
+              <select id="agent-backend" class="input">
+                <option value="">Source globale de Lumen</option>
+                <option value="ollama">Ollama local</option>
+                <option value="llama">llama.cpp / llama-server</option>
+                <option value="api">API cloud</option>
+              </select>
+              <p class="hint">Propre à cet agent : un agent peut tourner en local pendant qu'un autre passe par le cloud.</p>
+            </div>
+            <div class="field">
+              <label>Modèle dédié</label>
+              <input type="text" id="agent-model" class="input" list="agent-model-list" placeholder="Laisser vide = modèle global de Lumen" />
+              <datalist id="agent-model-list"></datalist>
+              <p class="hint" id="agent-model-hint">Doit supporter les outils (qwen2.5, llama3.1…).</p>
+            </div>
+            <div class="field">
+              <label>URL Ollama dédiée</label>
+              <input type="text" id="agent-ollama-url" class="input" placeholder="Laisser vide = URL globale (http://localhost:11434)" />
+              <p class="hint">Serveur propre à cet agent (sinon celui des réglages Lumen).</p>
+            </div>
+            <div class="field">
+              <label>Taille du contexte (tokens)</label>
+              <input type="number" id="agent-num-ctx" class="input" min="0" step="512" placeholder="0 = défaut du modèle" />
+              <p class="hint">Plus grande = plus de mémoire utilisée.</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Voix</label>
+            <div class="voice-row">
+              <select id="agent-voice" class="input"></select>
+              <button class="btn-soft" id="btn-voice-test" type="button" title="Écouter cette voix"><span data-ic="volume-2"></span> Écouter</button>
+            </div>
+            <p class="hint">Voix de ses réponses lues à voix haute (barre de Lumen, bouton 🔊). Les voix locales s'installent dans Réglages › Voix.</p>
+          </div>
+
+        </section>
+
+        <!-- ===== Onglet Autonomie ===== -->
+        <section class="panel-tab" data-panel="autonomy">
+          <!-- Cartes-interrupteurs : ce que l'agent a le droit de faire tout seul.
+               C'est la décision la plus lourde de conséquences de l'app, elle ne
+               peut pas se prendre sur trois petits switchs alignés. -->
+          <div class="caps">
+            <label class="cap">
+              <input type="checkbox" id="agent-learning" />
+              <span class="cap-body">
+                <span class="cap-ic" data-ic="brain"></span>
+                <span class="cap-txt"><b>Apprentissage actif</b><small>Distille ses leçons après chaque tâche et se les réinjecte au prompt.</small></span>
+                <span class="cap-mark"></span>
+              </span>
+            </label>
+            <label class="cap">
+              <input type="checkbox" id="agent-orchestrator" />
+              <span class="cap-body">
+                <span class="cap-ic" data-ic="agents"></span>
+                <span class="cap-txt"><b>Mode orchestrateur</b><small>Découpe les tâches complexes et les délègue aux autres agents, puis synthétise.</small></span>
+                <span class="cap-mark"></span>
+              </span>
+            </label>
+            <label class="cap">
+              <input type="checkbox" id="agent-create-skills" />
+              <span class="cap-body">
+                <span class="cap-ic" data-ic="workflow"></span>
+                <span class="cap-txt"><b>Forge de skills</b><small>Crée et améliore ses propres outils. Chaque version est photographiée, le retour arrière est possible.</small></span>
+                <span class="cap-mark"></span>
+              </span>
+            </label>
+          </div>
+
+          <div class="field">
+            <label>Politique d'actions</label>
+            <select id="agent-permission-mode" class="select">
+              <option value="balanced">Équilibrée — confirmation réseau/destruction</option>
+              <option value="strict">Stricte — jamais destructif, validation avant d’écrire</option>
+              <option value="trusted">Autonome — confirmation destruction seulement</option>
+            </select>
+            <p class="hint">Les effets sensibles sont contrôlés côté Rust avant l'exécution de l'outil. Une confirmation reprend le run au même endroit.</p>
+          </div>
+
+          <div class="grid2">
+            <div class="field">
+              <label>Garde-fou : itérations max / tâche</label>
+              <input type="number" id="agent-max-iters" class="input" min="0" step="1" placeholder="0 = défaut (8, ou 24 en orchestrateur)" />
+              <p class="hint">Au-delà, la boucle se met en pause et escalade vers toi (Messagerie).</p>
+            </div>
+            <div class="field">
+              <label>Garde-fou : budget tokens / tâche</label>
+              <input type="number" id="agent-max-tokens" class="input" min="0" step="1000" placeholder="0 = illimité" />
+              <p class="hint">Tokens (prompt + générés) cumulés sur la tâche. Dépassé = escalade.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Onglet Progression ===== -->
+        <!-- L'agent ne se contente plus de se réécrire : chaque changement est
+             noté sur des cas réels, et la production tranche. -->
+        <section class="panel-tab" data-panel="progress">
+          <div class="stat-row" id="evo-stats"></div>
+
+          <div class="field">
+            <div class="field-head">
+              <label>Corpus de rejeu</label>
+              <div class="field-actions">
+                <button class="btn-soft" id="btn-corpus-build" title="Extraire des cas depuis l'activité réelle"><span data-ic="download"></span> Construire</button>
+                <button class="btn-soft" id="btn-case-add" title="Écrire un cas attendu à la main"><span data-ic="add"></span> Cas manuel</button>
+              </div>
+            </div>
+            <p class="hint">Les tâches déjà exécutées deviennent des cas notés. Sans eux, « meilleur » ne veut rien dire — c'est ce corpus qui départage deux versions.</p>
+            <div class="cases" id="evo-cases"></div>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label>Instruction</label>
+              <button class="btn-soft primary" id="btn-optimize-instruction" title="Génère des variantes, les note sur le corpus, garde la meilleure"><span data-ic="sparkles"></span> Optimiser</button>
+            </div>
+            <p class="hint">Trois variantes sont écrites, notées sur les cas, et l'actuelle n'est remplacée que si l'une la dépasse. L'ancienne reste restaurable.</p>
+            <div class="versions" id="evo-instruction-versions"></div>
+          </div>
+
+          <div class="field">
+            <label>Skills suivis</label>
+            <p class="hint">Taux de succès réel par version. Une version dont le taux retombe sous la précédente est automatiquement révoquée.</p>
+            <div class="skill-scores" id="evo-skills"></div>
+          </div>
+
+          <div class="evo-report" id="evo-report" hidden></div>
+        </section>
+
+        <!-- ===== Onglet Activité ===== -->
+        <section class="panel-tab" data-panel="activity">
+          <div class="activity">
+            <div class="activity-head">
+              <span data-i18n>Activité récente</span>
+              <button class="btn-soft danger" id="btn-clear-activity" title="Vider l'activité conservée">Vider</button>
+            </div>
+            <div class="activity-list" id="activity"></div>
+          </div>
+        </section>
+
+        <footer class="editor-foot">
+          <button class="btn-soft primary" id="btn-save"><span data-ic="save"></span> Enregistrer</button>
+          <span class="save-state" id="save-state"></span>
+        </footer>
+
+      </main>
+
+      <!-- Accueil sans agent sélectionné : l'équipage en vitrine et les modèles
+           prêts à l'emploi, pour démarrer en un clic. -->
+      <div class="empty" id="empty">
+        <div class="empty-hero">
+          <div class="empty-crew" id="empty-crew" aria-hidden="true"></div>
+          <h2 class="empty-title">Composez votre équipage</h2>
+          <p class="empty-sub">Partez d'un modèle soigné ou décrivez l'agent idéal : l'assistant s'occupe du reste.</p>
+          <div class="tpl-cats" id="empty-tpl-cats"></div>
+          <div class="tpl-grid" id="empty-templates"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Studio d'avatar (personnages « Shape Characters » de Kenney, CC0) -->
+    <div class="modal-overlay" id="avatar-modal" hidden>
+      <div class="modal as-modal" role="dialog" aria-modal="true" aria-labelledby="as-title">
+        <div class="as-modal-head">
+          <span class="as-modal-tx"><b id="as-title">Avatar de l'agent</b><i>Choisissez sa couleur, sa forme, son visage et sa façon de bouger.</i></span>
+          <button type="button" class="wiz-x" id="avatar-modal-close" aria-label="Fermer"><span data-ic="x"></span></button>
+        </div>
+        <div id="avatar-studio"></div>
+        <div class="modal-actions">
+          <button class="btn-soft" id="avatar-cancel">Annuler</button>
+          <button class="btn-soft primary" id="avatar-apply">Appliquer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mot de passe de session : changer la sandbox d'un agent, bureau verrouillé -->
+    <div class="modal-overlay" id="pw-modal" hidden>
+      <form class="modal pw-card" id="pw-form" role="dialog" aria-modal="true" aria-labelledby="pw-title" autocomplete="off">
+        <div class="pw-ic" data-ic="lock"></div>
+        <div class="modal-title" id="pw-title">Mot de passe de session</div>
+        <p class="modal-msg">Le bureau Lumen OS est verrouillé. Confirmez votre mot de passe pour attribuer cette sandbox à l'agent — le bureau reste verrouillé.</p>
+        <input type="password" id="pw-input" class="input" placeholder="Mot de passe" autocomplete="current-password" />
+        <p class="pw-error" id="pw-error" hidden></p>
+        <div class="modal-actions">
+          <button type="button" class="btn-soft" id="pw-cancel">Annuler</button>
+          <button type="submit" class="btn-soft primary" id="pw-ok">Autoriser</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Vue calendrier des tâches -->
+    <div class="modal-overlay" id="calendar-modal" hidden>
+      <div class="modal calendar-card">
+        <div class="calendar-head">
+          <button class="cal-nav" id="cal-prev" title="Mois précédent">‹</button>
+          <div class="calendar-title" id="cal-title"></div>
+          <button class="cal-nav" id="cal-next" title="Mois suivant">›</button>
+          <button class="btn-soft" id="cal-close">Fermer</button>
+        </div>
+        <div class="calendar-weekdays" id="cal-weekdays"></div>
+        <div class="calendar-grid" id="cal-grid"></div>
+      </div>
+    </div>
+
+    <!-- Assistant de création d'agent.
+         Un pas à la fois : chaque étape ne pose qu'une question, le rail de
+         gauche dit où on en est et ce qui reste, et rien n'est écrit sur le
+         disque avant la dernière. Les sections sont peuplées par main.js
+         (rail, exemples, icônes, outils, rythmes, récapitulatif). -->
+    <div class="modal-overlay wiz-overlay" id="wiz" hidden>
+      <div class="wiz" role="dialog" aria-modal="true" aria-labelledby="wiz-title">
+
+        <aside class="wiz-rail">
+          <div class="wiz-brand">
+            <span class="wiz-brand-ic" data-ic="wand-sparkles"></span>
+            <span class="wiz-brand-tx">
+              <b id="wiz-title">Nouvel agent</b>
+              <i>Assistant de création</i>
+            </span>
+          </div>
+          <ol class="wiz-steps" id="wiz-steps"></ol>
+          <p class="wiz-rail-foot">
+            <span data-ic="lock"></span>
+            Rien n'est créé tant que vous n'avez pas validé la dernière étape.
+          </p>
+        </aside>
+
+        <div class="wiz-main">
+          <header class="wiz-top">
+            <div class="wiz-top-tx">
+              <h2 id="wiz-step-title"></h2>
+              <p id="wiz-step-hint"></p>
+            </div>
+            <button type="button" class="wiz-x" id="wiz-close" aria-label="Fermer"><span data-ic="x"></span></button>
+          </header>
+
+          <div class="wiz-scroll" id="wiz-scroll">
+
+            <!-- 1 · Mission -->
+            <section class="wiz-step" data-step="mission">
+              <textarea id="wiz-brief" class="wiz-brief" rows="4"
+                        placeholder="Ex. : chaque matin, relire mes notes de la veille et m'en faire un résumé avec les points à traiter."></textarea>
+              <div class="wiz-hint-row">
+                <span data-ic="info"></span>
+                <span>Une ou deux phrases suffisent. L'assistant en déduit une proposition complète, que vous relirez étape par étape.</span>
+              </div>
+              <div class="wiz-sub">Ou partez d'un modèle prêt à l'emploi</div>
+              <div class="tpl-cats" id="wiz-tpl-cats"></div>
+              <div class="tpl-grid tpl-grid-wiz" id="wiz-templates"></div>
+            </section>
+
+            <!-- Génération (hors rail : un temps d'attente, pas une étape) -->
+            <section class="wiz-step wiz-think-wrap" data-step="think" hidden>
+              <div class="wiz-think">
+                <span class="wiz-spin" aria-hidden="true"></span>
+                <b id="wiz-think-text">L'assistant rédige une proposition…</b>
+                <i>Vous relirez chaque point avant que l'agent existe.</i>
+              </div>
+            </section>
+
+            <!-- 2 · Identité -->
+            <section class="wiz-step" data-step="identity" hidden>
+              <div class="wiz-hero">
+                <div class="wiz-hero-fields">
+                  <label class="wiz-lb" for="wiz-name">Nom</label>
+                  <input type="text" id="wiz-name" class="wiz-in" placeholder="Ex. : Veille du matin" maxlength="60" />
+                  <label class="wiz-lb" for="wiz-desc">Description</label>
+                  <input type="text" id="wiz-desc" class="wiz-in" placeholder="À quoi sert cet agent, en une ligne ?" maxlength="200" />
+                </div>
+              </div>
+              <div class="wiz-sub">Avatar</div>
+              <div id="wiz-avatar-studio"></div>
+            </section>
+
+            <!-- 3 · Comportement -->
+            <section class="wiz-step" data-step="behavior" hidden>
+              <label class="wiz-lb" for="wiz-instruction">Instruction (prompt système)</label>
+              <textarea id="wiz-instruction" class="wiz-ta" rows="7" placeholder="Tu es un agent qui…"></textarea>
+              <div class="wiz-hint-row">
+                <span data-ic="info"></span>
+                <span>Écrite à la deuxième personne. Concrète : ce qu'il fait, comment il rend compte, ce qu'il ne doit pas inventer.</span>
+              </div>
+              <div class="wiz-sub">Permissions</div>
+              <div class="wiz-choices" id="wiz-permission"></div>
+            </section>
+
+            <!-- 4 · Outils -->
+            <section class="wiz-step" data-step="tools" hidden>
+              <div class="wiz-hint-row">
+                <span data-ic="info"></span>
+                <span>N'activez que ce que la mission exige. Un outil marqué <b>↗</b> sort de la machine et passera par une approbation.</span>
+              </div>
+              <div class="wiz-tools" id="wiz-tools"></div>
+            </section>
+
+            <!-- 5 · Rythme & tâches -->
+            <section class="wiz-step" data-step="plan" hidden>
+              <div class="wiz-sub">Rythme</div>
+              <div class="wiz-choices wiz-choices-cron" id="wiz-cron"></div>
+              <div class="wiz-hint-row">
+                <span data-ic="info"></span>
+                <span>Choisir un rythme active la planification de l'agent. Sans rythme, il ne travaille que lorsque vous le lancez.</span>
+              </div>
+              <div class="wiz-sub">Premières tâches</div>
+              <div class="wiz-tasks" id="wiz-tasks"></div>
+              <div class="wiz-task-add">
+                <input type="text" id="wiz-task-input" class="wiz-in" placeholder="Ajouter une tâche…" />
+                <button type="button" class="wiz-btn" id="wiz-task-add"><span data-ic="plus"></span> Ajouter</button>
+              </div>
+            </section>
+
+            <!-- 6 · Récapitulatif -->
+            <section class="wiz-step" data-step="review" hidden>
+              <div class="wiz-recap" id="wiz-recap"></div>
+            </section>
+          </div>
+
+          <footer class="wiz-foot">
+            <span class="wiz-err" id="wiz-error" hidden></span>
+            <span class="wiz-count" id="wiz-count"></span>
+            <span class="wiz-foot-sp"></span>
+            <button type="button" class="wiz-btn" id="wiz-back"><span data-ic="chevron-left"></span> Précédent</button>
+            <button type="button" class="wiz-btn wiz-btn-primary" id="wiz-next"><span class="wiz-next-lb">Continuer</span><span class="wiz-next-ic"></span></button>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale de confirmation -->
+    <div class="modal-overlay" id="modal" hidden>
+      <div class="modal">
+        <div class="modal-title" id="modal-title"></div>
+        <p class="modal-msg" id="modal-msg"></p>
+        <div class="modal-actions">
+          <button class="btn-soft" id="modal-cancel">Annuler</button>
+          <button class="btn-soft danger" id="modal-ok">Supprimer</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

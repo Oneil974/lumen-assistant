@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!-- Interface du navigateur complet (fenêtre native `lumen-browser`, cf.
+     src-tauri/src/browser.rs). Cette page occupe toute la fenêtre ; les pages
+     web sont des webviews natives posées PAR-DESSUS la zone de contenu. D'où le
+     volet latéral : tout ce qui s'ouvre (assistant, téléchargements, historique,
+     extensions) vit à droite, dans une zone que Rust laisse libre. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Navigateur</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/confirm.css" />
+    <link rel="stylesheet" href="./chrome.css?v=1" />
+    <script type="module" src="./chrome.js"></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <header class="chrome">
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <div class="toolbar">
+        <button class="ib" id="b-back" title="Précédent">‹</button>
+        <button class="ib" id="b-fwd" title="Suivant">›</button>
+        <button class="ib" id="b-reload" title="Recharger (⌘R)">↻</button>
+        <form class="omni" id="omni-form">
+          <span class="lock" id="lock" title="Connexion"></span>
+          <input id="omni" autocomplete="off" spellcheck="false" placeholder="Rechercher ou saisir une adresse" />
+          <button type="button" class="star" id="b-star" title="Ajouter aux favoris">☆</button>
+        </form>
+        <input class="find" id="find" placeholder="Chercher dans la page" />
+        <button class="ib" data-panel="assistant" title="Assistant : résumer, expliquer, fiches">✦</button>
+        <button class="ib" data-panel="downloads" title="Téléchargements">⤓<i class="dot" id="dl-dot" hidden></i></button>
+        <button class="ib" data-panel="history" title="Historique et favoris">⌚</button>
+        <button class="ib" data-panel="extensions" title="Extensions">⧉</button>
+        <button class="ib" id="b-private" title="Nouvel onglet privé (aucun historique, aucun cookie gardé)">🕶</button>
+      </div>
+      <div class="bookmarks" id="bookmarks"></div>
+    </header>
+    <main class="content" id="content">
+      <div class="placeholder" id="placeholder">Chargement…</div>
+    </main>
+    <aside class="panel" id="panel" hidden>
+      <div class="panel-head"><b id="panel-title"></b><button class="ib" id="panel-close" title="Fermer">✕</button></div>
+      <section data-view="assistant" hidden>
+        <p class="muted">L'assistant lit la page telle que vous la voyez, connexion comprise (cours Moodle, ENT…). Rien ne quitte votre machine avec un modèle local.</p>
+        <div class="stack">
+          <button class="btn" data-ai="summary">Résumer la page</button>
+          <button class="btn" data-ai="selection">Expliquer la sélection</button>
+          <button class="btn" data-ai="cards">Créer des fiches de révision</button>
+          <button class="btn" data-ai="translate">Traduire la page</button>
+        </div>
+        <form class="ask" id="ask-form"><input id="ask" placeholder="Question sur cette page…" /><button class="btn primary">Demander</button></form>
+        <h4 class="agent-title">Fais-le pour moi</h4>
+        <p class="muted small">L'assistant agit dans l'onglet : il lit la page, clique, remplit, fait défiler. Il vous demande votre accord avant toute action qui engage (envoyer, payer, réserver, supprimer) et ne saisit jamais de mot de passe.</p>
+        <form class="ask" id="agent-form"><input id="agent-goal" placeholder="Ex. : trouve les horaires de la piscine et ajoute-les à mes notes" /><button class="btn primary" id="agent-go">Lancer</button></form>
+        <div class="agent-steps" id="agent-steps"></div>
+        <div class="ai-out" id="ai-out"></div>
+      </section>
+      <section data-view="downloads" hidden><div id="downloads" class="list"></div></section>
+      <section data-view="history" hidden>
+        <h4>Favoris</h4><div id="bm-list" class="list"></div>
+        <h4>Historique</h4>
+        <input class="filter" id="hist-filter" placeholder="Filtrer l'historique" />
+        <div id="history" class="list"></div>
+        <button class="btn" id="hist-clear">Effacer l'historique</button>
+      </section>
+      <section data-view="extensions" hidden>
+        <p class="muted">Les extensions agissent au chargement des pages : rechargez l'onglet après un changement. Vos scripts n'ont jamais accès à Lumen.</p>
+        <div id="ext-list" class="list"></div>
+        <details class="ext-new">
+          <summary>Ajouter un script utilisateur</summary>
+          <input id="x-name" placeholder="Nom" />
+          <input id="x-match" placeholder="Pages visées, ex. *://*.moodle.*/*" />
+          <textarea id="x-css" rows="3" placeholder="CSS (facultatif)"></textarea>
+          <textarea id="x-js" rows="5" placeholder="JavaScript (facultatif)"></textarea>
+          <button class="btn primary" id="x-add">Ajouter</button>
+        </details>
+      </section>
+    </aside>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

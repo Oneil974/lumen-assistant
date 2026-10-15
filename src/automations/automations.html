@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumen — Automations</title>
+    <script src="/lib/theme-init.js"></script>
+  <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+  <link rel="stylesheet" href="./styles.css?v=3" />
+  <link rel="stylesheet" href="./theater.css?v=3" />
+  <link rel="stylesheet" href="./logs.css?v=3" />
+  <link rel="stylesheet" href="./graph.css?v=5" />
+  <script type="module" src="./main.js?v=3" defer></script>
+    <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">✦</span><span><strong>Automations</strong><small>Workflows visuels · Fluxo</small></span></div>
+      <input id="workflow-name" class="workflow-name" placeholder="Nom de l'automatisation" />
+      <input id="run-input" class="run-input" placeholder="Entrée du workflow…" title="Valeur de {{input}} pour un test" />
+      <select id="trigger-type" class="trigger-select" title="Mode de déclenchement"><option value="manual">Manuel / appelable par agent</option><option value="cron">CRON</option><option value="rfid">Badge RFID</option></select>
+      <input id="trigger-cron" class="trigger-cron" placeholder="0 0 9 * * * · tous les jours à 09:00" hidden />
+      <input id="trigger-rfid" class="trigger-cron" placeholder="UID du badge · vide = n'importe quel badge (l'UID arrive dans {{input}})" hidden />
+      <div class="top-actions">
+        <button class="btn" id="toggle-logs">Logs</button>
+        <button class="btn" id="new-workflow">Nouveau</button>
+        <button class="btn" id="import-workflow">Importer Fluxo</button>
+        <button class="btn" id="save-workflow">Enregistrer</button>
+        <button class="btn primary" id="run-workflow">Exécuter</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="palette">
+        <div class="panel-head"><strong>Blocs</strong><span id="action-count"></span></div>
+        <input id="action-search" class="search" placeholder="Rechercher un bloc…" />
+        <div class="palette-note">Cliquez pour ajouter. Une connexion transmet la sortie du parent. Un parent peut alimenter plusieurs branches. Faites défiler pour naviguer, ⌘/Ctrl + molette pour zoomer.</div>
+        <div id="action-list" class="action-list"></div>
+      </aside>
+
+      <section id="stage" class="stage" aria-label="Canevas des automatisations">
+        <svg id="links" class="links" aria-hidden="true"></svg>
+        <div id="world" class="world"></div>
+        <div id="empty-state" class="empty-state">
+          <div class="empty-mark">✦</div>
+          <h2>Composez votre première automatisation</h2>
+          <p>Ajoutez un bloc, reliez les étapes, puis lancez le workflow dans l'environnement Lumen.</p>
+          <button id="add-agent-starter" class="btn primary">Créer un workflow avec un agent</button>
+        </div>
+        <div class="canvas-controls"><button id="zoom-out" title="Réduire">−</button><button id="zoom-reset" title="Réinitialiser">100%</button><button id="zoom-in" title="Agrandir">+</button></div>
+        <div id="run-hud" class="run-hud" hidden><span class="run-orb">✦</span><span><strong id="run-title">Flow Theater</strong><small id="run-status">Prêt</small></span><span class="run-spacer"></span><span id="run-time" class="run-time"></span></div>
+        <section id="run-log-panel" class="run-log-panel" hidden>
+          <header><strong>Journal d’exécution</strong><button id="close-logs" class="icon-btn" title="Fermer">×</button></header>
+          <div id="run-log-list" class="run-log-list"><div class="log-empty">Aucune exécution à afficher.</div></div>
+        </section>
+      </section>
+
+      <aside class="inspector">
+        <div class="panel-head"><strong>Configuration</strong><button id="delete-node" class="icon-btn" title="Supprimer le bloc" disabled>⌫</button></div>
+        <div id="inspector-empty" class="inspector-empty">Sélectionnez un bloc pour le configurer.</div>
+        <form id="node-form" hidden></form>
+        <div class="runtime-note"><strong>Exécution confinée</strong><br />Les fichiers, agents et mini-apps restent dans les sandboxes Lumen autorisées.</div>
+      </aside>
+    </main>
+    <div id="toast" class="toast" hidden></div>
+    <div id="data-modal" class="data-modal" hidden><div class="data-modal-card"><header><strong id="data-modal-title">Données</strong><button id="data-modal-close" class="icon-btn">×</button></header><div id="data-modal-body" class="data-modal-body"></div></div></div>
+    <div id="dialog" class="dialog" hidden><div class="dialog-card"><h3 id="dialog-title"></h3><p id="dialog-text"></p><select id="dialog-select"></select><input id="dialog-input" list="dialog-options" autocomplete="off" /><datalist id="dialog-options"></datalist><div class="dialog-actions"><button id="dialog-cancel" class="btn">Annuler</button><button id="dialog-ok" class="btn primary">Confirmer</button></div></div></div>
+  </div>
+</body>
+</html>

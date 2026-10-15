@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!-- Carte : cartographie assistée par IA. Fond MapLibre (OpenFreeMap, OSM,
+     IGN), extraction de données OpenStreetMap (Overpass), jeux de données de
+     data.gouv.fr, assistant en langage naturel, et export GeoJSON crédité. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Carte</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/vendor/maplibre/maplibre-gl.css" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script src="../lib/vendor/maplibre/maplibre-gl.js"></script>
+    <script type="module" src="./main.js"></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="side">
+        <div class="brand"><span data-ic="map-pin"></span><span>Carte</span><span class="grow"></span><small class="privacy" id="privacy"></small></div>
+        <nav class="tabs">
+          <button data-tab="ai" class="is-on">Assistant</button>
+          <button data-tab="layers">Couches <i class="badge" id="layer-count"></i></button>
+          <button data-tab="data">Données</button>
+          <button data-tab="sig">SIG</button>
+        </nav>
+
+        <section class="pane" data-pane="ai">
+          <div class="chat" id="chat">
+            <div class="msg bot">Demandez-moi une carte : « les pharmacies ouvertes à Lyon », « pistes cyclables autour de Nantes », « bornes de recharge en Bretagne (data.gouv) », « vue satellite du Mont-Saint-Michel »…</div>
+          </div>
+          <form class="composer" id="ask">
+            <textarea id="ask-input" rows="2" placeholder="Que voulez-vous voir sur la carte ?"></textarea>
+            <button class="btn-primary" id="ask-go">Envoyer</button>
+          </form>
+        </section>
+
+        <section class="pane" data-pane="layers" hidden>
+          <div class="list" id="layers"></div>
+          <div class="actions">
+            <label class="btn-soft file">Importer un GeoJSON…<input type="file" id="import" accept=".geojson,.json,application/geo+json" hidden /></label>
+          </div>
+        </section>
+
+        <section class="pane" data-pane="data" hidden>
+          <h3>OpenStreetMap</h3>
+          <p class="muted">Extraire des objets dans la vue actuelle (API Overpass). Données © contributeurs OpenStreetMap, licence ODbL.</p>
+          <div class="row2">
+            <select class="input" id="osm-preset"></select>
+            <button class="btn-soft" id="osm-go">Extraire</button>
+          </div>
+          <details><summary>Requête Overpass QL</summary>
+            <textarea class="input mono" id="osm-ql" rows="6" placeholder="[out:json];nwr[amenity=cafe]({{bbox}});out geom;"></textarea>
+            <button class="btn-soft" id="osm-ql-go">Exécuter</button>
+            <p class="muted"><code>{{bbox}}</code> est remplacé par l'emprise de la vue.</p>
+          </details>
+          <h3>data.gouv.fr</h3>
+          <div class="row2">
+            <input class="input" id="dg-q" placeholder="Ex. défibrillateurs, bornes de recharge…" />
+            <button class="btn-soft" id="dg-go">Chercher</button>
+          </div>
+          <div class="list" id="dg-list"></div>
+        </section>
+        <section class="pane" data-pane="sig" hidden></section>
+      </aside>
+
+      <main class="stage">
+        <div class="toolbar">
+          <form id="search" class="search"><span data-ic="search"></span><input id="search-input" placeholder="Rechercher un lieu, une adresse…" autocomplete="off" /></form>
+          <div class="suggest" id="suggest" hidden></div>
+          <span class="grow"></span>
+          <select class="input slim" id="basemap"></select>
+          <button class="btn-soft" id="export">Exporter</button>
+        </div>
+        <div id="map"></div>
+        <div class="busy" id="busy" hidden><i></i><span></span></div>
+      </main>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

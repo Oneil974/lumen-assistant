@@ -1,0 +1,87 @@
+/* Carnet d'adresses — liste + fiche, mêmes jetons que le reste de Lumen. */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body {
+  font: 14px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased;
+}
+.app { display: flex; height: 100vh; }
+.spacer { flex: 1; }
+
+.sidebar { width: 320px; flex: none; border-right: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; }
+.side-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px 8px; }
+.side-head .title { font-weight: 700; font-size: 15px; }
+.brand-ic { flex: none; width: 28px; height: 28px; border-radius: var(--radius-md); display: grid; place-items: center; color: #fff; background: var(--primary); }
+.brand-ic svg { width: 16px; height: 16px; }
+.count { margin-left: auto; font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.side-actions { display: flex; gap: 6px; padding: 0 14px 10px; }
+.side-actions .btn-primary { flex: 1; }
+.filters { display: flex; gap: 6px; align-items: center; padding: 0 14px 10px; border-bottom: 1px solid var(--border); }
+.chip { border: 1px solid var(--border); background: var(--surface-2); color: var(--text-muted); border-radius: 999px; padding: 4px 11px; font-size: 12px; cursor: pointer; }
+.chip.active { background: var(--accent); color: var(--primary-foreground); border-color: transparent; }
+#search { flex: 1; min-width: 0; font: inherit; font-size: 12px; padding: 5px 9px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); color: var(--text); }
+.list { flex: 1; overflow: auto; }
+.row { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.row:hover { background: var(--surface-2); }
+.row.active { background: var(--sel, var(--surface-2)); }
+.row .mini {
+  flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 12px; font-weight: 700; color: var(--primary-foreground); background: var(--accent);
+}
+.row-main { min-width: 0; flex: 1; }
+.row-main b { display: block; font-size: 13px; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row-main small { display: block; font-size: 11.5px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .fav { color: #ff9f0a; font-size: 13px; }
+.side-foot { padding: 8px 14px; font-size: 11.5px; color: var(--text-muted); border-top: 1px solid var(--border); min-height: 32px; }
+.side-foot.err { color: var(--destructive); }
+
+.detail { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: auto; }
+.detail-empty { margin: auto; text-align: center; color: var(--text-muted); padding: 24px; }
+.detail-empty h2 { font-size: 16px; font-weight: 650; margin: 0 0 6px; color: var(--text); }
+.detail-empty p { margin: 0; font-size: 13px; max-width: 46ch; line-height: 1.5; }
+.card { padding: 26px 30px; display: flex; flex-direction: column; gap: 18px; max-width: 760px; }
+.card-head { display: flex; align-items: center; gap: 14px; }
+.avatar {
+  flex: none; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 20px; font-weight: 700; color: var(--primary-foreground); background: var(--accent);
+}
+.card-id { flex: 1; min-width: 0; }
+.name-input { font: inherit; font-size: 21px; font-weight: 700; width: 100%; border: none; background: none; color: var(--text); padding: 0; }
+.name-input:focus { outline: none; }
+.card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.star { font-size: 20px; line-height: 1; background: none; border: none; cursor: pointer; color: var(--text-muted); }
+.star.on { color: #ff9f0a; }
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+.fields label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-muted); }
+.fields label.wide { grid-column: 1 / -1; }
+.fields input, .fields textarea {
+  font: inherit; font-size: 13px; padding: 7px 10px; color: var(--text);
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md);
+}
+.fields textarea { resize: vertical; line-height: 1.55; }
+.card-actions { display: flex; gap: 8px; align-items: center; }
+
+.btn-primary, .btn-soft {
+  font: inherit; font-size: 12.5px; padding: 6px 13px; cursor: pointer;
+  border-radius: var(--radius-md); border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--text);
+}
+.btn-primary { background: var(--primary); color: var(--primary-foreground); border-color: transparent; font-weight: 600; }
+.btn-soft.danger { color: var(--destructive); }
+
+.overlay { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(0,0,0,0.42); padding: 24px; }
+.sheet {
+  width: min(580px, 100%); max-height: 84vh; overflow: auto; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-xl, 16px); padding: 20px 22px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.sheet h2 { margin: 0; font-size: 16px; font-weight: 700; }
+.sheet-hint { margin: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.sheet-actions { display: flex; gap: 8px; align-items: center; }
+.merge-list { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-md); max-height: 44vh; overflow: auto; }
+.merge-row { display: flex; align-items: center; gap: 10px; padding: 8px 11px; border-bottom: 1px solid var(--border); font-size: 12.5px; }
+.merge-row:last-child { border-bottom: none; }
+.merge-row b { font-weight: 650; }
+.merge-row .src { margin-left: auto; font-size: 11px; color: var(--text-muted); padding: 1px 7px; border-radius: 999px; background: var(--surface-2); }
+.merge-empty { padding: 16px; font-size: 12.5px; color: var(--text-muted); text-align: center; }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!-- Espace partagé (édition Pro) — une table de DB Studio publiée comme
+     application autonome pour un autre profil de la machine. La page ne parle
+     qu'aux commandes `dbshare_*`, qui vérifient le droit côté Rust : elle ne
+     peut donc rien faire que le partage n'autorise. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Espace partagé</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./space.js?v=1" defer></script>
+    <link rel="stylesheet" href="../lib/confirm.css?v=1" />
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+    <link rel="stylesheet" href="/lib/pro-skin.css?v=8" />
+  </head>
+  <body class="space-body">
+    <main class="space">
+      <header class="space-head" id="space-head"></header>
+      <section class="space-main" id="space-main">
+        <div class="empty">Ouverture de l'espace…</div>
+      </section>
+    </main>
+
+    <div class="backdrop" id="record-modal" hidden>
+      <div class="modal">
+        <div class="modal-head"><h4 id="record-title">Nouvelle entrée</h4><button class="modal-close" data-close>×</button></div>
+        <form class="modal-body" id="record-body"></form>
+        <div class="modal-foot"><span id="record-error" class="err"></span><span class="spacer"></span>
+          <button class="btn ghost" data-close>Annuler</button>
+          <button class="btn primary" id="record-save">Enregistrer</button></div>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

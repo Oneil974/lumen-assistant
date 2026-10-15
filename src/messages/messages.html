@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!-- Messagerie (édition Pro) — conversations chiffrées de bout en bout avec les
+     personnes de l'annuaire d'un Lumen Server. Le serveur transporte des
+     enveloppes closes : il ne peut lire aucun message. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Messagerie</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=2" />
+    <script type="module" src="./main.js?v=1" defer></script>
+    <link rel="stylesheet" href="../lib/confirm.css?v=1" />
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+    <link rel="stylesheet" href="/lib/pro-skin.css?v=8" />
+  </head>
+  <body>
+    <div class="msg" id="msg">
+      <aside class="threads">
+        <div class="threads-head">
+          <span id="me-name">Messagerie</span>
+          <button class="btn tiny primary" id="new-thread">Nouveau</button>
+        </div>
+        <div class="thread-list" id="thread-list"></div>
+        <div class="threads-foot"><span class="dot" id="link-dot"></span><span id="link-state">—</span></div>
+      </aside>
+
+      <main class="thread" id="thread">
+        <div class="empty" id="thread-empty">Choisissez une conversation, ou commencez-en une.</div>
+        <header class="thread-head" id="thread-head" hidden></header>
+        <div class="stream" id="stream" hidden></div>
+        <form class="composer" id="composer" hidden>
+          <div class="attach-row" id="attach-row" hidden><span id="file-label"></span><button type="button" id="remove-file" aria-label="Retirer la pièce jointe">×</button></div>
+          <input id="file-input" type="file" hidden />
+          <button class="btn attach-btn" id="pick-file" type="button" aria-label="Joindre un fichier" title="Joindre un fichier">＋</button>
+          <div class="composer-field"><textarea id="draft" rows="1" placeholder="Votre message…"></textarea><small id="draft-state">Brouillon conservé sur cet appareil</small></div>
+          <button class="btn primary" type="submit">Envoyer</button>
+        </form>
+      </main>
+    </div>
+
+    <div class="backdrop" id="sheet" hidden><div class="modal" id="sheet-card"></div></div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

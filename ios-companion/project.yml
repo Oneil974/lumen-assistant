@@ -1,0 +1,199 @@
+# Projet Xcode généré par XcodeGen : `xcodegen generate` dans ce dossier.
+# L'équipe de signature n'est volontairement PAS écrite ici (dépôt public) :
+# choisis-la dans Xcode › cible LumenCompanion › Signing & Capabilities.
+name: LumenCompanion
+options:
+  bundleIdPrefix: io.github.oneil974.lumen
+  developmentLanguage: fr
+  deploymentTarget:
+    iOS: "18.0"
+  # Foundation Models (IA d'Apple) : faible liaison, l'app reste installable sur iOS 18.
+settings:
+  base:
+    MARKETING_VERSION: "0.3.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_STYLE: Automatic
+targets:
+  LumenCompanion:
+    type: application
+    platform: iOS
+    sources: [LumenCompanion, Shared]
+    dependencies:
+      - target: LumenWidgets
+      - target: LumenShare
+      - target: LumenWatch
+    info:
+      path: LumenCompanion/Info.plist
+      properties:
+        CFBundleDisplayName: Lumen
+        CFBundleDevelopmentRegion: fr
+        CFBundleLocalizations: [fr, en]
+        UILaunchScreen: {}
+        NSSupportsLiveActivities: true
+        CFBundleURLTypes:
+          - CFBundleURLName: io.github.oneil974.lumen.companion
+            CFBundleURLSchemes: [lumen]
+        UIApplicationSupportsIndirectInputEvents: true
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        NSCameraUsageDescription: Lumen utilise la caméra pour la capture rapide et le scan du QR code d'appairage.
+        NSMicrophoneUsageDescription: Lumen utilise le micro pour parler à ton assistant.
+        NSSpeechRecognitionUsageDescription: Lumen transcrit ta voix pour l'envoyer à ton assistant.
+        NSPhotoLibraryAddUsageDescription: Lumen enregistre dans Photos les images générées par ton assistant.
+        NSPhotoLibraryUsageDescription: Lumen te permet de joindre des photos à tes messages.
+        NSFaceIDUsageDescription: Lumen utilise Face ID pour déverrouiller tes fichiers sur l'ordinateur, à distance.
+        NSHealthShareUsageDescription: Lumen lit tes pas, ton sommeil et ta fréquence cardiaque au repos pour les ranger dans ton coffre, sur ton ordinateur.
+        NSLocationWhenInUseUsageDescription: Lumen enregistre la position de tes lieux (maison, bureau…) pour savoir quand tu y arrives.
+        NSLocationAlwaysAndWhenInUseUsageDescription: Lumen détecte ton arrivée et ton départ de tes lieux pour lancer tes automatisations, sans suivre tes déplacements.
+        NSCalendarsFullAccessUsageDescription: Lumen copie tes 7 prochains jours d'agenda dans ton coffre pour préparer ta journée.
+        NSRemindersFullAccessUsageDescription: Lumen copie tes rappels en cours dans ton coffre pour préparer ta journée.
+        NSBonjourServices: [_lumen._tcp]
+        NSLocalNetworkUsageDescription: Lumen se connecte à ton ordinateur sur le réseau local.
+        NSAppTransportSecurity:
+          # Par défaut l'app parle au HTTPS du compagnon (8768, certificat
+          # épinglé). Le HTTP (8766) reste possible, sur demande explicite
+          # (« http://… »), pour les adresses locales uniquement.
+          NSAllowsLocalNetworking: true
+    entitlements:
+      path: LumenCompanion/LumenCompanion.entitlements
+      properties:
+        aps-environment: development
+        com.apple.security.application-groups: [group.io.github.oneil974.lumen]
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.oneil974.lumen.companion
+        OTHER_LDFLAGS: ["$(inherited)", "-weak_framework", "FoundationModels"]
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+
+  LumenWidgets:
+    type: app-extension
+    platform: iOS
+    sources: [LumenWidgets, Shared]
+    entitlements:
+      path: LumenWidgets/LumenWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.io.github.oneil974.lumen]
+    info:
+      path: LumenWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Lumen
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.oneil974.lumen.companion.widgets
+        TARGETED_DEVICE_FAMILY: "1,2"
+        GENERATE_INFOPLIST_FILE: NO
+        SKIP_INSTALL: YES
+
+  LumenShare:
+    type: app-extension
+    platform: iOS
+    sources: [LumenShare, Shared/SharedStore.swift]
+    info:
+      path: LumenShare/Info.plist
+      properties:
+        CFBundleDisplayName: Lumen
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsText: true
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsImageWithMaxCount: 5
+              NSExtensionActivationSupportsFileWithMaxCount: 5
+              NSExtensionActivationSupportsMovieWithMaxCount: 1
+    entitlements:
+      path: LumenShare/LumenShare.entitlements
+      properties:
+        com.apple.security.application-groups: [group.io.github.oneil974.lumen]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.oneil974.lumen.companion.share
+        TARGETED_DEVICE_FAMILY: "1,2"
+        GENERATE_INFOPLIST_FILE: NO
+        SKIP_INSTALL: YES
+
+  LumenWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "11.0"
+    sources: [LumenWatch]
+    dependencies:
+      - target: LumenWatchWidgets
+        embed: true
+        copy:
+          destination: plugins
+    info:
+      path: LumenWatch/Info.plist
+      properties:
+        CFBundleDisplayName: Lumen
+        WKApplication: true
+        WKCompanionAppBundleIdentifier: io.github.oneil974.lumen.companion
+    entitlements:
+      path: LumenWatch/LumenWatch.entitlements
+      properties:
+        com.apple.security.application-groups: [group.io.github.oneil974.lumen]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.oneil974.lumen.companion.watchkitapp
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+
+  LumenWatchWidgets:
+    type: app-extension
+    platform: watchOS
+    deploymentTarget: "11.0"
+    sources: [LumenWatchWidgets]
+    info:
+      path: LumenWatchWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Lumen
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: LumenWatchWidgets/LumenWatchWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.io.github.oneil974.lumen]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.oneil974.lumen.companion.watchkitapp.widgets
+        GENERATE_INFOPLIST_FILE: NO
+        SKIP_INSTALL: YES
+
+  # Tests unitaires (sécurité : transport, cloisonnement, enveloppe du mot de passe).
+  LumenCompanionTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [LumenCompanionTests]
+    dependencies:
+      - target: LumenCompanion
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.oneil974.lumen.companion.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/LumenCompanion.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LumenCompanion"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+
+schemes:
+  LumenCompanion:
+    build:
+      targets:
+        LumenCompanion: all
+        LumenWidgets: all
+        LumenShare: all
+        LumenWatch: all
+        LumenWatchWidgets: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets: [LumenCompanionTests]
+    archive:
+      config: Release

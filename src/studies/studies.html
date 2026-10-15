@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- Études : l'espace de révision de Lumen. Matières et cours, fiches à
+     répétition espacée, quiz, planning d'examens branché sur l'Agenda,
+     correction de devoirs expliquée. Génération par le modèle de Lumen : avec
+     un modèle local, tout reste hors ligne et privé. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Études</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/confirm.css" />
+    <link rel="stylesheet" href="./styles.css?v=2" />
+    <script type="module" src="./main.js"></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="side">
+        <div class="brand"><span data-ic="book-open"></span><span>Études</span></div>
+        <div class="privacy" id="privacy"></div>
+        <nav class="nav">
+          <button data-view="today" class="is-on"><span data-ic="sun"></span>Aujourd'hui</button>
+          <button data-view="courses"><span data-ic="library"></span>Matières</button>
+          <button data-view="review"><span data-ic="list-checks"></span>Réviser <i class="badge" id="due-badge"></i></button>
+          <button data-view="quizzes"><span data-ic="circle-help"></span>Quiz</button>
+          <button data-view="podcast"><span data-ic="mic-vocal"></span>Podcast</button>
+          <button data-view="exams"><span data-ic="calendar"></span>Examens</button>
+          <button data-view="correct"><span data-ic="pencil"></span>Correction</button>
+          <button data-view="calc"><span data-ic="calculator"></span>Calculatrice</button>
+        </nav>
+        <div class="side-label">Matières</div>
+        <div class="course-list" id="course-list"></div>
+        <button class="btn-soft" id="btn-new-course">＋ Nouvelle matière</button>
+      </aside>
+      <main class="main" id="main"></main>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+    <!-- Calculatrice d'appoint, ouvrable depuis n'importe quelle vue (quiz, correction…). -->
+    <button class="calc-fab" id="calc-fab" type="button" title="Calculatrice" aria-label="Calculatrice"><span data-ic="calculator"></span></button>
+    <div class="calc-drawer" id="calc-drawer" hidden></div>
+  </body>
+</html>

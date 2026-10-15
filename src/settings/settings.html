@@ -1,0 +1,2132 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="settings_document_title">Lumen — Paramètres</title>
+    <script src="/lib/theme-init.js"></script>
+  <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="styles.css?v=25" />
+<link rel="stylesheet" href="../legal/license.css?v=3" />
+  <script src="/lib/frontend-log-init.js" data-prefix="settings"></script>
+  <script type="module" src="main.js?v=21" defer></script>
+    <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop (dtTheme partagé
+         via localStorage). Appliqué tôt pour éviter tout flash de thème. -->
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+    <!-- Habillage doré de l\'édition Pro : après la peau plate, pour la surcharger. -->
+    <link rel="stylesheet" href="/lib/pro-skin.css?v=8" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo"><img src="/lib/brand/lumen.png" alt="Lumen" width="26" height="26" /></div>
+        <div><div class="t" id="brand-product">Lumen</div><div class="s" data-i18n="settings_brand_sub">Paramètres</div></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title" data-i18n="settings_sections">Sections</div>
+        <button class="nav-item active" data-tab="general"><span class="ic" data-icon="gear"></span><span data-i18n="tab_general">Général</span></button>
+        <button class="nav-item" data-tab="appearance"><span class="ic" data-icon="sparkles"></span><span data-i18n="tab_appearance">Apparence</span></button>
+        <button class="nav-item" data-tab="models"><span class="ic" data-icon="chip"></span><span data-i18n="tab_models">Modèles</span></button>
+        <button class="nav-item" data-tab="voice"><span class="ic" data-icon="mic"></span><span data-i18n="tab_voice">Dictée et voix</span></button>
+        <button class="nav-item" data-tab="agent"><span class="ic" data-icon="heartbeat"></span><span data-i18n="tab_agent_simple">HeartBeat</span></button>
+        <button class="nav-item" data-tab="notifications"><span class="ic" data-icon="bell"></span><span data-i18n="tab_notifications">Notifications</span></button>
+        <button class="nav-item" data-tab="toolbox"><span class="ic" data-icon="gear"></span><span data-i18n="tab_toolbox">Boîte à outils</span></button>
+        <button class="nav-item" data-tab="mcp"><span class="ic" data-icon="plug"></span><span data-i18n="tab_mcp">Connecteurs</span></button>
+        <button class="nav-item" data-tab="devices"><span class="ic" data-icon="devices"></span><span data-i18n="tab_devices">Objets connectés</span></button>
+        <button class="nav-item" data-tab="profile"><span class="ic" data-icon="user"></span><span data-i18n="tab_profile">Profil</span></button>
+        <button class="nav-item" data-tab="memory"><span class="ic" data-icon="database"></span><span data-i18n="tab_memory">Mémoire</span></button>
+        <button class="nav-item" data-tab="companion"><span class="ic" data-icon="phone"></span><span data-i18n="tab_companion">Compagnon</span></button>
+        <button class="nav-item" data-tab="telegram"><span class="ic" data-icon="chat"></span><span data-i18n="tab_telegram">Telegram</span></button>
+        <button class="nav-item" data-tab="slack"><span class="ic" data-icon="chat"></span><span data-i18n="tab_slack">Slack</span></button>
+        <button class="nav-item" data-tab="licence"><span class="ic" data-icon="download"></span><span data-i18n="tab_licence">Applications et licence</span></button>
+        <button class="nav-item" data-tab="maintenance"><span class="ic" data-icon="database"></span><span data-i18n="tab_maintenance">Sauvegarde et mises à jour</span></button>
+      </div>
+      <div class="sidebar-footer">
+        <button type="button" id="btn-open-diagnostic" class="side-action" title="Traces des modèles, réponses orchestrées et Profiler"><span data-icon="chip"></span><span data-i18n="settings_diagnostic">Diagnostic</span></button>
+        <button type="button" id="btn-open-help" class="side-action"><span data-icon="doc"></span><span data-i18n="settings_documentation">Documentation</span></button>
+      </div>
+    </aside>
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow" data-i18n="settings_eyebrow">Configuration</div>
+          <h1 data-i18n="settings_title">Paramètres</h1>
+          <p data-i18n="settings_subtitle">Réglez les sources IA, l’agent, la mémoire et l’avatar dans une fenêtre dédiée.</p>
+        </div>
+      </header>
+      <section class="settings-surface">
+
+          <!-- Tabs -->
+          <div class="settings-tabs" id="settings-tabs">
+            <button type="button" class="settings-tab active" data-tab="general" data-i18n="tab_general">Général</button>
+            <button type="button" class="settings-tab" data-tab="appearance" data-i18n="tab_appearance">Apparence</button>
+            <button type="button" class="settings-tab" data-tab="models" data-i18n="tab_models">Modèles</button>
+            <button type="button" class="settings-tab" data-tab="voice" data-i18n="tab_voice">Dictée et voix</button>
+            <button type="button" class="settings-tab" data-tab="agent" data-i18n="tab_agent_simple">HeartBeat</button>
+            <button type="button" class="settings-tab" data-tab="notifications" data-i18n="tab_notifications">Notifications</button>
+            <button type="button" class="settings-tab" data-tab="toolbox" data-i18n="tab_toolbox">Boîte à outils</button>
+            <button type="button" class="settings-tab" data-tab="mcp" data-i18n="tab_mcp">Connecteurs</button>
+            <button type="button" class="settings-tab" data-tab="devices" data-i18n="tab_devices">Objets connectés</button>
+            <button type="button" class="settings-tab" data-tab="profile" data-i18n="tab_profile">Profil</button>
+            <button type="button" class="settings-tab" data-tab="memory" data-i18n="tab_memory">Mémoire</button>
+            <button type="button" class="settings-tab" data-tab="companion" data-i18n="tab_companion">Compagnon</button>
+            <button type="button" class="settings-tab" data-tab="telegram" data-i18n="tab_telegram">Telegram</button>
+            <button type="button" class="settings-tab" data-tab="slack" data-i18n="tab_slack">Slack</button>
+            <button type="button" class="settings-tab" data-tab="licence" data-i18n="tab_licence">Applications et licence</button>
+            <button type="button" class="settings-tab" data-tab="maintenance" data-i18n="tab_maintenance">Sauvegarde et mises à jour</button>
+          </div>
+          <!-- Variante compacte (barre étroite) : un menu déroulant remplace les onglets -->
+          <select class="settings-tab-dropdown" id="settings-tab-dropdown">
+            <option value="general" data-i18n="tab_general">Général</option>
+            <option value="appearance" data-i18n="tab_appearance">Apparence</option>
+            <option value="models" data-i18n="tab_models">Modèles</option>
+            <option value="voice" data-i18n="tab_voice">Dictée et voix</option>
+            <option value="agent" data-i18n="tab_agent_simple">HeartBeat</option>
+            <option value="notifications" data-i18n="tab_notifications">Notifications</option>
+            <option value="toolbox" data-i18n="tab_toolbox">Boîte à outils</option>
+            <option value="mcp" data-i18n="tab_mcp">Connecteurs</option>
+            <option value="devices" data-i18n="tab_devices">Objets connectés</option>
+            <option value="profile" data-i18n="tab_profile">Profil</option>
+            <option value="memory" data-i18n="tab_memory">Mémoire</option>
+            <option value="companion" data-i18n="tab_companion">Compagnon</option>
+            <option value="telegram" data-i18n="tab_telegram">Telegram</option>
+            <option value="slack" data-i18n="tab_slack">Slack</option>
+            <option value="licence" data-i18n="tab_licence">Applications et licence</option>
+            <option value="maintenance" data-i18n="tab_maintenance">Sauvegarde et mises à jour</option>
+          </select>
+
+          <!-- General tab -->
+          <div class="settings-tab-pane active" data-pane="general">
+          <!-- Intelligence hybride : escalade vers l'API cloud après un échec local (lib/hybrid.js) -->
+          <div class="hybrid-card" id="hybrid-card">
+            <div class="hybrid-head">
+              <span class="hybrid-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5 13.8 11.3 12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18 14l.7 1.8 1.8.7-1.8.7L18 19l-.7-1.8-1.8-.7 1.8-.7z"/></svg></span>
+              <span class="hybrid-title" data-i18n="lbl_hybrid">Intelligence hybride</span>
+              <label class="hybrid-switch"><input type="checkbox" id="checkbox-llm-hybrid" /><span class="hybrid-slider"></span></label>
+            </div>
+            <p class="hybrid-desc" data-i18n="hint_hybrid">Les demandes tournent d'abord sur les modèles de ce poste, sans coût. Si une réponse locale échoue, Lumen propose de la rejouer sur votre API cloud — rien n'est envoyé sans votre clic.</p>
+            <p class="hybrid-note" id="hybrid-api-note" data-i18n="hint_hybrid_need_api" hidden>Configurez d'abord une API cloud avec sa clé (Modèles › Source d'IA › API cloud).</p>
+          </div>
+          <!-- Language selector -->
+          <div class="setting-item">
+            <label for="select-language" data-i18n="lbl_language">Langue / Language</label>
+            <select id="select-language">
+              <option value="fr">Français</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+
+
+
+
+<div class="setting-item checkbox-row">
+            <input type="checkbox" id="checkbox-startup-lumen-os" />
+            <label for="checkbox-startup-lumen-os" data-i18n="lbl_startup_lumen_os">Lancer directement en mode Lumen Desktop</label>
+          </div>
+          <div class="setting-item checkbox-row">
+            <input type="checkbox" id="checkbox-always-on-top" />
+            <label for="checkbox-always-on-top" data-i18n="lbl_always_on_top">Toujours au-dessus de toutes les applications</label>
+          </div>
+          <div class="setting-item checkbox-row">
+            <input type="checkbox" id="checkbox-debug" />
+            <label for="checkbox-debug" data-i18n="lbl_debug">Mode debug — afficher le prompt complet envoyé au modèle</label>
+          </div>
+
+
+          </div><!-- /general pane -->
+
+          <!-- Appearance tab -->
+          <div class="settings-tab-pane" data-pane="appearance">
+<!-- UN seul clair/sombre.
+     Il y en avait deux — « Barre de chat » et « Interface » — donc deux
+     réglages pour une question que personne ne se pose en ces termes, et deux
+     occasions de se retrouver avec une barre claire au-dessus d'un bureau
+     sombre. La bascule est unique et vaut pour toute l'application ; le bouton
+     lune/soleil de la barre et celui du bureau la partagent. -->
+          <div class="settings-section-title" data-i18n="settings_themes">Apparence</div>
+          <div class="setting-item">
+            <label for="select-theme" data-i18n="lbl_theme">Thème</label>
+            <select id="select-theme">
+              <option value="auto" data-i18n="opt_auto_system">Automatique (système)</option>
+              <option value="light" data-i18n="opt_light">Clair</option>
+              <option value="dark" data-i18n="opt_dark">Sombre</option>
+            </select>
+          </div>
+          <p class="setting-hint" data-i18n="hint_theme">Vaut pour toute l'application : barre de chat, bureau, fenêtres d'apps et capsule. « Automatique » suit le thème du système, y compris quand il bascule en cours de session.</p>
+
+          <div class="setting-item">
+            <label data-i18n="lbl_wallpaper">Fond d'écran</label>
+            <button type="button" class="settings-save-btn secondary-action compact" id="btn-wallpaper" data-i18n="btn_wallpaper">Choisir un fond d'écran…</button>
+          </div>
+          <p class="setting-hint" data-i18n="hint_wallpaper">Le fond du bureau Lumen Desktop. Le sélecteur s'ouvre dans le bureau : il doit donc être lancé.</p>
+
+<div id="workspace-settings" class="workspace-only" hidden>
+            <div class="settings-section-title" data-i18n="settings_lumen_os">Lumen Desktop</div>
+            <!-- Plus de couleur libre propre au bureau : l'accent du bureau EST
+                 celui de l'apparence (Système de conception, plus bas). Deux
+                 couleurs d'action concurrentes dans la même application, c'était
+                 la garantie d'un contraste faux quelque part. -->
+            <p class="setting-hint" data-i18n="hint_workspace_settings">Ces réglages sont appliqués au bureau immersif et restent synchronisés avec le workspace.</p>
+          </div>
+
+          <!-- Systeme de conception : les trois axes de personnalisation.
+               Chacun n'echange que des variables CSS - aucune regle n'est
+               dupliquee par theme. -->
+          <div class="settings-group">
+            <div class="settings-section-title" data-i18n="sec_design">Habillage</div>
+            <p class="setting-hint" data-i18n="hint_design">La teinte des gris, la couleur d'action et l'arrondi s'appliquent a toutes les applications de Lumen, en clair comme en sombre.</p>
+
+            <div class="setting-item">
+              <label data-i18n="lbl_ui_base">Teinte de fond</label>
+              <div class="ui-swatches" id="ui-base"></div>
+            </div>
+
+            <div class="setting-item">
+              <label data-i18n="lbl_ui_accent">Couleur d'action</label>
+              <div class="ui-swatches" id="ui-accent"></div>
+            </div>
+
+            <div class="setting-item">
+              <label data-i18n="lbl_ui_icons">Icônes</label>
+              <div class="ui-swatches" id="ui-icons"></div>
+              <p class="setting-hint" data-i18n="hint_ui_icons">« Natif » garde la couleur propre de chaque application. Les deux autres alignent toutes les pastilles sur la couleur d'action : icône sombre sur fond coloré, ou l'inverse.</p>
+            </div>
+
+            <div class="setting-item">
+              <label for="range-ui-radius"><span data-i18n="lbl_ui_radius">Arrondi</span> (<span id="label-ui-radius">10 px</span>)</label>
+              <input type="range" id="range-ui-radius" min="0" max="20" step="2" value="10" />
+            </div>
+
+            <div class="inline-control">
+              <button type="button" class="settings-save-btn secondary-action compact" id="btn-ui-shuffle" data-i18n="btn_ui_shuffle">Au hasard</button>
+              <button type="button" class="settings-save-btn secondary-action compact" id="btn-ui-reset" data-i18n="btn_default">Par defaut</button>
+            </div>
+          </div>
+
+          <!-- Opacité du verre : masqué depuis le passage à la peau plate — les
+               surfaces sont pleines, ce curseur ne pilote plus rien. Le champ
+               reste dans le DOM (main.js et la fenêtre Réglages lisent sa
+               valeur) plutôt que d'ajouter des gardes partout. -->
+          <div class="setting-item" hidden>
+            <label for="slider-transparency"><span data-i18n="lbl_opacity">Opacité du verre</span> (<span id="label-transparency-val">4%</span>)</label>
+            <input type="range" id="slider-transparency" min="1" max="30" value="4" />
+          </div>
+          <div class="setting-item">
+            <label for="select-bar-size" data-i18n="lbl_bar_size">Taille de la barre</label>
+            <select id="select-bar-size">
+              <option value="petit" data-i18n="opt_size_small">Petite (520px)</option>
+              <option value="moyen" data-i18n="opt_size_medium">Moyenne (680px)</option>
+              <option value="grand" data-i18n="opt_size_large">Grande (840px)</option>
+            </select>
+          </div>
+          <div class="setting-item checkbox-row platform-opaque-only" hidden>
+            <input type="checkbox" id="checkbox-bar-opaque" />
+            <label for="checkbox-bar-opaque" data-i18n="lbl_bar_opaque">Mode opaque de la barre principale</label>
+          </div>
+
+          <div class="setting-item checkbox-row">
+            <input type="checkbox" id="checkbox-morning" />
+            <label for="checkbox-morning" data-i18n="lbl_morning">Vue du matin à l'ouverture de Lumen OS</label>
+          </div>
+          <p class="setting-hint" data-i18n="hint_morning">Un écran par jour, au premier démarrage du bureau : agenda, messages, tâches, et ce que les agents ont fait en votre absence. Il s'ouvre aussi à la demande depuis l'app « Matin ».</p>
+
+          <!-- Raspberry Pi seulement : révélé par applyPlatformFlavorUi(). -->
+          <div class="setting-item checkbox-row platform-rpi-only" hidden>
+            <input type="checkbox" id="checkbox-perf-mode" />
+            <label for="checkbox-perf-mode" data-i18n="lbl_perf_mode">Mode performance</label>
+          </div>
+          <p class="setting-hint platform-rpi-only" hidden data-i18n="hint_perf_mode">Ne crée aucun contexte WebGL et retire flous, ombres et animations. Différent de « Afficher l'avatar » : ce dernier masque l'orbe, mais three.js reste chargé et la mémoire GPU reste prise. Le mode performance demande un redémarrage de Lumen.</p>
+
+
+          <!-- Avatar : tous ses réglages d'apparence vivent ici, avec le reste
+               de l'habillage — il n'y a plus d'onglet à part. -->
+          <div class="settings-group" id="avatar-settings">
+            <div class="settings-section-title" data-i18n="tab_avatar">Avatar</div>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-orb" />
+              <label for="checkbox-orb" data-i18n="lbl_show_orb">Afficher l'avatar (orbe)</label>
+            </div>
+            <div class="setting-item" id="orb-theme-row">
+              <label for="select-orb-theme">Personnage Lumen</label>
+              <select id="select-orb-theme"><option value="default">Original</option><option value="soft-white">Nuage · blanc</option><option value="soft-sky">Azur · bleu</option><option value="soft-mint">Sauge · vert</option><option value="soft-coral">Braise · corail</option><option value="soft-violet">Iris · violet</option><option value="soft-raspberry">Framboise · rose</option><option value="soft-amber">Miel · ambre</option></select>
+              <p class="setting-hint">Le personnage est partagé entre la barre, Application et Desktop. Il ne change pas les couleurs de l’interface.</p>
+              <p class="setting-hint" id="orb-character-hint"></p>
+            </div>
+            <details id="orb-original-advanced" open><summary data-i18n="sec_avatar_model">Modèle de l’avatar</summary>
+            <div class="settings-section-title" data-i18n="sec_avatar_model">Modèle de l'avatar</div>
+            <div class="setting-item" id="avatar-model-row">
+              <label for="select-avatar-model" data-i18n="lbl_avatar_model">Type d'avatar</label>
+              <select id="select-avatar-model">
+                <option value="orb" data-i18n="opt_avatar_orb">Orbe Lumen</option>
+                <option value="robot-head" data-i18n="opt_avatar_robot_head">Robot-Head by Fayazara</option>
+                <option value="custom" data-i18n="opt_avatar_custom">GLB personnalisé</option>
+              </select>
+              <input type="file" id="avatar-glb-file" accept=".glb,model/gltf-binary" hidden />
+              <div class="avatar-glb-actions">
+                <button type="button" class="settings-save-btn secondary-action compact" id="btn-avatar-glb-import" data-i18n="btn_avatar_glb_import">Choisir un GLB…</button>
+                <button type="button" class="settings-save-btn secondary-action compact" id="btn-avatar-glb-remove" data-i18n="btn_avatar_glb_remove">Retirer le GLB</button>
+              </div>
+              <p class="setting-hint" data-i18n-html="hint_avatar_glb_contract">Le fichier doit intégrer les textures et les animations <code>Lumen_Idle</code>, <code>Lumen_Thinking</code>, <code>Lumen_Speaking</code> et <code>Lumen_Action</code>. <code>Lumen_Heartbeat</code> est optionnelle.</p>
+              <p class="avatar-glb-status" id="avatar-glb-status" role="status"></p>
+            </div>
+
+            <div class="setting-item" id="robot-head-settings" hidden>
+              <div class="settings-section-title">Robot-Head by Fayazara</div>
+              <div id="robot-head-preview" class="orb-container" data-state="idle" style="width:116px;height:116px;position:relative;margin:32px auto"></div>
+              <label for="select-robot-shape" data-i18n="lbl_robot_shape">Forme</label>
+              <select id="select-robot-shape">
+                <option value="rectangle" data-i18n="opt_robot_rectangle">Rectangle</option>
+                <option value="square" data-i18n="opt_robot_square">Carré</option>
+                <option value="circle" data-i18n="opt_robot_circle">Rond</option>
+                <option value="hexagon" data-i18n="opt_robot_hexagon">Hexagone</option>
+              </select>
+<label for="robot-color" data-i18n="lbl_robot_color">Coque</label><input type="color" id="robot-color" />
+<label for="robot-trimColor" data-i18n="lbl_robot_trimColor">Garnitures</label><input type="color" id="robot-trimColor" />
+<label for="robot-screenColor" data-i18n="lbl_robot_screenColor">Écran LED</label><input type="color" id="robot-screenColor" />
+<label for="slider-robot-speed"><span data-i18n="lbl_robot_speed">Vitesse</span> (<span id="label-robot-speed-val">1×</span>)</label>
+              <input type="range" id="slider-robot-speed" min="0" max="3" step="0.1" value="1" />
+<label class="checkbox-label" for="robot-paused"><input type="checkbox" id="robot-paused" /><span data-i18n="lbl_robot_paused">Mettre en pause</span></label>
+<label class="checkbox-label" for="robot-antenna"><input type="checkbox" id="robot-antenna" /><span data-i18n="lbl_robot_antenna">Afficher l’antenne</span></label>
+<label class="checkbox-label" for="robot-floorShadow"><input type="checkbox" id="robot-floorShadow" /><span data-i18n="lbl_robot_floorShadow">Afficher l’ombre au sol</span></label>
+<label class="checkbox-label" for="robot-interactive"><input type="checkbox" id="robot-interactive" /><span data-i18n="lbl_robot_interactive">Suivre le pointeur et réagir au clic</span></label>
+<label for="select-robot-preview-state" data-i18n="lbl_robot_preview_state">Tester une animation</label>
+              <select id="select-robot-preview-state"><option value="idle" data-i18n="opt_robot_idle">Repos</option><option value="thinking" data-i18n="opt_robot_thinking">Réflexion</option><option value="searching" data-i18n="opt_robot_searching">Recherche</option><option value="listening" data-i18n="opt_robot_listening">Écoute</option><option value="speaking" data-i18n="opt_robot_speaking">Parole</option><option value="working" data-i18n="opt_robot_working">Travail</option><option value="happy" data-i18n="opt_robot_happy">Joie</option><option value="error" data-i18n="opt_robot_error">Erreur</option><option value="sleeping" data-i18n="opt_robot_sleeping">Sommeil</option></select>
+              <button type="button" id="btn-robot-reset" class="settings-save-btn secondary-action compact" data-i18n="btn_robot_reset">Réinitialiser le robot</button>
+            </div>
+            <div class="setting-item" id="avatar-glb-light-row" style="display:none">
+              <label for="slider-avatar-glb-light"><span data-i18n="lbl_avatar_glb_light">Coefficient de lumière du GLB</span> (<span id="label-avatar-glb-light-val">1.0</span>×)</label>
+              <input type="range" id="slider-avatar-glb-light" min="0" max="8" step="0.1" value="1" />
+              <p class="setting-hint" data-i18n="hint_avatar_glb_light">Ajuste uniquement l'éclairage du modèle 3D personnalisé. Ce réglage ne modifie jamais l'orbe Lumen.</p>
+            </div>
+            </details>
+            <div class="setting-item" id="orb-size-row">
+              <label for="slider-orb-size"><span data-i18n="lbl_orb_size">Taille de l'avatar</span> (<span id="label-orb-size-val">116</span> px)</label>
+              <input type="range" id="slider-orb-size" min="70" max="180" value="116" />
+            </div>
+            <div class="setting-item" id="orb-core-scale-row">
+              <label for="slider-orb-core"><span data-i18n="lbl_orb_core">Taille de la sphère intérieure / épaisseur du verre</span> (<span id="label-orb-core-val">82</span>%)</label>
+              <input type="range" id="slider-orb-core" min="55" max="98" value="82" />
+            </div>
+            <div class="setting-item" id="orb-pulse-row">
+              <label for="slider-orb-pulse"><span data-i18n="lbl_orb_pulse">Amplitude de la pulsation (synthèse vocale)</span> (<span id="label-orb-pulse-val">100</span>%)</label>
+              <input type="range" id="slider-orb-pulse" min="0" max="250" value="100" />
+            </div>
+            <div class="setting-item checkbox-row" id="orb-mouth-row">
+              <input type="checkbox" id="checkbox-orb-mouth" />
+              <label for="checkbox-orb-mouth" data-i18n="lbl_orb_mouth">Bouche animée par la voix</label>
+            </div>
+            <p class="setting-hint" data-i18n="hint_orb_mouth">Une barre horizontale, taillée comme les yeux, qui s'ouvre au rythme de la parole. Avec les voix locales, elle suit l'enveloppe sonore réelle.</p>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-orb-moods" checked />
+              <label for="checkbox-orb-moods" data-i18n="lbl_orb_moods">Personnalité : humeurs et réactions</label>
+            </div>
+            <p class="setting-hint" data-i18n="hint_orb_moods">L'orbe sourit quand une tâche aboutit, se renfrogne sur une erreur, lève un sourcil quand Lumen attend ta réponse, s'endort après 10 min sans activité. Clique-la : elle s'écrase ; insiste : elle a le tournis.</p>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-ui-sounds" checked />
+              <label for="checkbox-ui-sounds" data-i18n="lbl_ui_sounds">Sons d'interface (orbe, capsule, outils)</label>
+            </div>
+            <div class="setting-item" id="orb-glass-row">
+              <label for="select-orb-glass" data-i18n="lbl_orb_glass">Type de verre de l'orbe</label>
+              <select id="select-orb-glass">
+                <option value="thin" data-i18n="opt_glass_thin">Fin (par défaut)</option>
+                <option value="crystal" data-i18n="opt_glass_crystal">Cristal (net & brillant)</option>
+                <option value="frosted" data-i18n="opt_glass_frosted">Givré (dépoli, diffus)</option>
+                <option value="bubble" data-i18n="opt_glass_bubble">Bulle de savon (irisé)</option>
+                <option value="none" data-i18n="opt_glass_none">Sans verre (cœur seul)</option>
+              </select>
+            </div>
+            <div class="setting-item" id="orb-colors-row">
+              <label data-i18n="lbl_orb_colors">Couleurs des blobs de l'avatar</label>
+              <div class="orb-color-pickers">
+                <input type="color" id="orb-color-0" value="#ff54a3" />
+                <input type="color" id="orb-color-1" value="#9961ff" />
+                <input type="color" id="orb-color-2" value="#47a3ff" />
+                <input type="color" id="orb-color-3" value="#61f2c7" />
+                <input type="color" id="orb-color-4" value="#ff9e6b" />
+                <button type="button" class="orb-colors-reset" id="btn-orb-colors-reset" title="Réinitialiser" data-i18n-title="tt_reset">↺</button>
+              </div>
+            </div>
+
+            <!-- L'orbe physique, le Lumen Controller et les badges RFID sont
+                 dans l'onglet Objets connectés : voir data-pane="devices". -->
+
+            <!-- Heartbeat radial pulse -->
+
+            <div class="settings-section-title" data-i18n="sec_orb_pulse">Pulsation du Heartbeat</div>
+            <p class="setting-hint" data-i18n="hint_orb_pulse">Une onde colorée se propage sur la sphère à chaque déclenchement du Heartbeat.</p>
+            <div class="setting-item checkbox-row" id="orb-heartbeat-row">
+              <input type="checkbox" id="checkbox-orb-heartbeat" />
+              <label for="checkbox-orb-heartbeat" data-i18n="lbl_orb_heartbeat">Activer la pulsation radiale</label>
+            </div>
+            <div class="setting-item" id="orb-pulse-strength-row">
+              <label for="slider-orb-pulse-strength"><span data-i18n="lbl_orb_pulse_strength">Intensité de la pulsation</span> (<span id="label-orb-pulse-strength-val">100</span>%)</label>
+              <input type="range" id="slider-orb-pulse-strength" min="20" max="250" value="100" />
+            </div>
+            <div class="setting-item" id="orb-pulse-speed-row">
+              <label for="slider-orb-pulse-speed"><span data-i18n="lbl_orb_pulse_speed">Vitesse de la pulsation</span> (<span id="label-orb-pulse-speed-val">100</span>%)</label>
+              <input type="range" id="slider-orb-pulse-speed" min="40" max="250" value="100" />
+            </div>
+            <button type="button" class="settings-save-btn secondary-action" id="btn-orb-pulse-preview" data-i18n="btn_orb_pulse_preview">Tester la pulsation</button>
+          </div><!-- /avatar -->
+
+          </div><!-- /appearance pane -->
+
+          <!-- Models tab -->
+          <div class="settings-tab-pane" data-pane="models">
+          <!-- ===== Modèle de discussion : la source puis les réglages de son moteur ===== -->
+          <div class="settings-section-title" data-i18n="sec_chat_model">Modèle de discussion</div>
+<!-- AI Source Selector -->
+          <div class="setting-item" id="ai-source-row">
+            <label for="select-ai-source" data-i18n="lbl_ai_source">Source d'IA</label>
+            <select id="select-ai-source">
+              <option value="llama" data-i18n="opt_llama">Local, sans installation (llama.cpp intégré)</option>
+              <!-- Retirée au chargement quand le runtime n'est pas embarqué
+                   (cf. refreshLitertUI) : il n'est construit que par le build Pi. -->
+              <option value="litert" data-i18n="opt_litert">Local, LiteRT-LM (Google AI Edge)</option>
+              <option value="ollama" data-i18n="opt_ollama">Local via Ollama (logiciel tiers)</option>
+              <option value="shortcut" data-i18n="opt_shortcut">Raccourcis macOS (Modèle Apple)</option>
+              <option value="api" data-i18n="opt_api">API cloud (ChatGPT / OpenAI-compatible)</option>
+              <!-- Édition Pro : n'apparaît que si ce poste est lié à un Lumen Server
+                   (cf. refreshLumenServerOption). -->
+              <option value="applefm" data-i18n="opt_applefm" hidden>Apple Foundation Models (macOS 27)</option>
+              <option value="lumen" data-i18n="opt_lumen" hidden>Lumen Server</option>
+            </select>
+          </div>
+
+          <!-- Source « API » : fournisseurs connus (clé + modèles d'actualité, ajout
+               manuel) puis un seul menu des modèles disponibles — uniquement ceux
+               des API dont la clé est enregistrée. Rempli par initApiProviders(). -->
+          <div id="settings-group-providers" style="display:none">
+            <div class="setting-item">
+              <label for="select-api-choice" data-i18n="lbl_api_choice">Modèle API</label>
+              <select id="select-api-choice"></select>
+              <p class="setting-hint" data-i18n="hint_api_choice">Seuls les modèles des API dont la clé est enregistrée apparaissent ici, ainsi que dans le menu du backend de la barre et du bureau.</p>
+            </div>
+            <div class="setting-item">
+              <label data-i18n="lbl_api_providers">Fournisseurs d'API</label>
+              <div id="api-providers" class="api-providers"></div>
+              <p class="setting-hint api-keys-note" data-i18n="hint_api_keys_safe">🔒 Les clés sont chiffrées sur ce poste (clé maîtresse dans le Trousseau sous macOS). Elles ne sont jamais renvoyées à l'interface, ni données aux IA, aux outils, aux workflows ou aux scripts.</p>
+            </div>
+          </div>
+
+          <!-- Plusieurs API cloud : choix de l'API active parmi celles configurées
+               (et Lumen Server quand ce poste est lié). Visible en source api/lumen. -->
+          <div id="settings-group-cloud" style="display:none">
+            <div class="setting-item">
+              <label for="select-api-profile" data-i18n="lbl_api_profile">API active</label>
+              <select id="select-api-profile"></select>
+              <p class="setting-hint" data-i18n="hint_api_profile">Configurez autant d'API que vous voulez (OpenAI, Groq, OpenRouter, Mistral…) : chacune garde son URL, sa clé et son modèle. Le choix est aussi proposé dans le menu du backend de la barre.</p>
+            </div>
+            <div class="setting-item" id="api-preset-row">
+              <label for="select-api-preset" data-i18n="lbl_api_preset">Fournisseur</label>
+              <select id="select-api-preset">
+                <option value="" data-i18n="opt_api_preset_keep">— Garder l'URL actuelle —</option>
+                <option value="https://api.openai.com/v1">OpenAI</option>
+                <option value="lumen" data-i18n="opt_api_preset_lumen">Lumen Server (compatible OpenAI)</option>
+                <option value="https://api.groq.com/openai/v1">Groq</option>
+                <option value="https://openrouter.ai/api/v1">OpenRouter</option>
+                <option value="https://api.mistral.ai/v1">Mistral</option>
+                <option value="https://api.deepseek.com/v1">DeepSeek</option>
+                <option value="https://generativelanguage.googleapis.com/v1beta/openai">Google Gemini</option>
+                <option value="http://localhost:1234/v1" data-i18n="opt_api_preset_local">Serveur local (LM Studio, vLLM…)</option>
+              </select>
+              <p class="setting-hint" id="api-preset-hint" hidden data-i18n="hint_api_preset_lumen">Lumen Server expose une API compatible OpenAI : saisissez l'adresse du serveur suivie de /v1/ai (ex. https://serveur.local/v1/ai) et, comme clé, le jeton ou la clé API fournie par le serveur. Aucune liaison ni connecteur n'est nécessaire.</p>
+            </div>
+            <div class="setting-item" id="api-profile-name-row">
+              <label for="input-api-profile-name" data-i18n="lbl_api_profile_name">Nom de cette API</label>
+              <input type="text" id="input-api-profile-name" spellcheck="false" autocomplete="off" />
+              <button type="button" id="btn-delete-api-profile" class="ios-row-action danger" data-i18n="btn_delete_api_profile" style="margin-top:6px">Supprimer cette API</button>
+            </div>
+          </div>
+
+          <!-- Apple Foundation Models : passerelle locale lumen-applefm (port 11437),
+               résolue côté Rust comme une API OpenAI. Rien à saisir que le modèle. -->
+          <div id="settings-group-applefm" style="display:none">
+            <div class="setting-item">
+              <label for="select-applefm-model" data-i18n="lbl_applefm_model">Modèle Apple</label>
+              <select id="select-applefm-model">
+                <option value="apple-on-device" data-i18n="opt_applefm_on_device">Apple Intelligence (sur l'appareil)</option>
+                <option value="apple-private-cloud" data-i18n="opt_applefm_pcc">Private Cloud Compute</option>
+              </select>
+              <p class="setting-hint" id="applefm-status" role="status"></p>
+              <p class="setting-hint" data-i18n="hint_applefm_backend">Le modèle d'Apple Intelligence répond sur ce Mac, sans clé ni connexion, à travers la passerelle locale de Lumen (port 11437). Fenêtre de 4 096 jetons : préférez des conversations courtes. Private Cloud Compute exige un entitlement Apple accordé à l'application.</p>
+            </div>
+          </div>
+
+          <!-- Lumen Server : l'inférence part vers le serveur lié avec le jeton
+               d'appareil (côté Rust). Rien à saisir d'autre que le modèle. -->
+          <div id="settings-group-lumen" style="display:none">
+            <div class="setting-item">
+              <label data-i18n="lbl_lumen_server">Serveur lié</label>
+              <div class="setting-hint" id="lumen-server-url" style="font-family:ui-monospace,monospace"></div>
+            </div>
+            <div class="setting-item">
+              <label for="input-lumen-model" data-i18n="lbl_lumen_model">Modèle du serveur</label>
+              <input type="text" id="input-lumen-model" list="lumen-model-list" placeholder="ex. lfm2.5-7b" spellcheck="false" autocomplete="off" />
+              <datalist id="lumen-model-list"></datalist>
+              <div class="model-picker-row">
+                <button type="button" id="btn-lumen-models-refresh" class="ios-row-action" data-i18n="btn_lumen_models_refresh">Charger les modèles du serveur</button>
+                <span id="lumen-models-status" class="setting-hint"></span>
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n="hint_lumen_backend">L'inférence part vers le Lumen Server auquel ce poste est lié, avec son jeton d'appareil. Aucune clé à saisir : révoquer la liaison coupe l'accès.</p>
+          </div>
+
+          <!-- API cloud (compatible OpenAI : ChatGPT, etc.) -->
+          <div id="settings-group-api" style="display:none">
+            <div class="setting-item">
+              <label for="input-api-key" data-i18n="lbl_api_key">Clé API</label>
+              <input type="password" id="input-api-key" placeholder="sk-…" autocomplete="off" spellcheck="false" />
+              <button type="button" id="btn-clear-api-key" class="ios-row-action danger" data-i18n="btn_clear_api_key" style="margin-top:6px">Retirer la clé enregistrée</button>
+            </div>
+            <div class="setting-item">
+              <label for="input-api-model" data-i18n="lbl_api_model">Modèle</label>
+              <!-- Liste + saisie libre : `datalist` propose les modèles servis
+                   par l'API configurée sans jamais empêcher d'en taper un autre. -->
+              <input type="text" id="input-api-model" list="api-model-list" placeholder="gpt-4o-mini" spellcheck="false" autocomplete="off" />
+              <datalist id="api-model-list"></datalist>
+              <div class="model-picker-row">
+                <button type="button" id="btn-api-models-refresh" class="ios-row-action" data-i18n="btn_api_models_refresh">Charger les modèles de cette API</button>
+                <span id="api-models-status" class="setting-hint"></span>
+              </div>
+            </div>
+            <details class="settings-advanced">
+              <summary><span data-i18n="adv_toggle_show">Réglages avancés</span></summary>
+              <div class="setting-item">
+                <label for="input-api-base" data-i18n="lbl_api_base">URL de base de l'API</label>
+                <input type="text" id="input-api-base" placeholder="https://api.openai.com/v1" spellcheck="false" />
+              </div>
+            </details>
+            <div id="api-expectations"></div>
+            <p class="setting-hint" data-i18n="hint_api_key">La clé est conservée de façon sécurisée côté application (fichier protégé, jamais exposée à l'interface) et n'est envoyée qu'au fournisseur d'API choisi. Laissez le champ vide pour conserver la clé déjà enregistrée. Compatible avec tout point d'accès « OpenAI » (OpenAI, Groq, OpenRouter, etc.).</p>
+          </div>
+
+
+          <!-- Ollama Configurations -->
+          <div id="settings-group-ollama">
+            <!-- Essentiel : le choix du modèle. Le reste est repli dans « Avancé ». -->
+            <div class="setting-item">
+              <label for="select-model" data-i18n="lbl_model">Modèle Ollama</label>
+              <select id="select-model">
+                <option value="" data-i18n="opt_loading_models">Chargement des modèles...</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <div class="loaded-models-head">
+                <label data-i18n="lbl_loaded_models">Modèles chargés en mémoire</label>
+                <button type="button" id="btn-refresh-loaded" class="loaded-refresh-btn" title="Rafraîchir" data-i18n-title="tt_refresh_loaded">⟳</button>
+              </div>
+              <div id="loaded-models-list" class="loaded-models-list"></div>
+            </div>
+            <div id="ollama-expectations"></div>
+
+            <!-- Téléchargement d'un modèle Ollama (POST /api/pull côté Rust,
+                 avec suivi de progression) : aucun terminal nécessaire. -->
+            <div class="setting-item">
+              <div class="loaded-models-head">
+                <label data-i18n="lbl_ollama_catalog">Télécharger un modèle Ollama</label>
+                <button type="button" id="btn-refresh-ollama-catalog" class="loaded-refresh-btn" title="Rafraîchir" data-i18n-title="tt_refresh_loaded">⟳</button>
+              </div>
+              <p class="setting-hint" data-i18n="hint_ollama_catalog">Lumen télécharge le modèle via Ollama et affiche la progression. Les modèles ci-dessous sont les plus utilisés sur un ordinateur personnel.</p>
+              <div id="ollama-model-catalog"></div>
+              <div class="ollama-pull-manual">
+                <input type="text" id="input-ollama-pull" placeholder="ex : qwen3:4b" spellcheck="false" data-i18n-ph="ph_ollama_pull" />
+                <button type="button" id="btn-ollama-pull" class="settings-save-btn secondary-action compact" data-i18n="btn_ollama_pull">Télécharger</button>
+              </div>
+              <div class="ollama-pull-progress" id="ollama-pull-progress" hidden><span></span></div>
+              <div class="fluxo-card-row-hint" id="ollama-pull-status"></div>
+            </div>
+
+            <!-- Réglages avancés Ollama : conservés intégralement pour les confirmés -->
+            <details class="settings-advanced">
+              <summary><span data-i18n="adv_toggle_show">Réglages avancés</span><span class="adv-hint" data-i18n="adv_toggle_hint">URL, contexte, mémoire, CRON… pour utilisateurs confirmés.</span></summary>
+              <div class="setting-item">
+                <label for="input-ollama-url" data-i18n="lbl_ollama_url">URL d'Ollama</label>
+                <input type="text" id="input-ollama-url" placeholder="http://localhost:11434" />
+              </div>
+              <div class="fluxo-card-row">
+                <div class="fluxo-card-row-text">
+                  <div class="fluxo-card-row-label" data-i18n="lbl_ollama_think">Mode raisonnement (think)</div>
+                  <div class="fluxo-card-row-hint" data-i18n="hint_ollama_think">Laisse Ollama ou llama-server faire réfléchir le modèle avant de répondre. Nécessite un modèle et un template compatibles.</div>
+                </div>
+                <label class="ios-switch" title="Mode raisonnement">
+                  <input type="checkbox" id="checkbox-ollama-think" />
+                  <span class="ios-slider"></span>
+                </label>
+              </div>
+              <div class="setting-item">
+                <label for="slider-ollama-num-ctx"><span data-i18n="lbl_ollama_num_ctx">Taille du contexte</span> (<span id="label-ollama-num-ctx-val">Défaut du modèle</span>)</label>
+                <input type="range" id="slider-ollama-num-ctx" min="0" max="8" step="1" value="0" />
+                <div class="fluxo-card-row-hint" data-i18n="hint_ollama_num_ctx">Surcharge la fenêtre de contexte du modèle. 0 = valeur par défaut. Une grande valeur augmente la mémoire utilisée.</div>
+              </div>
+              <div class="setting-item">
+                <label for="input-ollama-keep-alive" data-i18n="lbl_ollama_keep_alive">Maintien en mémoire (keep-alive)</label>
+                <select id="input-ollama-keep-alive">
+                  <option value="30s" data-i18n="opt_keep_30s">30 secondes</option>
+                  <option value="5m" data-i18n="opt_keep_5m">5 minutes (défaut)</option>
+                  <option value="30m" data-i18n="opt_keep_30m">30 minutes</option>
+                  <option value="1h" data-i18n="opt_keep_1h">1 heure</option>
+                  <option value="24h" data-i18n="opt_keep_24h">24 heures</option>
+                  <option value="-1" data-i18n="opt_keep_always">Toujours chargé</option>
+                  <option value="0" data-i18n="opt_keep_0">Décharger aussitôt</option>
+                </select>
+                <div class="fluxo-card-row-hint" data-i18n="hint_ollama_keep_alive">Durée pendant laquelle le modèle reste chargé après usage (ex. 30s, 5m, 1h). -1 = toujours, 0 = décharger aussitôt.</div>
+              </div>
+            </details>
+          </div>
+
+          <!-- llama.cpp / llama-server : modèles GGUF gérés par Lumen -->
+          <div id="settings-group-llama" style="display:none">
+            <!-- Niveau d'IA (lib/ai-level.js) : modèle + contexte en un choix. -->
+            <div class="setting-item" id="ai-level-card"></div>
+            <div class="setting-item">
+              <label for="select-model-llama" data-i18n="lbl_llama_model">Modèle llama.cpp / llama-server</label>
+              <select id="select-model-llama">
+                <option value="" data-i18n="opt_loading_models">Chargement des modèles locaux...</option>
+              </select>
+              <div id="llama-expectations"></div>
+              <p class="setting-hint" id="llama-start-status" role="status"></p>
+              <p class="setting-hint" data-i18n="hint_llama_model">Lumen démarre automatiquement llama-server sur le port local privé 11435. Les profils GGUF recommandés sont proposés ici ; les autres GGUF peuvent rester gérés par Ollama.</p>
+            </div>
+            <!-- Dossiers de modèles supplémentaires (disque externe, NAS…). -->
+            <div class="setting-item">
+              <label data-i18n="lbl_llama_dirs">Dossiers des modèles</label>
+              <div id="llama-dirs" class="llama-dirs"></div>
+              <div class="llama-dir-add">
+                <input type="text" id="input-llama-dir" placeholder="/Volumes/MonDisque/Modeles" spellcheck="false" />
+                <button type="button" class="llama-dir-btn" id="btn-llama-dir-browse" data-i18n="btn_llama_dir_browse">Parcourir…</button>
+                <button type="button" class="llama-dir-btn primary" id="btn-llama-dir-add" data-i18n="btn_llama_dir_add">Ajouter</button>
+              </div>
+              <p class="setting-hint" id="llama-dirs-status" role="status"></p>
+              <p class="setting-hint" data-i18n="hint_llama_dirs">Lumen cherche les GGUF dans tous ces dossiers. Choisis celui qui reçoit les téléchargements (par exemple un disque externe pour garder de la place). Un disque débranché est ignoré : ses modèles réapparaissent quand il revient. Astuce : dans le Finder, ⌥⌘C copie le chemin d'un dossier.</p>
+            </div>
+            <div class="setting-item" id="llama-backend-item" hidden>
+              <label for="select-llama-backend" data-i18n="lbl_llama_backend">Calcul llama.cpp</label>
+              <select id="select-llama-backend">
+                <option value="auto" data-i18n="opt_llama_backend_auto">Automatique (GPU si disponible)</option>
+                <option value="cuda" data-i18n="opt_llama_backend_cuda">Carte NVIDIA (CUDA)</option>
+                <option value="vulkan" data-i18n="opt_llama_backend_vulkan">Carte graphique (Vulkan)</option>
+                <option value="cpu" data-i18n="opt_llama_backend_cpu">Processeur (CPU)</option>
+              </select>
+              <p class="setting-hint" id="llama-backend-status" role="status"></p>
+              <p class="setting-hint" data-i18n="hint_llama_backend">Une carte NVIDIA accélère fortement la génération. Sans carte détectée, Lumen utilise le processeur. Le serveur redémarre si ce choix change.</p>
+            </div>
+            <div class="setting-item">
+              <label for="select-llama-num-ctx" data-i18n="lbl_llama_context">Taille du contexte llama.cpp</label>
+              <select id="select-llama-num-ctx">
+                <option value="2048" data-i18n="llama_ctx_2048">2 048 tokens</option>
+                <option value="4096" data-i18n="llama_ctx_4096">4 096 tokens</option>
+                <option value="8192" data-i18n="llama_ctx_8192">8 192 tokens (recommandé)</option>
+                <option value="16384" data-i18n="llama_ctx_16384">16 384 tokens</option>
+                <option value="32768" data-i18n="llama_ctx_32768">32 768 tokens</option>
+                <option value="65536" data-i18n="llama_ctx_65536">65 536 tokens (64K)</option>
+                <option value="131072" data-i18n="llama_ctx_131072">131 072 tokens (128K)</option>
+                <option value="262144" data-i18n="llama_ctx_262144">262 144 tokens (256K)</option>
+              </select>
+              <p class="setting-hint" data-i18n="hint_llama_context">Une valeur plus grande permet d’analyser des pages et conversations plus longues, mais consomme davantage de mémoire. Le serveur redémarre si cette valeur change.</p>
+            </div>
+            <div class="setting-item">
+              <div class="loaded-models-head">
+              <label data-i18n="lbl_llama_catalog">Catalogue GGUF recommandé</label>
+                <button type="button" id="btn-refresh-llama-models" class="loaded-refresh-btn" title="Rafraîchir" data-i18n-title="tt_refresh_loaded">⟳</button>
+              </div>
+              <!-- RAM / disque de la machine + palier conseillé -->
+              <p class="setting-hint" id="llama-hw-banner" hidden></p>
+              <div id="llama-model-catalog" class="llama-model-catalog"></div>
+            </div>
+          </div>
+
+          <div id="settings-group-litert" style="display:none">
+            <div class="setting-item">
+              <label for="select-model-litert" data-i18n="lbl_litert_model">Modèle LiteRT-LM</label>
+              <select id="select-model-litert">
+                <option value="" data-i18n="opt_loading_models">Chargement des modèles locaux...</option>
+              </select>
+              <p class="setting-hint" id="litert-status" role="status"></p>
+              <p class="setting-hint" data-i18n="hint_litert_model">LiteRT-LM est le moteur embarqué de Google AI Edge. Lumen démarre son serveur sur le port local privé 9379 et importe le modèle choisi dans son registre au premier message. Les modèles sont au format .litertlm : ils ne sont pas interchangeables avec les GGUF de llama.cpp.</p>
+            </div>
+            <div class="setting-item">
+              <label data-i18n="lbl_litert_catalog">Catalogue LiteRT-LM</label>
+              <div id="litert-model-catalog" class="llama-model-catalog"></div>
+            </div>
+          </div>
+
+
+
+          <!-- ===== Performances de llama.cpp (llama_perf.json) ===== -->
+          <div class="settings-section-title" data-i18n="sec_llama_perf">Performances des modèles locaux (llama.cpp)</div>
+          <div class="setting-item">
+            <label for="select-llama-kv" data-i18n="lbl_llama_kv">Cache de contexte (KV)</label>
+            <select id="select-llama-kv">
+              <option value="q8_0" data-i18n="opt_kv_q8">Compressé 8 bits (≈ ½ mémoire, recommandé)</option>
+              <option value="q4_0" data-i18n="opt_kv_q4">Compressé 4 bits (≈ ¼ mémoire, légère perte)</option>
+              <option value="f16" data-i18n="opt_kv_f16">Pleine précision (plus de mémoire)</option>
+            </select>
+            <div class="setting-item checkbox-row"><input type="checkbox" id="checkbox-llama-reuse" /><label for="checkbox-llama-reuse" data-i18n="lbl_llama_reuse">Réutiliser le début de conversation d'un tour à l'autre (réponses plus rapides)</label></div>
+            <label for="select-llama-draft" data-i18n="lbl_llama_draft">Décodage spéculatif</label>
+            <select id="select-llama-draft"></select>
+            <div class="model-picker-row" id="dspark-row" hidden>
+              <span id="dspark-status" class="setting-hint"></span>
+              <button type="button" id="btn-dspark-download" class="ios-row-action" data-i18n="btn_dspark_download">Télécharger le brouillon DSpark</button>
+            </div>
+            <p class="setting-hint" id="llama-perf-hint" data-i18n="hint_llama_perf">Le décodage spéculatif fait proposer des mots par un mécanisme rapide, que le modèle valide en bloc : jusqu'à 2× plus rapide quand les propositions sont bonnes. « Répétitions du contexte » ne coûte aucune mémoire ; un modèle brouillon doit être de la même famille que le modèle principal. Appliqué au prochain démarrage du modèle ; en cas de refus, Lumen redémarre le modèle sans ces options.</p>
+          </div>
+
+          <!-- ===== Raisonnement et aiguillage : modèles auxiliaires du tour ===== -->
+          <div class="settings-section-title" data-i18n="sec_reasoning">Raisonnement et aiguillage</div>
+          <div class="setting-item">
+            <label><input type="checkbox" id="checkbox-orchestrate" /> <span data-i18n="lbl_orchestrate">Réponse orchestrée</span></label>
+          </div>
+          <div class="setting-item">
+            <label for="input-orchestrate-fast" data-i18n="lbl_orchestrate_fast">Modèle rapide pour les décisions</label>
+            <!-- Liste des modèles du moteur courant (refreshOrchestrateModelSelects). -->
+            <select id="input-orchestrate-fast"></select>
+            <p class="setting-hint" data-i18n="hint_orchestrate_fast"></p>
+          </div>
+          <div class="setting-item">
+            <label for="input-orchestrate-strong" data-i18n="lbl_orchestrate_strong">Modèle de renfort</label>
+            <select id="input-orchestrate-strong"></select>
+            <p class="setting-hint" data-i18n="hint_orchestrate_strong"></p>
+          </div>
+          <!-- ===== Moteur de décision (Tev1, Laya, Clef Flash) ===== -->
+          <div class="setting-item" id="settings-decision"></div>
+
+          <!-- ===== Embeddings (recherche documentaire / RAG) ===== -->
+          <div class="settings-section-title" data-i18n="sec_embeddings">Embeddings (documents)</div>
+          <div class="setting-item">
+            <label for="select-embed-model" data-i18n="lbl_embed_model">Modèle d'embedding</label>
+            <select id="select-embed-model">
+              <option value="auto" data-i18n="opt_embed_auto">Automatique (suit la source d'IA)</option>
+              <!-- Autres options : construites depuis lib/embed-models.js (initEmbedUI). -->
+            </select>
+            <p class="setting-hint" data-i18n="hint_embed_model">Ces modèles tournent sur le llama.cpp intégré, dans un serveur dédié (port privé 11436) : l'analyse de documents reste locale même si vous discutez avec une API cloud. « Automatique » utilise Ollama ou l'API configurée plus haut.</p>
+            <div class="model-picker-row">
+              <button type="button" id="btn-embed-download" class="ios-row-action" data-i18n="btn_embed_download">Télécharger ce modèle</button>
+              <span id="embed-status" class="setting-hint" role="status"></span>
+            </div>
+            <p class="setting-hint" id="embed-index-warning" hidden></p>
+          </div>
+
+          <div class="settings-section-title" data-i18n="sec_rerank">Reranking (qualité des recherches)</div>
+          <div class="setting-item">
+            <div class="setting-item checkbox-row"><input type="checkbox" id="checkbox-rerank" /><label for="checkbox-rerank" data-i18n="lbl_rerank_on">Reclasser les passages trouvés avec un modèle de reranking</label></div>
+            <label for="select-rerank-model" data-i18n="lbl_rerank_model">Modèle de reranking</label>
+            <select id="select-rerank-model"></select>
+            <div class="model-picker-row">
+              <button type="button" id="btn-rerank-download" class="ios-row-action" data-i18n="btn_rerank_download">Télécharger ce modèle</button>
+              <button type="button" id="btn-rerank-delete" class="ios-row-action" data-i18n="btn_rerank_delete">Supprimer</button>
+              <span id="rerank-status" class="setting-hint" role="status"></span>
+            </div>
+            <p class="setting-hint" data-i18n="hint_rerank">Après la recherche par mots-clés et par sens, un petit modèle relit les meilleurs passages face à votre question et les reclasse : les réponses tirées de vos documents, du Corpus et des projets citent les bons extraits. Serveur local dédié (port 11441), arrêté après 10 min d'inactivité.</p>
+          </div>
+
+          <div class="settings-section-title" data-i18n="sec_bonsai_simple">Génération d'images</div>
+          <div class="setting-item">
+            <label for="select-image-provider" data-i18n="lbl_image_provider">Moteur d'image</label>
+            <select id="select-image-provider">
+              <option value="bonsai" data-i18n="opt_bonsai_local">Bonsai local</option>
+              <option value="ollama" data-i18n="opt_image_ollama">Ollama local</option>
+              <option value="openai" data-i18n="opt_image_openai">GPT (OpenAI)</option>
+              <!-- Révélée par refreshPlaygroundOption() quand Image Playground
+                   (macOS 27, Apple Intelligence) répond présent. -->
+              <option value="playground" data-i18n="opt_image_playground" hidden>Image Playground (Apple)</option>
+            </select>
+          </div>
+          <!-- Le modèle dépend du moteur : un seul sélecteur, repeuplé à
+               chaque changement de moteur (BONSAI_MODELS / modèles Ollama
+               installés / modèles OpenAI). -->
+          <div class="setting-item">
+            <label for="select-image-model" data-i18n="lbl_image_model">Modèle</label>
+            <select id="select-image-model"></select>
+            <button type="button" class="settings-save-btn secondary-action compact" id="btn-image-model-refresh" data-i18n="btn_image_model_refresh">Rafraîchir</button>
+            <p class="setting-hint" id="image-model-hint"></p>
+            <p class="setting-hint" id="image-sizes-hint"></p>
+          </div>
+          <div id="image-provider-ollama">
+            <p class="setting-hint" data-i18n="hint_image_ollama">Ollama génère les images via son API compatible OpenAI, sur l'URL du serveur définie plus haut. Aucune clé n'est nécessaire. Les modèles non installés sont signalés : récupérez-les avec <code>ollama pull &lt;modèle&gt;</code>.</p>
+            <button class="settings-save-btn secondary-action" id="btn-image-ollama-test" data-i18n="btn_image_ollama_test">Tester le moteur</button>
+            <p class="setting-hint" id="image-ollama-status"></p>
+          </div>
+          <div id="image-provider-openai">
+            <p class="setting-hint" data-i18n="hint_openai_image">OpenAI utilise la clé et l'URL API cloud définies dans cette section.</p>
+          </div>
+          <div id="image-provider-playground">
+            <p class="setting-hint" data-i18n="hint_image_playground">Image Playground (Apple Intelligence) ouvre la feuille système avec votre description ; validez l'image pour la renvoyer à Lumen. Le « modèle » est le style. Les images sont produites par Private Cloud Compute d'Apple.</p>
+            <p class="setting-hint" id="playground-status"></p>
+          </div>
+          <div id="image-provider-bonsai">
+            <p class="setting-hint" data-i18n="hint_bonsai">Moteur PrismML Bonsai Image 4B (Apple Silicon ou GPU NVIDIA), optionnel : le moteur se télécharge depuis le dépôt Lumen, les modèles Ternary (qualité) et Binary (1 bit, plus léger) depuis Hugging Face.</p>
+            <p class="setting-hint" id="bonsai-status"></p>
+            <div class="bonsai-models" id="bonsai-models"></div>
+            <button class="settings-save-btn secondary-action bonsai-local-only" id="btn-bonsai-start" data-i18n="btn_bonsai_start">Lancer l'API Bonsai</button>
+            <div class="setting-item">
+              <label for="input-bonsai-url" data-i18n="lbl_bonsai_url">URL du backend Bonsai</label>
+              <input type="text" id="input-bonsai-url" placeholder="http://127.0.0.1:8800" />
+            </div>
+            <p class="setting-hint" data-i18n="hint_bonsai_url">Laisse vide pour détecter automatiquement l'API locale. Renseigne une URL (ex. backend distant) pour l'utiliser à la place.</p>
+            <button class="settings-save-btn secondary-action" id="btn-bonsai-url-save" data-i18n="btn_bonsai_url_save">Enregistrer l'URL</button>
+          </div>
+
+          <!-- ===== Consignes ===== -->
+          <div class="settings-section-title" data-i18n="sec_instructions">Consignes</div>
+          <!-- System prompt (sent before the first user message) -->
+          <div class="setting-item">
+            <label for="input-system-prompt" data-i18n="lbl_system_prompt">Prompt système (envoyé avant le 1ᵉʳ message)</label>
+            <textarea id="input-system-prompt" rows="3" placeholder="Ex : Tu es un assistant concis qui répond en français." data-i18n-ph="ph_system_prompt"></textarea>
+          </div>
+
+          <!-- Tous les autres prompts système de Lumen : ceux du cœur, des
+               agents et de chaque app. Repliés dans « avancé » parce qu'un
+               prompt mal réécrit dégrade silencieusement le comportement. -->
+          <details class="settings-advanced">
+            <summary><span data-i18n="adv_prompts_toggle">Prompts système de Lumen</span><span class="adv-hint" data-i18n="adv_prompts_hint">Réécrire les consignes du cœur, des agents et des apps.</span></summary>
+            <p class="setting-hint" data-i18n="hint_prompts_catalog">Chaque consigne garde son texte d'origine tant que vous ne la remplacez pas. Le champ ci-dessus reste votre préférence personnelle, ajoutée au prompt du cœur — ce catalogue, lui, remplace les textes eux-mêmes.</p>
+            <button type="button" class="settings-save-btn secondary-action" id="btn-open-prompts" data-i18n="btn_open_prompts">Ouvrir le catalogue des prompts</button>
+          </details>
+
+<!-- Action engine for Ollama : Fluxo. Le designer s'ouvre désormais depuis
+               la fenêtre Agents (section Skills), pas depuis les réglages. Ce groupe
+               reste présent (référencé par toggleSettingsGroups) mais sans contenu. -->
+          <div id="settings-group-fluxo" style="display: none;"></div>
+
+          </div><!-- /models pane -->
+
+          <!-- Voice & dictation tab -->
+          <div class="settings-tab-pane" data-pane="voice">
+            <div class="settings-section-title" data-i18n="sec_voice_mode">Voix</div>
+            <div class="setting-item" id="speech-mode-row">
+              <label class="field-label" for="select-speech-backend"><span class="field-icon" style="--ic:#30d158" data-icon="speaker"></span><span data-i18n="lbl_speech_backend">Moteur vocal</span></label>
+              <select id="select-speech-backend">
+                <option value="auto" data-i18n="opt_speech_auto">Automatique</option>
+                <option value="piper" data-i18n="opt_speech_piper">Piper local</option>
+                <option value="shortcut" data-i18n="opt_speech_shortcut">Raccourci Apple</option>
+                <option value="system" data-i18n="opt_speech_system">Synthèse vocale du système</option>
+              </select>
+            </div>
+
+            <div id="tts-settings">
+              <div class="settings-section-title" data-i18n="sec_tts">Synthèse vocale (Piper)</div>
+              <p class="setting-hint" data-i18n="hint_tts">Voix neuronale locale sur macOS, Windows, Linux et Raspberry Pi. Tant qu'aucune voix n'est installée, Lumen parle avec la voix du système.</p>
+              <!-- État du moteur : livré avec Lumen (Linux/Windows) ou installable
+                   en un clic (macOS), plus jamais un script à lancer soi-même. -->
+              <div class="fluxo-card-row" id="tts-engine-row">
+                <div class="fluxo-card-row-text">
+                  <div class="fluxo-card-row-label" data-i18n="lbl_tts_engine">Moteur vocal</div>
+                  <div class="fluxo-card-row-hint" id="tts-engine-state"></div>
+                </div>
+                <button type="button" id="btn-tts-install" class="settings-save-btn secondary-action compact" data-i18n="btn_tts_install" hidden>Installer le moteur</button>
+              </div>
+              <div class="ollama-pull-progress" id="tts-install-progress" hidden><span></span></div>
+              <div class="setting-item">
+                <label for="select-tts-voice" data-i18n="lbl_tts_voice">Voix active</label>
+                <select id="select-tts-voice"></select>
+              </div>
+
+              <!-- Personnalisation de la voix Piper (débit, expressivité,
+                   variation, pauses, locuteur). Les curseurs sont bornés par
+                   le backend (tts_tuning_limits) : on ne propose jamais une
+                   valeur qui ferait bégayer ou souffler le moteur. -->
+              <div class="tts-tune" id="tts-tune" hidden>
+                <div class="tts-tune-head">
+                  <div>
+                    <div class="fluxo-card-row-label" data-i18n="lbl_tts_tune">Personnaliser la voix</div>
+                    <div class="fluxo-card-row-hint" data-i18n="hint_tts_tune">Réglages appliqués à la voix active, partout où Lumen parle.</div>
+                  </div>
+                  <button type="button" class="settings-save-btn secondary-action compact" id="btn-tts-tune-reset" data-i18n="btn_default">Par défaut</button>
+                </div>
+                <div class="setting-item" id="tts-speaker-item" hidden>
+                  <label data-i18n="lbl_tts_speaker">Voix du modèle (locuteur)</label>
+                  <div class="tts-speakers" id="tts-speakers"></div>
+                </div>
+                <div class="tts-tune-grid">
+                  <div class="setting-item">
+                    <label for="range-tts-pace"><span data-i18n="lbl_tts_pace">Vitesse de parole</span> <span class="tts-val" id="label-tts-pace">×1.0</span></label>
+                    <input type="range" id="range-tts-pace" min="0" max="100" step="1" value="50" />
+                  </div>
+                  <div class="setting-item">
+                    <label for="range-tts-expr"><span data-i18n="lbl_tts_expr">Expressivité de l'intonation</span> <span class="tts-val" id="label-tts-expr"></span></label>
+                    <input type="range" id="range-tts-expr" min="0" max="100" step="1" value="50" />
+                  </div>
+                  <div class="setting-item">
+                    <label for="range-tts-var"><span data-i18n="lbl_tts_var">Naturel du rythme (variations)</span> <span class="tts-val" id="label-tts-var"></span></label>
+                    <input type="range" id="range-tts-var" min="0" max="100" step="1" value="50" />
+                  </div>
+                  <div class="setting-item">
+                    <label for="range-tts-pause"><span data-i18n="lbl_tts_pause">Pause entre les phrases</span> <span class="tts-val" id="label-tts-pause"></span></label>
+                    <input type="range" id="range-tts-pause" min="0" max="100" step="1" value="33" />
+                  </div>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="loaded-models-head">
+                  <label data-i18n="lbl_tts_catalog">Voix disponibles (téléchargement)</label>
+                  <button type="button" id="btn-tts-refresh" class="loaded-refresh-btn" title="Rafraîchir" data-i18n-title="tt_refresh_loaded">⟳</button>
+                </div>
+                <div id="tts-catalog" class="loaded-models-list"></div>
+              </div>
+              <div class="setting-item">
+                <button type="button" id="btn-tts-test" class="settings-save-btn" style="margin-top:2px" data-i18n="btn_tts_test">Tester la voix</button>
+                <div class="fluxo-card-row-hint" id="tts-status"></div>
+              </div>
+            </div>
+
+            <div id="webtts-settings">
+              <div class="settings-section-title" data-i18n="sec_system_voice">Synthèse vocale (voix du système)</div>
+              <p class="setting-hint" data-i18n="hint_system_voice">Voix utilisée par les apps qui lisent du texte à voix haute. La liste reflète les voix installées sur le système.</p>
+              <div class="setting-item">
+                <label for="select-web-voice" data-i18n="lbl_voice">Voix</label>
+                <select id="select-web-voice"><option value="" data-i18n="opt_default_voice">Voix par défaut</option></select>
+              </div>
+              <div class="setting-item">
+                <button type="button" id="btn-web-voice-test" class="settings-save-btn" style="margin-top:2px" data-i18n="btn_test_voice">Tester la voix</button>
+              </div>
+            </div>
+
+            <div id="speech-shortcut-settings">
+              <div class="setting-item">
+                <label class="field-label" for="input-speak-shortcut"><span class="field-icon" style="--ic:#34c759" data-icon="speaker"></span><span data-i18n="lbl_speak_shortcut">Raccourci pour Énoncer le texte</span></label>
+                <input type="text" id="input-speak-shortcut" placeholder="Speak Text" />
+              </div>
+            </div>
+
+            <div class="settings-section-title" data-i18n="sec_dictation_mode">Dictée</div>
+            <div class="setting-item">
+              <label for="select-dictation-backend" data-i18n="lbl_dictation_backend">Moteur de dictée</label>
+              <select id="select-dictation-backend">
+                <option value="native" data-i18n="opt_dictation_native">Système / Raccourci Apple</option>
+                <option value="whisper" data-i18n="opt_dictation_whisper">Whisper local</option>
+              </select>
+            </div>
+            <div id="dictation-native-settings">
+              <div class="setting-item">
+                <label class="field-label" for="input-dictate-shortcut"><span class="field-icon" style="--ic:#ff375f" data-icon="mic"></span><span data-i18n="lbl_dictate_shortcut">Raccourci pour la Dictée vocale</span></label>
+                <input type="text" id="input-dictate-shortcut" placeholder="Dictate Text" />
+              </div>
+            </div>
+            <input type="checkbox" id="checkbox-whisper" hidden />
+            <div class="setting-item" id="whisper-config" hidden>
+              <label class="field-label" for="select-whisper-model"><span class="field-icon" style="--ic:#ff9f0a" data-icon="mic"></span><span data-i18n="lbl_whisper_model">Modèle Whisper (ONNX quantifié)</span></label>
+              <select id="select-whisper-model"></select>
+              <button type="button" id="btn-whisper-dl" data-i18n="btn_whisper_dl">⬇ Télécharger le modèle</button>
+              <div id="whisper-status" data-i18n="whisper_status_idle">Le modèle sera téléchargé au premier usage (ou maintenant via ce bouton), puis mis en cache.</div>
+              <!-- Moteur natif whisper.cpp (src-tauri/src/whisper.rs) -->
+              <div class="whisper-native" id="whisper-native">
+                <label class="field-label" for="select-whisper-engine"><span class="field-icon" style="--ic:#30d158" data-icon="zap"></span><span data-i18n="lbl_whisper_engine">Moteur de transcription</span></label>
+                <select id="select-whisper-engine">
+                  <option value="auto" data-i18n="opt_whisper_engine_auto">Automatique (whisper.cpp si disponible, sinon navigateur)</option>
+                  <option value="native" data-i18n="opt_whisper_engine_native">whisper.cpp (natif, accéléré)</option>
+                  <option value="js" data-i18n="opt_whisper_engine_js">Navigateur (transformers.js)</option>
+                </select>
+                <label class="field-label" for="select-whisper-native-model"><span data-i18n="lbl_whisper_native_model">Modèle whisper.cpp</span></label>
+                <select id="select-whisper-native-model"></select>
+                <div class="whisper-native-actions">
+                  <button type="button" id="btn-whisper-native-dl" data-i18n="btn_whisper_native_dl">⬇ Télécharger</button>
+                  <button type="button" id="btn-whisper-native-del" data-i18n="btn_whisper_native_del">Supprimer</button>
+                </div>
+                <div id="whisper-native-status" class="setting-hint"></div>
+                <p class="setting-hint" data-i18n="hint_whisper_native">whisper.cpp utilise le GPU (Metal) et tous les cœurs : beaucoup plus rapide que le navigateur, et assez pour les gros modèles. large-v3-turbo est le plus précis (≈ 570 Mo, ≈ 1 Go de mémoire pendant la transcription, libérée après 10 min d'inactivité).</p>
+              </div>
+            </div>
+
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-voice-bargein" />
+              <label for="checkbox-voice-bargein" data-i18n="lbl_voice_bargein">Conversation vocale : couper la parole à Lumen en parlant</label>
+            </div>
+            <p class="setting-hint" data-i18n="hint_voice_bargein">Pendant que Lumen répond à voix haute, le micro reste ouvert : il se tait dès que vous parlez. Désactivez si des haut-parleurs forts l'interrompent par erreur (un casque règle le problème).</p>
+
+            <!-- Commande vocale du bureau : opt-in. Rien n'est chargé ni ajouté
+                 au contexte du modèle tant que la case est décochée. -->
+            <div class="settings-section-title" data-i18n="sec_voice_control">Commande vocale du bureau</div>
+            <p class="setting-hint" data-i18n="hint_voice_control">Maintenez le raccourci sur Lumen Desktop et parlez : « ouvre Notes », « cherche facture 2026 », « lance le workflow veille », « mode sombre », « demande à Lumen… ». Les commandes sont comprises hors ligne, sans passer par le modèle ni ajouter d'outils aux conversations.</p>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-voice-control" />
+              <label for="checkbox-voice-control" data-i18n="lbl_voice_control">Activer la commande vocale (désactivée par défaut)</label>
+            </div>
+            <div id="voice-control-settings" hidden>
+              <div class="setting-item">
+                <label for="select-voice-shortcut" data-i18n="lbl_voice_shortcut">Raccourci « maintenir pour parler »</label>
+                <select id="select-voice-shortcut">
+                  <option value="alt+space">⌥ Espace</option>
+                  <option value="ctrl+space">Ctrl Espace</option>
+                  <option value="meta+shift+space">⌘ ⇧ Espace</option>
+                </select>
+              </div>
+              <div class="setting-item checkbox-row">
+                <input type="checkbox" id="checkbox-voice-router" />
+                <label for="checkbox-voice-router" data-i18n="lbl_voice_router">Routeur IA si la commande n'est pas comprise (un court appel au modèle actif, hors des conversations)</label>
+              </div>
+              <div class="setting-item checkbox-row">
+                <input type="checkbox" id="checkbox-voice-intents" />
+                <label for="checkbox-voice-intents" data-i18n="lbl_voice_intents">Le routeur peut aussi déclencher les intentions des apps (créer une note, planifier une tâche…)</label>
+              </div>
+              <div class="setting-item checkbox-row">
+                <input type="checkbox" id="checkbox-voice-speak" />
+                <label for="checkbox-voice-speak" data-i18n="lbl_voice_speak">Confirmer à la voix l'action exécutée</label>
+              </div>
+            </div>
+
+            <!-- macOS Shortcuts Configurations pour le moteur d'actions. -->
+            <div id="settings-group-shortcut" style="display: none;">
+              <div class="settings-subhead" data-i18n="sub_shortcut">Moteur d'actions : Apple Shortcuts</div>
+              <div class="setting-item">
+                <label class="field-label" for="input-shortcut-name"><span class="field-icon" style="--ic:#af52de" data-icon="sparkles"></span><span data-i18n="lbl_shortcut_name">Nom du Raccourci macOS</span></label>
+                <input type="text" id="input-shortcut-name" placeholder="Modèle Apple" />
+              </div>
+              <div class="setting-item">
+                <label class="field-label" for="input-action-router"><span class="field-icon" style="--ic:#ff9f0a" data-icon="bolt"></span><span data-i18n="lbl_action_router">Raccourci Routeur d'Actions</span></label>
+                <input type="text" id="input-action-router" placeholder="Action Router" />
+              </div>
+              <div class="setting-item"><div class="router-doc-wrap" data-i18n-html="router_doc_html"></div></div>
+            </div>
+          </div><!-- /voice pane -->
+
+          <!-- HeartBeat tab -->
+          <div class="settings-tab-pane" data-pane="agent">
+            <!-- Heartbeat : déclencheur programmé (CRON) -->
+            <div class="settings-section-title" data-i18n="sec_heartbeat">Heartbeat (tâche d'arrière-plan programmée)</div>
+            <p class="setting-hint" data-i18n="hint_heartbeat">Exécute une tâche à intervalle régulier : le workflow Fluxo nommé « Heartbeat » (toutes plateformes) ou, sur Mac, un raccourci de l'app Raccourcis. Placez-y le process de votre choix (synchro, rappel, automatisation…).</p>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-heartbeat" />
+              <label for="checkbox-heartbeat" data-i18n="lbl_heartbeat_enable">Activer le heartbeat</label>
+            </div>
+            <!-- Le choix du moteur n'existe que sur Mac : ailleurs il n'y a pas de
+                 Raccourcis, Fluxo est imposé et la ligne est masquée (main.js). -->
+            <div class="setting-item" id="heartbeat-engine-row">
+              <label for="select-heartbeat-engine" data-i18n="lbl_heartbeat_engine">Moteur du heartbeat</label>
+              <select id="select-heartbeat-engine">
+                <option value="fluxo" data-i18n="opt_heartbeat_fluxo">Workflow Fluxo « Heartbeat »</option>
+                <option value="shortcut" data-i18n="opt_heartbeat_shortcut">Raccourci macOS</option>
+              </select>
+            </div>
+            <div class="setting-item" id="heartbeat-shortcut-row">
+              <label class="field-label" for="input-heartbeat-shortcut"><span class="field-icon" style="--ic:#ff4d6d" data-icon="heartbeat"></span><span data-i18n="lbl_heartbeat_shortcut">Raccourci macOS à déclencher</span></label>
+              <input type="text" id="input-heartbeat-shortcut" placeholder="Heartbeat" />
+            </div>
+            <div class="setting-item">
+              <label for="select-heartbeat-frequency" data-i18n="lbl_heartbeat_freq">Fréquence d'exécution</label>
+              <select id="select-heartbeat-frequency">
+                <option value="0 * * * * *" data-i18n="opt_freq_min">Toutes les minutes</option>
+                <option value="0 */5 * * * *" data-i18n="opt_freq_5">Toutes les 5 minutes</option>
+                <option value="0 */15 * * * *" data-i18n="opt_freq_15">Toutes les 15 minutes</option>
+                <option value="0 */30 * * * *" data-i18n="opt_freq_30">Toutes les 30 minutes</option>
+                <option value="0 0 * * * *" data-i18n="opt_freq_hour">Toutes les heures</option>
+                <option value="0 0 */6 * * *" data-i18n="opt_freq_6h">Toutes les 6 heures</option>
+                <option value="0 0 9 * * *" data-i18n="opt_freq_9am">Tous les jours à 9h</option>
+                <option value="custom" data-i18n="opt_freq_custom">Personnalisé (expression CRON)…</option>
+              </select>
+            </div>
+            <div class="setting-item" id="heartbeat-cron-row" style="display: none;">
+              <label for="input-heartbeat-cron" data-i18n="lbl_cron">Expression CRON (sec min heure jour mois jour-semaine)</label>
+              <input type="text" id="input-heartbeat-cron" placeholder="0 */10 * * * *" />
+            </div>
+            <div class="setting-item">
+              <label for="input-heartbeat-input" data-i18n="lbl_heartbeat_input">Entrée envoyée au raccourci (optionnel)</label>
+              <input type="text" id="input-heartbeat-input" placeholder="Laisser vide si non utilisé" data-i18n-ph="ph_heartbeat_input" />
+            </div>
+          </div><!-- /agent pane -->
+
+
+          <!-- Sauvegarde et mises à jour. Deux garanties de continuité : pouvoir
+               emporter ses données, et recevoir les correctifs sans retélécharger
+               une image disque à la main. -->
+
+          <!-- ===== Applications et licence =====================================
+               Deux sujets, une seule page, parce qu'ils n'en font qu'un pour
+               l'utilisateur : ce que Lumen sait faire (la licence) et ce que
+               chaque application a le droit de faire (les permissions). -->
+          <div class="settings-tab-pane" data-pane="licence">
+
+            <h3 data-i18n="licence_title">Licence Lumen Server</h3>
+            <p class="hint" data-i18n="licence_hint">
+              Toutes les applications de Lumen sont disponibles sans licence.
+              Une clé n'est nécessaire que pour utiliser un Lumen Server
+              (inférence partagée, agents exécutés sur le serveur). La
+              vérification est locale : votre clé ne quitte jamais cette machine.
+            </p>
+            <div class="setting-item" id="licence-state"></div>
+            <div class="setting-item">
+              <label for="input-licence" data-i18n="lbl_licence">Clé de licence</label>
+              <input id="input-licence" type="text" spellcheck="false" placeholder="LUMEN-PRO.…" />
+            </div>
+            <div class="setting-item">
+              <button type="button" class="btn primary" id="btn-licence-activate" data-i18n="btn_activate">Activer</button>
+              <button type="button" class="btn" id="btn-licence-clear" data-i18n="btn_licence_clear">Retirer la licence</button>
+            </div>
+
+            <h3 data-i18n="eula_title">Licence libre de Lumen</h3>
+            <p class="hint" data-i18n="eula_hint">
+              Code sous GPL-3.0-or-later. Vous pouvez utiliser, modifier et redistribuer
+              Lumen. Les composants tiers gardent leurs licences.
+            </p>
+            <div class="setting-item" id="eula-state"></div>
+            <div class="setting-item">
+              <button type="button" class="btn" id="btn-eula-read" data-i18n="btn_eula_read">Lire la licence</button>
+            </div>
+
+            <h3 data-i18n="perms_title">Permissions des applications</h3>
+            <p class="hint" data-i18n="perms_hint">
+              Ce que vous avez accordé, ou refusé, à chaque application installée.
+              Retirer une autorisation la fait redemander à la prochaine utilisation.
+            </p>
+            <div id="perms-list" class="perms-list"></div>
+
+            <h3 data-i18n="repo_title">Dépôt d'applications</h3>
+            <p class="hint" data-i18n="repo_hint">
+              L'adresse depuis laquelle le Catalogue propose des applications.
+              HTTPS obligatoire : un index en clair se réécrit en route, et c'est
+              lui qui décide de ce qui s'installe.
+            </p>
+            <div class="setting-item">
+              <label for="input-repo" data-i18n="lbl_repo">Adresse de l'index</label>
+              <input id="input-repo" type="url" spellcheck="false" placeholder="https://…/index.json" />
+            </div>
+            <div class="setting-item">
+              <button type="button" class="btn" id="btn-repo-save" data-i18n="btn_save">Enregistrer</button>
+            </div>
+          </div>
+
+          <div class="settings-tab-pane" data-pane="maintenance">
+            <div class="settings-section-title" data-i18n="sec_backup">Sauvegarde</div>
+            <p class="setting-hint" data-i18n-html="hint_backup">Une archive <code>.lumenbackup</code> contient tout ton Lumen : notes, tables, projets, agents, mémoire, sandboxes. Les modèles et les voix n'y sont pas — ils se retéléchargent tout seuls.</p>
+            <div class="setting-item">
+              <div id="backup-estimate" class="setting-hint">…</div>
+            </div>
+            <div class="setting-item">
+              <label for="input-backup-dir" data-i18n="lbl_backup_dir">Dossier de destination (vide = Téléchargements)</label>
+              <input type="text" id="input-backup-dir" placeholder="/Users/…/Documents" />
+            </div>
+            <div class="setting-item">
+              <button type="button" class="settings-save-btn" id="btn-backup-export" data-i18n="btn_backup_export">Créer une sauvegarde</button>
+              <div id="backup-status" class="setting-hint"></div>
+            </div>
+
+            <!-- Sauvegarde automatique chiffrée (src-tauri/src/autobackup.rs). -->
+            <div class="settings-section-title" data-i18n="sec_autobackup">Sauvegarde automatique chiffrée</div>
+            <p class="setting-hint" data-i18n="hint_autobackup">Lumen crée une sauvegarde chiffrée à intervalle régulier dans le dossier choisi (disque externe, dossier iCloud ou NAS) et garde les plus récentes. Sans la phrase secrète, les archives sont illisibles : note-la en lieu sûr, elle sera demandée pour restaurer sur un autre ordinateur.</p>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-autobackup" />
+              <label for="checkbox-autobackup" data-i18n="lbl_autobackup_on">Activer la sauvegarde automatique</label>
+            </div>
+            <div class="setting-item">
+              <label for="input-autobackup-dir" data-i18n="lbl_autobackup_dir">Dossier des sauvegardes</label>
+              <input type="text" id="input-autobackup-dir" placeholder="/Volumes/Disque/Sauvegardes Lumen" />
+            </div>
+            <div class="setting-item">
+              <label for="select-autobackup-every" data-i18n="lbl_autobackup_every">Fréquence</label>
+              <select id="select-autobackup-every">
+                <option value="6" data-i18n="opt_every_6h">Toutes les 6 heures</option>
+                <option value="24" data-i18n="opt_every_day">Chaque jour</option>
+                <option value="168" data-i18n="opt_every_week">Chaque semaine</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <label for="input-autobackup-keep" data-i18n="lbl_autobackup_keep">Nombre de sauvegardes gardées</label>
+              <input type="number" id="input-autobackup-keep" min="1" max="100" value="7" />
+            </div>
+            <div class="setting-item">
+              <label for="input-autobackup-pass" data-i18n="lbl_autobackup_pass">Phrase secrète (8 caractères min. ; laisser vide pour garder l'actuelle)</label>
+              <input type="password" id="input-autobackup-pass" autocomplete="new-password" />
+            </div>
+            <div class="setting-item">
+              <button type="button" class="settings-save-btn" id="btn-autobackup-save" data-i18n="btn_autobackup_save">Enregistrer</button>
+              <button type="button" class="settings-save-btn secondary-action" id="btn-autobackup-run" data-i18n="btn_autobackup_run">Sauvegarder maintenant</button>
+              <div id="autobackup-status" class="setting-hint"></div>
+            </div>
+
+            <div class="settings-section-title" data-i18n="sec_restore">Restauration</div>
+            <p class="setting-hint" data-i18n-html="hint_restore">Dépose un fichier <code>.lumenbackup</code> ici, ou colle son chemin. Une archive de l'état actuel est créée automatiquement avant d'écraser quoi que ce soit.</p>
+            <div class="setting-item">
+              <label for="input-restore-path" data-i18n="lbl_restore_path">Chemin de l'archive</label>
+              <input type="text" id="input-restore-path" placeholder="/Users/…/Lumen_2026-08-10_1200.lumenbackup" />
+            </div>
+            <div class="setting-item">
+              <label for="input-restore-pass" data-i18n="lbl_restore_pass">Phrase secrète (archive chiffrée .enc uniquement)</label>
+              <input type="password" id="input-restore-pass" autocomplete="off" />
+            </div>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-restore-wipe" />
+              <label for="checkbox-restore-wipe" data-i18n="lbl_restore_wipe">Remplacer entièrement (sinon : fusionner par-dessus l'existant)</label>
+            </div>
+            <div class="setting-item">
+              <button type="button" class="settings-save-btn secondary-action" id="btn-restore-inspect" data-i18n="btn_restore_inspect">Examiner l'archive</button>
+              <button type="button" class="settings-save-btn" id="btn-restore-apply" disabled data-i18n="btn_restore_apply">Restaurer</button>
+              <div id="restore-status" class="setting-hint"></div>
+            </div>
+
+            <div class="settings-section-title" data-i18n="sec_updates">Mises à jour</div>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-update-auto" />
+              <label for="checkbox-update-auto" data-i18n="lbl_update_auto">Vérifier automatiquement au démarrage (une fois par jour)</label>
+            </div>
+            <div class="setting-item">
+              <button type="button" class="settings-save-btn" id="btn-update-check" data-i18n="btn_update_check">Rechercher une mise à jour</button>
+              <button type="button" class="settings-save-btn" id="btn-update-install" hidden data-i18n="btn_update_install">Installer et redémarrer</button>
+              <div id="update-status" class="setting-hint"></div>
+              <div id="update-notes" class="setting-hint"></div>
+            </div>
+          </div><!-- /maintenance pane -->
+
+          <!-- Objets connectés : les appareils physiques de Lumen (orbe ESP32,
+               Lumen Controller) et les associations badge RFID -> action.
+               Le badge d'OUVERTURE DE SESSION n'est volontairement pas ici :
+               il est lié à un profil, pas à une action, exige le mot de passe
+               courant, et un badge ne peut avoir qu'un seul de ces deux
+               usages. Il reste donc dans l'onglet Profil. -->
+          <!-- Connecteurs MCP -->
+          <!-- Toolbox tab : choix des outils publiés à l'IA en mode Outils -->
+          <div class="settings-tab-pane" data-pane="toolbox">
+            <!-- Skills au format Agent Skills (src-tauri/src/agent_skills.rs) -->
+            <div class="settings-section-title" data-i18n="sec_agent_skills">Skills (format Agent Skills)</div>
+            <p class="setting-hint" data-i18n="hint_agent_skills">Un skill est un dossier avec un fichier SKILL.md : un mode d'emploi que l'assistant et les agents lisent quand une tâche correspond (rédiger un type de document, suivre une procédure…). Format compatible avec d'autres assistants. Les scripts d'un skill ne sont jamais exécutés automatiquement.</p>
+            <div class="setting-item">
+              <div id="skills-list" class="skills-list"></div>
+              <div class="model-picker-row">
+                <input type="text" id="input-skill-import" data-i18n-ph="ph_skill_import" placeholder="Chemin d'un dossier de skill ou d'une archive .zip" />
+                <button type="button" id="btn-skill-import" class="ios-row-action" data-i18n="btn_skill_import">Importer</button>
+                <button type="button" id="btn-skill-new" class="ios-row-action" data-i18n="btn_skill_new">Nouveau skill</button>
+              </div>
+              <div id="skill-editor" hidden>
+                <textarea id="skill-md" rows="14" spellcheck="false" class="mono"></textarea>
+                <div class="model-picker-row">
+                  <button type="button" id="btn-skill-save" class="ios-row-action" data-i18n="btn_skill_save">Enregistrer le skill</button>
+                  <button type="button" id="btn-skill-cancel" class="ios-row-action" data-i18n="btn_skill_cancel">Fermer</button>
+                </div>
+              </div>
+              <span id="skills-status" class="setting-hint" role="status"></span>
+            </div>
+
+            <div class="settings-section-title" data-i18n="sec_toolbox">Outils publiés à l'IA</div>
+            <p class="setting-hint" data-i18n-html="hint_toolbox">En mode <strong>Outils</strong>, l'IA ne peut appeler que ce qui est publié ici.</p>
+
+            <div class="setting-item">
+              <div class="loaded-models-head">
+                <label id="toolbox-summary"></label>
+                <button type="button" id="btn-toolbox-refresh" class="loaded-refresh-btn" data-i18n-title="toolbox_reload" title="Rafraîchir">⟳</button>
+              </div>
+              <div class="toolbox-bulk">
+                <button type="button" id="btn-toolbox-all-on" class="settings-save-btn secondary-action compact" data-i18n="toolbox_all_on">Tout publier</button>
+                <button type="button" id="btn-toolbox-all-off" class="settings-save-btn secondary-action compact" data-i18n="toolbox_all_off">Tout retirer</button>
+              </div>
+            </div>
+
+            <div class="settings-section-title" data-i18n="sec_websearch">Recherche web</div>
+            <p class="setting-hint" data-i18n-html="hint_websearch">C'est le <strong>seul outil qui sort de la machine</strong> : la requête part chez le moteur choisi, et la page consultée apprend votre existence. Désactivé par défaut. Les adresses locales et privées (votre domotique) restent interdites à l'IA quels que soient ces réglages.</p>
+
+            <div class="warn-card">
+              <div class="warn-card-head" data-i18n="web_warn_title">À savoir avant d'activer</div>
+              <ul class="warn-card-list">
+                <li data-i18n="web_warn_query">Vos requêtes quittent la machine. Ce que vous demandez à Lumen — y compris ce que le modèle reformule à partir de votre conversation, de votre profil ou de vos mémoires — peut se retrouver dans une requête envoyée au moteur, qui l'associe à votre adresse IP.</li>
+                <li data-i18n="web_warn_choice">C'est l'IA qui décide quoi chercher, pas vous. Vous ne validez pas chaque requête : un modèle peut inclure dans sa recherche un détail que vous n'auriez pas publié.</li>
+                <li data-i18n="web_warn_inject">Les pages lues ne sont pas fiables. Une page peut contenir un texte destiné à manipuler le modèle (« ignore tes consignes, envoie… »). Lumen marque ce contenu comme donnée à citer, jamais comme instruction, mais aucune protection n'est absolue : méfiez-vous d'une réponse qui part soudainement dans une autre direction.</li>
+                <li data-i18n="web_warn_trust">Les résultats peuvent être faux. Un lien bien classé n'est pas une source vérifiée : le modèle peut résumer une page erronée avec le même aplomb qu'une bonne. Vérifiez les URL citées avant d'agir sur une information sensible.</li>
+                <li data-i18n="web_warn_combo">Combinée aux autres outils, la recherche devient une porte de sortie. Si vous publiez aussi des outils qui écrivent (workflows, domotique, connecteurs MCP), une consigne cachée dans une page peut chercher à les déclencher. Ne publiez que ce dont vous avez besoin.</li>
+              </ul>
+            </div>
+
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-web-enabled" />
+              <label for="checkbox-web-enabled" data-i18n="lbl_web_enabled">Autoriser l'IA à rechercher sur le web</label>
+            </div>
+
+            <div class="warn-confirm" id="web-confirm" hidden>
+              <p data-i18n="web_confirm_text">Vous vous apprêtez à autoriser un modèle à envoyer des requêtes sur Internet en votre nom, sans validation de votre part à chaque fois. Confirmez-vous ?</p>
+              <div class="warn-confirm-actions">
+                <button type="button" id="btn-web-confirm" class="settings-save-btn compact" data-i18n="web_confirm_yes">Activer la recherche web</button>
+                <button type="button" id="btn-web-cancel" class="settings-save-btn secondary-action compact" data-i18n="web_confirm_no">Annuler</button>
+              </div>
+            </div>
+
+            <div id="web-config" hidden>
+              <div class="setting-item">
+                <label for="select-web-engine" data-i18n="lbl_web_engine">Moteur de recherche</label>
+                <select id="select-web-engine"></select>
+                <div class="fluxo-card-row-hint" id="web-engine-hint"></div>
+              </div>
+
+              <div class="setting-item" id="web-endpoint-row">
+                <label for="input-web-endpoint" data-i18n="lbl_web_endpoint">URL de recherche</label>
+                <input type="text" id="input-web-endpoint" spellcheck="false" placeholder="https://searx.exemple.org/search?q={query}" />
+                <div class="fluxo-card-row-hint" data-i18n="hint_web_endpoint">{query} est remplacé par la requête encodée.</div>
+              </div>
+
+              <div class="setting-item">
+                <label for="input-web-results" data-i18n="lbl_web_results">Résultats renvoyés au modèle</label>
+                <input type="number" id="input-web-results" min="1" max="15" step="1" />
+                <div class="fluxo-card-row-hint" data-i18n="hint_web_results">Chaque résultat occupe du contexte : 3 à 5 suffisent presque toujours.</div>
+              </div>
+
+              <div class="setting-item checkbox-row" id="web-fallback-row">
+                <input type="checkbox" id="checkbox-web-fallback" />
+                <label for="checkbox-web-fallback" data-i18n="lbl_web_fallback">Essayer un autre moteur en cas d'échec</label>
+              </div>
+              <p class="setting-hint" id="web-fallback-hint" data-i18n="hint_web_fallback">Si le moteur choisi ne répond rien d'exploitable (limite de débit, page modifiée), Lumen réessaie avec les autres moteurs généralistes. Une instance privée ou Wikipédia ne bascule jamais vers un tiers.</p>
+
+              <div class="setting-item">
+                <label for="input-web-pages" data-i18n="lbl_web_pages">Pages de résultats parcourues</label>
+                <input type="number" id="input-web-pages" min="1" max="3" step="1" />
+                <div class="fluxo-card-row-hint" data-i18n="hint_web_pages">Au-delà de la première page pour les recherches pointues. Chaque page est une requête de plus.</div>
+              </div>
+
+              <div class="setting-item">
+                <label for="input-web-perdomain" data-i18n="lbl_web_perdomain">Résultats maximum par site</label>
+                <input type="number" id="input-web-perdomain" min="0" max="5" step="1" />
+                <div class="fluxo-card-row-hint" data-i18n="hint_web_perdomain">Évite qu'un seul site occupe toute la liste et donne au modèle un unique point de vue. 0 = pas de plafond.</div>
+              </div>
+
+              <div class="setting-item checkbox-row">
+                <input type="checkbox" id="checkbox-web-read" />
+                <label for="checkbox-web-read" data-i18n="lbl_web_read">Autoriser l'IA à lire une page entière</label>
+              </div>
+              <p class="setting-hint" data-i18n="hint_web_read">Sans cela, l'IA ne voit que les titres, URL et extraits renvoyés par le moteur.</p>
+              <p class="setting-hint warn-inline" data-i18n="hint_web_read_risk">C'est l'option la plus exposée aux textes piégés : une page entière offre bien plus de place pour glisser des consignes à destination du modèle qu'un extrait de deux lignes. Une liste de domaines autorisés la rend nettement plus sûre.</p>
+
+              <div class="setting-item checkbox-row" id="web-render-row">
+                <input type="checkbox" id="checkbox-web-render" />
+                <label for="checkbox-web-render" data-i18n="lbl_web_render">Exécuter le JavaScript des pages vides</label>
+              </div>
+              <p class="setting-hint" id="web-render-hint" data-i18n="hint_web_render">Quand une page ne livre aucun texte (application rendue par le navigateur), Lumen la recharge dans une fenêtre invisible pour en lire le contenu réel. Plus lent, et la page s'exécute vraiment : à laisser désactivé si vous lisez des sites peu sûrs.</p>
+
+              <div class="setting-item" id="web-deepen-row">
+                <label for="input-web-deepen" data-i18n="lbl_web_deepen">Résultats lus automatiquement</label>
+                <input type="number" id="input-web-deepen" min="0" max="3" step="1" />
+                <div class="fluxo-card-row-hint" data-i18n="hint_web_deepen">Après une recherche, Lumen lit le contenu des premiers résultats et le donne au modèle. Sans cela il ne voit que des titres, et complète de mémoire — donc avec des informations périmées. 0 = désactivé.</div>
+              </div>
+
+              <div class="setting-item" id="web-readchars-row">
+                <label for="input-web-chars" data-i18n="lbl_web_chars">Caractères lus par page</label>
+                <input type="number" id="input-web-chars" min="500" max="40000" step="500" />
+              </div>
+
+              <div class="setting-item">
+                <label for="input-web-allow" data-i18n="lbl_web_allow">Domaines autorisés</label>
+                <textarea id="input-web-allow" rows="2" spellcheck="false" placeholder="wikipedia.org, huggingface.co"></textarea>
+                <div class="fluxo-card-row-hint" data-i18n="hint_web_allow">Si cette liste n'est pas vide, l'IA ne peut atteindre AUCUN autre domaine. Laissez vide pour tout autoriser sauf les exclusions.</div>
+              </div>
+
+              <div class="setting-item">
+                <label for="input-web-block" data-i18n="lbl_web_block">Domaines exclus</label>
+                <textarea id="input-web-block" rows="2" spellcheck="false" placeholder="exemple.com"></textarea>
+              </div>
+
+              <div class="setting-item">
+                <button type="button" id="btn-web-test" class="settings-save-btn secondary-action compact" data-i18n="btn_web_test">Tester la recherche</button>
+                <div class="fluxo-card-row-hint" id="web-test-status"></div>
+              </div>
+            </div>
+
+            <div id="toolbox-groups"></div>
+          </div><!-- /toolbox pane -->
+
+          <div class="settings-tab-pane" data-pane="mcp">
+            <!-- Lumen comme SERVEUR MCP (src-tauri/src/mcp_server.rs) -->
+            <div class="settings-section-title" data-i18n="sec_mcp_server">Lumen comme serveur MCP</div>
+            <p class="setting-hint" data-i18n="hint_mcp_server">D'autres assistants de cet ordinateur (Claude Desktop, Claude Code, Cursor…) peuvent utiliser les outils de Lumen : agenda, tâches, coffre, mémoire, documents, courrier en lecture, domotique, météo. Le serveur n'écoute que sur cet ordinateur (127.0.0.1) et exige un jeton secret.</p>
+            <div class="setting-item">
+              <div class="setting-item checkbox-row"><input type="checkbox" id="checkbox-mcp-server" /><label for="checkbox-mcp-server" data-i18n="lbl_mcp_server_on">Activer le serveur MCP de Lumen</label></div>
+              <div class="setting-item checkbox-row"><input type="checkbox" id="checkbox-mcp-write" /><label for="checkbox-mcp-write" data-i18n="lbl_mcp_server_write">Autoriser aussi les outils qui modifient des données (rappels, coffre, mémoire, domotique…)</label></div>
+              <div id="mcp-server-details" hidden>
+                <div class="mcp-kv"><span data-i18n="lbl_mcp_url">Adresse</span><code id="mcp-server-url"></code></div>
+                <div class="mcp-kv"><span data-i18n="lbl_mcp_token">Jeton</span><code id="mcp-server-token">••••••••</code>
+                  <button type="button" id="btn-mcp-token-show" class="ios-row-action" data-i18n="btn_mcp_token_show">Afficher</button>
+                  <button type="button" id="btn-mcp-token-copy" class="ios-row-action" data-i18n="btn_mcp_token_copy">Copier</button>
+                  <button type="button" id="btn-mcp-token-regen" class="ios-row-action" data-i18n="btn_mcp_token_regen">Régénérer</button></div>
+                <label data-i18n="lbl_mcp_config">Configuration à coller dans le client (Claude Desktop : claude_desktop_config.json)</label>
+                <pre id="mcp-server-snippet" class="mcp-snippet"></pre>
+                <button type="button" id="btn-mcp-snippet-copy" class="ios-row-action" data-i18n="btn_mcp_snippet_copy">Copier la configuration</button>
+                <p class="setting-hint" id="mcp-server-tools"></p>
+              </div>
+              <span id="mcp-server-status" class="setting-hint" role="status"></span>
+            </div>
+
+            <div class="settings-section-title" data-i18n="sec_mcp">Connecteurs MCP</div>
+            <p class="setting-hint" data-i18n="hint_mcp">Un connecteur MCP ajoute des outils tiers (fichiers, web, dépôts Git…) que l'IA peut utiliser. <strong>Tant qu'un connecteur n'est pas activé, rien n'est transmis au modèle</strong> : ni ses outils, ni leurs descriptions.</p>
+
+            <div class="setting-item">
+              <div class="loaded-models-head">
+                <label data-i18n="lbl_mcp_servers">Connecteurs enregistrés</label>
+                <button type="button" id="btn-mcp-refresh" class="loaded-refresh-btn" title="Rafraîchir" data-i18n-title="tt_refresh_loaded">⟳</button>
+              </div>
+              <div id="mcp-server-list" class="loaded-models-list"></div>
+              <div class="fluxo-card-row-hint" id="mcp-status"></div>
+            </div>
+
+            <div class="setting-item">
+              <label data-i18n="lbl_mcp_catalog">Connecteurs courants</label>
+              <p class="setting-hint" data-i18n="hint_mcp_catalog">Ajoutés désactivés : tu vois d'abord leurs outils, puis tu décides de les activer.</p>
+              <div id="mcp-catalog"></div>
+            </div>
+
+            <details class="settings-advanced">
+              <summary><span data-i18n="mcp_import_json">Coller une configuration JSON</span></summary>
+              <p class="setting-hint" data-i18n-html="hint_mcp_import">Le format <code>mcpServers</code> utilisé par les autres clients MCP (et publié sur les annuaires comme mcpservers.org). Colle le bloc tel quel : chaque serveur est ajouté <strong>désactivé</strong>.</p>
+              <div class="setting-item">
+                <textarea id="input-mcp-json" rows="7" spellcheck="false" autocomplete="off" placeholder='{ "mcpServers": { "supabase": { "type": "http", "url": "https://mcp.supabase.com/mcp" } } }'></textarea>
+              </div>
+              <button type="button" id="btn-mcp-import" class="settings-save-btn secondary-action compact" data-i18n="btn_mcp_import">Importer</button>
+              <div class="fluxo-card-row-hint" id="mcp-import-status"></div>
+            </details>
+
+            <details class="settings-advanced">
+              <summary><span data-i18n="mcp_add_manual">Ajouter un connecteur manuellement</span></summary>
+              <div class="setting-item">
+                <label for="input-mcp-name" data-i18n="lbl_mcp_name">Nom</label>
+                <input type="text" id="input-mcp-name" placeholder="Mon serveur" data-i18n-ph="ph_mcp_name" />
+              </div>
+              <div class="setting-item">
+                <label for="select-mcp-transport" data-i18n="lbl_mcp_transport">Transport</label>
+                <select id="select-mcp-transport">
+                  <option value="stdio" data-i18n="opt_mcp_stdio">Processus local (stdio)</option>
+                  <option value="http" data-i18n="opt_mcp_http">HTTP (Streamable)</option>
+                </select>
+              </div>
+              <div class="setting-item" id="mcp-stdio-fields">
+                <label for="input-mcp-command" data-i18n="lbl_mcp_command">Commande et arguments</label>
+                <input type="text" id="input-mcp-command" placeholder="npx -y @modelcontextprotocol/server-filesystem /chemin" spellcheck="false" />
+                <div class="fluxo-card-row-hint" data-i18n="hint_mcp_command">La commande est lancée telle quelle sur ta machine. N'ajoute que des serveurs dont tu connais l'origine.</div>
+              </div>
+              <div class="setting-item" id="mcp-http-fields" style="display:none">
+                <label for="input-mcp-url" data-i18n="lbl_mcp_url">URL du serveur</label>
+                <input type="text" id="input-mcp-url" placeholder="https://exemple.com/mcp" spellcheck="false" />
+              </div>
+              <div class="setting-item">
+                <label for="input-mcp-secret" data-i18n="lbl_mcp_secret">Variable secrète (optionnel)</label>
+                <input type="text" id="input-mcp-secret" placeholder="API_KEY=sk-…" spellcheck="false" autocomplete="off" />
+                <div class="fluxo-card-row-hint" data-i18n="hint_mcp_secret">Stockée dans un fichier protégé de l'application, masquée ensuite dans cette fenêtre.</div>
+              </div>
+              <button type="button" id="btn-mcp-add" class="settings-save-btn secondary-action compact" data-i18n="btn_mcp_add">Ajouter le connecteur</button>
+            </details>
+
+            <div class="settings-section-title" data-i18n="sec_mcp_tools">Outils découverts</div>
+            <p class="setting-hint" data-i18n="hint_mcp_tools">Sélectionne un connecteur pour voir ses outils, les désactiver un par un, ou en essayer un.</p>
+            <div class="setting-item">
+              <select id="select-mcp-server"></select>
+            </div>
+            <div id="mcp-tool-list"></div>
+          </div><!-- /mcp pane -->
+
+          <div class="settings-tab-pane" data-pane="devices">
+            <!-- Orbe physique (ESP32 rond ou M5Stack Fire « charm ») -->
+            <div class="settings-section-title" data-i18n="sec_orb_device">Orbe physique</div>
+            <p class="setting-hint" data-i18n="hint_orb_device">L'avatar Lumen sur un ESP32 (écran rond) ou une M5Stack Fire. Il affiche son adresse IP au démarrage ; saisis-la ici puis « Connecter les appareils ».</p>
+            <div class="setting-item">
+              <label for="input-orb-host" data-i18n="lbl_orb_host">Adresse IP de l'orbe</label>
+              <input type="text" id="input-orb-host" placeholder="192.168.1.50" inputmode="decimal" style="width:100%; box-sizing:border-box;" />
+            </div>
+            <div class="setting-item">
+              <label for="input-orb-weather">Zone météo de l'orbe (ville)</label>
+              <input type="text" id="input-orb-weather" placeholder="Saint-Denis, La Réunion" style="width:100%; box-sizing:border-box;" />
+              <p class="setting-hint">Affichée sur la page Heure de la M5 Fire, actualisée au plus toutes les 15 minutes.</p>
+            </div>
+            <div class="setting-item">
+              <label for="input-orb-fwdir" data-i18n="lbl_orb_fwdir">Dossier firmware (chemin complet, ex. …/m5fire-orb)</label>
+              <input type="text" id="input-orb-fwdir" placeholder="/Volumes/…/Liquid_Agent/m5fire-orb" style="width:100%; box-sizing:border-box;" />
+              <button type="button" class="settings-save-btn secondary-action" id="btn-orb-ota" data-i18n="btn_orb_ota" style="margin-top:8px;">Mettre à jour l'orbe (OTA)</button>
+              <p class="setting-hint" id="orb-ota-status"></p>
+            </div>
+
+            <!-- Lumen Controller -->
+            <div class="settings-section-title" data-i18n="sec_controller">Lumen Controller</div>
+            <p class="setting-hint" data-i18n="hint_controller">Le panneau physique : écran e-paper, molette, boutons, LEDs et lecteur RFID. Tant qu'il n'est pas relié, il affiche son adresse IP sur son écran. Les deux appareils sont indépendants et fonctionnent en même temps.</p>
+            <div class="setting-item" id="controller-row">
+              <label for="input-controller-host" data-i18n="lbl_controller_host">Adresse IP du Lumen Controller</label>
+              <input type="text" id="input-controller-host" placeholder="192.168.1.51" inputmode="decimal" style="width:100%; box-sizing:border-box;" />
+              <button type="button" class="settings-save-btn secondary-action" id="btn-orb-connect" data-i18n="btn_orb_connect" style="margin-top:8px;">Connecter les appareils</button>
+              <p class="setting-hint" id="orb-device-status" data-i18n="hint_orb_device_status">Non connecté.</p>
+            </div>
+
+            <!-- Aide-mémoire matériel : brochage et avertissements, repris du
+                 README du firmware (lumen-controller/). Replié par défaut :
+                 c'est une référence de montage, pas un réglage. -->
+            <details class="settings-advanced" id="controller-help">
+              <summary><span data-i18n="ctrl_help_toggle">Montage : brochage, limites et avertissements</span></summary>
+
+              <p class="setting-hint" data-i18n="ctrl_intro">Panneau MicroPython : écran e-paper Waveshare 2,13″, encodeur, potentiomètre, quatre boutons, bandeau WS2812B et lecteur RFID MFRC522. Il tourne sur ESP32 ou Pico W et parle à Lumen en TCP JSON sur le port 8787.</p>
+
+              <div class="settings-subhead" data-i18n="ctrl_pins_esp32">Brochage ESP32</div>
+              <div id="ctrl-pins-esp32" class="ctrl-pins"></div>
+
+              <div class="settings-subhead" data-i18n="ctrl_pins_pico">Brochage Raspberry Pi Pico W</div>
+              <div id="ctrl-pins-pico" class="ctrl-pins"></div>
+
+              <div class="settings-subhead" data-i18n="ctrl_warnings">Limites et avertissements</div>
+              <ul id="ctrl-warnings" class="ctrl-warnings"></ul>
+            </details>
+
+            <div class="settings-section-title" data-i18n="sec_rfid">Badges RFID</div>
+            <p class="setting-hint" data-i18n="hint_rfid">Associe une carte RFID à une action. Lance la détection, passe le badge sur le lecteur du contrôleur, choisis l'action, puis enregistre. Un badge n'a qu'une action à la fois.</p>
+            <p class="setting-hint" data-i18n="hint_rfid_presence">Un badge peut rester posé sur le lecteur : son action ne se déclenche qu'à la pose. Retire-le et repose-le pour la rejouer. Pendant la détection, un badge déjà posé est reconnu sans avoir à le retirer.</p>
+            <div class="setting-item" id="rfid-row">
+              <button type="button" class="settings-save-btn secondary-action" id="btn-rfid-scan" data-i18n="btn_rfid_scan">Détecter un badge</button>
+              <p class="setting-hint" id="rfid-status" data-i18n="hint_rfid_idle">Aucun badge détecté.</p>
+
+              <div id="rfid-assign" hidden style="margin-top:10px;">
+                <label for="input-rfid-label" data-i18n="lbl_rfid_label">Nom du badge</label>
+                <input type="text" id="input-rfid-label" placeholder="Qwen3 8B" style="width:100%; box-sizing:border-box;" />
+
+                <label for="select-rfid-action" style="margin-top:10px; display:block;" data-i18n="lbl_rfid_action">Action</label>
+                <select id="select-rfid-action" style="width:100%; box-sizing:border-box;"></select>
+
+                <label for="select-rfid-param" style="margin-top:10px; display:block;" id="label-rfid-param" data-i18n="lbl_rfid_param">Valeur</label>
+                <select id="select-rfid-param" style="width:100%; box-sizing:border-box;"></select>
+
+                <button type="button" class="settings-save-btn" id="btn-rfid-save" data-i18n="btn_rfid_save" style="margin-top:10px;">Associer ce badge</button>
+              </div>
+
+              <div id="rfid-list" style="margin-top:14px;"></div>
+            </div>
+
+            <p class="setting-hint" data-i18n="hint_rfid_session">Le badge qui ouvre une session se règle dans l'onglet Profil : il est lié à un profil et exige le mot de passe. Un même badge ne peut pas faire les deux.</p>
+          </div><!-- /devices pane -->
+
+          <!-- Notifications tab : sons du centre de notifications -->
+          <div class="settings-tab-pane" data-pane="notifications">
+            <!-- Capsule Halo : bandeau persistant en haut de l'écran (fenêtre `island`). -->
+            <div class="settings-section-title" data-i18n="halo_title">Capsule Halo</div>
+            <p class="setting-hint" data-i18n="hint_halo">Une pastille discrète affiche en direct les agents au travail, les notifications (Heartbeat, rappels, blocs Fluxo) et l'heure. Un clic l'ouvre en panneau.</p>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-halo" />
+              <label for="checkbox-halo" data-i18n="lbl_halo">Afficher la capsule en permanence</label>
+            </div>
+            <div class="setting-item">
+              <label for="select-halo-style" data-i18n="lbl_halo_style">Mode d'encoche</label>
+              <select id="select-halo-style">
+                <option value="float" data-i18n="opt_halo_float">Pastille flottante</option>
+                <option value="notch" data-i18n="opt_halo_notch">Encoche — fondue dans le haut de l'écran</option>
+              </select>
+              <p class="setting-hint" data-i18n="hint_halo_style">En mode Encoche, la capsule se colle au bord supérieur, centrée, et prolonge l'encoche du Mac (une languette noire sur un écran qui n'en a pas). La position à l'écran est alors ignorée.</p>
+            </div>
+            <div class="setting-item">
+              <label for="select-halo-rest" data-i18n="lbl_halo_rest">Au repos (mode Encoche)</label>
+              <select id="select-halo-rest">
+                <option value="peek" data-i18n="opt_rest_peek">Se cacher dans l'encoche, sortir au survol</option>
+                <option value="show" data-i18n="opt_rest_show">Rester visible</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <button type="button" class="settings-save-btn secondary-action" id="btn-hook-claude" data-i18n="btn_hook_claude">Suivre Claude Code dans la capsule</button>
+              <p class="setting-hint" id="hook-claude-status" data-i18n="hint_hook_claude">Installe un hook dans ~/.claude/settings.json : les sessions Claude Code (outils, fichiers modifiés +N −M, fin de tâche) apparaissent dans la capsule comme des agents Lumen.</p>
+            </div>
+            <div class="setting-item">
+              <label for="select-halo-position" data-i18n="lbl_halo_position">Position à l'écran</label>
+              <select id="select-halo-position">
+                <option value="center" data-i18n="opt_halo_center">Haut — centré</option>
+                <option value="left" data-i18n="opt_halo_left">Haut — à gauche</option>
+                <option value="right" data-i18n="opt_halo_right">Haut — à droite</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <label for="slider-halo-hold"><span data-i18n="lbl_halo_hold">Durée d'affichage d'une notification</span> (<span id="label-halo-hold">15 s</span>)</label>
+              <input type="range" id="slider-halo-hold" min="5" max="60" step="5" value="15" />
+              <p class="setting-hint" data-i18n="hint_halo_hold">Le décompte se met en pause dès que le pointeur passe sur la capsule : vous avez le temps de lire.</p>
+            </div>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-halo-sticky" />
+              <label for="checkbox-halo-sticky" data-i18n="lbl_halo_sticky">Garder la capsule tant qu'il reste des notifications non lues</label>
+            </div>
+            <p class="setting-hint" data-i18n="hint_halo_sticky">La capsule ne se retire qu'une fois les notifications consultées, ou fermée à la main avec sa croix.</p>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-halo-agents" checked />
+              <label for="checkbox-halo-agents" data-i18n="lbl_halo_agents">Montrer les agents en cours d'exécution</label>
+            </div>
+            <div class="setting-item checkbox-row">
+              <input type="checkbox" id="checkbox-halo-clock" checked />
+              <label for="checkbox-halo-clock" data-i18n="lbl_halo_clock">Afficher l'heure au repos</label>
+            </div>
+
+            <div class="settings-section-title" data-i18n="notif_sounds_title">Sons du centre de notifications</div>
+            <p class="setting-hint" data-i18n="notif_sounds_hint">Choisissez la signature sonore jouée à l'arrivée d'une notification, selon sa provenance. Les sons sont générés localement, sans fichier audio.</p>
+            <div id="notif-sound-rows"></div>
+
+            <div class="settings-section-title" data-i18n="notif_led_title">Notifications lumineuses</div>
+            <p class="setting-hint" data-i18n="notif_led_hint">Couleur du pulse joué par le bandeau LED du Lumen Controller à l'arrivée d'une notification. Les couleurs d'état (écoute, réflexion, réponse) restent inchangées.</p>
+            <div class="setting-item" style="display:flex;flex-direction:row;align-items:center;gap:10px">
+              <label for="input-notif-led-color" style="flex:1;margin:0" data-i18n="lbl_notif_led_color">Couleur des notifications</label>
+              <input type="color" id="input-notif-led-color" value="#ff9f0a" style="max-width:64px;padding:2px" />
+              <button type="button" class="settings-save-btn secondary-action compact" id="btn-notif-led-test" data-i18n="btn_notif_led_test">Tester</button>
+            </div>
+            <!-- Résultat du test : sans lui, un contrôleur non connecté donnait
+                 un bouton qui ne fait rien et ne dit rien. -->
+            <p class="setting-hint" id="notif-led-status"></p>
+          </div><!-- /notifications pane -->
+
+          <div class="settings-tab-pane" data-pane="profile">
+            <div class="profile-hero">
+              <div class="profile-avatar" id="profile-avatar">L</div>
+              <div class="profile-hero-text">
+                <div class="profile-hero-name" id="profile-hero-name" data-i18n="profile_hero_default">Votre profil</div>
+                <div class="profile-hero-sub" data-i18n="profile_hero_sub">Ce que Lumen retient de vous. Privé, stocké sur votre appareil.</div>
+              </div>
+            </div>
+
+            <!-- Identité -->
+            <div class="ios-group-title" data-i18n="profile_sec_identity">Identité</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <label for="session-profile-select" data-i18n="profile_session">Session</label>
+                <select id="session-profile-select"></select>
+              </div>
+              <div class="ios-row ios-row-block">
+                <div class="setting-actions inline-actions">
+                  <button type="button" class="settings-save-btn secondary-action compact" id="btn-session-profile-new" data-i18n="profile_new">Nouveau profil</button>
+                  <button type="button" class="settings-save-btn secondary-action compact danger" id="btn-session-profile-delete" data-i18n="profile_delete">Supprimer ce profil</button>
+                </div>
+              </div>
+              <div class="ios-row ios-row-block">
+                <input type="file" id="profile-avatar-file" accept="image/*" hidden />
+                <div class="session-avatar-row">
+                  <div class="setting-actions inline-actions">
+                    <button type="button" class="settings-save-btn secondary-action compact" id="btn-profile-avatar" data-i18n="profile_choose_image">Choisir une image de session</button>
+                    <button type="button" class="settings-save-btn secondary-action compact" id="btn-profile-avatar-clear" data-i18n="profile_remove_image">Retirer l'image</button>
+                  </div>
+                </div>
+              </div>
+              <div class="ios-row">
+                <label for="profile-name" data-i18n="profile_name">Prénom</label>
+                <input type="text" id="profile-name" placeholder="—" />
+              </div>
+              <div class="ios-row">
+                <label for="profile-callme" data-i18n="profile_callme">M'appeler</label>
+                <input type="text" id="profile-callme" placeholder="—" />
+              </div>
+              <div class="ios-row">
+                <label for="profile-role" data-i18n="profile_role">Rôle / métier</label>
+                <input type="text" id="profile-role" placeholder="—" />
+              </div>
+            </div>
+
+            <div class="ios-group-title" data-i18n="profile_session_security">Sécurité de cette session</div>
+            <p class="setting-hint" data-i18n="profile_session_security_hint">À l'ouverture de Lumen Desktop, ce profil peut demander son propre mot de passe. Les autres profils gardent leur configuration séparée.</p>
+            <div class="ios-group">
+              <div class="ios-row">
+                <span data-i18n="profile_require_password">Demander un mot de passe</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-lock-enabled" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row ios-row-block">
+                <label for="input-lock-pass" data-i18n="profile_password">Mot de passe de ce profil</label>
+                <input type="password" id="input-lock-pass" placeholder="••••••••" autocomplete="new-password" />
+                <!-- Révélé seulement quand le profil a déjà un mot de passe : changer
+                     ou retirer une protection exige de prouver qu'on la connaît. -->
+                <input type="password" id="input-lock-current" placeholder="Mot de passe actuel" data-i18n-ph="profile_lock_current_prompt" autocomplete="current-password" style="width:100%; box-sizing:border-box; margin-top:8px;" hidden />
+                <div class="setting-actions inline-actions" style="margin-top:8px;">
+                  <button type="button" class="settings-save-btn secondary-action compact" id="btn-lock-save" data-i18n="profile_password_set">Définir</button>
+                  <button type="button" class="settings-save-btn secondary-action compact danger" id="btn-lock-clear" data-i18n="profile_password_remove">Retirer</button>
+                </div>
+                <p class="setting-hint" id="lock-status"></p>
+                <label style="margin-top:14px; display:block;" data-i18n="profile_rfid_label">Badge RFID d'ouverture de session</label>
+                <p class="setting-hint" data-i18n="profile_rfid_hint">Un badge associé ouvre ce profil sans mot de passe depuis le mode bureau. Pratique, mais l'UID d'une carte se copie : à considérer comme une clé physique, pas comme un mot de passe.</p>
+                <input type="password" id="input-profile-rfid-pass" placeholder="Mot de passe actuel" data-i18n-ph="profile_lock_current_prompt" autocomplete="current-password" style="width:100%; box-sizing:border-box; margin-top:8px;" hidden />
+                <div class="setting-actions inline-actions" style="margin-top:8px;">
+                  <button type="button" class="settings-save-btn secondary-action compact" id="btn-profile-rfid-scan" data-i18n="profile_rfid_bind">Associer un badge</button>
+                  <button type="button" class="settings-save-btn secondary-action compact danger" id="btn-profile-rfid-clear" data-i18n="profile_rfid_remove">Retirer</button>
+                </div>
+                <p class="setting-hint" id="profile-rfid-status"></p>
+              </div>
+            </div>
+
+            <!-- Préférences de réponse -->
+            <div class="ios-group-title" data-i18n="profile_sec_prefs">Préférences de réponse</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <span data-i18n="profile_tone">Style</span>
+                <div class="ios-segmented" id="profile-tone" data-value="balanced">
+                  <button type="button" data-val="concise" data-i18n="profile_tone_concise">Concis</button>
+                  <button type="button" data-val="balanced" class="active" data-i18n="profile_tone_balanced">Équilibré</button>
+                  <button type="button" data-val="detailed" data-i18n="profile_tone_detailed">Détaillé</button>
+                </div>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="profile_address">M'adresser en</span>
+                <div class="ios-segmented" id="profile-address" data-value="tu">
+                  <button type="button" data-val="tu" class="active" data-i18n="profile_address_tu">Tutoiement</button>
+                  <button type="button" data-val="vous" data-i18n="profile_address_vous">Vouvoiement</button>
+                </div>
+              </div>
+              <div class="ios-row">
+                <label for="profile-language" data-i18n="profile_language">Langue des réponses</label>
+                <select id="profile-language">
+                  <option value="auto" data-i18n="profile_lang_auto">Automatique</option>
+                  <option value="fr">Français</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="profile_emoji">Emoji dans les réponses</span>
+                <label class="ios-switch"><input type="checkbox" id="profile-emoji" /><span class="ios-slider"></span></label>
+              </div>
+            </div>
+
+            <!-- Centres d'intérêt -->
+            <div class="ios-group-title" data-i18n="profile_sec_interests">Centres d'intérêt</div>
+            <div class="ios-group">
+              <div class="ios-row ios-row-block">
+                <div class="chips" id="profile-interests"></div>
+                <input type="text" id="profile-interest-add" class="chip-input" placeholder="Ajouter…" data-i18n-ph="profile_interest_ph" />
+              </div>
+            </div>
+
+            <!-- Objectifs -->
+            <div class="ios-group-title" data-i18n="profile_sec_goals">Objectifs du moment</div>
+            <div class="ios-group">
+              <div class="ios-row ios-row-block">
+                <textarea id="profile-goals" rows="2" placeholder="—" data-i18n-ph="profile_goals_ph"></textarea>
+              </div>
+            </div>
+
+            <!-- Souvenirs de Lumen -->
+            <div class="ios-group-title" data-i18n="profile_sec_memories">Ce que Lumen a retenu</div>
+            <div class="ios-group" id="profile-memories"></div>
+            <div class="ios-group">
+              <div class="ios-row ios-row-block">
+                <input type="text" id="profile-memory-add" class="chip-input" placeholder="Ajouter un souvenir…" data-i18n-ph="profile_memory_ph" />
+              </div>
+            </div>
+
+            <!-- Confidentialité -->
+            <div class="ios-group-title" data-i18n="profile_sec_privacy">Confidentialité</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <span data-i18n="profile_use">Laisser Lumen utiliser mon profil</span>
+                <label class="ios-switch"><input type="checkbox" id="profile-use" checked /><span class="ios-slider"></span></label>
+              </div>
+              <button type="button" class="ios-row ios-row-action" id="profile-export" data-i18n="profile_export">Exporter le profil (JSON)</button>
+              <button type="button" class="ios-row ios-row-action danger" id="profile-clear" data-i18n="profile_clear">Effacer tout le profil</button>
+            </div>
+            <p class="setting-hint" data-i18n-html="profile_footer">Accessible à vos raccourcis via <code>GET /mem/user/profile</code> et <code>POST /mem/user/memories?op=append</code> — Lumen peut donc apprendre tout seul.</p>
+          </div><!-- /profile pane -->
+
+          <!-- Memory tab -->
+          <div class="settings-tab-pane" data-pane="memory">
+            <p class="setting-hint" data-i18n-html="hint_memory">Mémoire partagée et <strong>optionnelle</strong> : todo, états, mémoire utilisateur et stockage commun. Accessible à vos raccourcis via HTTP sur <code>http://127.0.0.1:8765/mem/&lt;clé&gt;</code> (GET / PUT / POST / DELETE) — jamais imposée au fonctionnement de Lumen.</p>
+
+            <div class="setting-item">
+              <label for="select-memory-ns" data-i18n="lbl_memory_ns">Espace de noms</label>
+              <select id="select-memory-ns">
+                <option value="" data-i18n="opt_ns_all">Tous</option>
+                <option value="todo/">todo/</option>
+                <option value="state/">state/</option>
+                <option value="user/">user/</option>
+                <option value="store/">store/</option>
+              </select>
+            </div>
+
+            <div id="memory-list" class="memory-list"></div>
+            <p class="setting-hint" id="memory-empty" data-i18n="memory_empty" style="display:none;">Aucune entrée pour l'instant.</p>
+
+            <div class="settings-section-title" data-i18n="sec_memory_add">Ajouter / modifier une entrée</div>
+            <!-- Formulaire simple : une note à retenir, sans notion de clé ni JSON -->
+            <div class="setting-item">
+              <label for="input-memory-label" data-i18n="lbl_memory_label">Titre (optionnel)</label>
+              <input type="text" id="input-memory-label" data-i18n-ph="ph_memory_note" placeholder="Ex. Je préfère les réponses courtes" />
+            </div>
+            <div class="setting-item">
+              <label for="input-memory-note" data-i18n="lbl_memory_note">Note à retenir</label>
+              <textarea id="input-memory-note" rows="3" data-i18n-ph="ph_memory_note" placeholder="Ex. Je préfère les réponses courtes"></textarea>
+            </div>
+            <div class="setting-item">
+              <button type="button" class="settings-save-btn secondary-action" id="btn-memory-add-simple" data-i18n="btn_memory_add_simple">Ajouter la note</button>
+            </div>
+
+            <!-- Mode avancé : clé arbitraire + valeur JSON (conservé pour les confirmés) -->
+            <details class="settings-advanced">
+              <summary><span data-i18n="memory_advanced_toggle">Mode avancé (clé / valeur JSON)</span></summary>
+              <div class="setting-item">
+                <label for="input-memory-key" data-i18n="lbl_memory_key">Clé (ex. <code>todo/courses</code>)</label>
+                <input type="text" id="input-memory-key" placeholder="store/ma-cle" />
+              </div>
+              <div class="setting-item">
+                <label for="input-memory-value" data-i18n="lbl_memory_value">Valeur (texte ou JSON)</label>
+                <textarea id="input-memory-value" rows="3" placeholder='"ma valeur" ou {"fait": true}' data-i18n-ph="ph_memory_value"></textarea>
+              </div>
+              <div class="setting-item">
+                <button type="button" class="settings-save-btn secondary-action" id="btn-memory-save" data-i18n="btn_memory_save">Enregistrer l'entrée</button>
+              </div>
+            </details>
+          </div><!-- /memory pane -->
+
+          <!-- Companion tab : tout ce qui concerne le compagnon mobile -->
+          <div class="settings-tab-pane" data-pane="companion">
+            <div class="profile-hero">
+              <div class="profile-avatar" data-icon="chat" style="background:linear-gradient(135deg,#34c759,#30b0c7)"></div>
+              <div class="profile-hero-text">
+                <div class="profile-hero-name" data-i18n="sec_companion">Compagnon mobile</div>
+                <div class="profile-hero-sub" data-i18n="hint_companion">Sur votre téléphone ou votre tablette (même réseau Wi-Fi, ou via VPN), ouvrez cette adresse dans le navigateur pour piloter Lumen à distance. L'accès est protégé par un code à usage unique (TOTP). La voix (énoncer / dictée) est gérée par l'appareil.</div>
+              </div>
+            </div>
+
+            <div class="ios-group-title" data-i18n="companion_sec_access">Accès</div>
+            <div class="ios-group">
+              <div class="ios-row ios-row-block">
+                <span data-i18n="lbl_companion_url">Adresse à ouvrir sur le mobile</span>
+                <code id="companion-url" class="companion-url" title="">—</code>
+              </div>
+              <div class="ios-row ios-row-block" id="companion-url-qr-row" style="align-items:center;" hidden>
+                <div id="companion-url-qr" class="companion-qr"></div>
+                <span class="setting-hint" data-i18n="hint_companion_url_qr">Scannez ce QR depuis l'app Lumen pour iPhone (écran « Adresse de Lumen ») : l'adresse se remplit toute seule.</span>
+              </div>
+              <div class="ios-row ios-row-block">
+                <span data-i18n="lbl_companion_tls_fp">Empreinte du certificat (iPhone, XR)</span>
+                <code id="companion-tls-fp" class="companion-url" style="font-size:11px;word-break:break-all">—</code>
+                <span class="setting-hint" data-i18n="hint_companion_tls_fp">Si l'iPhone affiche « Certificat modifié », comparez avec l'empreinte qu'il propose avant de faire confiance au nouveau certificat.</span>
+              </div>
+              <div class="ios-row ios-row-block">
+                <span data-i18n="lbl_companion_xr_url">Lumen XR (navigateur du Meta Quest)</span>
+                <code id="companion-xr-url" class="companion-url" title="">—</code>
+              </div>
+              <!-- Chaque profil de Lumen Desktop a SES propres clés d'appairage :
+                   le code affiché ci-dessous dépend donc du profil choisi ici. -->
+              <div class="ios-row">
+                <label for="select-companion-profile" data-i18n="lbl_companion_profile">Profil à appairer</label>
+                <select id="select-companion-profile"></select>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_companion_id">Nom à saisir sur le mobile</span>
+                <code id="companion-identifier" class="companion-key">—</code>
+              </div>
+              <p class="setting-hint" data-i18n="hint_companion_profile">Plusieurs personnes peuvent appairer leur téléphone, chacune avec son identifiant et ses codes. Le Mac n'ayant qu'une session ouverte à la fois, seul le téléphone du profil actif voit la conversation en cours ; les autres gardent la capture rapide et le suivi de leurs agents.</p>
+              <div class="ios-row">
+                <span data-i18n="lbl_companion_code">Code d'appairage</span>
+                <div class="companion-code-row">
+                  <code id="companion-code" class="companion-code">——————</code>
+                  <span id="companion-code-countdown" class="companion-code-countdown">30s</span>
+                </div>
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n="hint_companion_code">Saisissez l'identifiant et ce code sur le mobile au premier appairage. Une session est ensuite mémorisée sur l'appareil.</p>
+
+            <div class="ios-group-title" data-i18n="companion_sec_pair">Appairage rapide</div>
+            <div class="ios-group">
+              <div class="ios-row ios-row-block" style="align-items:center;">
+                <div id="companion-qr" class="companion-qr" title=""></div>
+              </div>
+              <div class="ios-row ios-row-block">
+                <span data-i18n="lbl_companion_key">Clé d'association</span>
+                <code id="companion-key" class="companion-key" title="">—</code>
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n="hint_companion_qr">Scannez ce QR avec l'app <strong>Mots de passe</strong> de macOS, ou un authenticator (TOTP). Le code à 6 chiffres y apparaîtra automatiquement à chaque appairage.</p>
+
+            <div class="ios-group-title" data-i18n="companion_sec_security">Sécurité</div>
+            <div class="ios-group">
+              <button type="button" class="ios-row ios-row-action danger" id="btn-companion-regenerate" data-i18n="btn_companion_regen">Révoquer & régénérer le secret</button>
+            </div>
+
+            <!-- Coffre unifié : fiches de toutes les apps (src-tauri/src/datahub.rs). -->
+            <div class="ios-group-title" data-i18n="hub_title">Coffre unifié — données des apps</div>
+            <div class="setting-item" style="display:flex;gap:8px;flex-wrap:wrap">
+              <input type="search" id="input-hub-search" data-i18n-ph="hub_search_ph" placeholder="Chercher dans toutes les données…" spellcheck="false" style="flex:1;min-width:180px" />
+              <button type="button" class="settings-save-btn secondary-action" id="btn-hub-reindex" data-i18n="hub_reindex">Réindexer</button>
+            </div>
+            <div class="ios-group" id="hub-results" style="max-height:280px;overflow:auto;display:none"></div>
+            <div class="ios-group" id="hub-sources"></div>
+            <div class="ios-group-title" data-i18n="hub_sandboxes">Fichiers des sandboxes dans le coffre</div>
+            <div class="ios-group" id="hub-sandboxes"></div>
+            <p class="setting-hint" data-i18n="hint_hub">Chaque app dépose ses données dans le coffre unifié sous forme de fiches (tâche, évènement, note, contact, message, fichier, mesure…). L'IA, les agents, le compagnon, l'app iOS et Lumen XR les consultent tous au même endroit (outils data_search, data_agenda, data_tasks, data_metrics). Décoche une source pour la retirer. Le texte des notes et documents (PDF, Word, présentations, classeurs, Markdown…) est indexé en entier ; images, audio, vidéo et autres fichiers y figurent avec un lien que l'IA peut afficher ou te fournir. Décoche une sandbox pour la garder hors du coffre.</p>
+
+            <!-- Coffre de données partagé (src-tauri/src/vault.rs). -->
+            <div class="ios-group-title" data-i18n="companion_sec_vault">Coffre de données</div>
+            <button type="button" class="settings-save-btn secondary-action" id="btn-vault-open">Ouvrir le coffre personnel · collections et fiches</button>
+            <div class="ios-group" id="vault-list" style="max-height:320px;overflow:auto;"></div>
+            <div class="setting-item" style="display:flex;gap:8px;flex-wrap:wrap">
+              <input type="text" id="input-vault-key" placeholder="maison/chauffage" spellcheck="false" style="flex:1;min-width:140px" />
+              <input type="text" id="input-vault-value" placeholder="21" spellcheck="false" style="flex:1;min-width:140px" />
+              <select id="select-vault-type">
+                <option value="text">Texte</option><option value="number">Nombre</option><option value="bool">Oui/non</option>
+                <option value="list">Liste</option><option value="dict">JSON</option>
+              </select>
+              <button type="button" class="settings-save-btn secondary-action" id="btn-vault-set" data-i18n="btn_vault_set">Enregistrer</button>
+            </div>
+            <p class="setting-hint" data-i18n="hint_vault">Valeurs partagées avec l'iPhone (Raccourcis, widgets, capteurs), le chat et les agents — comme Data Jar. Les dossiers se notent avec « / ». Un workflow Fluxo au déclencheur Webhook « vault/<clé> » se lance à chaque changement de la clé ; « iphone/arrivee/<lieu> » à l'arrivée dans un lieu.</p>
+
+            <!-- Appareils de confiance : chaque appairage est un appareil,
+                 révocable seul (sans régénérer le secret du profil). -->
+            <div class="ios-group-title" data-i18n="companion_sec_devices">Appareils de confiance</div>
+            <div class="ios-group" id="devices-list"></div>
+            <p class="setting-hint" data-i18n="hint_devices">Chaque téléphone, tablette ou casque appairé apparaît ici. « Révoquer » le déconnecte aussitôt ; il devra se réappairer avec un code. « Face ID » indique qu'il peut déverrouiller tes fichiers à distance.</p>
+
+            <div class="ios-group">
+              <div class="ios-row">
+                <span data-i18n="lbl_unlock_require_code">Exiger le code pour déverrouiller à distance</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-unlock-require-code" /><span class="ios-slider"></span></label>
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n="hint_unlock_require_code">Désactivé : un appareil appairé (compagnon, casque, téléphone) déverrouille tes fichiers d'un simple geste — il a déjà prouvé ton code à l'appairage, et tu peux le révoquer ci-dessus. Activé : le code à 6 chiffres est redemandé à chaque fois.</p>
+
+            <div class="ios-group-title" data-i18n="companion_sec_log">Journal de sécurité</div>
+            <div class="ios-group" id="security-log" style="max-height:260px;overflow:auto;"></div>
+
+          </div><!-- /companion pane -->
+
+          <div class="settings-tab-pane" data-pane="telegram">
+            <div class="profile-hero">
+              <div class="profile-avatar" data-icon="chat" style="background:linear-gradient(135deg,#2aabee,#229ed9)"></div>
+              <div class="profile-hero-text">
+                <div class="profile-hero-name" data-i18n="sec_telegram">Messagerie Telegram</div>
+                <div class="profile-hero-sub" data-i18n="hint_telegram">Discutez avec Lumen et lancez des tâches depuis votre téléphone, où que vous soyez. Lumen n'ouvre aucun port : il interroge Telegram en sortie (long polling). Seules les conversations que vous appairez explicitement sont écoutées.</div>
+              </div>
+            </div>
+
+            <div class="ios-group-title" data-i18n="tg_sec_bot">Bot</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <label for="input-telegram-token" data-i18n="lbl_tg_token">Jeton du bot</label>
+                <input type="password" id="input-telegram-token" placeholder="123456789:AA…" autocomplete="off" spellcheck="false" />
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_enabled">Activer la passerelle Telegram</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-telegram-enabled" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row ios-row-block">
+                <span data-i18n="lbl_tg_state">État</span>
+                <code id="telegram-state" class="companion-url">—</code>
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n="hint_tg_token">Créez un bot avec @BotFather sur Telegram, puis collez ici le jeton qu'il vous donne. Le jeton reste côté application, dans un fichier privé (0600), et n'est jamais renvoyé à l'interface. Toute cette configuration appartient au profil actif : chaque profil a son bot, ses conversations et ses transcrits, et changer de profil bascule la passerelle.</p>
+
+            <div class="ios-group-title" data-i18n="tg_sec_pair">Conversations autorisées</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_code">Code d'appairage</span>
+                <div class="companion-code-row">
+                  <code id="telegram-pair-code" class="companion-code">——————————</code>
+                  <span id="telegram-pair-countdown" class="companion-code-countdown">—</span>
+                </div>
+              </div>
+              <button type="button" class="ios-row ios-row-action" id="btn-telegram-pair" data-i18n="btn_tg_pair">Générer un code d'appairage</button>
+            </div>
+            <p class="setting-hint" data-i18n-html="hint_tg_pair">Sur Telegram, ouvrez la conversation de votre bot et envoyez <strong>/start CODE</strong>. Le code est à usage unique et expire au bout de 10 minutes. Tout message venant d'une conversation non appairée est ignoré sans réponse.</p>
+            <div class="ios-group" id="telegram-chats"></div>
+
+            <div class="ios-group-title" data-i18n="tg_sec_model">Moteur et mode de discussion</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <label for="select-telegram-backend" data-i18n="lbl_tg_backend">Backend</label>
+                <select id="select-telegram-backend">
+                  <option value="lumen" data-i18n="opt_tg_lumen">Source d'IA des Réglages</option>
+                  <option value="ollama">Ollama</option>
+                  <option value="api" data-i18n="opt_tg_api">API cloud</option>
+                  <option value="llama" data-i18n="opt_tg_llama">llama-server local</option>
+                  <option value="applefm" data-i18n="opt_tg_applefm">Apple Foundation Models (macOS 27)</option>
+                </select>
+              </div>
+              <div class="ios-row">
+                <label for="input-telegram-model" data-i18n="lbl_tg_model">Modèle</label>
+                <input type="text" id="input-telegram-model" list="telegram-model-list" placeholder="(celui des Réglages)" spellcheck="false" autocomplete="off" />
+                <datalist id="telegram-model-list"></datalist>
+              </div>
+              <div class="ios-row">
+                <label for="select-telegram-mode" data-i18n="lbl_tg_mode">Mode de discussion</label>
+                <select id="select-telegram-mode">
+                  <option value="tools" data-i18n="opt_tg_mode_tools">Outils (function calling)</option>
+                  <option value="chat" data-i18n="opt_tg_mode_chat">Discussion directe</option>
+                  <option value="docs" data-i18n="opt_tg_mode_docs">Documentation</option>
+                  <option value="agent" data-i18n="opt_tg_mode_agent">Tâche d'agent</option>
+                  <option value="image" data-i18n="opt_tg_mode_image">Image</option>
+                  <option value="router" data-i18n="opt_tg_mode_router">Routeur d'actions</option>
+                </select>
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n-html="hint_tg_model">Ce mode a besoin d'un modèle qui appelle correctement les outils (gemma4, qwen2.5, gpt-4o-mini…) — laissez vide pour suivre la source d'IA des Réglages. Depuis Telegram, tout se change sans passer par l'IA : <strong>/backend ollama gemma4:e2b-it-qat</strong>, <strong>/modeles</strong> pour la liste installée, ou le préfixe <strong>@ollama/gemma4:e2b-it-qat</strong> le temps d'un seul message.</p>
+
+            <div class="ios-group-title" data-i18n="tg_sec_caps">Capacités</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_tools">Outils Lumen (workflows, mémoire, rappels)</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-telegram-tools" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_agents">Tâches d'agent</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-telegram-agents" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_images">Génération d'images</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-telegram-images" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_show_tools">Afficher les appels d'outils dans la conversation</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-telegram-showtools" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row">
+                <label for="select-telegram-image-provider" data-i18n="lbl_tg_image_provider">Moteur d'image</label>
+                <select id="select-telegram-image-provider">
+                  <option value="bonsai">Bonsai (local)</option>
+                  <option value="ollama">Ollama</option>
+                  <option value="openai">OpenAI</option>
+                </select>
+              </div>
+              <div class="ios-row">
+                <label for="input-telegram-image-model" data-i18n="lbl_tg_image_model">Modèle d'image</label>
+                <input type="text" id="input-telegram-image-model" placeholder="(défaut du moteur)" spellcheck="false" />
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n="hint_tg_caps">Chaque capacité est indépendante : coupez ce que vous ne voulez pas exposer à distance. Les pièces jointes entrantes sont toujours ignorées, seul le texte est traité.</p>
+
+            <div class="ios-group-title" data-i18n="tg_sec_security">Sécurité</div>
+            <div class="ios-group">
+              <button type="button" class="ios-row ios-row-action" id="btn-telegram-test" data-i18n="btn_tg_test">Envoyer un message de test</button>
+              <button type="button" class="ios-row ios-row-action danger" id="btn-telegram-clear" data-i18n="btn_tg_clear">Supprimer le jeton et couper la passerelle</button>
+            </div>
+          </div><!-- /telegram pane -->
+
+          <div class="settings-tab-pane" data-pane="slack">
+            <div class="profile-hero">
+              <div class="profile-avatar" data-icon="chat" style="background:linear-gradient(135deg,#611f69,#4a154b)"></div>
+              <div class="profile-hero-text">
+                <div class="profile-hero-name" data-i18n="sec_slack">Bot Slack</div>
+                <div class="profile-hero-sub" data-i18n="hint_slack">Parlez à Lumen et à vos agents depuis Slack : en message privé, ou en le mentionnant dans un canal. Lumen n'ouvre aucun port — il se connecte lui-même à Slack (Socket Mode). Seuls les utilisateurs que vous appairez sont écoutés.</div>
+              </div>
+            </div>
+
+            <div class="ios-group-title" data-i18n="sl_sec_setup">Mise en place (une seule fois)</div>
+            <div class="ios-group slack-steps">
+              <div class="ios-row ios-row-block">
+                <span class="slack-step"><b>1</b><span data-i18n-html="sl_step1">Sur <strong>api.slack.com/apps</strong> : <em>Create New App → From a manifest</em>, choisissez votre espace, puis collez le manifeste de Lumen.</span></span>
+                <div class="slack-step-actions">
+                  <button type="button" class="ios-inline-btn" id="btn-slack-copy-manifest" data-i18n="btn_sl_copy">Copier le manifeste</button>
+                  <a class="ios-inline-btn" href="https://api.slack.com/apps?new_app=1" target="_blank" rel="noopener" data-i18n="btn_sl_open">Ouvrir Slack API ↗</a>
+                </div>
+                <details class="slack-manifest"><summary data-i18n="sl_show_manifest">Voir le manifeste</summary><pre id="slack-manifest"></pre></details>
+              </div>
+              <div class="ios-row ios-row-block">
+                <span class="slack-step"><b>2</b><span data-i18n-html="sl_step2"><em>Install to Workspace</em>, puis copiez le <strong>Bot User OAuth Token</strong> (<code>xoxb-…</code>) depuis <em>OAuth &amp; Permissions</em>.</span></span>
+              </div>
+              <div class="ios-row ios-row-block">
+                <span class="slack-step"><b>3</b><span data-i18n-html="sl_step3">Dans <em>Basic Information → App-Level Tokens</em>, générez un jeton avec la portée <code>connections:write</code> (<code>xapp-…</code>).</span></span>
+              </div>
+            </div>
+
+            <div class="ios-group-title" data-i18n="sl_sec_bot">Connexion</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <label for="input-slack-bot" data-i18n="lbl_sl_bot">Jeton du bot</label>
+                <input type="password" id="input-slack-bot" placeholder="xoxb-…" autocomplete="off" spellcheck="false" />
+              </div>
+              <div class="ios-row">
+                <label for="input-slack-app" data-i18n="lbl_sl_app">Jeton d'app</label>
+                <input type="password" id="input-slack-app" placeholder="xapp-…" autocomplete="off" spellcheck="false" />
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_sl_enabled">Activer le bot Slack</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-slack-enabled" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row ios-row-block">
+                <span data-i18n="lbl_tg_state">État</span>
+                <code id="slack-state" class="companion-url">—</code>
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n="hint_sl_tokens">Les deux jetons restent côté application, dans un fichier privé (0600) du profil actif, et ne sont jamais renvoyés à l'interface.</p>
+
+            <div class="ios-group-title" data-i18n="sl_sec_pair">Utilisateurs autorisés</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_code">Code d'appairage</span>
+                <div class="companion-code-row">
+                  <code id="slack-pair-code" class="companion-code">——————————</code>
+                  <span id="slack-pair-countdown" class="companion-code-countdown">—</span>
+                </div>
+              </div>
+              <button type="button" class="ios-row ios-row-action" id="btn-slack-pair" data-i18n="btn_tg_pair">Générer un code d'appairage</button>
+            </div>
+            <p class="setting-hint" data-i18n-html="hint_sl_pair">Dans Slack, écrivez en message privé au bot <strong>!appairer CODE</strong> (ou <strong>/lumen appairer CODE</strong>). Le code est à usage unique et expire au bout de 10 minutes. Les messages des autres membres de l'espace sont ignorés sans réponse.</p>
+            <div class="ios-group" id="slack-users"></div>
+
+            <div class="ios-group-title" data-i18n="tg_sec_model">Moteur et mode de discussion</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <label for="select-slack-backend" data-i18n="lbl_tg_backend">Backend</label>
+                <select id="select-slack-backend">
+                  <option value="lumen" data-i18n="opt_tg_lumen">Source d'IA des Réglages</option>
+                  <option value="ollama">Ollama</option>
+                  <option value="api" data-i18n="opt_tg_api">API cloud</option>
+                  <option value="llama" data-i18n="opt_tg_llama">llama-server local</option>
+                  <option value="applefm" data-i18n="opt_tg_applefm">Apple Foundation Models (macOS 27)</option>
+                </select>
+              </div>
+              <div class="ios-row">
+                <label for="input-slack-model" data-i18n="lbl_tg_model">Modèle</label>
+                <input type="text" id="input-slack-model" placeholder="(celui des Réglages)" spellcheck="false" autocomplete="off" />
+              </div>
+              <div class="ios-row">
+                <label for="select-slack-mode" data-i18n="lbl_tg_mode">Mode de discussion</label>
+                <select id="select-slack-mode">
+                  <option value="tools" data-i18n="opt_tg_mode_tools">Outils (function calling)</option>
+                  <option value="chat" data-i18n="opt_tg_mode_chat">Discussion directe</option>
+                  <option value="agent" data-i18n="opt_tg_mode_agent">Tâche d'agent</option>
+                  <option value="image" data-i18n="opt_tg_mode_image">Image</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="ios-group-title" data-i18n="tg_sec_caps">Capacités</div>
+            <div class="ios-group">
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_tools">Outils Lumen (workflows, mémoire, rappels)</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-slack-tools" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_agents">Tâches d'agent</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-slack-agents" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_sl_personas">Les agents répondent sous leur nom et leur avatar</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-slack-personas" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_sl_channels">Répondre aux @mentions dans les canaux</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-slack-channels" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_images">Génération d'images</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-slack-images" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row">
+                <span data-i18n="lbl_tg_show_tools">Afficher les appels d'outils dans la conversation</span>
+                <label class="ios-switch"><input type="checkbox" id="checkbox-slack-showtools" /><span class="ios-slider"></span></label>
+              </div>
+              <div class="ios-row">
+                <label for="select-slack-image-provider" data-i18n="lbl_tg_image_provider">Moteur d'image</label>
+                <select id="select-slack-image-provider">
+                  <option value="bonsai">Bonsai (local)</option>
+                  <option value="ollama">Ollama</option>
+                  <option value="openai">OpenAI</option>
+                </select>
+              </div>
+            </div>
+            <p class="setting-hint" data-i18n-html="hint_sl_agents">Dans Slack, écrivez <strong>Nom de l'agent : tâche</strong> pour confier une tâche à l'un de vos agents : il répond en personne, sous son nom et l'émoji de la couleur de son avatar. <strong>!aide</strong> liste toutes les commandes.</p>
+
+            <div class="ios-group-title" data-i18n="tg_sec_security">Sécurité</div>
+            <div class="ios-group">
+              <button type="button" class="ios-row ios-row-action" id="btn-slack-test" data-i18n="btn_tg_test">Envoyer un message de test</button>
+              <button type="button" class="ios-row ios-row-action danger" id="btn-slack-clear" data-i18n="btn_sl_clear">Supprimer les jetons et couper le bot</button>
+            </div>
+          </div><!-- /slack pane -->
+
+          <button class="settings-save-btn secondary-action" id="btn-open-help-inline" data-i18n="btn_help">Aide & documentation</button>
+          <button class="settings-save-btn secondary-action" id="btn-bar-tour" data-i18n="bar_tour_replay">Revoir le mini-tuto de la barre</button>
+          <button class="settings-save-btn secondary-action" id="btn-open-onboarding" data-i18n="btn_onboarding">Assistant de configuration des raccourcis</button>
+          <button class="settings-save-btn" id="btn-save-settings" data-i18n="btn_save">Enregistrer</button>
+      </section>
+    </main>
+  </div>
+
+  <!-- Catalogue des prompts système. Hors de <main> : la boîte se superpose à
+       toute la fenêtre de réglages, quel que soit l'onglet actif. -->
+  <div class="prompts-overlay" id="prompts-overlay" hidden>
+    <div class="prompts-dialog" role="dialog" aria-modal="true" aria-labelledby="prompts-title">
+      <header class="prompts-head">
+        <h2 id="prompts-title" data-i18n="prompts_title">Prompts système de Lumen</h2>
+        <input type="search" id="prompts-search" placeholder="Rechercher…" data-i18n-ph="ph_prompts_search" spellcheck="false" />
+        <button type="button" class="prompts-close" id="btn-prompts-close" aria-label="Fermer">✕</button>
+      </header>
+      <p class="prompts-intro" data-i18n="prompts_intro">Ces consignes sont envoyées au modèle avant vos messages. Laissez un champ vide pour conserver le texte d'origine, affiché en gris.</p>
+      <div class="prompts-body" id="prompts-body"></div>
+      <footer class="prompts-foot">
+        <span class="setting-hint" id="prompts-status" role="status"></span>
+        <button type="button" class="settings-save-btn secondary-action" id="btn-prompts-reset-all" data-i18n="btn_prompts_reset_all">Tout réinitialiser</button>
+        <button type="button" class="settings-save-btn" id="btn-prompts-save" data-i18n="btn_save">Enregistrer</button>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

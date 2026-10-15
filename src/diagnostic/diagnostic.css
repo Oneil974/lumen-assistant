@@ -1,0 +1,27 @@
+html, body { height: 100%; margin: 0; background: var(--background); color: var(--foreground); font: 13px/1.5 system-ui, sans-serif; }
+body { display: flex; flex-direction: column; }
+.bar { display: flex; align-items: center; gap: 4px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.bar .title { margin-right: 12px; font-size: 14px; }
+.bar button { border: 0; background: transparent; color: var(--muted-foreground); padding: 6px 10px; border-radius: 8px; cursor: pointer; font: inherit; }
+.bar button[aria-selected="true"] { background: var(--muted); color: var(--foreground); }
+main { flex: 1; min-height: 0; display: flex; }
+main > * { flex: 1; min-width: 0; }
+iframe { border: 0; width: 100%; height: 100%; }
+section { overflow: auto; padding: 16px; }
+.hint { color: var(--muted-foreground); }
+.soft { border: 1px solid var(--border); background: var(--card); color: inherit; border-radius: 6px; padding: 2px 8px; cursor: pointer; }
+.trace { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; background: var(--card); }
+.trace .q { font-weight: 600; }
+.trace .meta { color: var(--muted-foreground); font-size: 12px; }
+.trace details { margin-top: 6px; }
+.trace pre { white-space: pre-wrap; font-size: 11px; max-height: 260px; overflow: auto; }
+.bar .grow { flex: 1; }
+dialog { border: 1px solid var(--border); border-radius: 12px; background: var(--popover, var(--background)); color: var(--foreground); padding: 18px 20px; width: min(460px, 92vw); }
+dialog::backdrop { background: rgb(0 0 0 / .35); }
+dialog h2 { margin: 0 0 6px; font-size: 16px; }
+dialog label { display: flex; gap: 8px; align-items: center; padding: 5px 0; }
+dialog label small { margin-left: auto; color: var(--muted-foreground); }
+dialog .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+dialog .actions button { padding: 6px 14px; }
+.danger { border: 0; border-radius: 6px; background: var(--destructive); color: var(--destructive-foreground, #fff); cursor: pointer; font: inherit; }
+.toast { position: fixed; right: 16px; bottom: 16px; padding: 8px 12px; border-radius: 8px; background: var(--foreground); color: var(--background); font-size: 12.5px; }

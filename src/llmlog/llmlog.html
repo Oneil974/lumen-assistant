@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!-- Journal LLM de Lumen : log global des agissements des modèles — appels,
+     outils/skills, délégations orchestrateur→sous-agents, forge de skills,
+     compactions de contexte et escalades de budget (llmlog.rs). -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Journal LLM</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=4" />
+    <script type="module" src="./main.js" defer></script>
+    <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop. -->
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="head">
+        <span class="brand-wrap">
+          <span class="brand-logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"/><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 13h6M9 17h6"/></svg></span>
+          <span class="brand">Journal LLM</span>
+        </span>
+        <div class="totals" id="totals"></div>
+        <button class="btn-soft danger" id="btn-clear">Vider</button>
+      </header>
+
+      <div class="filters" id="filters">
+        <button class="chip active" data-kind="">Tout</button>
+        <button class="chip" data-kind="call">Appels</button>
+        <button class="chip" data-kind="tool">Outils</button>
+        <button class="chip" data-kind="delegation">Délégations</button>
+        <button class="chip" data-kind="skill">Skills</button>
+        <button class="chip" data-kind="compaction">Compactions</button>
+        <button class="chip" data-kind="escalation">Escalades</button>
+      </div>
+
+      <main class="list" id="list"></main>
+    </div>
+  </body>
+</html>

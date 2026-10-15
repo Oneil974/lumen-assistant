@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!-- Luciole (ex-Compagnon IA) : une créature persistante incarnée par l'orbe
+     Lumen (orb.js, réutilisé tel quel) avec ses PROPRES réglages d'apparence
+     appliqués via window.LumenOrb — sans toucher l'orbe de la barre.
+     Mise en page reprise de l'ancienne « Discussion vivante » : l'orbe en
+     vedette, une barre d'actions en pastille, la conversation en retrait et les
+     réglages dans un panneau latéral (façon Sheet de shadcn/ui). Les
+     identifiants restent ceux qu'attend main.js. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Luciole</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=7" />
+    <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <header class="topbar">
+      <span class="brand">Luciole</span>
+      <div class="top-actions">
+        <span class="chat-sub" id="mem-count">0 souvenir</span>
+        <button class="icon-btn tool" data-act="settings" type="button" title="Réglages" aria-label="Réglages"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <div class="orb-wrap" id="orb-wrap">
+        <div class="orb-shadow"></div>
+        <div class="orb-container" id="orb-container">
+          <div class="orb-frost"></div>
+          <canvas id="orb-canvas"></canvas>
+          <div class="orb-eyes" id="orb-eyes"><span></span><span></span></div>
+        </div>
+        <div class="speech" id="speech" hidden></div>
+        <div class="mess-layer" id="mess"></div>
+      </div>
+
+      <div class="ident">
+        <h1 id="pet-name">…</h1>
+        <p class="status">
+          <span class="stage-tag" id="pet-stage">Étincelle</span>
+          <span>Niv. <b id="pet-level">1</b></span>
+          <span class="dot">·</span>
+          <span id="pet-state">éveillé</span>
+          <span class="dot">·</span>
+          <span class="heart" title="Santé"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.35-9.5-8.5C.8 9.6 2.2 6 5.5 6c2 0 3.2 1.2 4 2.3.8-1.1 2-2.3 4-2.3 3.3 0 4.7 3.6 3 6.5C19 16.65 12 21 12 21z"/></svg><b id="pet-health">100</b></span>
+          <span class="coin" id="wallet" title="Lumens — gagnés grâce aux tokens générés par les modèles locaux (sans toucher au compteur réel)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7-6.3-4.6L5.7 20l2.3-7-6-4.4h7.6z"/></svg><b id="wallet-val">0</b></span>
+        </p>
+        <div class="xpbar" title="Expérience"><i id="xp-fill"></i><span id="xp-label"></span></div>
+        <div class="badges" id="badges"></div>
+        <p class="whisper" id="pet-sub"></p>
+      </div>
+
+      <div class="stats" id="stats"></div>
+      <div class="traits" id="traits"></div>
+
+      <div class="dock" id="actions">
+        <button class="act" data-act="feed" type="button" title="Nourrir"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.9c1.5 0 2.7 1.1 4 1.1 3 0 6-8 6-12.2A4.9 4.9 0 0 0 17 5c-2.2 0-4 1.4-5 2-1-.6-2.8-2-5-2A4.9 4.9 0 0 0 2 9.8C2 14 5 22 8 22c1.3 0 2.5-1.1 4-1.1z"/><path d="M10 2c1 .5 2 2 2 5"/></svg></span><small>Nourrir</small></button>
+        <button class="act" data-act="play" type="button" title="Jouer"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.2 5.2c3.5 2.6 3.5 11 0 13.6M18.8 5.2c-3.5 2.6-3.5 11 0 13.6"/></svg></span><small>Jouer</small></button>
+        <button class="act" data-act="clean" type="button" title="Laver"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.7S5 9.3 5 14a7 7 0 0 0 14 0c0-4.7-7-11.3-7-11.3z"/></svg></span><small>Laver</small></button>
+        <button class="act" data-act="cuddle" type="button" title="Câliner"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span><small>Câliner</small></button>
+        <button class="act" data-act="teach" type="button" title="Apprendre"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><small>Apprendre</small></button>
+        <button class="act" data-act="sleep" id="act-sleep" type="button" title="Dormir"><span class="ic" id="sleep-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><small>Dormir</small></button>
+        <button class="act heal" data-act="heal" id="act-heal" type="button" title="Soigner" hidden><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="12" rx="3"/><path d="M12 11v6M9 14h6"/><path d="M9 8V5a3 3 0 0 1 6 0v3"/></svg></span><small>Soigner</small></button>
+      </div>
+
+      <section class="conversation log" id="log" aria-label="Conversation"></section>
+      <form class="composer" id="composer">
+        <input id="msg" class="msg" placeholder="Parlez à votre compagnon…" aria-label="Message" autocomplete="off" />
+        <button class="icon-btn send" id="send" type="submit" aria-label="Envoyer" title="Envoyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </form>
+    </main>
+
+    <!-- Réglages (panneau latéral). Un clic sur le voile ou ✕ le referme. -->
+    <div class="overlay sheet-overlay" id="settings" hidden>
+      <aside class="panel sheet" aria-label="Réglages">
+        <div class="panel-head sheet-head">
+          <strong>Réglages de Luciole</strong>
+          <button class="icon-btn x" data-close type="button" aria-label="Fermer" title="Fermer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <section class="group">
+          <h2>Identité</h2>
+          <label class="row"><span>Nom</span><input type="text" id="set-name" maxlength="24" /></label>
+        </section>
+        <section class="group">
+          <h2>Apparence de l'orbe</h2>
+          <label class="row"><span>Personnage</span><select id="set-character"></select></label>
+          <p class="hint char-hint" id="character-desc"></p>
+          <div class="row col orig-only"><span>Couleurs</span>
+            <div class="swatches" id="swatches"></div>
+            <button class="mini" id="rainbow" type="button">Arc-en-ciel</button>
+          </div>
+          <label class="row"><span>Taille</span><input type="range" id="set-size" min="140" max="300" step="2" /><output id="size-out"></output></label>
+          <label class="row orig-only"><span>Épaisseur du verre</span><input type="range" id="set-core" min="55" max="92" step="1" /></label>
+          <label class="row orig-only"><span>Type de verre</span>
+            <select id="set-glass">
+              <option value="thin">Fin</option>
+              <option value="crystal">Cristal</option>
+              <option value="frosted">Givré</option>
+              <option value="bubble">Bulle (irisé)</option>
+            </select>
+          </label>
+          <label class="row"><span>Couleur de fond</span>
+            <input type="color" id="set-bg" />
+            <button class="mini" id="bg-auto" type="button">Défaut</button>
+          </label>
+          <label class="row"><span>Texte</span>
+            <select id="set-text">
+              <option value="auto">Automatique</option>
+              <option value="dark">Sombre</option>
+              <option value="light">Clair</option>
+            </select>
+          </label>
+        </section>
+        <section class="group">
+          <h2>Voix et mémoire</h2>
+          <label class="row"><span>Synthèse vocale</span>
+            <select id="set-voice"><option value="">Voix par défaut</option></select>
+            <input type="checkbox" id="set-speak" aria-label="Lire les réponses" />
+          </label>
+          <div class="row col"><span>Mémoire</span>
+            <button class="mini" id="consolidate-mem" type="button">Consolider la mémoire</button>
+            <p class="hint" id="mem-hint">Fusionne et nettoie les souvenirs à l'aide de l'IA.</p>
+          </div>
+        </section>
+        <div class="panel-foot"><button class="danger" id="reset-pet" type="button">Recommencer le compagnon</button></div>
+      </aside>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+
+    <script type="module" src="/orb.js?v=30"></script>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

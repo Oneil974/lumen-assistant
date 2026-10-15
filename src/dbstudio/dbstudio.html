@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!-- DB Studio (édition Pro) — modéliser une base : tables, champs typés,
+     relations et formulaires de saisie. Deux moteurs : le SQLite local de Lumen
+     (défaut, lisible par Prisme/Fluxo/agents) ou un PostgreSQL d'entreprise. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — DB Studio</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=9" />
+    <script type="module" src="./main.js?v=4" defer></script>
+    <link rel="stylesheet" href="../lib/confirm.css?v=1" />
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+    <link rel="stylesheet" href="../lib/pro-workspace.css?v=1" />
+    <!-- Habillage doré de l\'édition Pro : après la peau plate, pour la surcharger. -->
+    <link rel="stylesheet" href="/lib/pro-skin.css?v=8" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+          </span>
+          <div><div class="brand-title">DB Studio</div><div class="brand-sub" id="brand-sub">Modélisation</div></div>
+        </div>
+        <nav class="nav" id="nav">
+          <button data-view="spaces" class="active"><span class="nav-ic" data-icon="layout-grid"></span>Espaces</button>
+          <button data-view="models"><span class="nav-ic" data-icon="table"></span>Modèles</button>
+          <button data-view="schema"><span class="nav-ic" data-icon="network"></span>Schéma</button>
+          <button data-view="data"><span class="nav-ic" data-icon="database"></span>Données</button>
+          <button data-view="settings"><span class="nav-ic" data-icon="cpu"></span>Moteur</button>
+        </nav>
+        <div class="side-foot">
+          <div class="dot-line"><span class="dot"></span><span id="engine-badge">SQLite local</span></div>
+          <div class="side-note">Un modèle décrit vos tables, leurs champs et leurs liens. Le moteur décide seulement d'où vivent les données.</div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div><h1 id="view-title">Espaces</h1><p id="view-sub">Vos tables, d'un coup d'œil</p></div>
+          <div class="top-actions" id="top-actions"></div>
+        </header>
+        <div class="scroll" id="scroll">
+          <!-- ===== Modèles ===== -->
+          <section class="view active" id="view-spaces">
+            <div class="cards" id="cards"></div>
+          </section>
+
+          <!-- ===== Modèles ===== -->
+          <section class="view" id="view-models">
+            <div class="split">
+              <aside class="model-list card">
+                <div class="card-head"><h2>Modèles</h2><button class="btn tiny primary" data-act="new-model">+ Modèle</button></div>
+                <div class="list" id="models-list"></div>
+              </aside>
+              <section class="model-editor" id="model-editor"></section>
+            </div>
+          </section>
+
+          <!-- ===== Schéma ===== -->
+          <section class="view" id="view-schema">
+            <div class="card"><div class="card-head"><h2>Carte du modèle</h2><span class="hint">Chaque flèche est une relation ; le nom porté par la flèche est celui du champ.</span></div>
+              <div class="schema-host" id="schema-host"></div>
+            </div>
+          </section>
+
+          <!-- ===== Données ===== -->
+          <section class="view" id="view-data">
+            <div class="toolbar">
+              <select id="data-model" class="select"></select>
+              <input id="data-search" class="input" aria-label="Rechercher dans les lignes chargées" placeholder="Rechercher dans les lignes chargées…" />
+              <details class="column-picker"><summary class="btn">Colonnes</summary><div id="data-columns" class="column-menu"></div></details>
+              <button class="btn" data-act="export-data">Exporter CSV</button>
+              <button class="btn" data-act="reload-data">Actualiser</button>
+            </div>
+            <div class="card table-card"><table class="grid" id="data-table"></table></div>
+            <div class="data-footer"><span id="data-count" class="hint" role="status"></span><span class="spacer"></span>
+              <label>Lignes par page <select id="data-size" class="select"><option>25</option><option>50</option><option>100</option></select></label>
+              <button class="btn" data-act="previous-page" aria-label="Page précédente">Précédent</button>
+              <span id="data-page"></span><button class="btn" data-act="next-page" aria-label="Page suivante">Suivant</button>
+              <button class="btn" id="data-more" data-act="load-more">Charger 500 lignes de plus</button>
+            </div>
+          </section>
+
+          <!-- ===== Moteur ===== -->
+          <section class="view" id="view-settings">
+            <section class="card form-card">
+              <h2>Moteur de base de données</h2>
+              <p class="hint">Le modèle est le même dans les deux cas : seul l'endroit où vivent les données change.</p>
+              <div class="engine-choice" id="engine-choice"></div>
+              <div class="form-grid" id="engine-fields"></div>
+              <div class="form-actions">
+                <button class="btn" id="engine-test" type="button">Tester la connexion</button>
+                <button class="btn primary" id="engine-save" type="button">Enregistrer</button>
+                <span id="engine-status" class="hint"></span>
+              </div>
+            </section>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- Éditeur de champ -->
+    <div class="backdrop" id="field-modal" hidden>
+      <div class="modal">
+        <div class="modal-head"><h4 id="field-title">Champ</h4><button class="modal-close" data-close>×</button></div>
+        <div class="modal-body" id="field-body"></div>
+        <div class="modal-foot"><button class="btn ghost" data-close>Annuler</button><button class="btn primary" id="field-save">Enregistrer</button></div>
+      </div>
+    </div>
+
+    <!-- Formulaire de saisie généré -->
+    <div class="backdrop" id="card-modal" hidden>
+      <div class="modal">
+        <div class="modal-head"><h4 id="card-title">Résumé de la carte</h4><button class="modal-close" data-close>×</button></div>
+        <div class="modal-body" id="card-body"></div>
+        <div class="modal-foot"><button class="btn ghost" data-close>Annuler</button><button class="btn primary" id="card-save">Enregistrer</button></div>
+      </div>
+    </div>
+
+    <div class="backdrop" id="share-modal" hidden>
+      <div class="modal wide-modal">
+        <div class="modal-head"><h4 id="share-title">Partager</h4><button class="modal-close" data-close>×</button></div>
+        <div class="modal-body" id="share-body"></div>
+        <div class="modal-foot"><span id="share-error" class="err"></span><span class="spacer"></span>
+          <button class="btn ghost danger" id="share-remove" hidden>Ne plus partager</button>
+          <button class="btn ghost" data-close>Annuler</button>
+          <button class="btn primary" id="share-save">Partager</button></div>
+      </div>
+    </div>
+
+    <div class="backdrop" id="record-modal" hidden>
+      <div class="modal">
+        <div class="modal-head"><h4 id="record-title">Enregistrement</h4><button class="modal-close" data-close>×</button></div>
+        <form class="modal-body" id="record-body"></form>
+        <div class="modal-foot"><span id="record-error" class="err"></span><span class="spacer"></span><button class="btn ghost" data-close>Annuler</button><button class="btn primary" id="record-save">Enregistrer</button></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

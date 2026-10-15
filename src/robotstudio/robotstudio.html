@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!-- Robot Studio : programmer un Raspberry Pi par blocs (Blockly), voir le
+     Python généré, puis le déployer et le lancer sur le Pi par SSH. Portage
+     dans Lumen de Rpi-Robot-Studio (MIT) : mêmes blocs, mêmes générateurs ;
+     projets, appareils et blocs personnalisés vivent dans l'espace de l'app,
+     le déploiement passe par les commandes SSH de Lumen (clé, jamais de mot de
+     passe rejoué). -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Robot Studio</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/confirm.css?v=1" />
+    <link rel="stylesheet" href="./styles.css?v=1" />
+    <script src="./vendor/blockly.min.js"></script>
+    <script src="./vendor/python.min.js"></script>
+    <script src="./blocks-i18n.js?v=1"></script>
+    <script src="./blocks.js?v=1"></script>
+    <script src="./lumen-blocks.js?v=1"></script>
+    <script type="module" src="./main.js?v=1" defer></script>
+    <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 8V4"/><circle cx="12" cy="3" r="1"/><circle cx="9" cy="13" r="1.2"/><circle cx="15" cy="13" r="1.2"/><path d="M9.5 16.5h5M3 12v3M21 12v3"/></svg></span>
+          <span class="brand-title">Robot Studio</span>
+        </div>
+        <select id="project-select" class="select" title="Projet"></select>
+        <button class="btn-soft" id="btn-new" title="Nouveau projet">＋ Nouveau</button>
+        <button class="btn-soft" id="btn-rename" title="Renommer le projet">Renommer</button>
+        <button class="btn-soft danger" id="btn-delete" title="Supprimer le projet">Supprimer</button>
+        <div class="spacer"></div>
+        <span class="status" id="status"></span>
+        <button class="btn-soft" id="btn-export" title="Enregistrer project.py, requirements.txt et run_project.sh dans une sandbox">Exporter</button>
+        <button class="btn-soft primary" id="btn-deploy" title="Envoyer le programme sur le Raspberry Pi et le lancer">Déployer</button>
+      </header>
+
+      <main class="body">
+        <section class="workspace" id="blockly"></section>
+
+        <aside class="side">
+          <nav class="seg" id="tabs">
+            <button data-tab="python" class="on">Python</button>
+            <button data-tab="devices">Appareils</button>
+            <button data-tab="docs">Aide des blocs</button>
+            <button data-tab="custom">Blocs perso</button>
+          </nav>
+
+          <div class="pane" data-pane="python">
+            <div class="pane-actions">
+              <button class="btn-soft" id="btn-copy">Copier</button>
+              <button class="btn-soft" id="btn-explain">Expliquer avec l'IA</button>
+            </div>
+            <pre class="code" id="python-code"></pre>
+            <div class="reqs"><b>requirements.txt</b><pre id="python-reqs"></pre></div>
+            <div class="explain" id="explain" hidden></div>
+          </div>
+
+          <div class="pane" data-pane="devices" hidden>
+            <p class="hint">Lumen se connecte en SSH avec votre clé, jamais avec un mot de passe. À faire une fois depuis le Terminal :</p>
+            <pre class="cmd">ssh-copy-id pi@raspberrypi.local</pre>
+            <div class="device-list" id="device-list"></div>
+            <form class="device-form" id="device-form">
+              <input id="dev-name" placeholder="Nom (ex. Robot salon)" />
+              <input id="dev-host" placeholder="Adresse (ex. raspberrypi.local)" required />
+              <div class="row">
+                <input id="dev-user" placeholder="Utilisateur" value="pi" />
+                <input id="dev-port" type="number" placeholder="Port" value="22" />
+              </div>
+              <button class="btn-soft primary" type="submit">Ajouter l'appareil</button>
+            </form>
+            <div class="pane-actions">
+              <button class="btn-soft" id="btn-test">Tester la connexion</button>
+              <button class="btn-soft" id="btn-env">Préparer le Pi</button>
+            </div>
+            <div class="pane-actions">
+              <button class="btn-soft" id="btn-status">État</button>
+              <button class="btn-soft" id="btn-logs">Journal</button>
+              <button class="btn-soft danger" id="btn-stop">Arrêter</button>
+            </div>
+            <pre class="log" id="log"></pre>
+            <div class="bridge">
+              <b>Blocs Lumen</b>
+              <p class="hint">Les blocs de la catégorie Lumen appellent cet ordinateur sur le réseau local avec un jeton d'appareil. L'adresse et le jeton partent avec le programme dans lumen.json, jamais dans le code.</p>
+              <div class="bridge-row"><span>Adresse</span><code id="bridge-url">—</code></div>
+              <div class="bridge-row"><span>Jeton</span><code id="bridge-token">—</code></div>
+              <label class="bridge-row"><span>Photos reçues dans</span><select id="bridge-sandbox" class="select"></select></label>
+              <div class="pane-actions">
+                <button class="btn-soft" id="btn-bridge-regen">Nouveau jeton</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pane" data-pane="docs" hidden>
+            <select id="doc-select" class="select"></select>
+            <p class="hint">Astuce : cliquez un bloc dans l'espace de travail pour afficher son aide.</p>
+            <div class="doc" id="doc"></div>
+          </div>
+
+          <div class="pane" data-pane="custom" hidden>
+            <p class="hint">Un bloc perso injecte votre propre code Python. Les paramètres se décrivent en JSON et se reprennent dans le code entre doubles accolades :</p>
+            <pre class="cmd">[{"name":"pin","type":"text"}]  →  {{pin}}</pre>
+            <div class="custom-list" id="custom-list"></div>
+            <form class="custom-form" id="custom-form">
+              <input id="cb-name" placeholder="Identifiant (ex. buzzer_bip)" required pattern="[a-zA-Z_][a-zA-Z0-9_]*" />
+              <div class="row">
+                <input id="cb-category" placeholder="Catégorie" value="Perso" />
+                <input id="cb-color" placeholder="Couleur" value="#607D8B" />
+              </div>
+              <input id="cb-params" placeholder='Paramètres JSON' value="[]" />
+              <textarea id="cb-imports" rows="2" placeholder="Imports (un par ligne)"></textarea>
+              <textarea id="cb-code" rows="4" placeholder="Code Python" required></textarea>
+              <div class="row">
+                <input id="cb-req" placeholder="Paquet pip (facultatif)" />
+                <select id="cb-output" class="select">
+                  <option value="">Instruction</option>
+                  <option value="Number">Renvoie un nombre</option>
+                  <option value="String">Renvoie un texte</option>
+                  <option value="Boolean">Renvoie un booléen</option>
+                </select>
+              </div>
+              <input id="cb-doc" placeholder="Description (infobulle)" />
+              <button class="btn-soft primary" type="submit">Enregistrer le bloc</button>
+            </form>
+          </div>
+        </aside>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,299 @@
+/* Aventure narrative — accueil plein écran puis vue de jeu immersive. */
+*{box-sizing:border-box}[hidden]{display:none!important}html,body{
+  height:100%;
+  margin:0;
+}
+body{font:15px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+.app{height:100vh}
+.spacer{flex:1}
+
+/* Accueil */
+.setup{height:100%;display:grid;place-items:center;padding:24px;background: var(--muted)}
+.setup-card{width:min(560px,100%);text-align:center}
+.setup-card h1{font-size:30px;margin:0 0 6px}
+.sub{color:var(--text-muted);margin:0 0 22px}
+.worlds{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.world{border:1px solid var(--border);background:var(--surface);border-radius:var(--radius-xl);padding:14px;cursor:pointer;text-align:left;transition:border-color .15s;box-shadow:var(--shadow)}
+.world:hover{border-color:var(--accent)}
+.world.sel{border-color:var(--accent);background:var(--sel)}
+.world .wn{font-weight:650;font-size:14.5px}
+.world .wd{font-size:12.5px;color:var(--text-muted);margin-top:3px}
+.custom{width:100%;min-height:60px;resize:vertical;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface-2);color:var(--text);padding:11px 13px;font:inherit;margin-bottom:12px}
+.custom:focus{outline:none;border-color:var(--accent)}
+.opt{display:flex;align-items:center;gap:7px;justify-content:center;font-size:13px;color:var(--text-muted);margin-bottom:16px}
+.start{border:none;border-radius:var(--radius-xl);background:var(--accent);color: var(--primary-foreground);font-size:16px;font-weight:600;padding:13px 26px;cursor:pointer;box-shadow: var(--flat-shadow-md)}
+.start:disabled{opacity:.6;cursor:default}
+.setup-status{margin-top:14px;color:var(--text-muted);font-size:13px;min-height:18px}
+
+/* Jeu */
+.game{height:100%;display:flex;flex-direction:column;max-width:780px;margin:0 auto}
+.game-bar{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border)}
+.icon{width:36px;height:36px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:var(--radius-lg);font-size:16px;cursor:pointer}
+.icon:hover{background:var(--surface)}
+.turn{font-size:13px;color:var(--text-muted);font-weight:600}
+.scene-wrap{flex:1;overflow:auto;padding:22px}
+.illus{margin:0 0 18px;border-radius:var(--radius-xl);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);background:var(--surface-2);min-height:120px}
+.illus img{display:block;width:100%}
+.illus.loading{position:relative}
+.illus.loading::after{content:"Illustration en cours…";position:absolute;inset:0;display:grid;place-items:center;color:var(--text-muted);font-size:13px}
+.scene{font-size:16px;line-height:1.72;white-space:pre-wrap}
+.scene.fade{animation:fade .5s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.choices{display:flex;flex-direction:column;gap:8px;padding:0 18px 8px}
+.choice{text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:var(--radius-lg);padding:12px 15px;font-size:14.5px;cursor:pointer;transition:border-color .12s}
+.choice:hover{border-color:var(--accent);background:var(--sel)}
+.choice:disabled{opacity:.5;cursor:default}
+.free{display:flex;gap:8px;padding:12px 18px 16px;border-top:1px solid var(--border)}
+.free-in{flex:1;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface-2);color:var(--text);padding:10px 13px;font:inherit}
+.free-in:focus{outline:none;border-color:var(--accent)}
+.free-go{border:none;border-radius:var(--radius-lg);background:var(--accent);color: var(--primary-foreground);padding:0 18px;font-weight:600;cursor:pointer}
+.thinking{color:var(--text-muted);font-style:italic}
+
+/* Reprise d'aventures (accueil) */
+.saves{margin-top:26px;text-align:left}
+.saves-h{font-size:12px;font-weight:650;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.saves-list{display:flex;flex-direction:column;gap:8px}
+.save{display:flex;align-items:stretch;gap:8px}
+.save-main{flex:1;text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:var(--radius-lg);padding:10px 13px;cursor:pointer;transition:border-color .12s}
+.save-main:hover{border-color:var(--accent)}
+.save-main b{display:block;font-size:14px}
+.save-main small{color:var(--text-muted);font-size:12px}
+.save-del{border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);border-radius:var(--radius-lg);width:44px;cursor:pointer;font-size:15px}
+.save-del:hover{color:var(--red);border-color:var(--red)}
+
+/* Menu Réglages (game-bar) */
+.menu-wrap{position:relative}
+.menu{position:absolute;right:0;top:44px;z-index:30;width:210px;background:var(--surface);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:12px}
+.menu-t{font-size:11.5px;font-weight:650;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.seg{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:3px;margin-bottom:12px}
+.seg button{flex:1;border:none;background:transparent;color:var(--text-muted);border-radius:var(--radius-md);padding:6px 4px;font-size:12px;cursor:pointer}
+.seg button.on{background:var(--accent);color: var(--primary-foreground);font-weight:600}
+.menu-opt{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text)}
+.menu-opt+.menu-opt{margin-top:7px}
+.menu-opt input{accent-color:var(--accent)}
+.menu-sel{width:100%;margin-top:6px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-2);color:var(--text);padding:7px 9px;font:inherit;font-size:12.5px}
+.menu-sel:focus{outline:none;border-color:var(--accent)}
+.menu-action{width:100%;margin-top:10px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface-2);color:var(--text);padding:8px 10px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.menu-action:hover{border-color:var(--accent);background:var(--sel)}
+
+/* Mode carte TCG */
+.game.card-mode{
+  --card-ink:#33243f;
+  --card-line:rgba(102,70,152,.48);
+  --card-metal:#f5d889;
+  --card-metal-2:#9e6cff;
+  --card-paper:#fff8e8;
+  --card-paper-2:#ead8b4;
+  --card-glow:rgba(125,93,255,.28);
+  --card-title:"AVENTURE";
+  max-width:1120px;
+  display:grid;
+  grid-template-columns:440px minmax(300px,420px);
+  grid-template-rows:auto 1fr auto;
+  gap:16px 20px;
+  align-content:center;
+  justify-content:center;
+  padding:22px;
+}
+.game.card-mode[data-card-theme="relic"]{--card-ink:#352415;--card-line:rgba(122,82,32,.52);--card-metal:#d6a94d;--card-metal-2:#8d6231;--card-paper:#fff4d0;--card-paper-2:#d7bd82;--card-glow:rgba(196,130,39,.25);--card-title:"RELIQUE"}
+.game.card-mode[data-card-theme="neon"]{--card-ink:#eaf7ff;--card-line:rgba(69,222,255,.5);--card-metal:#45deff;--card-metal-2:#ff4fd8;--card-paper:#11182b;--card-paper-2:#243052;--card-glow:rgba(69,222,255,.34);--card-title:"NEON"}
+.game.card-mode[data-card-theme="forest"]{--card-ink:#162a1f;--card-line:rgba(57,120,71,.5);--card-metal:#82c46c;--card-metal-2:#3b7f52;--card-paper:#f3f5dc;--card-paper-2:#bfd19b;--card-glow:rgba(83,154,86,.25);--card-title:"SYLVESTRE"}
+.game.card-mode[data-card-theme="noir"]{--card-ink:#f4efe7;--card-line:rgba(216,193,154,.42);--card-metal:#d8c19a;--card-metal-2:#5f5b66;--card-paper:#1b1a1f;--card-paper-2:#3a3541;--card-glow:rgba(0,0,0,.35);--card-title:"NOIR"}
+.game.card-mode .scene-wrap{
+  position:relative;
+  grid-column:1;
+  grid-row:1 / 4;
+  width:440px;
+  height:640px;
+  min-height:640px;
+  margin:0;
+  padding:48px 16px 16px;
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:390px 1fr;
+  gap:12px;
+  border:1px solid var(--card-line);
+  border-radius:22px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.42),transparent 24%,rgba(0,0,0,.12) 100%),
+    radial-gradient(120% 72% at 50% 0,var(--card-glow),transparent 58%),
+    repeating-linear-gradient(45deg,rgba(255,255,255,.07) 0 1px,transparent 1px 8px),
+    linear-gradient(135deg,var(--card-paper),var(--card-paper-2));
+  box-shadow:0 20px 54px rgba(0,0,0,.22),0 0 0 1px rgba(255,255,255,.25) inset,0 0 0 6px rgba(255,255,255,.16) inset;
+}
+.game.card-mode .scene-wrap::before{
+  content:var(--card-title);
+  position:absolute;
+  left:16px;
+  right:16px;
+  top:13px;
+  height:25px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--card-line);
+  border-radius:999px;
+  background: var(--muted);
+  color:var(--card-ink);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.16em;
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+  box-shadow:0 2px 8px rgba(0,0,0,.18);
+}
+.game.card-mode .scene-wrap::after{
+  content:"";
+  pointer-events:none;
+  position:absolute;
+  inset:8px;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:var(--radius-xl);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+}
+.game.card-mode .illus{
+  margin:0;
+  min-height:0;
+  height:100%;
+  border-radius:var(--radius-lg);
+  border:2px solid rgba(0,0,0,.28);
+  box-shadow:0 4px 16px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.22);
+  background:rgba(0,0,0,.15);
+}
+.game.card-mode .illus img{height:100%;object-fit:cover}
+.game.card-mode .scene{
+  align-self:end;
+  height:100%;
+  max-height:none;
+  overflow:auto;
+  padding:16px 17px;
+  border:1px solid var(--card-line);
+  border-radius:var(--radius-lg);
+  background: var(--card-paper);
+  color:var(--card-ink);
+  font-size:14.5px;
+  line-height:1.58;
+  box-shadow:0 3px 12px rgba(0,0,0,.14);
+}
+.game.card-mode[data-card-theme="neon"] .scene,.game.card-mode[data-card-theme="noir"] .scene{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02)),var(--card-paper);color:var(--card-ink)}
+.game.card-mode .game-bar{
+  grid-column:2;
+  grid-row:1;
+  align-self:start;
+  border:1px solid var(--border);
+  border-radius:var(--radius-xl);
+  padding:12px;
+  background:var(--surface);
+  box-shadow:var(--shadow);
+}
+.game.card-mode .choices{
+  grid-column:2;
+  grid-row:2;
+  width:100%;
+  min-height:0;
+  overflow:auto;
+  margin:0;
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-xl);
+  background:var(--surface);
+  box-shadow:var(--shadow);
+}
+.game.card-mode .choices::before{
+  content:"Choix";
+  display:block;
+  margin:0 0 10px;
+  color:var(--text-muted);
+  font-size:11.5px;
+  font-weight:750;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.game.card-mode .free{
+  grid-column:2;
+  grid-row:3;
+  width:100%;
+  margin:0;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-xl);
+  background:var(--surface);
+  box-shadow:var(--shadow);
+}
+
+/* Choix : variantes déjà explorées */
+.choice.variant{display:flex;align-items:center;gap:9px;background:var(--surface-2)}
+.choice .vtag{flex:none;font-size:11px;font-weight:650;color: var(--accent-ink);background:var(--sel);padding:2px 8px;border-radius:20px}
+
+/* Overlay Historique */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.34);backdrop-filter:blur(3px);display:grid;place-items:center;padding:20px}
+.sheet{width:min(560px,94vw);max-height:80vh;display:flex;flex-direction:column;background:var(--surface);backdrop-filter:blur(28px);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow);padding:16px}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sheet-h strong{font-size:16px}
+.timeline{flex:1;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.tl-item{display:flex;align-items:center;gap:11px;text-align:left;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:var(--radius-lg);padding:9px 12px;cursor:pointer;transition:border-color .12s}
+.tl-item:hover{border-color:var(--accent)}
+.tl-item.cur{border-color:var(--accent);background:var(--sel)}
+.tl-n{flex:none;width:24px;height:24px;display:grid;place-items:center;border-radius:50%;background:var(--accent);color: var(--primary-foreground);font-size:12px;font-weight:650}
+.tl-b{flex:1;min-width:0}
+.tl-b b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-b small{color:var(--text-muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.tl-br{flex:none;font-size:12px;font-weight:650;color: var(--accent-ink)}
+.sheet-hint{color:var(--text-muted);font-size:12px;margin:12px 0 0}
+.context-sheet{width:min(620px,94vw)}
+.context-text{width:100%;min-height:220px;resize:vertical;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface-2);color:var(--text);padding:12px 14px;font:inherit;line-height:1.45}
+.context-text:focus{outline:none;border-color:var(--accent)}
+.context-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.ctx-btn{border:1px solid var(--border);border-radius:var(--radius-lg);padding:9px 14px;font:inherit;font-weight:650;cursor:pointer}
+.ctx-btn.ghost{background:var(--surface-2);color:var(--text)}
+.ctx-btn.primary{background:var(--accent);border-color:transparent;color: var(--primary-foreground)}
+
+/* ===== Responsive (fenêtres/écrans étroits) ===== */
+@media (max-width:900px){
+  .game.card-mode{
+    grid-template-columns:1fr;
+    grid-template-rows:auto auto auto auto;
+    align-content:start;
+    justify-content:center;
+    padding:16px;
+    overflow:auto;
+  }
+  .game.card-mode .scene-wrap{
+    grid-column:1;
+    grid-row:2;
+    width:min(440px,calc(100vw - 32px));
+    justify-self:center;
+  }
+  .game.card-mode .game-bar{grid-column:1;grid-row:1;width:min(440px,calc(100vw - 32px));justify-self:center}
+  .game.card-mode .choices{grid-column:1;grid-row:3;width:min(620px,calc(100vw - 32px));justify-self:center;overflow:visible}
+  .game.card-mode .free{grid-column:1;grid-row:4;width:min(620px,calc(100vw - 32px));justify-self:center}
+}
+@media (max-width:520px){
+  .setup{padding:16px}
+  .setup-card h1{font-size:25px}
+  .worlds{grid-template-columns:1fr}           /* univers empilés */
+  .game-bar{padding:10px 12px;gap:6px}
+  .scene-wrap{padding:16px}
+  .scene{font-size:15px}
+  .choices{padding:0 12px 8px}
+  .free{padding:10px 12px 14px}
+  .menu{width:min(230px,calc(100vw - 24px))}   /* le menu ne déborde pas */
+  .game.card-mode{
+    display:flex;
+    max-width:100%;
+    padding:0;
+    gap:0;
+  }
+  .game.card-mode .game-bar{border:0;border-bottom:1px solid var(--border);border-radius:0;box-shadow:none;background:transparent}
+  .game.card-mode .scene-wrap{width:calc(100vw - 24px);height:auto;min-height:0;margin:10px auto 12px;grid-template-rows:minmax(160px,1fr) minmax(140px,auto)}
+  .game.card-mode .scene{font-size:14px;max-height:210px}
+  .game.card-mode .choices{width:auto;margin:0 12px;padding:0 0 8px;border:0;border-radius:0;background:transparent;box-shadow:none}
+  .game.card-mode .choices::before{display:none}
+  .game.card-mode .free{width:auto;margin:0 12px 14px;padding:10px 0 0;border:0;border-top:1px solid var(--border);border-radius:0;background:transparent;box-shadow:none}
+  .sheet{padding:14px}
+  .tl-item{padding:8px 10px}
+}
+/* Très étroit : le nom du monde peut être long, on garde l'ellipsis lisible. */
+@media (max-width:360px){
+  .game-bar .turn{display:none}                /* place aux boutons */
+  .save-del{width:38px}
+}

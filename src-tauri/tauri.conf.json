@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Lumen",
+  "version": "0.3.0",
+  "identifier": "com.lumen.app",
+  "build": {
+    "frontendDist": "../dist/frontend",
+    "beforeBuildCommand": "node scripts/build-frontend.mjs && node scripts/build-llama-server.mjs && node scripts/build-whisper-server.mjs"
+  },
+  "app": {
+    "macOSPrivateApi": true,
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "Lumen",
+        "dragDropEnabled": false,
+        "width": 720,
+        "height": 550,
+        "resizable": true,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "shadow": false,
+        "visible": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https: asset: http://asset.localhost lumenapp: http://lumenapp.localhost lumenmedia: http://lumenmedia.localhost; media-src 'self' data: blob: lumenapp: http://lumenapp.localhost lumenmedia: http://lumenmedia.localhost; connect-src 'self' ipc: http://ipc.localhost lumenmedia: http://lumenmedia.localhost http://localhost:* http://127.0.0.1:* https: ws://localhost:* ws://127.0.0.1:*; worker-src 'self' blob:; child-src 'self' blob: https: lumenapp: http://lumenapp.localhost; frame-src 'self' blob: https: lumenapp: http://lumenapp.localhost; object-src 'none'; base-uri 'self'; form-action 'self'",
+      "dangerousDisableAssetCspModification": [
+        "script-src",
+        "style-src"
+      ]
+    }
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/Oneil974/lumen-assistant/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDg5MUVFQ0IyOTZEREE4MTkKUldRWnFOMldzdXdlaWVwVkY1bXk3VUVHcEtNME5JN0djQm9WNEJxMUJrSmFzdG1ZbFdUVTE5TEgK",
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "createUpdaterArtifacts": true,
+    "resources": [
+      "resources/llama-server",
+      "resources/whisper-server",
+      "resources/applefm",
+      "resources/imageplayground",
+      "resources/litert",
+      "resources/piper"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "macOS": {
+      "signingIdentity": "-",
+      "entitlements": "./Entitlements.plist"
+    }
+  }
+}

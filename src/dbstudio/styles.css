@@ -1,0 +1,125 @@
+/* DB Studio — ce qui lui est propre. La coquille (barre latérale, cartes,
+   tableaux, modales) vient de lib/app-shell.css. */
+@import url("../lib/app-shell.css?v=2");
+
+/* Deux colonnes : la liste des modèles, et le modèle en cours d'édition. */
+.split { display: grid; grid-template-columns: 260px 1fr; gap: 16px; align-items: start; }
+@media (max-width: 980px) { .split { grid-template-columns: 1fr; } }
+.model-list { overflow: hidden; }
+.model-editor { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+/* La table des champs défile DANS sa carte : sans `min-width: 0` sur la
+   colonne ni conteneur défilant, une ligne large (relation + contraintes +
+   actions) élargissait toute la page, qui défilait alors horizontalement — la
+   liste des modèles semblait coupée à gauche et les actions disparaissaient à
+   droite. */
+.split > * { min-width: 0; }
+.model-editor .card { min-width: 0; }
+.fields-grid td, .fields-grid th { white-space: nowrap; }
+.fields-grid td:nth-child(2), .fields-grid td:nth-child(4) { white-space: normal; min-width: 160px; }
+.fields-grid .badge { white-space: normal; }
+.kind { font-weight: 600; }
+.handle { white-space: nowrap; width: 1%; }
+.handle .mini + .mini { margin-left: 3px; }
+
+/* Palette de types de champ : on choisit une IDÉE (« un e-mail »), pas un type
+   SQL — l'exemple sous le nom est là pour ça. */
+.kind-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.kind-card { display: flex; flex-direction: column; gap: 2px; text-align: left; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); padding: 9px 11px; cursor: pointer; font: inherit; color: var(--text); }
+.kind-card:hover { border-color: var(--accent); }
+.kind-card.on { border-color: var(--accent); background: var(--sel); }
+.kind-card .k-name { font-size: 13px; font-weight: 620; }
+.kind-card .k-sample { font-size: 11.5px; color: var(--text-muted); }
+
+/* Choix du moteur */
+.engine-choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.engine-card { display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 11px 13px; cursor: pointer; background: var(--surface); }
+.engine-card.on { border-color: var(--accent); background: var(--sel); }
+.engine-card input { accent-color: var(--accent); margin-top: 2px; }
+.engine-card .e-title { font-size: 13.5px; font-weight: 620; }
+.engine-card .e-hint { font-size: 12px; color: var(--text-muted); }
+
+/* Carte du modèle : un diagramme dessiné à la main, lisible en clair comme en
+   sombre puisque tout est peint avec les jetons. */
+.schema-host { padding: 12px; overflow: auto; }
+svg.schema { width: 100%; min-width: 640px; height: auto; }
+svg.schema .node rect { fill: var(--surface); stroke: var(--border); }
+svg.schema .node line { stroke: var(--border); }
+svg.schema .node-title { font-size: 13px; font-weight: 650; fill: var(--text); }
+svg.schema .node-field { font-size: 11.5px; fill: var(--text); }
+svg.schema .node-type { fill: var(--text-muted); }
+svg.schema .node-more { font-size: 11px; fill: var(--text-muted); }
+svg.schema .link { fill: none; stroke: var(--accent); stroke-width: 1.6; opacity: .75; }
+svg.schema .arrow-head { fill: var(--accent); }
+svg.schema .link-label { font-size: 10.5px; fill: var(--text-muted); }
+
+.form-designer { margin: 14px 16px; }
+
+/* ===== Espaces : une carte par table ==================================== */
+/* La grille est l'écran d'accueil. Chaque carte doit répondre de loin à trois
+   questions — quelle table, combien, quand la dernière fois — et n'en poser
+   aucune autre. D'où un seul chiffre en grand, et des actions discrètes qui
+   n'apparaissent pleinement qu'au survol. */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 14px; align-items: start; }
+
+.tile {
+  position: relative; display: flex; flex-direction: column; gap: 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-xl);
+  background: var(--surface); box-shadow: var(--shadow);
+  padding: 15px 16px 12px; overflow: hidden;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+/* Un filet de couleur dérivé du nom de la table : deux cartes ne se confondent
+   jamais, et la même table garde sa teinte d'une session à l'autre. */
+.tile::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: linear-gradient(90deg, hsl(var(--h) 72% 58%), hsl(calc(var(--h) + 42) 72% 48%));
+}
+.tile:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgb(0 0 0 / .10); border-color: hsl(var(--h) 50% 60% / .55); }
+
+.tile-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.tile-id { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.tile-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: linear-gradient(135deg, hsl(var(--h) 72% 58%), hsl(calc(var(--h) + 42) 72% 48%)); }
+.tile-name { font-size: 14px; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tile-meta { font-size: 11.5px; color: var(--text-muted); }
+.tile-share { font-size: 10.5px; font-weight: 600; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; background: hsl(var(--h) 60% 55% / .14); color: hsl(var(--h) 55% 40%); white-space: nowrap; }
+
+/* Le chiffre est le sujet de la carte : il est tabulaire pour que deux cartes
+   côte à côte s'alignent au chiffre près. */
+.tile-kpi { display: flex; flex-direction: column; gap: 1px; }
+.kpi-value { font-size: 30px; font-weight: 660; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.kpi-label { font-size: 11.5px; color: var(--text-muted); }
+
+.tile-last { display: flex; align-items: baseline; gap: 8px; font-size: 12px; border-top: 1px solid var(--border); padding-top: 9px; min-height: 20px; }
+.last-k { color: var(--text-muted); white-space: nowrap; }
+.last-v { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.tile-foot { display: flex; align-items: center; gap: 6px; }
+.tile-foot .mini { opacity: .45; transition: opacity .15s ease; }
+.tile:hover .tile-foot .mini, .tile-foot .mini:focus-visible { opacity: 1; }
+
+.empty-card { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 40px 24px; text-align: center; }
+.empty-title { font-size: 15px; font-weight: 640; }
+.empty-sub { font-size: 12.5px; color: var(--text-muted); max-width: 420px; }
+
+/* ===== Partage d'un espace ============================================== */
+.modal.wide-modal { max-width: 620px; }
+.share-kinds { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; margin: 14px 0; }
+.share-kinds .kind-card { position: relative; padding-left: 30px; }
+.share-kinds .kind-card input { position: absolute; left: 10px; top: 12px; accent-color: var(--accent); }
+.share-people { border-top: 1px solid var(--border); padding-top: 12px; }
+.sp-head { font-size: 12px; font-weight: 620; color: var(--text-muted); margin-bottom: 8px; }
+.sp-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+.sp-name { flex: 1; font-size: 13px; font-weight: 600; }
+.sp-access { border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text); font: inherit; font-size: 12.5px; padding: 5px 8px; }
+
+/* ===== Espace partagé (page autonome) =================================== */
+/* Pas de barre latérale : la personne n'a qu'un écran, et il tient tout seul. */
+.space-body { margin: 0; }
+.space { display: flex; flex-direction: column; gap: 16px; padding: 22px 26px 60px; max-width: 1100px; margin: 0 auto; }
+.space-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.space-title h1 { font-size: 20px; font-weight: 660; letter-spacing: -0.01em; }
+.space-title p { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+.space-actions { display: flex; align-items: center; gap: 10px; }
+/* Le droit est écrit sur l'écran : personne ne doit deviner s'il peut saisir. */
+.access-pill { font-size: 11px; font-weight: 620; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; }
+.access-pill.rw { border-color: transparent; background: var(--accent); color: var(--on-accent); }

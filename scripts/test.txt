@@ -1,0 +1,6 @@
+→ Sonde d'import
+{"ok": true, "kind": "gemlite"}
+→ Archive lumen-bonsai-engine-linux-x64-20260918-mlxb9effaf6.zip
+rsync: [receiver] write failed on "/tmp/lumen-bonsai-engine-stage/flat-linux-x64/linux-x64/python/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so": Disk quota exceeded (122)
+rsync error: error in file IO (code 11) at receiver.c(488) [receiver=3.4.1]
+rsync: [sender] write error: Broken pipe (32)

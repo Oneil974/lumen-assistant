@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumen — Journal des versions</title>
+  <meta name="description" content="Ce qui change dans chaque version de Lumen : moteurs, agents, interface, matériel." data-en-content="What changes in every release of Lumen: engines, agents, interface, hardware." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="assets/site.css?v=20261015" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+      Lumen
+    </a>
+    <div class="nav-links">
+      <a href="index.html#assistant" data-en="Assistant">Assistant</a>
+      <a href="index.html#moteurs" data-en="Engines">Moteurs</a>
+      <a href="index.html#os">Lumen Desktop</a>
+      <a href="index.html#materiel" data-en="Hardware">Matériel</a>
+      <a href="tutorials.html" data-en="Tutorials">Tutoriels</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" data-theme-toggle type="button" aria-label="Changer de thème" data-en-aria-label="Switch theme">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="icon-btn" data-lang-toggle type="button" aria-label="Switch to English">EN</button>
+      <a class="btn sm" href="index.html#telecharger" data-en="Download">Télécharger</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" style="padding:64px 0 40px;text-align:left;">
+  <div class="container narrow">
+    <span class="eyebrow" data-en="Changelog">Journal des versions</span>
+    <h1 style="font-size:clamp(32px,5vw,46px);max-width:20ch;margin:0 0 16px;" data-en="What changed, release by release">Ce qui change, version après version</h1>
+    <p class="lead" data-en="Every notable change, grouped by area. Updates are signed and delivered inside the application.">Chaque changement notable, regroupé par domaine. Les mises à jour sont signées et livrées dans l'application.</p>
+  </div>
+</header>
+
+<section style="padding-top:24px;border-top:0;">
+  <div class="container">
+
+    <article class="release">
+      <div class="release-meta">
+        <h2>0.3.0</h2>
+        <time datetime="2026-10" data-en="October 2026">Octobre 2026</time>
+        <span class="badge accent"><span class="dot"></span><span data-en="Current release">Version actuelle</span></span>
+      </div>
+      <div class="release-body">
+        <p class="lead" style="margin-bottom:28px;" data-en="The release where Lumen learns to choose: a new Application display mode, a decision model that routes every request, orchestration for complex tasks and an optional escalation to an API model.">La version où Lumen apprend à choisir : un nouveau mode d'affichage Application, un modèle de décision qui aiguille chaque demande, l'orchestration des tâches complexes et une escalade facultative vers un modèle API.</p>
+
+        <div class="change-group">
+          <h3 data-en="Display modes &amp; intelligence">Modes d'affichage &amp; intelligence</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Application mode">Mode Application</b><p data-en="A third way to use Lumen, between the floating bar and the desktop: a classic chat-app window, with your conversations and your apps (Messages, Library, Calendar, Mail…) in a sidebar. The mode is picked at launch and remembered.">Une troisième façon d'utiliser Lumen, entre la barre flottante et le bureau : une fenêtre classique façon application de chat, avec vos discussions et vos apps (Messages, Bibliothèque, Agenda, Mail…) dans une barre latérale. Le mode se choisit au lancement et se mémorise.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Decision-model router">Routeur par modèle de décision</b><p data-en="Before every answer, a small specialised local model decides in a few hundred milliseconds whether to answer directly, call tools or orchestrate several steps. Pick the model: Tev1, Laya, Clef Flash or LiquidAI Open d1; when it hesitates, Lumen falls back to its rules.">Avant chaque réponse, un petit modèle local spécialisé décide en quelques centaines de millisecondes s'il faut répondre directement, appeler des outils ou orchestrer plusieurs étapes. Modèle au choix : Tev1, Laya, Clef Flash ou LiquidAI Open d1 ; s'il hésite, Lumen retombe sur ses règles.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Orchestration and harness">Orchestration et harnais</b><p data-en="Complex requests are split into visible steps — analysis, tools, data, writing, verification — with guardrails that keep small models on track.">Les demandes complexes sont découpées en étapes visibles — analyse, outils, données, rédaction, vérification — avec des garde-fous qui gardent les petits modèles sur les rails.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Hybrid mode">Mode hybride</b><p data-en="If the local model fails, Lumen offers to hand the question to an API model. Nothing leaves without your consent.">Si le modèle local échoue, Lumen propose de passer la question à un modèle API. Rien ne part sans votre accord.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="New models and llama.cpp update">Nouveaux modèles et llama.cpp à jour</b><p data-en="New models in the catalogue, grouped by family, and a newer llama.cpp.">De nouveaux modèles au catalogue, groupés par famille, et un llama.cpp plus récent.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Model and backend picker">Sélecteur de modèles et de backends</b><p data-en="Clearer, and every engine keeps its own model.">Plus clair, et chaque moteur garde son propre modèle.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Voice control">Commande vocale</b><p data-en="Drive the desktop with your voice.">Pilotez le bureau à la voix.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Agents">Agents</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Instant messaging">Messagerie instantanée</b><p data-en="Chat with your agents like in a messenger, with a voice mode.">Échangez avec vos agents comme dans une messagerie, avec un mode vocal.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Slack">Slack</b><p data-en="Your agents also answer in Slack.">Vos agents répondent aussi dans Slack.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Agent design">Design des agents</b><p data-en="Animated characters wherever an agent shows up.">Des personnages animés, partout où un agent apparaît.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Applications">Applications</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Browser, Calculator, Studies (beta), PDF editor">Navigateur, Calculatrice, Études (bêta), éditeur de PDF</b><p data-en="Four new applications, plus note-taking right on PDFs.">Quatre nouvelles applications, et la prise de notes directement sur les PDF.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Contacts, E-mail and morning view">Carnet d'adresses, E-mail et vue du matin</b><p data-en="Your contacts in one place, a safe e-mail client (sanitised HTML, images on demand) and a morning screen that sums up the day.">Vos contacts réunis, un client e-mail sûr (HTML assaini, images au choix) et un écran du matin qui résume la journée.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Documents and Presentations">Documents et Présentations</b><p data-en="More complete, with new templates.">Plus complets, avec de nouveaux modèles.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Data analysis and ML workshop">Analyse de données et Atelier ML</b><p data-en="Two significantly richer applications.">Deux applications nettement enrichies.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="RPI Robot Studio">RPI Robot Studio</b><p data-en="Program a Raspberry Pi robot with blocks and deploy it over SSH.">Programmez un robot Raspberry Pi par blocs et déployez-le en SSH.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Widgets and diagnostics">Widgets et diagnostic</b><p data-en="New desktop widgets, and an installation diagnostic.">De nouveaux widgets pour le bureau, et un diagnostic de l'installation.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="“Send to…”">« Envoyer vers… »</b><p data-en="Sharing between apps is more reliable, images included.">Le partage entre applications est plus fiable, images comprises.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Interface &amp; platforms">Interface &amp; plateformes</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Coloured orbs">Orbes colorés</b><p data-en="New hues and a more expressive orb.">De nouvelles teintes et un orbe plus expressif.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Augmented reality">Réalité augmentée</b><p data-en="Lumen in augmented reality, tested on the Meta Quest 3S headset.">Lumen en réalité augmentée, testé sur casque Meta Quest 3S.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="EN/FR translation">Traduction EN/FR</b><p data-en="A better-translated interface in both languages.">Une interface mieux traduite dans les deux langues.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Fixes">Corrections</h3>
+          <ul class="changes">
+            <li><span class="kind fix" data-en="fixed">corrigé</span><div><b data-en="Many fixes">Nombreuses corrections</b><p data-en="Including sending images to apps, performance on Windows and the PDF export layout.">Dont l'envoi d'images vers les applications, les performances sous Windows et l'affichage de l'export PDF.</p></div></li>
+          </ul>
+        </div>
+
+      </div>
+    </article>
+
+    <article class="release">
+      <div class="release-meta">
+        <h2>0.2.0</h2>
+        <time datetime="2026-09" data-en="September 2026">Septembre 2026</time>
+      </div>
+      <div class="release-body">
+        <p class="lead" style="margin-bottom:28px;" data-en="The release that turns Lumen Desktop into a system: a lighter core, apps as installable packages from a Catalogue, an assistant that works in projects — and a presence on mobile and Raspberry Pi.">La version qui fait de Lumen Desktop un système : un noyau allégé, des apps en paquets installables depuis un Catalogue, un assistant qui travaille en projets — et une présence sur mobile et Raspberry Pi.</p>
+
+        <div class="change-group">
+          <h3 data-en="Desktop &amp; apps">Bureau &amp; apps</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Apps as packages">Des apps en paquets</b><p data-en="Twenty-plus apps leave the core and become .lumenapp packages installed, updated and removed from the Catalogue, served from a signed repository. Each declares its capabilities; you grant them one by one. Third-party apps only ever see the AppKit SDK.">Plus de vingt apps quittent le noyau et deviennent des paquets .lumenapp installés, mis à jour et retirés depuis le Catalogue, servis par un dépôt signé. Chacune déclare ses capacités ; vous les accordez une à une. Une app tierce ne voit jamais que le SDK AppKit.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b>App Intents</b><p data-en="Apps promote actions to the assistant (create a note, schedule a task, run Python): the model can call them even when the app is closed.">Les apps promeuvent des actions à l'assistant (créer une note, planifier une tâche, exécuter du Python) : le modèle peut les appeler même app fermée.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Photos, Scheduled tasks, Python">Photos, Tâches planifiées, Python</b><p data-en="A library of every image in your sandboxes; one view on everything that runs at a set time (AI requests, workflows, agents, reminders) with a run log; CPython in the browser with your sandbox as the project.">Une bibliothèque de toutes les images de vos sandboxes ; une vue unique sur tout ce qui s'exécute à heure fixe (demandes à l'IA, workflows, agents, rappels) avec journal ; CPython dans le navigateur avec votre sandbox comme projet.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="ML workshop">Atelier ML</b><p data-en="A scikit-learn tab running in the browser: CSV datasets, nine algorithms, metrics and confusion matrix, named models, a Raspberry Pi kit and SSH deployment.">Un onglet scikit-learn qui tourne dans le navigateur : datasets CSV, neuf algorithmes, métriques et matrice de confusion, modèles nommés, kit Raspberry Pi et déploiement SSH.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Data flows">Flux de données</b><p data-en="The ETL is now a node canvas: 56 operations, connectors to your tables, files and sources, live preview at every block.">L'ETL est désormais un canevas à nœuds : 56 opérations, connecteurs vers vos tables, fichiers et sources, aperçu en direct à chaque bloc.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="One design system">Un seul système de conception</b><p data-en="A flat, shadcn-style skin across the bar, the desktop and every app; light and dark unified; accent colours drawn from the orb.">Une peau plate façon shadcn sur la barre, le bureau et chaque app ; clair et sombre unifiés ; couleurs d'accent tirées de l'orbe.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Catalogue">Catalogue</b><p data-en="One screen to install models, Fluxo workflows, avatars, voices and applications.">Un seul écran pour installer modèles, workflows Fluxo, avatars, voix et applications.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Halo capsule">Capsule Halo</b><p data-en="A persistent capsule shows running agents and their steps, notifications and the time.">Une capsule persistante affiche les agents en cours et leurs étapes, les notifications et l'heure.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Web search">Recherche web</b><p data-en="More reliable extraction of pages and documents.">Extraction plus fiable des pages et des documents.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Assistant">Assistant</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Projects">Projets</b><p data-en="Group conversations in a project with instructions and a knowledge base (documents indexed locally, images described by the vision model). The model can read the project's other conversations on request.">Regroupez vos discussions dans un projet avec des instructions et une base de connaissances (documents indexés en local, images décrites par le modèle vision). Le modèle peut relire les autres discussions du projet à la demande.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Summary, compaction, branches">Résumé, compaction, branches</b><p data-en="Summarise a long thread on demand (the summary is then sent with every turn, and editable), compact it, or branch from any message to start clean.">Résumez un long fil à la demande (le résumé part ensuite à chaque tour, et se corrige), compactez-le, ou créez une branche depuis n'importe quel message pour repartir au propre.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Apple Foundation Models">Apple Foundation Models</b><p data-en="On macOS 27, the on-device Apple model becomes an engine like the others, tool calling included.">Sur macOS 27, le modèle Apple sur l'appareil devient un moteur comme les autres, tool calling compris.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="@ mentions">Mentions @</b><p data-en="Mentioning a tool now forces its call on the first turn, whatever the engine — small local models and the Apple model included.">Mentionner un outil force désormais son appel au premier tour, quel que soit le moteur — petits modèles locaux et modèle Apple compris.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Folders and pinned conversations">Dossiers et conversations épinglées</b><p data-en="Sort conversations into folders (AI summaries land there too) and pin the important ones on a Pinterest-style board.">Rangez vos conversations en dossiers (les résumés IA s'y déposent aussi) et épinglez les importantes sur un tableau façon Pinterest.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="PDF export">Export PDF</b><p data-en="Any conversation exports to PDF, from the menu or through a tool call the model can make itself.">Une conversation s'exporte en PDF depuis le menu, ou par un appel d'outil que le modèle fait lui-même.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Floating prompt and context menu">Fenêtre de prompt flottante et menu contextuel</b><p data-en="Select text in any application: proofread, rewrite, summarise or translate from the context menu, or open a floating prompt sheet on the spot.">Sélectionnez du texte dans n'importe quelle application : relisez, réécrivez, résumez ou traduisez depuis le menu contextuel, ou ouvrez une feuille de prompt flottante sur place.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Understand this screen">Comprendre cet écran</b><p data-en="Select a region of the screen and have the vision model analyse just that, in addition to the full capture.">Sélectionnez une région de l'écran et faites-la analyser par le modèle vision, en plus de la capture complète.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Agent wizard">Assistant de création d'agent</b><p data-en="A guided path to define a personal agent: role, tools, budgets and guardrails.">Un parcours guidé pour définir un agent personnel : rôle, outils, budgets et garde-fous.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="AI Assistant app and in-app assistant">App Assistant IA et boîte d'assistant</b><p data-en="The AI Assistant app is redesigned, and an assistant box is built into several apps (Calendar with AI prompts, Notes, boards…).">L'app Assistant IA est revue, et une boîte d'assistant s'intègre dans plusieurs apps (Calendrier avec prompts IA, Notes, tableaux…).</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Voices">Voix</b><p data-en="Choose the synthesis voice (Piper and others) right from the first-run assistant.">Choix de la voix de synthèse (Piper et autres) dès l'assistant de premier démarrage.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Engines &amp; models">Moteurs &amp; modèles</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Bonsai Image">Bonsai Image</b><p data-en="The PrismML image generation engine is built in and downloads on demand (Apple Silicon, NVIDIA GPU).">Le moteur de génération d'images PrismML est intégré et se télécharge à la demande (Apple Silicon, GPU NVIDIA).</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Apple Image Playground">Apple Image Playground</b><p data-en="Image generation through the system service on macOS 27.">Génération d'images via le service système sur macOS 27.</p></div></li>
+                      </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Session &amp; Pro">Session &amp; Pro</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Business apps (in preparation)">Applications métier (en préparation)</b><p data-en="Relia (AI-assisted CRM, Factur-X quotes and invoices), Meetings (LAN video and team chat with AI minutes), DB Studio, Data flows (visual ETL), Reporting, Data sources, Directory and end-to-end encrypted Team messaging — plus an optional Lumen Server with roles and permissions and a shared AI source.">Relia (CRM assisté par l'IA, devis et factures Factur-X), Réunion (visio et chat d'équipe sur le LAN avec compte rendu IA), DB Studio, Flux de données (ETL visuel), Reporting, Sources de données, Annuaire et Messagerie d'équipe chiffrée de bout en bout — plus un Lumen Server optionnel avec rôles, permissions et source d'IA partagée.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Mobile companion and PWA">Compagnon mobile et PWA</b><p data-en="Lumen installs as a progressive web app on your phone: multi-user with a TOTP code per profile, camera capture for the vision model, agent tracking and approvals, push notifications.">Lumen s'installe en progressive web app sur le téléphone : multi-utilisateur avec un code TOTP par profil, capture photo pour le modèle vision, suivi et approbation des agents, notifications push.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Fixes">Corrections</h3>
+          <ul class="changes">
+            <li><span class="kind fix" data-en="fixed">corrigé</span><div><b>Windows</b><p data-en="CUDA libraries missing when llama-server started are now bundled; CPU fallback when they are absent.">Les bibliothèques CUDA manquantes au lancement de llama-server sont désormais embarquées ; repli CPU si elles sont absentes.</p></div></li>
+            <li><span class="kind fix" data-en="fixed">corrigé</span><div><b>Linux</b><p data-en="CUDA fixes and graphics rendering (WebKitGTK transparency and blur).">Correctifs CUDA et rendu graphique (transparence et flou WebKitGTK).</p></div></li>
+            <li><span class="kind fix" data-en="fixed">corrigé</span><div><b data-en="Assistant">Assistant</b><p data-en="More reliable inference backend detection.">Détection du backend d'inférence fiabilisée.</p></div></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <article class="release">
+      <div class="release-meta">
+        <h2>0.1.1</h2>
+        <time datetime="2026-08" data-en="August 2026">Août 2026</time>
+      </div>
+      <div class="release-body">
+        <p class="lead" style="margin-bottom:28px;" data-en="The release that makes Lumen self-sufficient: its own inference engine, its own voices, its own hardware — and agents that delegate instead of grinding through everything alone.">La version qui rend Lumen autonome : son propre moteur d'inférence, ses propres voix, son propre matériel — et des agents qui délèguent au lieu de tout encaisser seuls.</p>
+
+        <div class="change-group">
+          <h3 data-en="Engines &amp; models">Moteurs &amp; modèles</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Built-in llama.cpp">llama.cpp intégré</b><p data-en="A llama-server bundled with the app, with a catalogue of official GGUF builds, download with disk-space check, resumable transfers, and automatic startup on the first prompt. Vision models bring their projector along.">Un llama-server livré avec l'app, avec un catalogue de GGUF officiels, téléchargement avec vérification de l'espace disque, reprise des transferts, et démarrage automatique au premier message. Les modèles vision embarquent leur projecteur.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="A wider model catalogue">Catalogue de modèles élargi</b><p data-en="New GGUF builds available in one click, vision models included, each with the context window and memory footprint it will really need on your machine.">De nouveaux GGUF disponibles en un clic, modèles vision compris, chacun annonçant la fenêtre de contexte et l'empreinte mémoire qu'il demandera réellement sur votre machine.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="MCP connectors">Connecteurs MCP</b><p data-en="Model Context Protocol servers can be connected in one click. Remote official servers only — HTTPS with a token in a header, no local process spawned on your machine.">Les serveurs Model Context Protocol se branchent en un clic. Uniquement des serveurs distants officiels — HTTPS avec jeton en en-tête, aucun processus local lancé sur votre machine.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Opt-in web search">Recherche web activable</b><p data-en="A fetch &amp; search tool the model can call, disabled by default. Nothing goes online until you turn it on.">Un outil de récupération et de recherche que le modèle peut appeler, désactivé par défaut. Rien ne part en ligne tant que vous ne l'activez pas.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Tool calling">Tool calling</b><p data-en="More reliable across engines: official sampling settings for the Liquid AI family, several tool calls in a single turn, structured output compiled into a server-side grammar, and provider-specific compatibility fixes.">Plus fiable d'un moteur à l'autre : réglages d'échantillonnage officiels pour la famille Liquid AI, plusieurs appels d'outils dans un même tour, sortie structurée compilée en grammaire côté serveur, et correctifs de compatibilité par fournisseur.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Toolbox">Boîte à outils</b><p data-en="You choose which tools are published to the model, one by one. Every unused tool was costing context before your question even arrived.">Vous choisissez les outils publiés au modèle, un par un. Chaque outil inutile coûtait du contexte avant même votre question.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="One model per backend">Un modèle par backend</b><p data-en="Each engine remembers its own model, so switching between Ollama, llama.cpp and the cloud API no longer sends a model name the other one cannot load.">Chaque moteur retient son propre modèle : basculer entre Ollama, llama.cpp et l'API cloud n'envoie plus un nom de modèle que l'autre ne sait pas charger.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Images">Images</b><p data-en="Attach an image to a question with a vision model, and generate one from three interchangeable engines — local Bonsai, Ollama or an OpenAI-compatible API — behind a single interface.">Joignez une image à une question avec un modèle vision, et générez-en une depuis trois moteurs interchangeables — Bonsai local, Ollama ou une API compatible OpenAI — derrière une seule interface.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Agents &amp; automation">Agents &amp; automatisation</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Orchestrator and sub-agents">Orchestrateur et sous-agents</b><p data-en="A lead agent splits a request and delegates to specialised sub-agents. Token and iteration budgets are enforced, and an exhausted budget escalates instead of looping.">Un agent principal découpe une demande et délègue à des sous-agents spécialisés. Les budgets de tokens et d'itérations sont respectés, et un budget épuisé escalade au lieu de boucler.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Automation mode">Mode Automation</b><p data-en="A node-based version of Fluxo dedicated to scheduled and event-driven automations, with the run history attached to each one.">Une version à base de nœuds de Fluxo dédiée aux automatisations planifiées et déclenchées par événement, avec l'historique d'exécution attaché à chacune.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Agent mode">Mode agent</b><p data-en="A persistent loop with context compaction, self-authored skills kept under version control, and clearer progress reporting during long runs.">Une boucle persistante avec compaction du contexte, des skills auto-créés versionnés, et un compte rendu de progression plus lisible pendant les longues exécutions.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Memory mode">Mode mémoire</b><p data-en="Lumen models eight kinds of memories, recalls what is relevant before answering and remembers what you ask it to. A per-context access policy is enforced in the backend: a compromised agent cannot read a kind that was not opened to it.">Lumen modélise huit types de souvenirs, rappelle ce qui est pertinent avant de répondre et retient ce que vous lui demandez de retenir. Une politique d'accès par contexte est appliquée côté backend : un agent compromis ne peut pas lire un type qu'on ne lui a pas ouvert.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b>Profiler</b><p data-en="Live telemetry for local models: context occupancy, memory recall, tokens per second, tools offered versus tools called, and the full transcript behind each answer.">Télémétrie en direct des modèles locaux : occupation du contexte, rappel mémoire, tokens par seconde, outils proposés contre outils réellement appelés, et le transcript complet derrière chaque réponse.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Interface">Interface</h3>
+          <ul class="changes">
+            <li><span class="kind imp" data-en="redesign">refonte</span><div><b data-en="New design system">Nouveau système de conception</b><p data-en="The whole interface moves to a shared token layer (shadcn/ui in OKLCH): same colours, same radii, same focus ring everywhere, in light and dark, with the orb's pastel accents available as UI accents.">Toute l'interface passe sur une couche de jetons partagée (shadcn/ui en OKLCH) : mêmes couleurs, mêmes rayons, même anneau de focus partout, en clair et en sombre, avec les accents pastel de l'orbe disponibles comme accents d'interface.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="New icon bar and launcher">Nouvelle barre d'icônes et launcher</b><p data-en="A compact icon bar that takes less room on screen, paired with a full-screen launcher to reach any app or setting in a couple of keystrokes.">Une barre d'icônes compacte qui prend moins de place à l'écran, associée à un launcher plein écran pour atteindre n'importe quelle app ou n'importe quel réglage en deux touches.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="A menu you arrange yourself">Un menu que vous rangez</b><p data-en="Pin, reorder and hide the apps of the launcher and the dock: the desktop shows what you use, not the whole catalogue.">Épinglez, réordonnez et masquez les apps du launcher et du dock : le bureau montre ce dont vous vous servez, pas le catalogue entier.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Audio and visual notifications">Notifications audio et visuelles</b><p data-en="Each kind of event — an agent finishing, a workflow failing, a reminder firing — has its own sound and its own signal on the orb.">Chaque type d'événement — un agent qui termine, un workflow qui échoue, un rappel qui se déclenche — a son son et son signal sur l'orbe.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Setup assistant">Assistant de configuration</b><p data-en="The first run was rewritten: pick an engine, download a model with a realistic idea of what it will do on your machine, choose a voice, and start — without opening the settings.">La première ouverture a été réécrite : choisir un moteur, télécharger un modèle en sachant ce qu'il donnera réellement sur votre machine, choisir une voix, et démarrer — sans ouvrir les réglages.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Understand this screen">Comprendre cet écran</b><p data-en="Lumen captures the real screen — native windows included — and has the active vision model describe it: what is shown, what matters, what to do next.">Lumen capture l'écran réel — fenêtres natives comprises — et le fait décrire par le modèle vision actif : ce qui est affiché, l'information importante, la prochaine action.</p></div></li>
+            <li><span class="kind add" data-en="alpha">alpha</span><div><b data-en="Consultation mode">Mode consultation</b><p data-en="A calm, touch-first reading interface for a shared screen or a tablet. Available as an alpha preview.">Une interface de consultation apaisée, pensée pour le tactile, sur un écran partagé ou une tablette. Disponible en avant-première alpha.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Voice &amp; presence">Voix &amp; présence</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Piper bundled in the app">Piper intégré à l'application</b><p data-en="Local neural voices no longer need an external install on Linux and Windows: the engine and its voices ship with Lumen. On macOS, speech uses the system voices and Kokoro.">Les voix neuronales locales ne demandent plus d'installation externe sous Linux et Windows : le moteur et ses voix sont livrés avec Lumen. Sur macOS, la synthèse s'appuie sur les voix du système et sur Kokoro.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Custom GLB avatar">Avatar GLB personnalisé</b><p data-en="Replace the orb with your own animated 3D model. Idle, thinking and speaking animations are bound to the assistant's states.">Remplacez l'orbe par votre propre modèle 3D animé. Les animations repos, réflexion et parole sont liées aux états de l'assistant.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Telegram gateway">Passerelle Telegram</b><p data-en="Talk to your assistant from your phone: outbound polling only, a paired allow-list, per-message choice of backend and model, and tool calls shown right in the thread.">Parlez à votre assistant depuis votre téléphone : uniquement du sortant, une liste blanche appairée, choix du backend et du modèle message par message, et les appels d'outils affichés dans le fil.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Hardware">Matériel</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b>Lumen Controller</b><p data-en="A physical companion on your local network: buttons bound to workflows, agents or prompts, and a knob that sets system volume through the OS APIs.">Un compagnon physique sur votre réseau local : des boutons associés à des workflows, des agents ou des prompts, et un potentiomètre qui règle le volume système via les API du système.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="RFID support">Support RFID</b><p data-en="Tap a tag on the controller to run a workflow, wake an agent — or switch profile and unlock your session without typing a password.">Passez un badge sur le contrôleur pour lancer un workflow, réveiller un agent — ou changer de profil et déverrouiller votre session sans saisir de mot de passe.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="ESP32 firmware">Firmwares ESP32</b><p data-en="Generate, flash and drive MicroPython firmware for ESP32 and Pico W straight from Lumen — sensors, LED matrices, relays, actuators, and a physical orb avatar on a round screen.">Générez, flashez et pilotez des firmwares MicroPython pour ESP32 et Pico W directement depuis Lumen — capteurs, matrices LED, relais, actionneurs, et un avatar-orbe physique sur écran rond.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Documents &amp; RAG">Documents &amp; RAG</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Documents mode">Mode Documents</b><p data-en="A conversation mode that queries your whole indexed library before answering. The search happens before generation, so no tool call is required — small local models stop being the weak link.">Un mode de discussion qui interroge toute votre bibliothèque indexée avant de répondre. La recherche a lieu avant la génération, sans appel d'outil : les petits modèles locaux cessent d'être le maillon faible.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Documents in the conversation">Documents dans la discussion</b><p data-en="Attach a PDF, a DOCX or notes to a question. A short document goes into the context whole; a long one is indexed and read through extracts, then removed from the index when you detach it.">Joignez un PDF, un DOCX ou des notes à une question. Un document court part entier dans le contexte ; un long est indexé et consulté par extraits, puis retiré de l'index quand vous le détachez.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Sources under the answer">Sources sous la réponse</b><p data-en="Every answer drawn from documents shows the passages it relied on, each with a relevance score; a click opens the full extract. The model's (Source 2) references point at those chips — and are stripped before speech.">Toute réponse tirée de documents affiche les passages sur lesquels elle s'appuie, chacun avec son score de pertinence ; un clic ouvre l'extrait complet. Les renvois (Source 2) écrits par le modèle pointent vers ces pastilles — et sont retirés avant l'énonciation.</p></div></li>
+            <li><span class="kind fix" data-en="fixed">corrigé</span><div><b data-en="Keyword search restored">Recherche par mot-clé réparée</b><p data-en="The keyword half of the hybrid search was failing on a malformed query and swallowing its own error: searching for a word present verbatim in a document returned nothing. Both rankings are now merged, and an extract found by both routes comes first.">La moitié « mot-clé » de la recherche hybride échouait sur une requête mal formée en avalant son erreur : chercher un mot présent mot pour mot dans un document ne rendait rien. Les deux classements sont désormais fusionnés, et un extrait trouvé par les deux voies passe devant.</p></div></li>
+            <li><span class="kind imp" data-en="improved">amélioré</span><div><b data-en="Local embedding encoders">Encodeurs d'embeddings locaux</b><p data-en="LFM2.5 Embedding and Qwen3 Embedding served by a dedicated local server, with the task prefixes each model was trained with — omitting them silently wrecked relevance. Relevance is now judged relative to the best extract of the search, never against a fixed threshold whose scale changes with the encoder.">LFM2.5 Embedding et Qwen3 Embedding servis par un serveur local dédié, avec les préfixes de tâche attendus par chaque modèle — les omettre ruinait la pertinence en silence. Celle-ci se juge maintenant par rapport au meilleur extrait de la recherche, jamais sur un seuil fixe dont l'échelle change avec l'encodeur.</p></div></li>
+            <li><span class="kind fix" data-en="fixed">corrigé</span><div><b data-en="Reliable indexing">Indexation fiable</b><p data-en="Ingestion is atomic — no more half-indexed PDF after a hiccup — the encoder's startup is awaited instead of returning a 503 on the very first import, and each document shows the volume of text actually indexed.">L'ingestion est atomique — plus de PDF indexé à moitié après un incident —, le démarrage de l'encodeur est attendu au lieu de renvoyer une erreur 503 au tout premier import, et chaque document affiche le volume de texte réellement indexé.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <h3 data-en="Apps">Apps</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b>Finance</b><p data-en="Budgets, goals, cash flow and category breakdowns, with AI advice computed on data that stays local.">Budgets, objectifs, trésorerie et répartition par catégorie, avec des conseils IA calculés sur des données qui restent locales.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Relia — AI-assisted CRM with Factur-X">Relia — CRM assisté par l'IA, avec Factur-X</b><p data-en="Items and stock, customers, quotes and invoices, all stored in the local SQLite database so Prisme, Fluxo and the agents can read them. An accepted quote becomes an invoice in one click, drawing down the stock and tracing every movement. Invoices are exported as Factur-X (PDF with the CII XML embedded) or as CII XML alone, with the mandatory statements of the French mandate checked before export. Tags with autocomplete and stackable filters on every list, autocompleted item categories, and the 8.5 % overseas VAT rate.">Articles et stock, clients, devis et factures, stockés dans la base SQLite locale : Prisme, Fluxo et les agents les lisent nativement. Un devis accepté devient une facture en un clic, ce qui débite le stock et trace chaque mouvement. Les factures s'exportent en Factur-X (PDF avec XML CII embarqué) ou en XML CII seul, les mentions obligatoires françaises étant contrôlées avant l'export. Tags avec autocomplétion et filtres cumulables sur toutes les listes, catégories d'articles autocomplétées, et taux de TVA d'outre-mer à 8,5 %.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Assistant panel in every app">Volet Assistant dans chaque app</b><p data-en="A side Assistant button on the right edge of every desktop app (Notes, Board, Tables, Calendar, Memory, Finance and more) opens a conversation that acts through the tools that app declares, with ⌘/Ctrl+J to toggle it. Its turns are now counted in the daily token counter, the Profiler and the LLM log.">Un bouton latéral Assistant, au bord droit de chaque app du bureau (Notes, Tableau, Tables, Agenda, Mémoire, Finance et d'autres), ouvre une conversation qui agit par les outils déclarés par l'app, avec ⌘/Ctrl+J pour l'ouvrir ou la replier. Ses tours sont désormais comptabilisés dans le compteur de jetons du jour, le Profiler et le journal LLM.</p></div></li>
+          </ul>
+        </div>
+
+        <div class="callout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <p data-en="<b>Upgrading:</b> your sandboxes, memory, agents and settings are kept. The in-app updater verifies the signature of every build before installing it."><b>Mise à jour :</b> vos sandboxes, votre mémoire, vos agents et vos réglages sont conservés. L'updater intégré vérifie la signature de chaque build avant de l'installer.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="release">
+      <div class="release-meta">
+        <h2>0.1.0</h2>
+        <time datetime="2026-06" data-en="June 2026">Juin 2026</time>
+      </div>
+      <div class="release-body">
+        <div class="change-group">
+          <h3 data-en="First public release">Première version publique</h3>
+          <ul class="changes">
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="The assistant bar">La barre d'assistant</b><p data-en="A floating bar with a living WebGL orb, local chat through Ollama, Apple models via Shortcuts, an OpenAI-compatible cloud option, speech and dictation.">Une barre flottante avec un orbe WebGL vivant, chat local via Ollama, modèles Apple via Raccourcis, option cloud compatible OpenAI, énonciation et dictée.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b>Lumen Desktop</b><p data-en="A full desktop inside the app: windows, taskbar, widgets, confined sandbox, cognitive memory, RAG library, local databases and more than thirty apps.">Un bureau complet dans l'app : fenêtres, barre des tâches, widgets, sandbox confinée, mémoire cognitive, bibliothèque RAG, bases de données locales et plus de trente apps.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Agents and Fluxo">Agents et Fluxo</b><p data-en="Scheduled agents with their own sandbox and skills, the visual Fluxo designer, and workflows the model can call as tools.">Agents planifiés avec leur propre sandbox et leurs skills, le designer visuel Fluxo, et des workflows que le modèle appelle comme des outils.</p></div></li>
+            <li><span class="kind add" data-en="new">nouveau</span><div><b data-en="Four platforms">Quatre plateformes</b><p data-en="macOS, Windows, Linux and a dedicated Raspberry Pi build, plus a mobile companion app on the local network.">macOS, Windows, Linux et une build Raspberry Pi dédiée, avec une app compagnon mobile sur le réseau local.</p></div></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div>
+        <div class="brand" style="margin-bottom:8px;"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span>Lumen</div>
+        <p class="muted" style="font-size:13.5px;max-width:34ch;" data-en="A local, private and agentic AI assistant.">Un assistant IA local, privé et agentique.</p>
+      </div>
+      <div class="foot-links">
+        <a href="index.html" data-en="Home">Accueil</a>
+        <a href="index.html#telecharger" data-en="Download">Télécharger</a>
+        <a href="tutorials.html" data-en="Tutorials">Tutoriels</a>
+        <a href="https://github.com/Oneil974/lumen-assistant/releases">GitHub</a>
+      </div>
+    </div>
+    <div class="foot-legal">
+      <p>© <span id="year"></span> Oneil974 — <span data-en="All rights reserved.">Tous droits réservés.</span></p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site.js?v=20261015"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!-- Réunion (édition Pro) — visio et chat d'équipe sur le réseau local.
+     Le son et l'image vont de pair à pair (WebRTC) ; seul le rendez-vous passe
+     par l'hôte de la salle. Rien ne sort du réseau de l'entreprise. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Réunion</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js?v=2" defer></script>
+    <link rel="stylesheet" href="../lib/confirm.css?v=1" />
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+    <!-- Habillage doré de l\'édition Pro : après la peau plate, pour la surcharger. -->
+    <link rel="stylesheet" href="/lib/pro-skin.css?v=8" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11a4 4 0 1 0-8 0"/><path d="M12 7v0"/><path d="M3 21v-1a6 6 0 0 1 6-6h6a6 6 0 0 1 6 6v1"/></svg>
+          </span>
+          <div><div class="brand-title">Réunion</div><div class="brand-sub" id="brand-sub">Réseau local</div></div>
+        </div>
+        <nav class="nav" id="nav">
+          <button data-view="room" class="active"><span class="nav-ic" data-icon="presentation"></span>Salle</button>
+          <button data-view="history"><span class="nav-ic" data-icon="history"></span>Historique</button>
+          <button data-view="settings"><span class="nav-ic" data-icon="settings"></span>Accès &amp; matériel</button>
+        </nav>
+        <div class="side-foot">
+          <div class="dot-line"><span class="dot" id="net-dot"></span><span id="net-badge">hors salle</span></div>
+          <div class="side-note">Le son et l'image circulent directement entre les postes. Aucun serveur externe n'est utilisé.</div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div><h1 id="view-title">Salle</h1><p id="view-sub">Créer ou rejoindre une réunion</p></div>
+          <div class="top-actions" id="top-actions"></div>
+        </header>
+        <div class="scroll" id="scroll">
+          <!-- ===== Salle ===== -->
+          <section class="view active" id="view-room">
+            <!-- Avant d'entrer -->
+            <div class="lobby" id="lobby">
+              <section class="card form-card">
+                <h2>Ouvrir une salle</h2>
+                <p class="hint">Votre poste héberge la salle : les autres s'y connectent avec l'adresse et le code ci-dessous.</p>
+                <div class="form-grid">
+                  <label class="wide">Titre de la réunion<input id="host-title" placeholder="Point hebdomadaire" /></label>
+                  <label>Votre nom<input id="host-name" /></label>
+                </div>
+                <div class="form-actions"><button class="btn primary" data-act="host">Ouvrir la salle</button><span id="host-status" class="hint"></span></div>
+                <div class="invite" id="invite" hidden></div>
+              </section>
+              <section class="card form-card">
+                <h2>Rejoindre une salle</h2>
+                <p class="hint">Collez l'invitation reçue, ou saisissez l'adresse de l'hôte, l'identifiant de salle et le code.</p>
+                <div class="form-grid">
+                  <label class="wide">Invitation<input id="join-invite" placeholder="192.168.1.24:8767/ab12/ZK9" /></label>
+                  <label>Votre nom<input id="join-name" /></label>
+                </div>
+                <div class="form-actions"><button class="btn primary" data-act="join">Rejoindre</button><span id="join-status" class="hint"></span></div>
+              </section>
+            </div>
+
+            <!-- Pendant la réunion -->
+            <div class="stage" id="stage" hidden>
+              <div class="stage-main">
+                <div class="media-banner" id="media-banner" hidden></div>
+                <div class="tiles" id="tiles"></div>
+                <div class="controls" id="controls"></div>
+              </div>
+              <aside class="side-panel">
+                <div class="seg" id="panel-tabs">
+                  <button data-panel="chat" class="active">Chat</button>
+                  <button data-panel="transcript">Transcription</button>
+                  <button data-panel="people">Participants</button>
+                </div>
+                <div class="panel-body" id="panel-body"></div>
+                <form class="chat-form" id="chat-form" hidden>
+                  <input id="chat-input" class="input" placeholder="Écrire au groupe…" autocomplete="off" />
+                  <button class="btn primary" type="submit">Envoyer</button>
+                </form>
+              </aside>
+            </div>
+          </section>
+
+          <!-- ===== Historique ===== -->
+          <section class="view" id="view-history">
+            <div class="toolbar"><input id="history-search" class="input" placeholder="Rechercher une réunion, un participant…" /></div>
+            <div class="card table-card"><table class="grid" id="history-table"></table></div>
+          </section>
+
+          <!-- ===== Réglages ===== -->
+          <section class="view" id="view-settings">
+            <section class="card form-card">
+              <h2>Identité</h2>
+              <div class="form-grid">
+                <label>Nom affiché<input id="set-name" /></label>
+              </div>
+              <h2>Matériel</h2>
+              <div class="form-grid">
+                <label>Caméra<select id="set-cam" class="select"></select></label>
+                <label>Micro<select id="set-mic" class="select"></select></label>
+              </div>
+              <div class="form-actions"><button class="btn" data-act="devices">Détecter les périphériques</button><span id="device-status" class="hint"></span></div>
+              <h2>Transcription</h2>
+              <p class="hint">La transcription tourne <strong>sur votre machine</strong> (Whisper local) : chaque participant transcrit sa propre voix et n'envoie que le texte. Le premier usage télécharge le modèle.</p>
+              <div class="form-grid">
+                <label>Modèle<select id="set-whisper" class="select"></select></label>
+                <label>Durée d'une tranche (s)<input type="number" id="set-chunk" min="4" max="20" value="8" /></label>
+              </div>
+              <h2>Enregistrement</h2>
+              <div class="form-grid">
+                <label>Sandbox de destination<select id="set-sandbox" class="select"></select></label>
+              </div>
+              <div class="form-actions"><button class="btn primary" data-act="save-settings">Enregistrer</button><span id="settings-status" class="hint"></span></div>
+            </section>
+            <section class="card form-card">
+              <h2>Réseau</h2>
+              <div id="net-info" class="hint"></div>
+            </section>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- Compte rendu -->
+    <div class="backdrop" id="minutes-modal" hidden>
+      <div class="modal wide-modal">
+        <div class="modal-head"><h4 id="minutes-title">Compte rendu</h4><span class="spacer"></span><button class="modal-close" data-close>×</button></div>
+        <div class="modal-body">
+          <textarea id="minutes-text" rows="16"></textarea>
+          <div class="hint" id="minutes-status"></div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn ghost" data-close>Fermer</button>
+          <button class="btn" id="minutes-actions" title="Une carte du Tableau par action du compte rendu">Actions → Tableau</button>
+          <button class="btn" id="minutes-export">Envoyer vers un document</button>
+          <button class="btn primary" id="minutes-save">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

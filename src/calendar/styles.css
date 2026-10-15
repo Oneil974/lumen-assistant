@@ -1,0 +1,108 @@
+/* Calendrier de Lumen — esthétique « verre » alignée sur les autres apps. */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body { font: 14px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+.app { display: flex; flex-direction: column; height: 100vh; }
+.spacer { flex: 1; }
+
+/* Barre supérieure */
+.topbar { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-ic { flex: none; width: 28px; height: 28px; border-radius: var(--radius-md); display: grid; place-items: center; color: #fff;
+  background: var(--primary); box-shadow: var(--flat-shadow-md); }
+.brand-ic svg { width: 17px; height: 17px; }
+.brand-title { font-weight: 650; font-size: 15px; }
+.month-nav { display: flex; align-items: center; gap: 8px; }
+.month-label { font-weight: 650; min-width: 150px; text-align: center; text-transform: capitalize; }
+.btn-ico { width: 30px; height: 30px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 18px; line-height: 1; cursor: pointer; }
+.btn-ico:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.btn-soft { border: 1px solid var(--border); background: var(--surface-2); color: var(--text); border-radius: var(--radius-md); padding: 6px 12px; font-size: 13px; cursor: pointer; }
+.btn-soft:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.btn-soft.primary { background: var(--accent); color: var(--primary-foreground); border-color: transparent; }
+.btn-soft.primary:hover { filter: brightness(1.05); }
+.btn-soft.danger { color: var(--red); }
+
+/* Corps : calendrier + colonne latérale */
+.body { display: flex; flex: 1; min-height: 0; }
+.cal { flex: 1; display: flex; flex-direction: column; padding: 14px 16px; min-width: 0; }
+.weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 6px; }
+.weekdays span { font-size: 11px; font-weight: 600; color: var(--text-muted); text-align: center; text-transform: uppercase; letter-spacing: 0.04em; }
+.grid { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 1fr; gap: 6px; min-height: 0; }
+.cell { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); padding: 6px 7px; display: flex; flex-direction: column; gap: 3px; cursor: pointer; overflow: hidden; transition: background .12s, border-color .12s; }
+.cell:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+.cell.dim { opacity: 0.45; }
+.cell.today { border-color: var(--accent); }
+.cell-num { font-size: 12px; font-weight: 600; align-self: flex-start; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; }
+.cell.today .cell-num { background: var(--accent); color: var(--primary-foreground); }
+.cell.selected { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+.chip { font-size: 10.5px; line-height: 1.25; padding: 1px 5px; border-radius: var(--radius-sm); background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip.done { opacity: 0.5; text-decoration: line-through; }
+.chip.more { background: transparent; color: var(--text-muted); }
+/* Tâches d'agents : teinte neutre distincte des rappels (accent). */
+.chip.agent { background: color-mix(in srgb, var(--primary) 18%, transparent); color: var(--accent-ink); }
+.rem-agent .rem-check { border-color: color-mix(in srgb, var(--primary) 60%, var(--border)); cursor: default; }
+.rem-agent.done .rem-check { background: var(--primary); border-color: var(--primary); }
+.rem-agent .rem-main { cursor: default; }
+
+/* Colonne latérale : rappels du jour / à venir */
+.side { width: 300px; flex: none; border-left: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; }
+.side-head { padding: 14px 16px 8px; font-weight: 650; font-size: 14px; }
+.rem-list { flex: 1; overflow-y: auto; padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+.empty { padding: 0 16px; color: var(--text-muted); font-size: 13px; }
+.rem { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface-2); padding: 9px 11px; display: flex; gap: 9px; align-items: flex-start; }
+.rem-check { flex: none; width: 18px; height: 18px; border-radius: 50%; border: 1.6px solid color-mix(in srgb, var(--accent) 60%, var(--border)); cursor: pointer; margin-top: 1px; display: grid; place-items: center; color: #fff; }
+.rem.done .rem-check { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.rem-main { min-width: 0; flex: 1; cursor: pointer; }
+.rem-title { font-weight: 600; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rem.done .rem-title { text-decoration: line-through; color: var(--text-muted); }
+.rem-meta { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+.rem-badge { display: inline-block; font-size: 10px; padding: 0 5px; border-radius: var(--radius-sm); background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent-ink); margin-left: 4px; }
+.rem-overdue .rem-meta { color: var(--red); }
+
+/* Modal */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.32); display: grid; place-items: center; z-index: 10; }
+.modal { width: 380px; max-width: 92vw; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow); padding: 18px 18px 14px; }
+.modal h3 { margin: 0 0 12px; font-size: 16px; }
+.fld { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+.fld-row { display: flex; gap: 10px; }
+.fld-row .fld { flex: 1; }
+.input, .ta, .select { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 10px; outline: none; }
+.input:focus, .ta:focus, .select:focus { border-color: var(--accent); }
+.ta { resize: vertical; }
+.modal-actions { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+
+.toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 8px 16px; border-radius: var(--radius-lg); font-size: 13px; box-shadow: var(--shadow); z-index: 20; }
+
+/* Types d'entrées : teintes distinctes pour lire la journée d'un coup d'œil. */
+.chip.cat-reunion { background: color-mix(in srgb, var(--primary) 18%, transparent); color: var(--accent-ink); }
+.chip.cat-jalon { background: color-mix(in srgb, var(--warning) 22%, transparent); color: var(--warning); }
+.chip.cat-focus { background: color-mix(in srgb, var(--success) 20%, transparent); color: var(--success); }
+.rem-badge.cat-reunion { background: color-mix(in srgb, var(--primary) 18%, transparent); color: var(--accent-ink); }
+.rem-badge.cat-jalon { background: color-mix(in srgb, var(--warning) 22%, transparent); color: var(--warning); }
+.rem-badge.cat-focus { background: color-mix(in srgb, var(--success) 20%, transparent); color: var(--success); }
+
+
+/* ===== Agendas externes (iCal, .ics, Google) ===== */
+.chip.ext { background: color-mix(in oklab, var(--src, #0a84ff) 18%, transparent); color: inherit; border-left: 3px solid var(--src, #0a84ff); }
+.rem-check.ext-dot { border: 0; width: 10px; height: 10px; margin-top: 5px; border-radius: 50%; cursor: default; }
+.src-modal { width: min(760px, 96vw); max-height: 90vh; overflow: auto; }
+.src-sec { padding: 10px 0; border-top: 1px solid var(--border); }
+.src-sec:first-of-type { border-top: 0; }
+.src-sec h4 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted-foreground); }
+.src-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+.src-row .grow { flex: 1; min-width: 200px; }
+.src-list { display: flex; flex-direction: column; gap: 4px; }
+.src-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+.src-item.off { opacity: .55; }
+.src-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+.src-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.src-tx small { color: var(--muted-foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gcal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px; margin: 6px 0; }
+.steps { margin: 4px 0 0; padding-left: 18px; font-size: 12.5px; }
+.muted { color: var(--muted-foreground); font-size: 12.5px; }
+.cat-cours { --cat: #0a84ff; } .cat-examen { --cat: #ff375f; } .cat-revision { --cat: #30d158; }
+.chip.cat-examen { font-weight: 650; }

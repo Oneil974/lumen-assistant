@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!-- Profiler de Lumen : mesure en direct ce que coûtent réellement les modèles
+     locaux (Ollama, llama.cpp) — occupation du contexte, mémoire, débit, outils
+     présentés vs appelés, ruptures de contexte — afin de régler la fenêtre, le
+     modèle et l'outillage en s'appuyant sur des mesures, pas sur des intuitions. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Profiler</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+    <!-- Thème du bureau : suit le toggle clair/sombre de Lumen Desktop. -->
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <header class="head">
+        <span class="brand-wrap">
+          <span class="brand-logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></span>
+          <span class="brand">Profiler</span>
+        </span>
+        <span class="live" id="live"><i></i><span>en direct</span></span>
+        <div class="head-right">
+          <button class="btn-soft" id="btn-refresh" title="Relever maintenant">⟳</button>
+          <button class="btn-soft danger" id="btn-clear">Vider l'historique</button>
+        </div>
+      </header>
+
+      <main class="scroll">
+        <!-- Bandeau d'état : ce qui tourne, maintenant. -->
+        <section class="cards" id="cards"></section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Historique des mesures</h2>
+            <span class="sub">toutes les variables suivies, dans le temps</span>
+            <select class="range" id="ctx-range" title="Période affichée">
+              <option value="900000">15 min</option>
+              <option value="3600000">1 h</option>
+              <option value="21600000">6 h</option>
+              <option value="86400000" selected>24 h</option>
+              <option value="0">Tout</option>
+            </select>
+          </div>
+          <div class="series" id="ctx-series"></div>
+          <div class="chart" id="ctx-chart"></div>
+          <div class="legend" id="ctx-legend"></div>
+          <p class="hint" id="ctx-hint"></p>
+        </section>
+
+        <!-- Détail d'un point du graphe : tout ce que l'échantillon contient. -->
+        <div class="modal-back" id="sample-modal" hidden>
+          <div class="modal">
+            <div class="modal-head"><b id="modal-title"></b><button class="btn-soft" id="modal-close">✕</button></div>
+            <div class="modal-body" id="modal-body"></div>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <section class="panel">
+            <div class="panel-head"><h2>Outils</h2><span class="sub">présentés au modèle vs réellement appelés</span></div>
+            <div class="table-wrap"><table id="tools-table"></table></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Par application</h2><span class="sub">qui consomme le contexte</span></div>
+            <div class="table-wrap"><table id="apps-table"></table></div>
+          </section>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Diagnostic</h2><span class="sub">déduit des mesures ci-dessus</span></div>
+          <div id="advice"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Runtime</h2>
+            <span class="sub" id="runtime-sub"></span>
+          </div>
+          <div class="table-wrap"><table id="runtime-table"></table></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Appels récents</h2></div>
+          <div class="rows" id="calls"></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

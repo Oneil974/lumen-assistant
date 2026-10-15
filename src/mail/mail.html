@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<!-- App Email de Lumen : un vrai client IMAP/SMTP (cf. src-tauri/src/mail.rs),
+     distinct du « Fil » (inbox.html), qui est la messagerie INTERNE des agents.
+     Les deux se ressemblent volontairement : c'est le même geste. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Email</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=2" />
+    <script type="module" src="./main.js" defer></script>
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="side-head">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+          <span class="title">Email</span>
+          <span class="unread" id="unread"></span>
+        </div>
+        <div class="side-actions">
+          <button class="btn-primary" id="btn-compose">Nouveau message</button>
+          <button class="btn-soft" id="btn-sync" title="Relever le courrier">Relever</button>
+          <button class="btn-soft" id="btn-account" title="Compte">Compte</button>
+        </div>
+        <div class="filters">
+          <button class="chip active" data-filter="all">Tous</button>
+          <button class="chip" data-filter="unread">Non lus</button>
+          <button class="chip" data-filter="drafts">Brouillons <span class="chip-badge" id="drafts-count" hidden></span></button>
+          <input type="search" id="search" placeholder="Rechercher…" />
+        </div>
+        <div class="msg-list" id="msg-list"></div>
+        <div class="side-foot" id="status"></div>
+      </aside>
+
+      <main class="reader">
+        <div class="reader-empty" id="reader-empty">
+          <h2>Aucun message sélectionné</h2>
+          <p id="empty-hint">Configurez votre compte, puis relevez le courrier.</p>
+        </div>
+
+        <article class="reader-content" id="reader-content" hidden>
+          <header class="reader-head">
+            <h1 id="r-subject"></h1>
+            <div class="reader-meta">
+              <span id="r-from"></span>
+              <span class="dotsep">·</span>
+              <span id="r-date"></span>
+              <span class="attach-badge" id="r-attach" hidden>pièce jointe</span>
+              <span class="reader-spacer"></span>
+              <span class="view-toggle" id="r-view" hidden>
+                <button type="button" data-view="html">Mise en forme</button>
+                <button type="button" data-view="text">Texte</button>
+              </span>
+            </div>
+            <div class="reader-safe" id="r-safe" hidden></div>
+            <div class="reader-to" id="r-to"></div>
+          </header>
+          <div class="reader-body" id="r-body"></div>
+          <footer class="reader-actions">
+            <button class="btn-primary" id="btn-reply">Répondre</button>
+            <button class="btn-primary" id="btn-resume" hidden>Reprendre et envoyer</button>
+            <button class="btn-soft" id="btn-summarize">Résumer avec l'IA</button>
+            <button class="btn-soft" id="btn-draft">Brouillon de réponse</button>
+            <button class="btn-soft" id="btn-unread">Marquer non lu</button>
+            <button class="btn-soft danger" id="btn-delete">Retirer de la liste</button>
+          </footer>
+        </article>
+      </main>
+    </div>
+
+    <!-- Rédaction -->
+    <div class="overlay" id="compose-overlay" hidden>
+      <div class="sheet">
+        <h2 id="compose-title">Nouveau message</h2>
+        <label>À<input type="text" id="c-to" placeholder="nom@exemple.fr" autocomplete="off" /></label>
+        <div class="suggest" id="c-suggest" hidden></div>
+        <label>Copie<input type="text" id="c-cc" placeholder="facultatif" autocomplete="off" /></label>
+        <label>Objet<input type="text" id="c-subject" /></label>
+        <label>Message<textarea id="c-body" rows="12"></textarea></label>
+        <div class="sheet-actions">
+          <button class="btn-soft" id="c-ai">Écrire avec l'IA</button>
+          <span class="spacer"></span>
+          <button class="btn-soft" id="c-cancel">Annuler</button>
+          <button class="btn-primary" id="c-send">Envoyer</button>
+        </div>
+        <div class="sheet-status" id="c-status"></div>
+      </div>
+    </div>
+
+    <!-- Compte -->
+    <div class="overlay" id="account-overlay" hidden>
+      <div class="sheet">
+        <h2>Compte de messagerie</h2>
+        <p class="sheet-hint">
+          Lumen se connecte en IMAP et SMTP, depuis votre machine. Aucun serveur
+          intermédiaire. Gmail et Outlook exigent un <b>mot de passe
+          d'application</b> : votre mot de passe habituel sera refusé.
+        </p>
+        <label>Adresse<input type="email" id="a-email" placeholder="vous@exemple.fr" /></label>
+        <label>Nom affiché<input type="text" id="a-name" placeholder="Votre nom" /></label>
+        <div class="row2">
+          <label>Serveur IMAP<input type="text" id="a-imap-host" placeholder="imap.exemple.fr" /></label>
+          <label>Port<input type="number" id="a-imap-port" value="993" /></label>
+        </div>
+        <div class="row2">
+          <label>Serveur SMTP<input type="text" id="a-smtp-host" placeholder="smtp.exemple.fr" /></label>
+          <label>Port<input type="number" id="a-smtp-port" value="587" /></label>
+        </div>
+        <label class="inline"><input type="checkbox" id="a-starttls" checked /> SMTP en STARTTLS (port 587). Décochez pour un TLS direct (465).</label>
+        <label>Identifiant<input type="text" id="a-user" placeholder="si différent de l'adresse" /></label>
+        <label>Mot de passe<input type="password" id="a-pass" placeholder="inchangé" /></label>
+        <div class="sheet-actions">
+          <button class="btn-soft danger" id="a-clear">Retirer le compte</button>
+          <span class="spacer"></span>
+          <button class="btn-soft" id="a-test">Tester</button>
+          <button class="btn-soft" id="a-cancel">Fermer</button>
+          <button class="btn-primary" id="a-save">Enregistrer</button>
+        </div>
+        <div class="sheet-status" id="a-status"></div>
+      </div>
+    </div>
+  </body>
+</html>

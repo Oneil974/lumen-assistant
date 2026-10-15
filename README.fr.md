@@ -3,7 +3,7 @@
 [English](README.md) · **Français**
 
 <p align="center">
-  <img src="assets/Lumen_Bar.png" alt="Lumen — barre de saisie flottante avec un avatar robot animé" width="690">
+  <img src="docs/assets/preview.png" alt="Lumen — barre de saisie flottante avec un avatar robot animé" width="690">
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/donn%C3%A9es-sur%20votre%20machine-ff54a3" alt="Données privées">
 </p>
 
-<p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
+<p align="center"><img src="docs/assets/readme-divider.svg" alt="" width="700"></p>
 
 **Un assistant IA de bureau local-first — une barre de chat vivante, privée et agentique, qui grandit jusqu'à devenir un bureau complet.**
 
@@ -112,7 +112,7 @@ Chaque app est un paquet que vous installez, mettez à jour ou retirez depuis le
 
 Un build dédié Raspberry Pi : blocs Fluxo **GPIO** (pigpiod) pour piloter du matériel, voix locales, barre flottante et mode plein écran — un assistant vocal et domotique 100 % local sur un Pi.
 
-<p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
+<p align="center"><img src="docs/assets/readme-divider.svg" alt="" width="700"></p>
 
 ## Télécharger
 
@@ -150,6 +150,21 @@ Détails : **[scripts/README.md](scripts/README.md)**.
 
 En mode local, **aucune donnée ne quitte votre machine** : modèle, inférence, mémoire, documents et bases restent sur votre disque. La recherche web et le mode API cloud sont optionnels et désactivés par défaut ; la clé API, quand il y en a une, ne quitte jamais le backend.
 
-<p align="center"><img src="assets/divider.svg" alt="" width="700"></p>
+<p align="center"><img src="docs/assets/readme-divider.svg" alt="" width="700"></p>
 
-Ce dépôt héberge la page de présentation et les binaires de l'application (via *Releases*). Le code source n'est pas publié ici.
+## Code source et licence
+
+Ce dépôt contient les sources de Lumen, le site et les téléchargements de versions. Le code original et la documentation sont sous **GPL-3.0-or-later**. Les bibliothèques, modèles et contenus tiers conservent leurs licences : [LICENSE.md](LICENSE.md), [COPYING](COPYING), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Compiler depuis les sources
+
+Prérequis : **Node.js 22.12+**, npm, **Rust stable 1.89+** et les outils natifs de la plateforme. Le guide [BUILDING.md](BUILDING.md) détaille macOS, Windows, Linux, Raspberry Pi, les moteurs et le catalogue.
+
+```bash
+npm ci
+npm run tauri dev
+```
+
+Les modèles et moteurs binaires sont téléchargés ou construits séparément. Le Catalogue propose **Kev GGUF** pour la décision et **GLM-OCR / PaddleOCR-VL GGUF** pour numériser localement dans Études. La fenêtre de question discrète s’ouvre avec **⌘⌥P** sur macOS ou **Ctrl+Alt+P** sur Windows/Linux (repli Alt+Maj+P).
+
+[Contribuer](CONTRIBUTING.md) · [Signaler une vulnérabilité en privé](SECURITY.md). Cette publication de sources ne constitue pas une nouvelle release binaire ; les limites des audits et validations sont indiquées dans [docs/open-source-preparation.md](docs/open-source-preparation.md).

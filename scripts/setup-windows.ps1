@@ -1,10 +1,10 @@
 # Installation runtime "tout-en-un" de Lumen sur Windows 10/11 x64.
 #
 # Installe ce dont l'app a besoin pour fonctionner tout de suite :
-#   - Ollama (moteur LLM local) + un modele par defaut.
-# La VOIX (synthese) utilise les voix systeme de Windows (ou l'app compagnon
-# iPhone) : rien a installer cote voix. La dictee locale neuronale (whisper)
-# n'est pas fournie sous Windows aujourd'hui.
+#   - Ollama (moteur LLM local) + un modele par defaut ;
+#   - optionnellement Piper MIT et deux voix neuronales locales.
+# Les voix systeme Windows restent disponibles en complement. La dictee locale
+# neuronale (whisper) n'est pas fournie sous Windows aujourd'hui.
 #
 # A executer dans PowerShell :
 #   powershell -ExecutionPolicy Bypass -File .\scripts\setup-windows.ps1
@@ -13,6 +13,7 @@
 param([switch]$Yes)
 
 $ErrorActionPreference = "Stop"
+$Root = Split-Path -Parent $PSScriptRoot
 $Model = if ($env:LUMEN_MODEL) { $env:LUMEN_MODEL } else { "liquidai/lfm2.5-350m:latest" }
 
 function Confirm-Step($prompt) {
@@ -45,6 +46,24 @@ function Wait-Ollama {
   return $false
 }
 
+function Install-PiperVoice($Name, $ModelUrl, $ConfigUrl) {
+  $VoiceDir = Join-Path $env:APPDATA "com.lumen.app\piper-voices"
+  New-Item -ItemType Directory -Force -Path $VoiceDir | Out-Null
+  Write-Host "-> Telechargement de la voix Piper $Name"
+  Invoke-WebRequest -UseBasicParsing -Uri $ModelUrl -OutFile (Join-Path $VoiceDir "$Name.onnx")
+  Invoke-WebRequest -UseBasicParsing -Uri $ConfigUrl -OutFile (Join-Path $VoiceDir "$Name.onnx.json")
+}
+
+function Install-PiperAndVoices {
+  & (Join-Path $Root "scripts\piper\install-windows.ps1")
+  Install-PiperVoice "fr_FR-siwis-medium" `
+    "https://huggingface.co/rhasspy/piper-voices/resolve/main/fr/fr_FR/siwis/medium/fr_FR-siwis-medium.onnx" `
+    "https://huggingface.co/rhasspy/piper-voices/resolve/main/fr/fr_FR/siwis/medium/fr_FR-siwis-medium.onnx.json"
+  Install-PiperVoice "en_US-lessac-medium" `
+    "https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx" `
+    "https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx.json"
+}
+
 Write-Host "=== Lumen - installation runtime Windows ==="
 Install-Ollama
 
@@ -59,8 +78,12 @@ if (Confirm-Step "Telecharger le modele Ollama `"$Model`" maintenant ?") {
   ollama pull $Model
 }
 
+if (Confirm-Step "Installer Piper MIT (+ voix FR et EN par defaut) ?") {
+  Install-PiperAndVoices
+}
+
 Write-Host ""
 Write-Host "OK Termine."
 Write-Host "   - Modele local : $Model (modifiable dans Reglages -> IA)."
-Write-Host "   - Voix : voix systeme Windows, ou l'app compagnon iPhone."
+Write-Host "   - Voix : Piper local si installe, avec les voix systeme Windows en complement."
 Write-Host "   - Cloud optionnel : ajoute une cle API dans Reglages -> IA."

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!--
+  Designer Fluxo intégré à Lumen.
+  ⚠️ Copié depuis Fluxo (app/src/index.html). Ne pas éditer à la main :
+  resynchroniser via scripts/sync-fluxo-designer.sh.
+  Seule différence volontaire : les refs d'assets sont relatives (./) car le
+  designer est servi depuis le sous-dossier /fluxo/ de Lumen.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fluxo — Designer</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <!-- Barre latérale : mes automatisations -->
+      <aside class="sidebar">
+        <div class="sidebar-head">
+          <span class="logo-wrap"><span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></span><span class="logo">Fluxo</span></span>
+          <div class="sidebar-head-actions">
+            <button class="btn-ghost" id="btn-new" title="Nouvelle automatisation" data-i18n-title="new_workflow"></button>
+          </div>
+        </div>
+        <div class="wf-list" id="wf-list"></div>
+      </aside>
+
+      <!-- Éditeur central -->
+      <main class="editor">
+        <header class="editor-head">
+          <input class="wf-name" id="wf-name" placeholder="Nom de l'automatisation" data-i18n-placeholder="wf_name_placeholder" />
+          <div class="head-actions">
+            <button class="btn" id="btn-test-input" title="Définir l'entrée de test" data-i18n-title="test_input_btn_title">
+              <span data-i18n="test_input">Entrée de test</span>
+              <span class="test-input-dot" hidden></span>
+            </button>
+            <button class="btn ai-compose" id="btn-ai-compose" title="Créer un workflow avec l'IA" data-i18n-title="ai_compose_title">
+              <span data-i18n="ai_compose">Composer avec l'IA</span>
+            </button>
+            <button class="btn" id="btn-reset-router" title="Restaurer le routeur par défaut" data-i18n-title="reset_router_title" data-i18n="reset" hidden>Réinitialiser</button>
+            <button class="btn" id="btn-tool-toggle" title="Disponible au function calling" data-i18n-title="tool_toggle_title"></button>
+            <button class="btn" id="btn-save">Enregistrer</button>
+            <button class="btn primary" id="btn-run">Exécuter</button>
+          </div>
+        </header>
+
+        <div class="trigger-bar">
+          <span class="trigger-ic" id="trigger-ic"></span>
+          <span class="trigger-label" data-i18n="trigger">Déclencheur</span>
+          <select id="trigger-type" class="trigger-select">
+            <option value="manual" data-i18n="trigger_manual">Manuel</option>
+            <option value="cron" data-i18n="trigger_cron">Programmé (CRON)</option>
+            <option value="interval" data-i18n="trigger_interval">Intervalle</option>
+            <option value="file_change" data-i18n="trigger_file">Modification de fichier</option>
+            <option value="webhook" data-i18n="trigger_webhook">Webhook (HTTP local)</option>
+            <option value="rfid" data-i18n="trigger_rfid">Badge RFID (Lumen Controller)</option>
+          </select>
+          <input id="trigger-param" class="trigger-input" hidden />
+        </div>
+
+        <p class="var-legend" data-i18n-html="var_legend">
+          Variables : <code>{{input}}</code> entrée du workflow ·
+          <code>{{last}}</code> sortie du bloc précédent ·
+          <code>{{nom_du_bloc}}</code> sortie d'un bloc nommé.
+          Clique sur une puce <code>{{…}}</code> d'un bloc pour l'insérer dans le champ actif.
+        </p>
+        <div class="editor-body">
+          <section class="canvas" id="canvas"></section>
+          <section class="run-log" id="run-log" hidden>
+            <div class="run-log-head">
+              <span data-i18n="run_result">Résultat d'exécution</span>
+              <button class="btn-ghost small" id="btn-close-log" data-i18n="close">Fermer</button>
+            </div>
+            <div class="run-log-body" id="run-log-body"></div>
+          </section>
+        </div>
+      </main>
+
+      <!-- Bibliothèque d'actions -->
+      <aside class="library">
+        <div class="library-head">
+          <input class="lib-search" id="lib-search" placeholder="Rechercher une action…" data-i18n-placeholder="search_action" />
+        </div>
+        <div class="lib-list" id="lib-list"></div>
+      </aside>
+    </div>
+
+    <!-- Modal : génération de workflow par IA -->
+    <div class="modal-overlay" id="ai-compose-modal" hidden>
+      <div class="modal ai-compose-modal">
+        <div class="modal-head">
+          <span class="modal-title" data-i18n="ai_compose_title">Créer un workflow avec l'IA</span>
+          <button class="btn-ghost small" id="btn-close-ai-compose" data-i18n="close">Fermer</button>
+        </div>
+        <p class="modal-hint" data-i18n="ai_compose_hint">Décris le résultat voulu. L'IA choisit les blocs Fluxo disponibles et prépare un workflow modifiable.</p>
+        <textarea id="ai-compose-prompt" class="modal-textarea" rows="5" data-i18n-placeholder="ai_compose_placeholder"></textarea>
+        <div class="modal-actions">
+          <span class="ai-compose-status" id="ai-compose-status"></span>
+          <button class="btn" id="btn-cancel-ai-compose" data-i18n="cancel">Annuler</button>
+          <button class="btn primary" id="btn-generate-ai-compose" data-i18n="ai_compose_generate">Générer le workflow</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal : entrée de test -->
+    <div class="modal-overlay" id="test-input-modal" hidden>
+      <div class="modal">
+        <div class="modal-head">
+          <span class="modal-title" data-i18n="test_input_title">Entrée de test</span>
+          <button class="btn-ghost small" id="btn-close-test-input" data-i18n="close">Fermer</button>
+        </div>
+        <p class="modal-hint" data-i18n-html="test_input_hint">Cette valeur est transmise au workflow via <code>{{input}}</code> lors de l'exécution manuelle.</p>
+        <textarea id="run-input" class="modal-textarea" rows="4" placeholder="" data-i18n-placeholder="test_input_placeholder"></textarea>
+        <div class="modal-suggestion">
+          <span class="modal-suggestion-label" data-i18n="suggestion">Suggestion :</span>
+          <button class="suggestion-chip" id="test-input-suggestion"></button>
+        </div>
+        <div class="modal-actions">
+          <button class="btn" id="btn-cancel-test-input" data-i18n="cancel">Annuler</button>
+          <button class="btn primary" id="btn-run-from-modal" data-i18n="save_and_run">Enregistrer &amp; exécuter</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale de confirmation générique (remplace window.confirm, indisponible dans la webview). -->
+    <div class="modal-overlay" id="confirm-modal" hidden>
+      <div class="modal">
+        <div class="modal-head">
+          <span class="modal-title" id="confirm-title"></span>
+        </div>
+        <p class="modal-hint" id="confirm-message"></p>
+        <div class="modal-actions">
+          <button class="btn" id="btn-confirm-cancel" data-i18n="cancel">Annuler</button>
+          <button class="btn primary" id="btn-confirm-ok" data-i18n="confirm_ok">Confirmer</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

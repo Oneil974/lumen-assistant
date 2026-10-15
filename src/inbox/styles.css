@@ -1,0 +1,77 @@
+/* Messagerie interne — esthétique « Apple Mail » simplifiée. */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body { font: 14px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+.app { display: flex; height: 100vh; }
+.spacer { flex: 1; }
+.muted { color: var(--text-muted); font-weight: 400; font-size: 12px; }
+
+/* Sidebar */
+.sidebar { width: 320px; flex: none; border-right: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; }
+.side-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px 6px; }
+.side-head .title { font-weight: 700; font-size: 15px; }
+.side-head .brand-ic { flex: none; width: 28px; height: 28px; border-radius: var(--radius-md); display: grid; place-items: center; color: #fff;
+  background: var(--primary); box-shadow: var(--flat-shadow-md); }
+.side-head .brand-ic svg { width: 17px; height: 17px; }
+.unread { margin-left: auto; background: var(--accent); color: var(--primary-foreground); font-size: 11px; border-radius: 999px; padding: 1px 8px; }
+.unread:empty { display: none; }
+.filters { display: flex; gap: 6px; padding: 4px 14px 10px; border-bottom: 1px solid var(--border); }
+.chip { border: 1px solid var(--border); background: var(--surface-2); color: var(--text-muted); border-radius: 999px; padding: 4px 11px; font-size: 12px; cursor: pointer; }
+.chip.active { background: var(--accent); color: var(--primary-foreground); border-color: transparent; }
+.msg-list { flex: 1; overflow: auto; }
+.msg-item { padding: 11px 14px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; gap: 9px; }
+.msg-item:hover { background: var(--surface-2); }
+.msg-item.active { background: var(--sel); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-top: 6px; flex: none; }
+.dot.read { background: transparent; }
+.mi-main { min-width: 0; flex: 1; }
+.mi-from { font-weight: 650; font-size: 13px; display: flex; }
+.mi-from .t { margin-left: auto; color: var(--text-muted); font-size: 11px; font-weight: 400; }
+.mi-subject { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mi-prev { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Reader */
+.reader { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.reader-empty { margin: auto; color: var(--text-muted); }
+.reader-content { display: flex; flex-direction: column; height: 100%; }
+.rd-head { display: flex; align-items: flex-start; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.rd-subject { font-size: 17px; font-weight: 700; }
+.rd-meta { color: var(--text-muted); font-size: 12.5px; margin-top: 3px; }
+.rd-body { flex: 1; overflow: auto; padding: 18px 20px; white-space: pre-wrap; line-height: 1.55; }
+.btn-soft { border: 1px solid var(--border); background: var(--surface-2); color: var(--text); border-radius: var(--radius-md); padding: 6px 12px; font-size: 12.5px; cursor: pointer; }
+.btn-soft:hover { background: var(--surface); }
+.btn-soft.primary { background: var(--accent); color: var(--primary-foreground); border-color: transparent; }
+.btn-soft.danger { color: var(--red); }
+
+/* Reply */
+.reply { border-top: 1px solid var(--border); padding: 14px 20px; background: var(--surface); }
+.reply-head { font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.ta { width: 100%; resize: vertical; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); color: var(--text); padding: 9px 11px; font: inherit; }
+.ta:focus { outline: none; border-color: var(--accent); }
+.reply-actions { display: flex; align-items: center; gap: 10px; margin-top: 9px; }
+.ai-state { color: var(--text-muted); font-size: 12px; }
+
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: rgba(20,20,22,0.92); color: #fff; padding: 8px 15px; border-radius: 999px; font-size: 12.5px; z-index: 200; }
+
+/* Bouton composer */
+.compose-btn { margin-left: 8px; padding: 5px 10px; }
+
+/* Modale composer */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.32); backdrop-filter: blur(3px); display: grid; place-items: center; z-index: 300; }
+.mini-modal { width: min(480px, 92vw); background: var(--surface); backdrop-filter: blur(28px); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+.mini-modal h3 { margin: 0 0 4px; font-size: 16px; }
+.mini-modal .muted { margin: 0 0 12px; }
+.fld { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; color: var(--text-muted); margin-bottom: 12px; }
+.input, .select { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); color: var(--text); padding: 8px 10px; font: inherit; }
+.input:focus, .select:focus { outline: none; border-color: var(--accent); }
+.mini-actions { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+
+/* Date d'exécution de la réponse. Sans elle, une réponse partait toujours « dès
+   que possible » : le seul moyen de programmer une suite était de rouvrir
+   l'agent. */
+.reply-due { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+.reply-date-input { width: auto; padding: 5px 8px; font-size: 12px; }

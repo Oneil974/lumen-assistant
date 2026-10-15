@@ -1,0 +1,184 @@
+/* Documentation Lumen — fenêtre dédiée, design Apple-friendly (verre dépoli,
+   typographie SF, navigation latérale façon docs). Thème clair/sombre auto. */
+:root {
+  --code-bg: rgba(0, 0, 0, 0.045);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-dt-theme="light"]) {
+  --code-bg: rgba(255, 255, 255, 0.06);
+}
+}
+:root[data-dt-theme="dark"] {
+  --code-bg: rgba(255, 255, 255, 0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ===== Barre latérale (sommaire) ===== */
+.sidebar {
+  width: 248px; flex: none; background: var(--surface); backdrop-filter: blur(24px);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  padding: 18px 12px; overflow-y: auto;
+}
+.sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 4px 10px 16px; }
+.sidebar-brand .logo {
+  width: 30px; height: 30px; border-radius: var(--radius-md); flex: none;
+  background: var(--primary); display: grid; place-items: center; color: var(--on-accent);
+}
+.sidebar-brand .t { font-size: 15px; font-weight: 680; letter-spacing: -0.01em; }
+.sidebar-brand .s { font-size: 11px; color: var(--text-muted); }
+
+.nav-group { margin-top: 14px; }
+.nav-group-title {
+  font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 0.05em; padding: 4px 12px 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--radius-md);
+  font-size: 13.5px; cursor: pointer; color: var(--text); transition: background 0.12s;
+}
+.nav-item:hover { background: var(--surface-2); }
+.nav-item.active { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent-ink); font-weight: 600; }
+.nav-item .ic { width: 17px; height: 17px; flex: none; opacity: 0.9; }
+.nav-item.active .ic { opacity: 1; }
+
+/* ===== Contenu ===== */
+.content { flex: 1; overflow-y: auto; scroll-behavior: smooth; }
+.page { max-width: 760px; margin: 0 auto; padding: 46px 44px 90px; display: none; }
+.page.active { display: block; animation: fade 0.25s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.eyebrow { font-size: 12px; font-weight: 700; color: var(--accent-ink); text-transform: uppercase; letter-spacing: 0.06em; }
+.badge-exp { display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; color: var(--warning); background: color-mix(in srgb, var(--warning) 18%, transparent); border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent); vertical-align: middle; }
+h1 { font-size: 32px; font-weight: 720; letter-spacing: -0.02em; margin: 8px 0 10px; }
+.lead { font-size: 16px; line-height: 1.55; color: var(--text-muted); margin-bottom: 30px; user-select: text; }
+
+h2 { font-size: 21px; font-weight: 680; letter-spacing: -0.01em; margin: 38px 0 14px; }
+h3 { font-size: 16px; font-weight: 650; margin: 24px 0 8px; }
+p { font-size: 14.5px; line-height: 1.62; color: var(--text); margin: 0 0 12px; user-select: text; }
+p.muted { color: var(--text-muted); }
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li { font-size: 14.5px; line-height: 1.6; margin-bottom: 6px; user-select: text; }
+strong { font-weight: 650; }
+code { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: 12.5px;
+  background: var(--code-bg); padding: 1.5px 6px; border-radius: var(--radius-sm); user-select: text; }
+a { color: var(--accent-ink); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Hero d'en-tête de page */
+.hero {
+  display: flex; gap: 18px; align-items: center; padding: 22px; border-radius: var(--radius);
+  background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 30px;
+}
+.hero-icon { width: 54px; height: 54px; flex: none; border-radius: var(--radius-xl); display: grid; place-items: center; color: #fff; }
+.hero-text .t { font-size: 18px; font-weight: 680; }
+.hero-text .d { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-top: 3px; }
+
+/* Cartes (guide) */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0 6px; }
+@media (max-width: 720px) { .card-grid { grid-template-columns: 1fr; } }
+.card {
+  display: flex; gap: 13px; padding: 15px 16px; border-radius: var(--radius-xl);
+  background: var(--surface); border: 1px solid var(--border);
+}
+.card .ic { width: 26px; height: 26px; flex: none; border-radius: var(--radius-md); display: grid; place-items: center; color: #fff; }
+.card .t { font-size: 14px; font-weight: 640; margin-bottom: 3px; }
+.card .d { font-size: 12.8px; color: var(--text-muted); line-height: 1.5; user-select: text; }
+
+/* Encadré (callout) */
+.callout {
+  display: flex; gap: 12px; padding: 14px 16px; border-radius: var(--radius-lg); margin: 16px 0;
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.callout.tip { background: color-mix(in srgb, var(--success) 10%, var(--surface)); border-color: color-mix(in srgb, var(--success) 26%, transparent); }
+.callout.warn { background: color-mix(in srgb, var(--warning) 12%, var(--surface)); border-color: color-mix(in srgb, var(--warning) 30%, transparent); }
+.callout .ci { font-size: 17px; flex: none; line-height: 1.5; }
+.callout p { margin: 0; font-size: 13.5px; }
+
+/* Étapes numérotées */
+.steps { counter-reset: s; list-style: none; padding: 0; margin: 14px 0; }
+.steps li { position: relative; padding: 2px 0 14px 40px; counter-increment: s; }
+.steps li::before {
+  content: counter(s); position: absolute; left: 0; top: 0; width: 26px; height: 26px;
+  border-radius: 50%; background: var(--accent); color: var(--primary-foreground); font-size: 13px; font-weight: 650;
+  display: grid; place-items: center;
+}
+
+/* Bloc de code */
+pre {
+  background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 14px 16px; overflow-x: auto; margin: 12px 0 16px;
+}
+pre code { background: none; padding: 0; font-size: 12.5px; line-height: 1.6; color: var(--text); white-space: pre; }
+
+/* Table de référence des paramètres */
+.ref { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin: 10px 0 18px; }
+.ref-row { display: grid; grid-template-columns: 160px 1fr; gap: 0; border-top: 1px solid var(--border); }
+.ref-row:first-child { border-top: none; }
+.ref-row .k { padding: 9px 14px; font-size: 12.5px; font-weight: 600; background: var(--surface-3); }
+.ref-row .v { padding: 9px 14px; font-size: 13px; color: var(--text-muted); }
+.avatar-contract .ref-row { grid-template-columns: 190px 1fr; }
+.avatar-contract .k code { white-space: nowrap; }
+@media (max-width: 620px) {
+  .ref-row, .avatar-contract .ref-row { grid-template-columns: 1fr; }
+  .ref-row .v { border-top: 1px solid var(--border); }
+}
+
+/* Catalogue Fluxo (blocs groupés par catégorie) */
+.cat { margin-top: 30px; }
+.cat-head { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
+.cat-dot { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+.cat-head h2 { margin: 0; font-size: 18px; }
+.cat-count { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+.block-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 720px) { .block-grid { grid-template-columns: 1fr; } }
+.block {
+  padding: 12px 14px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border);
+}
+.block .bt { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 620; }
+.block .bid { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-size: 10.5px; color: var(--text-muted);
+  background: var(--code-bg); padding: 1px 6px; border-radius: var(--radius-sm); margin-left: auto; user-select: text; }
+.block .bd { font-size: 12.5px; color: var(--text-muted); line-height: 1.45; margin-top: 5px; user-select: text; }
+
+.toolbar-search { position: sticky; top: 0; z-index: 5; padding: 14px 0 10px; background: var(--muted); }
+.toolbar-search input {
+  width: 100%; background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 9px 13px; font-size: 14px; user-select: text;
+}
+.toolbar-search input:focus { outline: none; border-color: var(--accent); }
+
+.divider { height: 1px; background: var(--border); margin: 34px 0; border: none; }
+.pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+  background: var(--surface-3); color: var(--text-muted); margin-left: 6px; }
+.pill.ollama { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent-ink); }
+
+/* Rappel de hub en tête des pages d'app : où trouver l'outil dans le bureau. */
+.hub-badge {
+  display: inline-flex; align-items: center; gap: 8px; margin: -6px 0 18px;
+  padding: 5px 12px 5px 10px; border-radius: 999px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  font-size: 12.5px; color: var(--text-muted);
+}
+.hub-badge strong { color: var(--text); font-weight: 620; }
+.hub-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--accent); }
+
+/* Le logo est désormais la vraie icône de l'application : on retire l'aplat
+   dégradé qui la noierait, et on cadre l'image. */
+.sidebar-brand .logo { background: none; }
+.sidebar-brand .logo img { display: block; width: 24px; height: 24px; border-radius: 6px; }
+
+/* Les icônes viennent maintenant du jeu partagé et n'embarquent plus de
+   width/height : la taille est fixée ici, comme partout ailleurs. */
+.nav-item .ic svg { width: 17px; height: 17px; }
+.card .ic svg { width: 15px; height: 15px; }
+.hero-icon svg { width: 26px; height: 26px; }

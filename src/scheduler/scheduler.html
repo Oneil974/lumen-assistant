@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!-- Tâches planifiées de Lumen : une seule vue sur tout ce qui s'exécute à
+     heure fixe — workflows Fluxo à déclencheur CRON, agents planifiés, rappels
+     du calendrier — et un formulaire ultra simple pour en créer : une demande à
+     l'assistant IA, un workflow ou un agent à lancer, un rappel. Une tâche IA
+     est un workflow Fluxo (llm_infer → notify_center) créé et entretenu par
+     cette app ; le backend (lib.rs) l'exécute et journalise chaque passage. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Tâches planifiées</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+    <link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=1" />
+    <script type="module" src="./main.js" defer></script>
+    <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <span class="brand-title">Tâches planifiées</span>
+        </div>
+        <nav class="seg" id="views">
+          <button data-view="upcoming" class="on">À venir</button>
+          <button data-view="tasks">Tâches</button>
+          <button data-view="journal">Journal</button>
+        </nav>
+        <div class="spacer"></div>
+        <span class="status" id="status"></span>
+        <button class="btn-soft" id="btn-refresh" title="Recharger">⟳</button>
+        <button class="btn-soft primary" id="btn-new">＋ Nouvelle tâche</button>
+      </header>
+
+      <main class="content">
+        <section class="view" id="view-upcoming">
+          <div class="filters" id="filters-upcoming"></div>
+          <div class="timeline" id="timeline"></div>
+        </section>
+        <section class="view" id="view-tasks" hidden>
+          <div class="filters" id="filters-tasks"></div>
+          <div class="task-list" id="task-list"></div>
+        </section>
+        <section class="view" id="view-journal" hidden>
+          <div class="journal" id="journal"></div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Création / modification d'une tâche -->
+    <div class="overlay" id="modal" hidden>
+      <div class="modal">
+        <h3 id="modal-title">Nouvelle tâche planifiée</h3>
+
+        <div class="field">
+          <label>Quoi</label>
+          <div class="seg kinds" id="kinds">
+            <button data-kind="ai" class="on">Demande à l'IA</button>
+            <button data-kind="workflow">Workflow Fluxo</button>
+            <button data-kind="agent">Agent</button>
+            <button data-kind="reminder">Rappel</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-title">Titre</label>
+          <input id="f-title" placeholder="Ex. : Revue de presse du matin" />
+        </div>
+        <div class="field" data-for="ai">
+          <label for="f-prompt">Demande à l'assistant</label>
+          <textarea id="f-prompt" rows="4" placeholder="Ex. : Donne-moi trois idées de dîner rapides avec ce que contient un frigo classique, en français."></textarea>
+          <label class="chk"><input type="checkbox" id="f-speak" /> Lire la réponse à voix haute</label>
+        </div>
+        <div class="field" data-for="workflow">
+          <label for="f-workflow">Workflow à lancer</label>
+          <select id="f-workflow"></select>
+        </div>
+        <div class="field" data-for="agent">
+          <label for="f-agent">Agent</label>
+          <select id="f-agent"></select>
+          <label for="f-agent-prompt" class="sub">Demande (optionnel — sans demande, l'agent traite sa prochaine tâche)</label>
+          <textarea id="f-agent-prompt" rows="2"></textarea>
+        </div>
+        <div class="field" data-for="reminder">
+          <label for="f-note">Note (optionnel)</label>
+          <input id="f-note" placeholder="Détail du rappel" />
+        </div>
+
+        <div class="field">
+          <label>Quand</label>
+          <div class="seg whens" id="whens">
+            <button data-when="once">Une fois</button>
+            <button data-when="day" class="on">Tous les jours</button>
+            <button data-when="week">Certains jours</button>
+            <button data-when="minutes">Toutes les N min</button>
+            <button data-when="hours">Toutes les N h</button>
+            <button data-when="month">Mensuel</button>
+            <button data-when="cron">CRON</button>
+          </div>
+          <div class="when-row">
+            <span data-when-for="once"><input type="date" id="f-date" /></span>
+            <span data-when-for="once day week hours month"><input type="time" id="f-time" value="09:00" /></span>
+            <span data-when-for="week" class="days" id="f-days"></span>
+            <span data-when-for="minutes hours"><input type="number" id="f-n" min="1" max="59" value="15" style="width:70px" /> <span id="f-n-unit">min</span></span>
+            <span data-when-for="month">le <input type="number" id="f-dom" min="1" max="31" value="1" style="width:60px" /> du mois</span>
+            <span data-when-for="cron"><input id="f-cron" placeholder="sec min heure jour mois jour-sem" style="width:260px" /></span>
+          </div>
+          <div class="preview" id="f-preview"></div>
+        </div>
+
+        <div class="modal-actions">
+          <span class="err" id="f-err"></span>
+          <span class="spacer"></span>
+          <button class="btn-soft" id="f-cancel">Annuler</button>
+          <button class="btn-soft primary" id="f-save">Planifier</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

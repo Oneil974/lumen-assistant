@@ -1,0 +1,1399 @@
+/* ===== Lumen · Capsule (« Halo ») ===== */
+/* Une seule fenêtre native, deux usages :
+   - mode « toast » (data-mode="toast") : la capsule apparaît le temps d'une
+     notification puis la fenêtre se masque — comportement historique ;
+   - mode « halo » (data-mode="halo") : la capsule reste en haut de l'écran et
+     se replie en pastille. Elle affiche alors les agents en cours, les
+     notifications et l'heure, et s'ouvre en panneau au clic.
+
+   La fenêtre native est transparente : seule `.halo-shell` est peinte. Tout est
+   exprimé en jetons shadcn (lib/tokens.css) — aucune couleur en dur, aucun
+   effet de verre (peau plate, cf. lib/flat.css). */
+
+:root {
+  --font-main: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* Marge fenêtre <-> capsule : laisse la place à l'ombre portée. Elle est
+     ASYMÉTRIQUE : l'ombre est décalée vers le bas (0 8px 24px), il lui faut
+     donc ~32 px sous la capsule. Avec 16 px partout, la fenêtre la coupait net
+     et on voyait un rectangle gris à arête franche sous la carte. */
+  --isl-pad: 16px;
+  --isl-pad-bottom: 34px;
+  --isl-radius: var(--radius-xl);
+  --isl-text: var(--popover-foreground);
+  --isl-text-muted: var(--muted-foreground);
+  --isl-glass-bg: var(--popover);
+  --isl-glass-border: var(--border);
+  --isl-shadow: oklch(0 0 0 / 18%);
+  --isl-btn-border: var(--border);
+  --isl-btn-bg: var(--secondary);
+  --isl-btn-bg-hover: var(--subtle);
+  /* Courbe unique pour tous les morphings de la capsule. */
+  --isl-spring: cubic-bezier(0.22, 1.15, 0.32, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  font-family: var(--font-main);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--isl-pad) var(--isl-pad) var(--isl-pad-bottom);
+}
+
+/* Couleur d'action de la capsule. Dans la peau plate, `--accent` est une
+   surface neutre (le rôle « action » est porté par `--primary`) : on repointe
+   donc l'accent local de la capsule sur `--primary`. Les états (`data-kind`)
+   et l'accent poussé par une notification (`style="--accent:…"`) le
+   surchargent, comme avant. */
+.halo {
+  --accent: var(--primary);
+}
+
+/* ===== Coque commune ===== */
+/* `width: max-content` : c'est la coque qui dicte la taille, et island.js
+   recopie ses dimensions sur la fenêtre native (voir `fit()`). */
+.halo-shell {
+  position: relative;
+  /* Pas de max-width : la coque garde sa taille naturelle même quand la
+     fenêtre native est encore à l'ancienne dimension, sinon `fit()` mesurerait
+     une largeur déjà tronquée. */
+  width: max-content;
+  border-radius: var(--isl-radius);
+  background: var(--isl-glass-bg);
+  border: 1px solid var(--isl-glass-border);
+  color: var(--isl-text);
+  box-shadow: 0 8px 24px var(--isl-shadow);
+  overflow: hidden;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  /* `width`/`height` sont animés : island.js pose les deux tailles et laisse la
+     transition faire le morphing, comme une capsule qui s'étire. */
+  transition:
+    width 0.4s var(--isl-spring),
+    height 0.4s var(--isl-spring),
+    transform 0.42s var(--isl-spring),
+    opacity 0.32s var(--isl-spring),
+    border-radius 0.42s var(--isl-spring),
+    box-shadow 0.42s var(--isl-spring);
+}
+
+/* La coque garde une géométrie de CAPSULE quelle que soit la vue : pastille
+   entièrement arrondie quand elle est repliée ou qu'elle ne porte qu'un titre,
+   grand rayon quand elle s'étire. C'est ce qui fait qu'on reconnaît la même
+   capsule qui grandit, et pas une carte de notification qui la remplace. */
+.halo[data-view="pill"] .halo-shell,
+.halo[data-view="alert"] .halo-shell {
+  border-radius: 999px;
+}
+/* Seules les vues réellement hautes (boutons d'action, panneau) prennent un
+   rayon de coin : une notification courante reste une capsule. */
+.halo[data-view="alert"] .halo-shell.is-tall,
+.halo[data-view="panel"] .halo-shell {
+  border-radius: 26px;
+}
+.halo[data-view="panel"] .halo-shell {
+  box-shadow: 0 14px 40px var(--isl-shadow);
+}
+
+.halo[data-state="hidden"] .halo-shell {
+  opacity: 0;
+  transform: translateY(-22px) scale(0.9);
+  pointer-events: none;
+}
+.halo[data-state="enter"] .halo-shell,
+.halo[data-state="shown"] .halo-shell {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Une seule vue visible à la fois ; les autres sont retirées du flux pour que
+   la coque se redimensionne réellement (et pas seulement en opacité). */
+.halo-view {
+  display: none;
+  animation: halo-fade-in 0.26s var(--isl-spring) both;
+}
+.halo[data-view="pill"] .halo-view-pill,
+.halo[data-view="alert"] .halo-view-alert,
+.halo[data-view="panel"] .halo-view-panel {
+  display: block;
+}
+@keyframes halo-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ===== Vue « pastille » ===== */
+.halo-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 12px 0 8px;
+  cursor: pointer;
+  min-width: 148px;
+}
+.halo-pill:hover {
+  background: color-mix(in oklab, var(--isl-text) 4%, transparent);
+}
+
+/* Pastille de gauche : anneau d'activité + point d'état. */
+.halo-glyph {
+  position: relative;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+}
+.halo-glyph::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in oklab, var(--accent) 85%, transparent) 90deg,
+    transparent 200deg
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.halo-glyph > i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 18%, transparent);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+/* Agents au travail : l'anneau tourne, le cœur respire. */
+.halo[data-busy="1"] .halo-glyph::before {
+  opacity: 1;
+  animation: halo-spin 1.15s linear infinite;
+}
+.halo[data-busy="1"] .halo-glyph > i {
+  animation: halo-breathe 1.5s ease-in-out infinite;
+}
+.halo[data-busy="0"] .halo-glyph > i {
+  background: var(--muted-foreground);
+  box-shadow: none;
+}
+@keyframes halo-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes halo-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.72); }
+}
+
+.halo-label {
+  /* `flex: 0 1 auto` (et pas `1 1 auto`) : la coque se dimensionne en
+     `max-content`, il faut donc que le libellé pèse sa taille naturelle —
+     plafonnée par `max-width`, qui déclenche alors l'ellipse. */
+  flex: 0 1 auto;
+  min-width: 0;
+  font-size: 12.5px;
+  font-weight: 550;
+  letter-spacing: 0.1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+.halo-sub {
+  color: var(--isl-text-muted);
+  font-weight: 400;
+}
+
+/* Bloc de droite : égaliseur pendant un run, horloge sinon, badge non-lu. */
+.halo-tail {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--isl-text-muted);
+}
+.halo-eq {
+  display: none;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+.halo[data-busy="1"] .halo-eq { display: flex; }
+.halo[data-busy="1"] .halo-clock { display: none; }
+.halo-eq > i {
+  width: 2.5px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent);
+  animation: halo-eq 0.9s ease-in-out infinite;
+}
+.halo-eq > i:nth-child(2) { animation-delay: 0.15s; }
+.halo-eq > i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes halo-eq {
+  0%, 100% { height: 4px; opacity: 0.55; }
+  50% { height: 12px; opacity: 1; }
+}
+
+.halo-badge {
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--destructive);
+  color: oklch(0.985 0 0);
+  font-size: 10px;
+  font-weight: 700;
+  animation: halo-pop 0.3s var(--isl-spring) both;
+}
+.halo-badge[data-count]:not([data-count="0"]) { display: inline-flex; }
+@keyframes halo-pop {
+  from { transform: scale(0.4); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ===== Vue « alerte » (une notification en avant) ===== */
+/* La carte n'a PAS de largeur fixe : la coque est en `max-content`, donc un
+   titre seul donne une capsule courte et un message long une capsule large qui
+   passe à la ligne. C'est ce qui fait qu'elle « s'adapte au contenu » au lieu
+   de ressembler à une notification système standard. */
+.halo-alert {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px 11px 11px;
+  min-width: 230px;
+  max-width: 400px;
+}
+/* Un clic sur la carte emmène dans l'app concernée : le pointeur le dit. */
+.halo[data-view="alert"] .halo-shell { cursor: pointer; }
+
+/* Titre seul : la capsule se resserre en pastille étirée. */
+.halo-alert.is-compact {
+  padding: 8px 14px 8px 8px;
+  gap: 10px;
+  min-width: 190px;
+}
+.halo-alert.is-compact .isl-title { font-size: 13px; }
+
+/* --- Densité « mini » : la notification se pose en VIGNETTE ----------------
+   Une notification ne doit pas envahir l'écran pour dire deux mots : elle
+   arrive à peine plus grosse que la pastille (titre seul, une ligne), et ce
+   n'est qu'au survol qu'elle s'ouvre en carte lisible (`data-density="full"`).
+   Les cartes de DONNÉES (météo, score) échappent à cette règle : elles
+   naissent en densité pleine, le dessin étant l'information même.
+   Tout est piloté par la densité posée en JS, pas par `:hover` : la capsule
+   doit aussi savoir remesurer sa fenêtre native au changement. */
+.halo[data-density="mini"] .halo-alert {
+  padding: 6px 12px 6px 6px;
+  gap: 9px;
+  min-width: 0;
+  max-width: 320px;
+}
+.halo[data-density="mini"] .isl-title {
+  font-size: 12.5px;
+  max-width: 26ch;
+}
+.halo[data-density="mini"] .isl-text { display: none; }
+.halo[data-density="mini"] .isl-lead { width: 26px; height: 26px; }
+.halo[data-density="mini"] .isl-icon { width: 22px; height: 22px; }
+.halo[data-density="mini"] .isl-icon svg { width: 13px; height: 13px; }
+/* Croix et compteur de file n'ont pas leur place dans une vignette : ils
+   réapparaissent avec la carte, où l'on a la place de viser. */
+.halo[data-density="mini"] .isl-close,
+.halo[data-density="mini"] .isl-more { display: none; }
+
+/* Élément de tête : le glyphe rond, ceint de l'anneau de décompte — comme la
+   pastille au repos, en plus grand. Le décompte n'est plus une barre en bas
+   (qui faisait « toast ») mais l'anneau lui-même. */
+.isl-lead {
+  position: relative;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+}
+.halo-alert.is-compact .isl-lead { width: 30px; height: 30px; }
+.isl-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+.isl-ring circle {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  /* 2πr avec r = 17 : la circonférence sert de longueur de tiret, et le décalage
+     anime le décompte. */
+  stroke-dasharray: 106.8;
+  stroke-dashoffset: 0;
+}
+.halo[data-paused="1"] .isl-ring circle {
+  stroke: var(--isl-text-muted);
+  opacity: 0.5;
+}
+
+/* Zone de droite : compteur de file d'attente, façon « et 2 autres ». */
+.isl-trail {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.isl-more {
+  min-width: 22px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--isl-btn-bg);
+  color: var(--isl-text-muted);
+  font-size: 11px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.isl-icon {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-ink);
+  background: color-mix(in oklab, var(--accent) 14%, var(--secondary));
+}
+.isl-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.halo-alert.is-compact .isl-icon { width: 24px; height: 24px; }
+.halo-alert.is-compact .isl-icon svg { width: 14px; height: 14px; }
+
+/* ===== Cartes riches : score et météo ======================================
+   Une notification qui porte des DONNÉES (un score, une température) ne se lit
+   pas comme une phrase. La vignette reste le titre compact ; au survol, c'est
+   la carte dessinée qui prend la place du couple icône/texte. Les deux vivent
+   dans le même DOM, seul l'affichage bascule : pas de repeinture, donc pas de
+   saut pendant le morphing. */
+.isl-rich { display: none; flex: 1 1 auto; min-width: 0; }
+.halo[data-density="full"] .halo-alert.is-rich .isl-lead,
+.halo[data-density="full"] .halo-alert.is-rich .isl-body { display: none; }
+.halo[data-density="full"] .halo-alert.is-rich .isl-rich { display: block; }
+.halo[data-density="full"] .halo-alert.is-rich {
+  align-items: stretch;
+  padding: 12px 14px;
+  min-width: 320px;
+  max-width: 440px;
+}
+
+/* --- Score ---------------------------------------------------------------- */
+.isl-score { display: flex; flex-direction: column; gap: 10px; }
+.isl-score-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--isl-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.isl-score-league { font-weight: 650; }
+.isl-score-status { margin-left: auto; text-transform: none; letter-spacing: 0; }
+/* Match en cours : la pastille rouge qui clignote dit « ça se joue maintenant »
+   mieux que n'importe quel libellé. */
+.isl-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 7px 1px 5px;
+  border-radius: 999px;
+  background: color-mix(in oklab, oklch(0.62 0.22 25) 18%, transparent);
+  color: oklch(0.62 0.22 25);
+  font-weight: 700;
+}
+.isl-live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: isl-pulse 1.2s ease-in-out infinite;
+}
+.isl-score-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.isl-team { display: flex; align-items: center; gap: 8px; min-width: 0; }
+/* L'équipe à l'extérieur se lit en miroir : les deux écussons encadrent le
+   score, comme sur un tableau d'affichage. */
+.isl-team.is-away { flex-direction: row-reverse; text-align: right; }
+.isl-team-txt { display: flex; flex-direction: column; min-width: 0; }
+.isl-team-txt b { font-size: 13px; font-weight: 700; }
+.isl-team-txt span {
+  font-size: 11px;
+  color: var(--isl-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 16ch;
+}
+.isl-crest {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  color: #fff;
+  background: var(--crest);
+  /* Un liseré clair sauve les maillots très sombres sur fond sombre. */
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 22%);
+}
+.isl-score-num {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.isl-score-num b { font-size: 26px; font-weight: 800; line-height: 1; }
+.isl-score-num i { font-style: normal; color: var(--isl-text-muted); }
+
+/* --- Météo ---------------------------------------------------------------- */
+.isl-weather { display: flex; flex-direction: column; gap: 10px; }
+.isl-wx-main { display: flex; align-items: center; gap: 12px; }
+.isl-wx-icon { flex: 0 0 auto; color: var(--accent); }
+.isl-wx-icon svg { width: 30px; height: 30px; display: block; }
+.isl-wx-temp {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.isl-wx-temp sup { font-size: 16px; font-weight: 600; vertical-align: top; }
+.isl-wx-txt { display: flex; flex-direction: column; min-width: 0; }
+.isl-wx-txt b { font-size: 13.5px; font-weight: 700; }
+.isl-wx-txt span { font-size: 11.5px; color: var(--isl-text-muted); }
+.isl-wx-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.isl-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--isl-btn-bg);
+  font-size: 11.5px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.isl-chip i { font-style: normal; font-weight: 500; color: var(--isl-text-muted); }
+
+/* ===== Cartes : cours, taux, qualité de l'air, actualités ===== */
+.isl-quote { display: flex; flex-direction: column; gap: 6px; min-width: 220px; }
+.isl-quote-main { display: flex; align-items: baseline; gap: 10px; }
+.isl-quote-price { font-size: 30px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.isl-quote-price small { margin-left: 5px; font-size: 13px; font-weight: 600; color: var(--isl-text-muted); }
+.isl-quote-chg { padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; background: var(--isl-btn-bg); }
+.isl-quote-chg.up { color: oklch(0.55 0.17 150); background: oklch(0.72 0.17 150 / 16%); }
+.isl-quote-chg.down { color: oklch(0.55 0.2 25); background: oklch(0.62 0.22 25 / 16%); }
+.isl-quote-sub { display: flex; flex-direction: column; }
+.isl-quote-sub b { font-size: 13px; font-weight: 700; }
+.isl-quote-sub span { font-size: 11.5px; color: var(--isl-text-muted); }
+
+.isl-rate { display: flex; flex-direction: column; gap: 6px; min-width: 220px; }
+.isl-rate-main { display: flex; align-items: baseline; gap: 10px; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.isl-rate-main i { font-style: normal; font-size: 12px; font-weight: 600; color: var(--isl-text-muted); }
+.isl-rate-main b { font-size: 26px; font-weight: 800; }
+.isl-rate-arrow { color: var(--isl-text-muted); font-size: 16px; }
+.isl-rate-sub { font-size: 11.5px; color: var(--isl-text-muted); }
+
+.isl-aqi { display: flex; flex-direction: column; gap: 8px; min-width: 240px; --aqi: oklch(0.72 0.17 150); }
+.isl-aqi[data-level="fair"] { --aqi: oklch(0.8 0.16 110); }
+.isl-aqi[data-level="moderate"] { --aqi: oklch(0.8 0.17 85); }
+.isl-aqi[data-level="poor"] { --aqi: oklch(0.7 0.19 45); }
+.isl-aqi[data-level="verypoor"] { --aqi: oklch(0.6 0.22 25); }
+.isl-aqi[data-level="extreme"] { --aqi: oklch(0.45 0.2 330); }
+.isl-aqi-main { display: flex; align-items: center; gap: 12px; }
+.isl-aqi-num { font-size: 32px; font-weight: 800; line-height: 1; color: var(--aqi); font-variant-numeric: tabular-nums; }
+.isl-aqi-txt { display: flex; flex-direction: column; }
+.isl-aqi-txt b { font-size: 13.5px; font-weight: 700; }
+.isl-aqi-txt span { font-size: 11.5px; color: var(--isl-text-muted); }
+.isl-aqi-bar { position: relative; height: 6px; border-radius: 999px; background: linear-gradient(90deg, oklch(0.72 0.17 150), oklch(0.8 0.16 110), oklch(0.8 0.17 85), oklch(0.7 0.19 45), oklch(0.6 0.22 25), oklch(0.45 0.2 330)); }
+.isl-aqi-bar i { position: absolute; top: -3px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--isl-glass-bg); border: 2px solid var(--aqi); box-sizing: border-box; }
+
+.isl-image { display: flex; flex-direction: column; gap: 6px; min-width: 240px; max-width: 320px; }
+.isl-image-pic { display: block; width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px; background: var(--isl-btn-bg); }
+.isl-image-cap { display: flex; flex-direction: column; gap: 1px; padding: 0 2px; }
+.isl-image-cap b { font-size: 12px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.isl-image-cap span { font-size: 11px; opacity: .7; }
+.isl-news { display: flex; flex-direction: column; gap: 6px; min-width: 260px; max-width: 330px; }
+.isl-news-row { display: flex; flex-direction: column; gap: 1px; padding: 6px 8px; border-radius: 10px; background: var(--isl-btn-bg); }
+.isl-news-row b { font-size: 12.5px; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.isl-news-row span { font-size: 11px; color: var(--isl-text-muted); }
+
+/* Pulsation pour l'état « en cours » (kind: progress / thinking). */
+.halo[data-kind="progress"] .isl-icon,
+.halo[data-kind="thinking"] .isl-icon {
+  animation: isl-pulse 1.4s ease-in-out infinite;
+}
+@keyframes isl-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.isl-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.isl-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.1px;
+  max-width: 40ch;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.isl-text {
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--isl-text-muted);
+  /* `max-width` en `ch` : c'est lui qui décide où le texte passe à la ligne,
+     donc la largeur naturelle de la capsule. DEUX lignes au maximum : au-delà
+     la capsule devient un pavé envahissant — le texte complet reste lisible
+     dans le panneau. */
+  max-width: 40ch;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-line;
+}
+.isl-title:empty,
+.isl-text:empty {
+  display: none;
+}
+
+.isl-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.isl-btn {
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--isl-text);
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--isl-btn-border);
+  background: var(--isl-btn-bg);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s ease, transform 0.12s ease;
+}
+.isl-btn:hover { background: var(--isl-btn-bg-hover); }
+.isl-btn:active { transform: scale(0.96); }
+.isl-btn.primary {
+  color: var(--primary-foreground);
+  border-color: transparent;
+  background: var(--accent);
+}
+.isl-btn.primary:hover { filter: brightness(1.05); }
+
+/* Variantes de teinte d'accent selon le type de notification. Ce sont des
+   ÉTATS, pas une décoration : ils prennent les jetons d'état (qui ont, eux, une
+   variante sombre) au lieu de trois hexadécimaux figés. « prompt » n'est pas un
+   état — il reprend donc la couleur d'action de l'apparence.
+   Le bouton principal peint son libellé avec `--primary-foreground` : chaque
+   état redéfinit donc AUSSI ce premier plan, sinon le texte gardait le contraste
+   calculé pour la couleur d'action, sur un fond vert/orange/rouge. */
+.halo[data-kind="success"] { --accent: var(--success); --primary-foreground: var(--success-foreground); }
+.halo[data-kind="warn"]    { --accent: var(--warning); --primary-foreground: var(--warning-foreground); }
+.halo[data-kind="error"]   { --accent: var(--destructive); --primary-foreground: oklch(0.985 0 0); }
+.halo[data-kind="prompt"]  { --accent: var(--primary); }
+.halo[data-kind="success"] .isl-icon,
+.halo[data-kind="warn"] .isl-icon,
+.halo[data-kind="error"] .isl-icon { color: var(--accent); }
+
+/* Bouton de fermeture de la carte : indispensable quand la capsule est
+   configurée pour rester tant qu'il reste des notifications non lues. */
+.isl-close {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--isl-text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+.halo-shell:hover .isl-close { opacity: 1; }
+.isl-close:hover { background: var(--isl-btn-bg-hover); color: var(--isl-text); }
+.isl-close svg { width: 12px; height: 12px; }
+
+/* ===== Vue « panneau » ===== */
+.halo-panel {
+  width: 396px;
+  display: flex;
+  flex-direction: column;
+}
+.halo-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 14px 9px;
+}
+.halo-panel-head strong {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+}
+.halo-panel-head .halo-spacer { flex: 1 1 auto; }
+.halo-icon-btn {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--isl-text-muted);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+.halo-icon-btn:hover { background: var(--isl-btn-bg-hover); color: var(--isl-text); }
+.halo-icon-btn svg { width: 14px; height: 14px; }
+
+.halo-section {
+  padding: 4px 14px 10px;
+}
+.halo-section + .halo-section { border-top: 1px solid var(--border); padding-top: 10px; }
+.halo-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--isl-text-muted);
+}
+.halo-count {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--isl-btn-bg);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+}
+
+.halo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 172px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.halo-list::-webkit-scrollbar { width: 6px; }
+.halo-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--isl-text) 14%, transparent);
+}
+
+.halo-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 7px 8px;
+  border-radius: var(--radius-md);
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  animation: halo-row-in 0.28s var(--isl-spring) both;
+  transition: background 0.16s ease;
+}
+.halo-row:hover { background: var(--isl-btn-bg-hover); }
+@keyframes halo-row-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: none; }
+}
+.halo-row-ic {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--accent) 12%, var(--secondary));
+  color: var(--accent-ink);
+}
+.halo-row-ic svg { width: 13px; height: 13px; }
+.halo-row.is-error .halo-row-ic { background: color-mix(in oklab, var(--destructive) 14%, var(--secondary)); color: var(--destructive); }
+/* Anneau de progression sur la ligne d'un agent qui travaille. */
+.halo-row.is-live .halo-row-ic {
+  position: relative;
+  color: var(--accent);
+}
+.halo-row.is-live .halo-row-ic::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 1.5px solid transparent;
+  border-top-color: var(--accent);
+  animation: halo-spin 0.9s linear infinite;
+}
+.halo-row-txt { flex: 1 1 auto; min-width: 0; }
+.halo-row-txt b {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.halo-row-txt span {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 1px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--isl-text-muted);
+}
+.halo-row-time {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--isl-text-muted);
+}
+
+.halo-empty {
+  padding: 10px 8px 12px;
+  font-size: 11.5px;
+  color: var(--isl-text-muted);
+}
+
+.halo-foot {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--border);
+}
+.halo-foot .isl-btn { flex: 1 1 0; text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .halo-shell { transition: opacity 0.2s ease; }
+  .halo[data-state="hidden"] .halo-shell { transform: none; }
+  .halo-view,
+  .halo-row { animation: none; }
+  .halo-glyph::before,
+  .halo-glyph > i,
+  .halo-eq > i,
+  .halo-row.is-live .halo-row-ic::after { animation: none; }
+}
+
+/* --- Notification dépliée (tête de panneau) --------------------------------
+   La carte tronque à deux lignes ; c'est ICI qu'on lit le texte entier — un
+   compte rendu d'agent avec son motif de refus, par exemple. C'est ce que le
+   clic sur la capsule ouvre : ouvrir l'app à la place faisait perdre
+   l'information au lieu de l'afficher. */
+.halo-detail {
+  margin: 2px 0 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--isl-text) 5%, transparent);
+  border-left: 3px solid var(--accent);
+}
+.halo-detail.is-error { border-left-color: oklch(0.62 0.22 25); }
+.halo-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.halo-detail-head b { flex: 1 1 auto; font-weight: 650; }
+.halo-detail-body {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--isl-text-muted);
+  white-space: pre-wrap;
+  /* Un compte rendu peut être long : il défile dans son cadre plutôt que de
+     pousser le déroulé hors de l'écran. */
+  max-height: 160px;
+  overflow-y: auto;
+  user-select: text;
+}
+.halo-detail-foot { margin-top: 8px; display: flex; justify-content: flex-end; }
+
+/* --- Timeline du run ------------------------------------------------------
+   Le déroulé complet de ce que fait l'agent : un appel d'outil par ligne, le
+   raisonnement en retrait. La pastille n'en montre qu'une à la fois ; ici on
+   les relit toutes, la plus récente en haut. */
+.halo-tl-list {
+  position: relative;
+  max-height: 220px;
+  overflow-y: auto;
+  /* Le déroulé est plus long que sa boîte : plutôt qu'une ligne tranchée net au
+     ras du bord (qui se lit comme un bug), on estompe l'extrémité vers laquelle
+     il reste du contenu. Les classes sont posées par le JS au défilement — un
+     masque permanent effacerait la dernière ligne une fois arrivé en bas. */
+  --tl-fade: 22px;
+}
+.halo-tl-list.is-more-below {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - var(--tl-fade)), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - var(--tl-fade)), transparent);
+}
+.halo-tl-list.is-more-above {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--tl-fade));
+  mask-image: linear-gradient(to bottom, transparent, #000 var(--tl-fade));
+}
+.halo-tl-list.is-more-above.is-more-below {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--tl-fade), #000 calc(100% - var(--tl-fade)), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 var(--tl-fade), #000 calc(100% - var(--tl-fade)), transparent);
+}
+.halo-tl {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 8px 6px 10px;
+  border-radius: 10px;
+}
+.halo-tl:hover { background: color-mix(in oklab, var(--isl-text) 5%, transparent); }
+.halo-tl-time {
+  font-size: 10.5px;
+  color: var(--isl-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.halo-tl-body { display: flex; flex-direction: column; min-width: 0; gap: 1px; }
+.halo-tl-body b { font-size: 12.5px; font-weight: 650; }
+.halo-tl-body span {
+  font-size: 11px;
+  color: var(--isl-text-muted);
+  /* Deux lignes au plus : une entrée d'outil peut faire mille caractères. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.halo-tl-dot { color: oklch(0.72 0.17 150); display: flex; }
+.halo-tl-dot svg { width: 13px; height: 13px; }
+.halo-tl.is-error .halo-tl-dot { color: oklch(0.62 0.22 25); }
+/* Le raisonnement n'est pas une action : pas de coche, un texte en retrait. */
+.halo-tl.is-thought .halo-tl-body b { font-weight: 500; color: var(--isl-text-muted); }
+.halo-tl.is-thought .halo-tl-body span { font-style: italic; }
+
+/* Corps Markdown des notifications (détail et alerte). */
+.halo-detail-body .md p, .isl-text .md p { margin: 0 0 6px; }
+.halo-detail-body .md p:last-child, .isl-text .md p:last-child { margin-bottom: 0; }
+.halo-detail-body .md ul, .halo-detail-body .md ol, .isl-text .md ul, .isl-text .md ol { margin: 4px 0 6px; padding-left: 18px; }
+.halo-detail-body .md li { margin: 2px 0; }
+.halo-detail-body .md h1, .halo-detail-body .md h2, .halo-detail-body .md h3 { font-size: 1em; margin: 6px 0 3px; }
+.halo-detail-body .md code, .isl-text .md code { font-family: ui-monospace, Menlo, monospace; font-size: .92em; padding: 0 4px; border-radius: 4px; background: rgba(127,127,127,.15); }
+.halo-detail-body .md pre { white-space: pre-wrap; padding: 6px 8px; border-radius: 6px; background: rgba(127,127,127,.12); }
+.isl-text .md { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.halo-detail-body .md, .isl-text .md { white-space: normal; }
+
+/* Résumés par petit modèle : ligne du fil, en-tête du détail, alerte. */
+.halo-row-txt.has-summary span { color: var(--isl-text); }
+.halo-detail-summary { margin-top: 6px; font-size: 12.5px; font-weight: 600; color: var(--isl-text); }
+.halo-detail-summary + .halo-detail-body { margin-top: 4px; }
+/* Résumé IA : il REMPLACE le message (sinon la carte dit deux fois la même
+   chose), bridé à trois lignes comme le texte qu'il résume. */
+.isl-summary {
+  font-size: 12.5px; font-weight: 500; line-height: 1.4; margin: 1px 0 0;
+  max-width: 40ch;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.isl-summary:not(:empty) + .isl-text { display: none; }
+.isl-summary:empty { display: none; }
+.halo[data-density="mini"] .isl-summary { display: none; }
+
+/* ===== Étapes d'agent lisibles (lib/agent-steps.js) =====================
+   La pastille montre l'ICÔNE de l'étape en cours à la place du point (loupe,
+   crayon, base de données…), une coche qui se dessine à chaque étape finie,
+   le nombre d'étapes, et une coche qui éclot en fin de run. */
+:root { --isl-ok: oklch(0.72 0.17 150); --isl-bad: oklch(0.63 0.22 25); --isl-warn: oklch(0.75 0.15 70); }
+
+.halo-step-ic {
+  position: absolute;
+  inset: 3px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 14%, var(--isl-glass-bg));
+  opacity: 0;
+  transform: scale(0.4) rotate(-40deg);
+}
+.halo-step-ic svg { width: 11px; height: 11px; }
+.halo-step-ic.is-in { animation: halo-ic-in 0.42s var(--isl-spring) forwards; }
+@keyframes halo-ic-in {
+  from { opacity: 0; transform: scale(0.4) rotate(-40deg); }
+  to { opacity: 1; transform: none; }
+}
+.halo-glyph.has-step > i { opacity: 0; transform: scale(0.3); }
+.halo-glyph[data-tone="think"] .halo-step-ic { color: var(--isl-text-muted); }
+.halo-glyph[data-tone="fail"] .halo-step-ic { color: var(--isl-bad); background: color-mix(in oklab, var(--isl-bad) 14%, var(--isl-glass-bg)); }
+.halo-glyph[data-tone="retry"] .halo-step-ic { color: var(--isl-warn); }
+.halo-glyph[data-tone="ok"] .halo-step-ic { color: var(--accent); }
+
+/* Fin de run : la coche/croix éclot et un anneau se propage. */
+.halo[data-done="ok"] .halo-step-ic { color: var(--isl-ok); background: color-mix(in oklab, var(--isl-ok) 18%, var(--isl-glass-bg)); }
+.halo[data-done="fail"] .halo-step-ic { color: var(--isl-bad); background: color-mix(in oklab, var(--isl-bad) 16%, var(--isl-glass-bg)); }
+.halo[data-done="ok"] .halo-glyph::after,
+.halo[data-done="fail"] .halo-glyph::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--isl-ok);
+  animation: halo-burst 0.9s ease-out forwards;
+}
+.halo[data-done="fail"] .halo-glyph::after { border-color: var(--isl-bad); }
+@keyframes halo-burst {
+  from { opacity: 0.9; transform: scale(0.7); }
+  to { opacity: 0; transform: scale(1.9); }
+}
+.halo[data-done="ok"] .halo-step-ic svg path,
+.halo[data-done="ok"] .halo-step-ic svg polyline,
+.halo-tick[data-tone="ok"] svg path,
+.halo-tick[data-tone="ok"] svg polyline {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: halo-draw 0.5s 0.08s ease-out forwards;
+}
+@keyframes halo-draw { to { stroke-dashoffset: 0; } }
+
+/* Le libellé de l'étape glisse à chaque changement. */
+/* `inline` et non `inline-block` : un bloc atomique qui déborde d'une ligne à
+   ellipse est remplacé EN ENTIER par « … ». D'où un fondu seul, sans
+   translation (qui ne s'applique pas à un élément inline). */
+.halo-step-tx { animation: halo-tx-in 0.4s ease; }
+@keyframes halo-tx-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Coche d'étape terminée, à droite : apparaît, puis s'efface. */
+.halo-tick { display: none; width: 14px; height: 14px; color: var(--isl-ok); }
+.halo-tick svg { width: 14px; height: 14px; }
+.halo-tick[data-tone="fail"] { color: var(--isl-bad); }
+.halo-tick.is-on { display: grid; place-items: center; animation: halo-tick 1.1s ease forwards; }
+.halo-tick.is-on[data-tone="fail"] { animation: halo-tick-bad 1.1s ease forwards; }
+@keyframes halo-tick {
+  0% { opacity: 0; transform: scale(0.4); }
+  18% { opacity: 1; transform: scale(1.15); }
+  30% { transform: scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: scale(0.9); }
+}
+@keyframes halo-tick-bad {
+  0% { opacity: 0; }
+  15% { opacity: 1; transform: translateX(-2px); }
+  25% { transform: translateX(2px); }
+  35% { transform: translateX(-1px); }
+  45% { transform: none; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.halo:not([data-busy="1"]) .halo-tick { display: none; }
+
+.halo-nsteps {
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+}
+.halo-nsteps[hidden], .halo:not([data-busy="1"]) .halo-nsteps { display: none; }
+
+/* Panneau : agent au travail avec barre d'activité. */
+.halo-agent .halo-row-txt { position: relative; }
+.halo-agent-ic { color: var(--accent); background: color-mix(in oklab, var(--accent) 12%, transparent); border-radius: 50%; }
+.halo-agent-ic svg { animation: halo-ic-in 0.4s var(--isl-spring); }
+.halo-agent-n { font-style: normal; font-weight: 500; font-size: 10.5px; color: var(--accent); margin-left: 4px; }
+.halo-agent-bar {
+  display: block;
+  height: 2px;
+  margin-top: 5px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+}
+.halo-agent-bar > i {
+  display: block;
+  width: 35%;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  animation: halo-bar 1.4s ease-in-out infinite;
+}
+@keyframes halo-bar {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(300%); }
+}
+
+/* Déroulé en frise verticale : pastille d'icône + trait qui relie. */
+.halo-tl { grid-template-columns: 22px 1fr auto; align-items: start; animation: halo-row-in 0.3s var(--isl-spring) both; }
+.halo-tl:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 20.5px;
+  top: 28px;
+  bottom: -6px;
+  width: 1px;
+  background: var(--isl-glass-border);
+}
+.halo-tl-ic {
+  min-width: 24px;
+  min-height: 24px;
+  align-self: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+}
+.halo-tl-ic svg { width: 12px; height: 12px; }
+.halo-tl[data-tone="think"] .halo-tl-ic { color: var(--isl-text-muted); background: color-mix(in oklab, var(--isl-text) 7%, transparent); }
+.halo-tl[data-tone="retry"] .halo-tl-ic { color: var(--isl-warn); background: color-mix(in oklab, var(--isl-warn) 14%, transparent); }
+.halo-tl.is-error .halo-tl-ic { color: var(--isl-bad); background: color-mix(in oklab, var(--isl-bad) 14%, transparent); }
+.halo-tl.is-live .halo-tl-ic { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 45%, transparent); animation: halo-live 1.6s ease-out infinite; }
+@keyframes halo-live {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 45%, transparent); }
+  100% { box-shadow: 0 0 0 8px transparent; }
+}
+.halo-tl-side { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.halo-tl-dot { color: var(--isl-ok); }
+.halo-tl.is-error .halo-tl-dot { color: var(--isl-bad); }
+.halo-tl-body b { font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  .halo-step-ic.is-in, .halo-step-tx, .halo-tick.is-on, .halo-tl, .halo-tl.is-live .halo-tl-ic,
+  .halo-agent-bar > i, .halo[data-done] .halo-glyph::after { animation: none !important; opacity: 1; transform: none; }
+}
+
+/* Une carte dépliée qui porte un message sur plusieurs lignes n'est plus une
+   pilule : un rayon de 999px sur un bloc haut la gonflait en ovale. */
+.halo[data-view="alert"][data-density="full"] .halo-shell:has(.isl-summary:not(:empty)),
+.halo[data-view="alert"][data-density="full"] .halo-shell:has(.isl-text:not(:empty)) {
+  border-radius: 22px;
+}
+
+
+/* ===== Style « Encoche » (Réglages → Notifications → Mode d'encoche) =====
+   La capsule touche le bord supérieur de l'écran et prolonge l'encoche du
+   Mac : noir profond (comme l'encoche elle-même, quel que soit le thème),
+   coins supérieurs droits, coins inférieurs arrondis. --notch-w / --notch-h
+   viennent de Rust (0 sur un écran sans encoche : languette noire simple). */
+:root { --notch-w: 0px; --notch-h: 0px; --notch-ear: 88px; }
+body[data-style="notch"] { padding-top: 0; }
+.halo[data-style="notch"] {
+  --isl-glass-bg: #000;
+  --isl-glass-border: transparent;
+  --isl-text: #f5f5f7;
+  --isl-text-muted: #a1a1aa;
+  --isl-btn-bg: #1c1c1e;
+  --isl-btn-border: #2c2c2e;
+  --isl-btn-bg-hover: #2c2c2e;
+  --isl-shadow: oklch(0 0 0 / 38%);
+  /* Les vues internes lisent aussi les jetons shadcn : on les repeint en sombre. */
+  --foreground: #f5f5f7;
+  --popover: #000;
+  --popover-foreground: #f5f5f7;
+  --muted-foreground: #a1a1aa;
+  --card: #111113;
+  --secondary: #1c1c1e;
+  --subtle: #232326;
+  --border: #2c2c2e;
+  --background: #000;
+}
+.halo[data-style="notch"] .halo-shell,
+.halo[data-style="notch"][data-view] .halo-shell,
+.halo[data-style="notch"][data-view="alert"] .halo-shell.is-tall {
+  border: 0;
+  border-radius: 0 0 20px 20px;
+  transform-origin: 50% 0;
+  /* Jamais plus étroite que la pastille : une alerte courte ne doit pas
+     laisser dépasser l'encoche de part et d'autre. */
+  min-width: calc(var(--notch-w) + 2 * var(--notch-ear) + 24px);
+}
+.halo[data-style="notch"][data-view="panel"] .halo-shell,
+.halo[data-style="notch"][data-view="alert"] .halo-shell.is-tall { border-radius: 0 0 28px 28px; }
+/* Entrée/sortie : la capsule « coule » hors de l'encoche, pas de glissé. */
+.halo[data-style="notch"][data-state="hidden"] .halo-shell { transform: scale(0.55, 0.2); opacity: 0; }
+
+/* Pastille : deux oreilles de même largeur autour de l'encoche, pour que la
+   caméra tombe pile au milieu (la fenêtre est centrée sur l'écran). */
+.halo[data-style="notch"] .halo-pill {
+  gap: 0;
+  height: max(34px, var(--notch-h));
+  padding: 0 12px;
+  min-width: 0;
+}
+.halo[data-style="notch"] .halo-glyph { margin-right: 8px; }
+.halo[data-style="notch"] .halo-label { width: calc(var(--notch-ear) - 30px); max-width: none; flex: none; }
+.halo[data-style="notch"] .halo-tail { width: var(--notch-ear); margin-left: var(--notch-w); justify-content: flex-end; flex: none; }
+.halo[data-style="notch"] .halo-pill:hover { background: transparent; }
+/* Vues hautes : le contenu commence sous l'encoche. */
+.halo[data-style="notch"] .halo-view-alert,
+.halo[data-style="notch"] .halo-view-panel { padding-top: var(--notch-h); }
+
+/* ===== Au repos dans l'encoche (haloRest = "peek") =====
+   Rien à montrer : la coque se réduit à la taille de l'encoche — noire sur
+   noir, elle disparaît — et ressort au survol (island.js, updateRest). Sur un
+   écran sans encoche, il reste une fine languette à survoler. */
+.halo[data-style="notch"][data-rest="1"] .halo-shell {
+  min-width: max(var(--notch-w), 110px);
+  box-shadow: none;
+  border-radius: 0 0 10px 10px;
+}
+.halo[data-style="notch"][data-rest="1"] .halo-pill { height: max(var(--notch-h), 5px); padding: 0; }
+.halo[data-style="notch"][data-rest="1"] .halo-pill > * { display: none; }
+
+/* ===== Mini-orbe : le point d'état devient une petite orbe Lumen =====
+   Mêmes couleurs que l'orbe (--orb-c0…4, recopiées de `orbColors`), deux
+   yeux, et la respiration / l'anneau d'activité existants. */
+.halo-glyph > i {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.85), transparent 38%),
+    conic-gradient(from 210deg, var(--orb-c0, #a78bfa), var(--orb-c1, #60a5fa), var(--orb-c2, #f472b6), var(--orb-c3, #fbbf24), var(--orb-c0, #a78bfa));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25), 0 0 8px color-mix(in oklab, var(--orb-c1, #60a5fa) 55%, transparent);
+}
+.halo-glyph > i::before,
+.halo-glyph > i::after {
+  content: "";
+  position: absolute;
+  top: 4.5px;
+  width: 1.8px;
+  height: 4.6px;
+  border-radius: 99px;
+  background: #fff;
+  animation: halo-blink 4.8s infinite;
+}
+.halo-glyph > i::before { left: 4.6px; }
+.halo-glyph > i::after { right: 4.6px; }
+/* Clignement par découpe arrondie (clip-path … round) et non par scaleY :
+   écraser l'œil aplatissait ses bouts ronds ; la découpe garde une pilule. */
+@keyframes halo-blink { 0%, 93%, 100% { clip-path: inset(-3px round 99px); } 96% { clip-path: inset(40% 0 round 99px); } }
+.halo[data-busy="0"] .halo-glyph > i {
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.85), transparent 38%),
+    conic-gradient(from 210deg, var(--orb-c0, #a78bfa), var(--orb-c1, #60a5fa), var(--orb-c2, #f472b6), var(--orb-c3, #fbbf24), var(--orb-c0, #a78bfa));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+  opacity: 0.9;
+}
+.halo[data-done="ok"] .halo-glyph > i::before, .halo[data-done="ok"] .halo-glyph > i::after { height: 2.2px; top: 6px; border-radius: 2px 2px 0 0; }
+
+/* ===== Cible de dépôt ===== */
+.halo[data-drop="1"] .halo-shell {
+  box-shadow: 0 0 0 2px var(--primary), 0 10px 30px var(--isl-shadow);
+}
+.halo[data-drop="1"] .halo-glyph > i { animation: halo-breathe 0.8s ease-in-out infinite; }
+
+/* Encoche : carte d'alerte pleine largeur sous l'encoche, contenu aéré. */
+.halo[data-style="notch"] .halo-alert {
+  min-width: 0;
+  max-width: none;
+  padding: 10px 18px 14px;
+}
+.halo[data-style="notch"] .halo-alert.is-compact { padding: 8px 18px 12px; }
+.halo[data-style="notch"] .halo-view-panel .halo-panel { padding-top: 4px; }
+
+/* Encoche — pas d'ombre portée : une vraie encoche n'en a pas, et sur la
+   fenêtre transparente l'ombre floue se lisait comme un rectangle grisâtre
+   aux bords francs (la fenêtre la coupe). Un liseré très fin suffit à
+   détacher le noir d'un fond sombre. */
+.halo[data-style="notch"] .halo-shell,
+.halo[data-style="notch"][data-view="panel"] .halo-shell,
+.halo[data-style="notch"][data-drop="1"] .halo-shell {
+  box-shadow: inset 0 -1px 0 oklch(1 0 0 / 8%);
+}
+.halo[data-style="notch"][data-drop="1"] .halo-shell { box-shadow: inset 0 0 0 2px var(--primary); }
+
+/* Encoche — les vues dépliées respirent sous le bord : au moins 12 px au-dessus
+   du contenu (plus la hauteur réelle de l'encoche s'il y en a une). Les cartes
+   widget (météo, score) étaient collées au haut de l'écran. */
+.halo[data-style="notch"] .halo-view-alert,
+.halo[data-style="notch"] .halo-view-panel { padding-top: calc(var(--notch-h) + 12px); }
+.halo[data-style="notch"][data-density="full"] .halo-alert.is-rich { padding: 6px 18px 16px; }
+
+/* Panneau Dynamic Halo : navigation compacte et contenu sous la caméra. */
+.halo[data-style="notch"] .halo-panel {
+  width: max(420px, calc(var(--notch-w) + 2 * var(--notch-ear) + 24px));
+  max-height: calc(560px - var(--notch-h) - 12px);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.halo[data-style="notch"] .halo-panel-head { padding: 8px 20px 14px; }
+.halo[data-style="notch"] .halo-panel-head strong { font-weight: 500; }
+.halo-panel-status { color: var(--isl-text-muted); font-size: 11px; }
+.halo-nav { display: flex; gap: 3px; flex-wrap: wrap; padding: 0 14px 12px; border-bottom: 1px solid var(--border); }
+.halo-nav button { display: flex; align-items: center; justify-content: center; flex: 1; gap: 4px; padding: 8px 5px; border: 0; border-radius: 9px; background: transparent; color: var(--isl-text-muted); font: inherit; font-size: 11px; cursor: pointer; }
+.halo-nav button:hover { background: var(--subtle); color: var(--isl-text); }
+.halo-nav button[aria-pressed="true"] { background: var(--secondary); color: var(--isl-text); }
+.halo-nav button[aria-pressed="false"] span { display: none; }
+.halo-nav svg, .halo-tab-content .isl-btn svg { width: 14px; height: 14px; flex: none; }
+.halo-tab-content { padding: 14px; min-height: 180px; overflow-y: auto; overscroll-behavior: contain; }
+.halo-tab-content h2 { font-size: 18px; font-weight: 500; margin: 8px 0; }
+.halo-tab-content p { color: var(--isl-text-muted); font-size: 12px; line-height: 1.6; margin: 8px 0 14px; overflow-wrap: anywhere; }
+.halo-tab-content .isl-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.halo-home-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px; }
+.halo-home-card { background: var(--card); padding: 16px; border-radius: 14px; min-width: 0; }
+.halo-home-card h2, .halo-home-card p { overflow-wrap: anywhere; }
+.halo-home-latest { margin-top: 18px; }
+.halo-studio-footer { padding: 12px 20px; border-top: 1px solid var(--border); color: var(--isl-text-muted); font-size: 10px; display: flex; justify-content: space-between; gap: 12px; }
+.halo-focus { text-align: center; }
+.halo-focus .halo-section-title { justify-content: center; }
+.halo-focus-time { font-size: 48px; font-variant-numeric: tabular-nums; letter-spacing: -2px; padding: 10px 0 16px; }
+.halo-focus label { font-size: 12px; color: var(--isl-text-muted); }
+.halo-focus select { background: var(--secondary); color: var(--isl-text); border: 1px solid var(--border); border-radius: 8px; padding: 7px; font: inherit; }
+.halo-focus-actions { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+.halo-launch-icon { color: var(--isl-text-muted); }
+.halo-launch-icon svg { width: 24px; height: 24px; }
+.halo-launch-card { padding: 8px 4px; }
+.halo-data-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; }
+.halo-data-label select, .halo-pref-row select { max-width: 260px; padding: 8px; background: var(--secondary); color: var(--isl-text); border: 1px solid var(--border); border-radius: 8px; font: inherit; }
+.halo-file-path { display: flex; align-items: center; gap: 12px; margin: 12px 0; font-size: 12px; overflow-wrap: anywhere; }
+.halo-data-list { margin-top: 12px; }
+.halo-data-row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 12px 4px; background: transparent; color: var(--isl-text); border: 0; border-bottom: 1px solid var(--border); font: inherit; cursor: pointer; }
+.halo-data-row:hover { background: var(--secondary); }
+.halo-data-row svg { width: 18px; height: 18px; flex: none; }
+.halo-data-row span { min-width: 0; }
+.halo-data-row b { font-size: 12px; font-weight: 500; overflow-wrap: anywhere; }
+.halo-data-row small, .halo-memory-item small { display: block; color: var(--isl-text-muted); font-size: 11px; margin-top: 5px; }
+.halo-memory-item { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.halo-memory-item summary { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; cursor: pointer; }
+.halo-file-preview { margin-top: 14px; font-size: 12px; }
+.halo-file-preview pre { max-height: 180px; overflow: auto; padding: 12px; margin-top: 12px; background: var(--secondary); white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
+.halo-pref-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.halo-pref-row input { accent-color: var(--primary); width: 18px; height: 18px; }
+.halo-data-error { color: var(--destructive) !important; }
+.halo-monitor-peek { display: none; font-size: 10px; color: var(--isl-text-muted); white-space: nowrap; }
+.halo[data-style="notch"][data-busy="0"] .halo-monitor-peek:not(:empty) { display: inline; }
+.halo[data-style="notch"][data-busy="0"] .halo-tail:has(.halo-monitor-peek:not(:empty)) .halo-clock { display: none; }
+.halo-monitor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.halo-monitor-metric { padding: 10px; border-radius: 10px; background: var(--card); min-width: 0; }
+.halo-monitor-metric > span, .halo-monitor-metric small { display: block; color: var(--isl-text-muted); font-size: 11px; }
+.halo-monitor-metric strong { display: block; font-size: 14px; font-weight: 500; margin: 5px 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.halo-monitor-track { margin: 14px 0; height: 4px; background: var(--secondary); border-radius: 4px; overflow: hidden; }
+.halo-monitor-track span { display: block; height: 100%; background: var(--isl-text-muted); }
+.halo-monitor-model h2 { overflow-wrap: anywhere; }
+.halo-monitor-model h2 { font-size: 14px; margin: 4px 0; }
+.halo-monitor-model p { margin: 4px 0 10px; font-size: 11px; }
+.halo-monitor-processes { margin-top: 10px; font-size: 11px; }
+.halo-monitor-processes summary { color: var(--isl-text-muted); cursor: pointer; }
+.halo-monitor-processes .halo-pref-row { font-size: 11px; padding: 8px 0; }
+.halo-monitor-updated { font-size: 11px !important; }
+.halo[data-style="notch"] .halo-panel.is-peek { width: max(340px, calc(var(--notch-w) + 2 * var(--notch-ear) + 24px)); }
+.halo-peek-head { display: flex; align-items: center; gap: 10px; padding: 8px 16px 12px; }
+.halo-peek-title { flex: 1; min-width: 0; }
+.halo-peek-title b { display: block; font-size: 12px; font-weight: 500; }
+.halo-peek-model { display: inline-block; max-width: 150px; margin-left: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; font-size: 10px; font-style: normal; color: var(--isl-text-muted); }
+.halo-peek-title small { display: block; font-size: 11px; color: var(--isl-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
+.halo-peek-metrics { display: flex; align-items: center; gap: 8px; padding: 0 16px 12px; }
+.halo-peek-metrics button { display: flex; align-items: center; gap: 7px; padding: 7px 9px; border: 0; border-radius: 8px; background: var(--secondary); color: var(--isl-text); font: inherit; font-size: 11px; cursor: pointer; }
+.halo-peek-metrics span { color: var(--isl-text-muted); }
+.halo-peek-metrics b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.halo-peek-metrics button:last-child { margin-left: auto; }
+.halo-peek-metrics svg { width: 14px; height: 14px; }
+.halo-tab-content { flex: 1 1 auto; min-height: 0; }
+.halo-nav, .halo-panel-head, .halo-studio-footer { flex-shrink: 0; }
+.halo[data-style="notch"] button:focus-visible, .halo[data-style="notch"] select:focus-visible { outline: 2px solid var(--isl-text); outline-offset: 2px; }
+
+/* Onglet verrouillé : carte de déverrouillage au lieu d'une erreur brute. */
+.halo-lock { display: grid; justify-items: center; gap: 8px; padding: 18px 8px 6px; text-align: center; }
+.halo-lock-ic { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; background: color-mix(in oklch, currentColor 10%, transparent); opacity: .85; }
+.halo-lock-ic svg { width: 18px; height: 18px; }
+.halo-lock h2 { margin: 2px 0 0; font-size: 15px; font-weight: 600; }
+.halo-lock p { margin: 0; font-size: 12px; opacity: .65; max-width: 34ch; }
+.halo-lock-row { display: flex; gap: 6px; width: min(320px, 100%); margin-top: 6px; }
+.halo-lock-row input { flex: 1; min-width: 0; height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid color-mix(in oklch, currentColor 18%, transparent); background: transparent; color: inherit; font: inherit; font-size: 13px; }
+.halo-lock-row input:focus { outline: none; border-color: color-mix(in oklch, currentColor 45%, transparent); }
+.halo-lock .halo-data-error { opacity: 1; }
+
+/* ---- Vue « Maintenant » de l'encoche : sections en direct, sans onglets ---- */
+.halo[data-style="notch"] .halo-live { padding: 2px 0 10px; }
+.halo[data-style="notch"] .halo-live + .halo-live { border-top: 1px solid color-mix(in oklch, var(--isl-text, #fff) 8%, transparent); padding-top: 10px; }
+.halo-ai { display: grid; gap: 6px; padding: 2px 4px; }
+.halo-ai-line { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.halo-ai-line b { font-weight: 600; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.halo-ai-line span { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--isl-text-muted); white-space: nowrap; }
+.halo-ai .halo-monitor-track { margin: 0; height: 3px; }
+.halo-ai small { font-size: 11px; color: var(--isl-text-muted); }
+.halo-live-focus { display: flex; align-items: center; gap: 8px; padding: 0 4px; }
+.halo-live-focus .halo-focus-time { font-size: 30px; letter-spacing: -1px; padding: 0; margin-right: auto; }
+.halo-until { font-variant-numeric: tabular-nums; color: var(--isl-text); opacity: .85; }
+.halo-link { display: block; margin: 6px 4px 0 auto; padding: 0; border: 0; background: none; color: var(--isl-text-muted); font: inherit; font-size: 12px; cursor: pointer; }
+.halo-link:hover { color: var(--isl-text); }
+.halo-idle { display: grid; justify-items: center; gap: 2px; padding: 10px 0 14px; text-align: center; }
+.halo-idle strong { font-size: 34px; font-weight: 600; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.halo-idle span { font-size: 13px; color: var(--isl-text-muted); text-transform: capitalize; }
+.halo-idle small { margin-top: 8px; max-width: 36ch; font-size: 12px; color: var(--isl-text-muted); opacity: .8; }
+.halo-quick { display: flex; justify-content: center; padding-top: 4px; }
+.halo-quick .isl-btn svg { width: 14px; height: 14px; }

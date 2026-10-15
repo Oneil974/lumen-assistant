@@ -1,0 +1,127 @@
+/* Palette : lib/tokens.css. Ne restent ici que les surfaces propres à l'app,
+   exprimées à partir des jetons — donc elles suivent le thème ET l'apparence,
+   au lieu du `prefers-color-scheme` local qui ignorait le réglage de Lumen. */
+:root {
+  --panel: var(--card);
+  --panel-2: var(--muted);
+  --line: var(--border);
+  --accent-2: color-mix(in oklab, var(--primary) 72%, oklch(0.6 0.22 300));
+  --ok: var(--success);
+  --warn: oklch(0.85 0.17 90);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg); color: var(--text); font-size: 14px;
+}
+.app { display: flex; height: 100vh; }
+
+/* Sidebar */
+.sidebar { width: 236px; flex: 0 0 236px; background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; padding: 14px 10px; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 6px 8px 14px; }
+.brand-ic { flex: none; width: 28px; height: 28px; border-radius: var(--radius-md); display: grid; place-items: center; color: #fff;
+  background: var(--primary); box-shadow: var(--flat-shadow-md); }
+.brand-ic svg { display: block; width: 17px; height: 17px; }
+.brand-title { font-weight: 700; font-size: 16px; }
+.brand-sub { color:var(--muted-foreground); font-size: 12px; }
+.kind-nav { display: flex; flex-direction: column; gap: 2px; }
+.kind-btn, .nav-special {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  background: transparent; border: none; color: var(--text); padding: 9px 10px; border-radius: var(--radius-md);
+  cursor: pointer; font-size: 13.5px;
+}
+.kind-btn:hover, .nav-special:hover { background: var(--panel-2); }
+.kind-btn.active, .nav-special.active { background: var(--subtle); color: var(--foreground); }
+.kind-btn.active .ki, .nav-special.active .ni { color: var(--accent-ink); }
+.kind-btn .ki, .nav-special .ni { display: inline-flex; align-items: center; justify-content: center; width: 20px; color:var(--muted-foreground); flex: 0 0 20px; }
+.kind-btn .ki svg, .nav-special .ni svg { display: block; }
+.kind-btn .kl { flex: 1; }
+.kind-btn .kn { color:var(--muted-foreground); font-variant-numeric: tabular-nums; font-size: 12px; background: var(--panel-2); border-radius: 20px; padding: 1px 7px; }
+.nav-sep { height: 1px; background: var(--line); margin: 12px 6px; }
+.foot { margin-top: auto; color:var(--muted-foreground); font-size: 11px; text-align: center; padding: 10px; }
+
+/* Content */
+.content { flex: 1; overflow-y: auto; padding: 24px 28px; }
+.view-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+h1 { font-size: 22px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+.title-ic { display: inline-flex; align-items: center; color: var(--accent-ink); }
+.title-ic svg { display: block; }
+.muted { color:var(--muted-foreground); margin: 0; }
+.small { font-size: 12px; }
+
+/* Add row */
+.add-row { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+.add-row input { flex: 1; min-width: 180px; background: var(--panel); border: 1px solid var(--line); color: var(--text); border-radius: var(--radius-lg); padding: 10px 12px; font-size: 14px; }
+.add-row .tags-in { flex: 0 0 220px; }
+input:focus { outline: none; border-color: var(--accent); }
+
+.btn { border: none; border-radius: var(--radius-lg); padding: 10px 16px; font-size: 13.5px; font-weight: 600; cursor: pointer; color: #fff; background: var(--panel-2); }
+.btn.primary { background: var(--primary); color: var(--on-accent); }
+.btn.danger { color: var(--danger); }
+.btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--text); }
+.btn.ghost:disabled { opacity: .6; cursor: default; }
+.head-actions { display: flex; gap: 8px; align-items: center; }
+.btn.danger.ghost:hover { background: color-mix(in srgb, var(--danger) 16%, transparent); }
+
+/* Items */
+.items { display: flex; flex-direction: column; gap: 10px; }
+.card { display: flex; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-xl); padding: 14px 16px; }
+.card.pinned { border-color: color-mix(in srgb, var(--warn) 50%, var(--line)); }
+.card.profile { border-color: color-mix(in srgb, var(--accent-2) 45%, var(--line)); background: color-mix(in srgb, var(--accent-2) 6%, var(--panel)); }
+.profile-badge { color: var(--accent-2) !important; }
+.card-main { flex: 1; min-width: 0; }
+.card-text { font-size: 14.5px; line-height: 1.45; white-space: pre-wrap; }
+.card-text[contenteditable="true"] { outline: 1px dashed var(--accent); border-radius: var(--radius-sm); padding: 4px 6px; }
+.card-meta { color:var(--muted-foreground); font-size: 12px; margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.kind-badge { background: var(--panel-2); border-radius: 20px; padding: 1px 9px; color: var(--accent-ink); margin-right: 6px; }
+.tags { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+.tag { background: var(--panel-2); border-radius: var(--radius-sm); padding: 1px 7px; font-size: 11px; }
+.card-sal { display: flex; align-items: center; gap: 8px; margin-top: 10px; color:var(--muted-foreground); font-size: 12px; }
+.card-sal input[type=range] { width: 160px; accent-color: var(--accent); }
+.card-actions { display: flex; flex-direction: column; gap: 6px; }
+.ic-btn { background: var(--panel-2); border: none; border-radius: var(--radius-md); width: 32px; height: 30px; cursor: pointer; color:var(--muted-foreground); display: inline-flex; align-items: center; justify-content: center; }
+.ic-btn svg { display: block; }
+.ic-btn:hover { background: var(--line); color: var(--text); }
+.ic-btn.del:hover { color: var(--danger); }
+.ic-btn.del.armed { background: color-mix(in srgb, var(--danger) 18%, var(--panel-2)); color: var(--danger); font-weight: 800; }
+.ic-btn.pin.on { color: var(--warn); }
+
+.empty { color:var(--muted-foreground); padding: 40px; text-align: center; border: 1px dashed var(--line); border-radius: var(--radius-xl); }
+.err { color: var(--danger); padding: 16px; }
+
+/* Policy */
+.policy-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-xl); }
+.policy { border-collapse: collapse; width: 100%; min-width: 640px; }
+.policy th, .policy td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: center; font-size: 12.5px; }
+.policy th:first-child, .policy td.ctx { text-align: left; font-weight: 600; }
+.policy thead th { background: var(--panel); position: sticky; top: 0; }
+.acc { border: 1px solid var(--line); border-radius: var(--radius-md); padding: 4px 10px; cursor: pointer; font-size: 12px; min-width: 78px; background: var(--panel); color:var(--muted-foreground); }
+.acc-read { color: var(--accent-ink); border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); }
+.acc-write { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 50%, var(--line)); font-weight: 600; }
+.policy + .muted { margin-top: 12px; }
+
+/* Vue d'ensemble (4 types) */
+.ov-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+.ov-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); color: inherit; font: inherit; cursor: pointer; text-align: left; }
+.ov-tile b { font-size: 22px; }
+.ov-tile span:last-child { color: var(--muted-foreground); font-size: 12.5px; }
+.ov-cols { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; }
+.ov-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: var(--card); }
+.ov-card h3 { margin: 0 0 8px; font-size: 14px; }
+.ov-item { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.ov-item small { grid-column: 2; color: var(--muted-foreground); font-size: 11.5px; }
+.ov-kind { font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--muted); align-self: start; }
+.ov-kind.k-session { background: color-mix(in oklab, #ff9f0a 22%, transparent); }
+.ov-kind.k-semantic { background: color-mix(in oklab, #0a84ff 20%, transparent); }
+.ov-kind.k-procedural { background: color-mix(in oklab, #30d158 22%, transparent); }
+.ov-kind.k-episodic { background: color-mix(in oklab, #bf5af2 20%, transparent); }
+.ov-user { display: flex; flex-direction: column; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.ov-user small, .small { color: var(--muted-foreground); font-size: 12px; }
+.card-actions .move { font: inherit; font-size: 12px; padding: 3px 6px; border-radius: 8px; border: 1px solid var(--border); background: var(--background); color: inherit; }
+.expires { color: #ff9f0a; }
+@media (max-width: 760px) { .ov-tiles { grid-template-columns: repeat(2, 1fr); } .ov-cols { grid-template-columns: 1fr; } }

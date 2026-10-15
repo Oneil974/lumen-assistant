@@ -1,0 +1,730 @@
+[
+ {
+  "id": "long-fait-ancien",
+  "level": "long",
+  "query": "Au fait, comment s'appelle mon chat ?",
+  "history": [
+   {
+    "role": "user",
+    "content": "Mon chat s'appelle Moka, il a 4 ans."
+   },
+   {
+    "role": "assistant",
+    "content": "Enchanté Moka ! Je retiens."
+   },
+   {
+    "role": "user",
+    "content": "Donne-moi une idée de dessert rapide."
+   },
+   {
+    "role": "assistant",
+    "content": "Un crumble aux pommes : 10 min de préparation."
+   },
+   {
+    "role": "user",
+    "content": "Et une variante sans sucre ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Remplace le sucre par de la compote et de la cannelle."
+   },
+   {
+    "role": "user",
+    "content": "Combien de temps de cuisson ?"
+   },
+   {
+    "role": "assistant",
+    "content": "25 minutes à 180 °C."
+   },
+   {
+    "role": "user",
+    "content": "On peut le congeler ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Oui, avant cuisson, jusqu'à 3 mois."
+   },
+   {
+    "role": "user",
+    "content": "Quel vin irait avec ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un cidre brut ou un vin blanc moelleux."
+   },
+   {
+    "role": "user",
+    "content": "Une idée de plat principal pour 4 ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un poulet rôti aux légumes."
+   },
+   {
+    "role": "user",
+    "content": "Et une entrée légère ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Une salade de concombre à la menthe."
+   },
+   {
+    "role": "user",
+    "content": "Liste de courses pour tout ça ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Poulet, légumes, pommes, concombres, menthe, farine, beurre."
+   },
+   {
+    "role": "user",
+    "content": "Budget approximatif ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Environ 35 €."
+   },
+   {
+    "role": "user",
+    "content": "Merci, et pour un pique-nique ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Sandwichs, taboulé, fruits."
+   },
+   {
+    "role": "user",
+    "content": "Des idées de jeux pour le pique-nique ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Mölkky, frisbee, cartes."
+   },
+   {
+    "role": "user",
+    "content": "Et s'il pleut ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un jeu de société à l'abri."
+   },
+   {
+    "role": "user",
+    "content": "Un film à regarder ensuite ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Le Dîner de cons."
+   },
+   {
+    "role": "user",
+    "content": "Plutôt une comédie ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Oui : Intouchables."
+   }
+  ],
+  "expect": {
+   "answer": [
+    "Moka"
+   ]
+  },
+  "note": "Fait donné au 1er échange, demandé après 30 messages (l'orchestrateur ne rejoue que les 10 derniers)."
+ },
+ {
+  "id": "long-fait-recent",
+  "level": "long",
+  "query": "Rappelle-moi le prénom de mon chat.",
+  "history": [
+   {
+    "role": "user",
+    "content": "Donne-moi une idée de dessert rapide."
+   },
+   {
+    "role": "assistant",
+    "content": "Un crumble aux pommes : 10 min de préparation."
+   },
+   {
+    "role": "user",
+    "content": "Et une variante sans sucre ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Remplace le sucre par de la compote et de la cannelle."
+   },
+   {
+    "role": "user",
+    "content": "Combien de temps de cuisson ?"
+   },
+   {
+    "role": "assistant",
+    "content": "25 minutes à 180 °C."
+   },
+   {
+    "role": "user",
+    "content": "On peut le congeler ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Oui, avant cuisson, jusqu'à 3 mois."
+   },
+   {
+    "role": "user",
+    "content": "Quel vin irait avec ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un cidre brut ou un vin blanc moelleux."
+   },
+   {
+    "role": "user",
+    "content": "Une idée de plat principal pour 4 ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un poulet rôti aux légumes."
+   },
+   {
+    "role": "user",
+    "content": "Et une entrée légère ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Une salade de concombre à la menthe."
+   },
+   {
+    "role": "user",
+    "content": "Liste de courses pour tout ça ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Poulet, légumes, pommes, concombres, menthe, farine, beurre."
+   },
+   {
+    "role": "user",
+    "content": "Budget approximatif ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Environ 35 €."
+   },
+   {
+    "role": "user",
+    "content": "Merci, et pour un pique-nique ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Sandwichs, taboulé, fruits."
+   },
+   {
+    "role": "user",
+    "content": "Des idées de jeux pour le pique-nique ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Mölkky, frisbee, cartes."
+   },
+   {
+    "role": "user",
+    "content": "Et s'il pleut ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un jeu de société à l'abri."
+   },
+   {
+    "role": "user",
+    "content": "Un film à regarder ensuite ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Le Dîner de cons."
+   },
+   {
+    "role": "user",
+    "content": "Mon chat s'appelle Moka."
+   },
+   {
+    "role": "assistant",
+    "content": "Noté : Moka."
+   },
+   {
+    "role": "user",
+    "content": "Il adore les croquettes au saumon."
+   },
+   {
+    "role": "assistant",
+    "content": "Un gourmet !"
+   }
+  ],
+  "expect": {
+   "answer": [
+    "Moka"
+   ]
+  }
+ },
+ {
+  "id": "long-changement-sujet",
+  "level": "long",
+  "query": "Quel temps fait-il à Lille ?",
+  "history": [
+   {
+    "role": "user",
+    "content": "Donne-moi une idée de dessert rapide."
+   },
+   {
+    "role": "assistant",
+    "content": "Un crumble aux pommes : 10 min de préparation."
+   },
+   {
+    "role": "user",
+    "content": "Et une variante sans sucre ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Remplace le sucre par de la compote et de la cannelle."
+   },
+   {
+    "role": "user",
+    "content": "Combien de temps de cuisson ?"
+   },
+   {
+    "role": "assistant",
+    "content": "25 minutes à 180 °C."
+   },
+   {
+    "role": "user",
+    "content": "On peut le congeler ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Oui, avant cuisson, jusqu'à 3 mois."
+   },
+   {
+    "role": "user",
+    "content": "Quel vin irait avec ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un cidre brut ou un vin blanc moelleux."
+   },
+   {
+    "role": "user",
+    "content": "Une idée de plat principal pour 4 ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un poulet rôti aux légumes."
+   },
+   {
+    "role": "user",
+    "content": "Et une entrée légère ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Une salade de concombre à la menthe."
+   },
+   {
+    "role": "user",
+    "content": "Liste de courses pour tout ça ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Poulet, légumes, pommes, concombres, menthe, farine, beurre."
+   },
+   {
+    "role": "user",
+    "content": "Budget approximatif ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Environ 35 €."
+   },
+   {
+    "role": "user",
+    "content": "Merci, et pour un pique-nique ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Sandwichs, taboulé, fruits."
+   },
+   {
+    "role": "user",
+    "content": "Des idées de jeux pour le pique-nique ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Mölkky, frisbee, cartes."
+   },
+   {
+    "role": "user",
+    "content": "Et s'il pleut ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un jeu de société à l'abri."
+   },
+   {
+    "role": "user",
+    "content": "Un film à regarder ensuite ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Le Dîner de cons."
+   },
+   {
+    "role": "user",
+    "content": "Plutôt une comédie ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Oui : Intouchables."
+   },
+   {
+    "role": "user",
+    "content": "Merci !"
+   },
+   {
+    "role": "assistant",
+    "content": "Avec plaisir !"
+   }
+  ],
+  "expect": {
+   "tools": [
+    "weather_now"
+   ],
+   "answer": [
+    "17|averse"
+   ],
+   "answerNot": [
+    "crumble|poulet|mölkky"
+   ]
+  }
+ },
+ {
+  "id": "long-suite-implicite",
+  "level": "long",
+  "query": "Et pour 8 personnes ?",
+  "history": [
+   {
+    "role": "user",
+    "content": "Donne-moi une idée de dessert rapide."
+   },
+   {
+    "role": "assistant",
+    "content": "Un crumble aux pommes : 10 min de préparation."
+   },
+   {
+    "role": "user",
+    "content": "Et une variante sans sucre ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Remplace le sucre par de la compote et de la cannelle."
+   },
+   {
+    "role": "user",
+    "content": "Combien de temps de cuisson ?"
+   },
+   {
+    "role": "assistant",
+    "content": "25 minutes à 180 °C."
+   },
+   {
+    "role": "user",
+    "content": "On peut le congeler ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Oui, avant cuisson, jusqu'à 3 mois."
+   },
+   {
+    "role": "user",
+    "content": "Quel vin irait avec ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un cidre brut ou un vin blanc moelleux."
+   },
+   {
+    "role": "user",
+    "content": "Une idée de plat principal pour 4 ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un poulet rôti aux légumes."
+   },
+   {
+    "role": "user",
+    "content": "Et une entrée légère ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Une salade de concombre à la menthe."
+   },
+   {
+    "role": "user",
+    "content": "Liste de courses pour tout ça ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Poulet, légumes, pommes, concombres, menthe, farine, beurre."
+   },
+   {
+    "role": "user",
+    "content": "Budget approximatif ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Environ 35 €."
+   },
+   {
+    "role": "user",
+    "content": "Merci, et pour un pique-nique ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Sandwichs, taboulé, fruits."
+   },
+   {
+    "role": "user",
+    "content": "Des idées de jeux pour le pique-nique ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Mölkky, frisbee, cartes."
+   },
+   {
+    "role": "user",
+    "content": "Une idée de plat principal pour 4 ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un poulet rôti aux légumes : 1 poulet de 1,5 kg, 800 g de légumes."
+   }
+  ],
+  "expect": {
+   "noTools": true,
+   "answer": [
+    "poulet",
+    "2|deux|double|3 kg|1,6"
+   ]
+  }
+ },
+ {
+  "id": "long-langue",
+  "level": "long",
+  "lang": "en",
+  "query": "Can you summarise what we talked about, in English?",
+  "history": [
+   {
+    "role": "user",
+    "content": "Donne-moi une idée de dessert rapide."
+   },
+   {
+    "role": "assistant",
+    "content": "Un crumble aux pommes : 10 min de préparation."
+   },
+   {
+    "role": "user",
+    "content": "Et une variante sans sucre ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Remplace le sucre par de la compote et de la cannelle."
+   },
+   {
+    "role": "user",
+    "content": "Combien de temps de cuisson ?"
+   },
+   {
+    "role": "assistant",
+    "content": "25 minutes à 180 °C."
+   },
+   {
+    "role": "user",
+    "content": "On peut le congeler ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Oui, avant cuisson, jusqu'à 3 mois."
+   },
+   {
+    "role": "user",
+    "content": "Quel vin irait avec ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un cidre brut ou un vin blanc moelleux."
+   },
+   {
+    "role": "user",
+    "content": "Une idée de plat principal pour 4 ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un poulet rôti aux légumes."
+   },
+   {
+    "role": "user",
+    "content": "Et une entrée légère ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Une salade de concombre à la menthe."
+   },
+   {
+    "role": "user",
+    "content": "Liste de courses pour tout ça ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Poulet, légumes, pommes, concombres, menthe, farine, beurre."
+   },
+   {
+    "role": "user",
+    "content": "Budget approximatif ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Environ 35 €."
+   },
+   {
+    "role": "user",
+    "content": "Merci, et pour un pique-nique ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Sandwichs, taboulé, fruits."
+   },
+   {
+    "role": "user",
+    "content": "Des idées de jeux pour le pique-nique ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Mölkky, frisbee, cartes."
+   },
+   {
+    "role": "user",
+    "content": "Et s'il pleut ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un jeu de société à l'abri."
+   }
+  ],
+  "expect": {
+   "noTools": true,
+   "answer": [
+    "dessert|crumble|picnic|recipe|cook"
+   ],
+   "answerNot": [
+    "\\b(le|la|les|des|pour)\\b.*\\b(le|la|les|des|pour)\\b.*\\b(le|la|les)\\b"
+   ]
+  }
+ },
+ {
+  "id": "long-gros-message",
+  "level": "long",
+  "query": "Quel est le point important de mes notes ?",
+  "history": [
+   {
+    "role": "user",
+    "content": "Voici mes notes de réunion. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement. Point divers sans importance, discuté longuement.  POINT IMPORTANT : la livraison est reportée au 14 novembre."
+   },
+   {
+    "role": "assistant",
+    "content": "Bien reçu, je garde tes notes."
+   }
+  ],
+  "expect": {
+   "answer": [
+    "14 novembre|novembre"
+   ],
+   "maxPromptTokens": 30000
+  },
+  "note": "Message de ~20 000 caractères dans l'historique."
+ },
+ {
+  "id": "long-corrections",
+  "level": "long",
+  "query": "Donc, récapitule le rendez-vous final.",
+  "history": [
+   {
+    "role": "user",
+    "content": "Note un rendez-vous chez le dentiste mardi à 10h."
+   },
+   {
+    "role": "assistant",
+    "content": "Rendez-vous : dentiste, mardi 10 h."
+   },
+   {
+    "role": "user",
+    "content": "Non, pas mardi, mercredi."
+   },
+   {
+    "role": "assistant",
+    "content": "Corrigé : dentiste, mercredi 10 h."
+   },
+   {
+    "role": "user",
+    "content": "Et à 11h finalement."
+   },
+   {
+    "role": "assistant",
+    "content": "Corrigé : dentiste, mercredi 11 h."
+   },
+   {
+    "role": "user",
+    "content": "Donne-moi une idée de dessert rapide."
+   },
+   {
+    "role": "assistant",
+    "content": "Un crumble aux pommes : 10 min de préparation."
+   },
+   {
+    "role": "user",
+    "content": "Et une variante sans sucre ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Remplace le sucre par de la compote et de la cannelle."
+   },
+   {
+    "role": "user",
+    "content": "Combien de temps de cuisson ?"
+   },
+   {
+    "role": "assistant",
+    "content": "25 minutes à 180 °C."
+   },
+   {
+    "role": "user",
+    "content": "On peut le congeler ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Oui, avant cuisson, jusqu'à 3 mois."
+   },
+   {
+    "role": "user",
+    "content": "Quel vin irait avec ?"
+   },
+   {
+    "role": "assistant",
+    "content": "Un cidre brut ou un vin blanc moelleux."
+   }
+  ],
+  "expect": {
+   "answer": [
+    "mercredi",
+    "11"
+   ],
+   "answerNot": [
+    "mardi"
+   ]
+  }
+ }
+]

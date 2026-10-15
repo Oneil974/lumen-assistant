@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!-- Podcast IA — façon NotebookLM « Audio Overview », 100 % local. À partir d'un
+     texte / sujet (et, en option, des Connaissances RAG), l'IA écrit un dialogue
+     à deux hôtes, lu par deux voix système (Web Speech API). -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Podcast IA</title>
+    <script src="/lib/theme-init.js"></script>
+    <link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<link rel="stylesheet" href="../lib/ai-prompt.css?v=5" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <script type="module" src="./main.js" defer></script>
+<!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="app">
+      <!-- ===== Colonne réglages ===== -->
+      <aside class="setup">
+        <h1 class="title"><span class="brand-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4M8 21h8"/></svg></span>Podcast IA</h1>
+        <p class="subtitle">Transforme un texte ou un sujet en une discussion audio à deux voix — tout reste sur ta machine.</p>
+
+        <label class="fld">Sujet / source
+          <textarea id="source" class="input area" placeholder="Colle un texte, un article, des notes… ou décris simplement un sujet (ex. « l'histoire du café »)."></textarea>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" id="use-rag" />
+          <span>Enrichir avec mes Connaissances (RAG)</span>
+        </label>
+
+        <div class="fld-row">
+          <label class="fld">Durée
+            <select id="length" class="input">
+              <option value="short">Court (~2 min)</option>
+              <option value="medium" selected>Moyen (~4 min)</option>
+              <option value="long">Long (~7 min)</option>
+            </select>
+          </label>
+          <label class="fld">Ton
+            <select id="tone" class="input">
+              <option value="chill">Détendu</option>
+              <option value="expert" selected>Expert</option>
+              <option value="fun">Drôle</option>
+              <option value="teacher">Pédago</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="hosts">
+          <div class="host">
+            <span class="dot a"></span>
+            <input id="nameA" class="input" value="Alex" />
+            <select id="voiceA" class="input voice"></select>
+          </div>
+          <div class="host">
+            <span class="dot b"></span>
+            <input id="nameB" class="input" value="Sam" />
+            <select id="voiceB" class="input voice"></select>
+          </div>
+        </div>
+
+        <button id="generate" class="btn primary big">✨ Générer l'épisode</button>
+        <p class="hint" id="setup-hint"></p>
+
+        <div class="library">
+          <h3 class="lib-title">📚 Mes épisodes</h3>
+          <div class="ep-list" id="ep-list"></div>
+          <p class="lib-empty" id="lib-empty">Aucun épisode sauvegardé. Génère-en un, puis « Sauvegarder ».</p>
+        </div>
+      </aside>
+
+      <!-- ===== Colonne épisode ===== -->
+      <main class="episode">
+        <div class="empty" id="empty">
+          <div class="empty-orb"></div>
+          <h2>Aucun épisode</h2>
+          <p>Décris un sujet à gauche puis « Générer l'épisode ». L'IA écrit un dialogue, deux voix le jouent.</p>
+        </div>
+
+        <section class="player" id="player" hidden>
+          <header class="ep-head">
+            <div class="ep-head-txt">
+              <h2 id="ep-title">Épisode</h2>
+              <span class="ep-meta" id="ep-meta"></span>
+            </div>
+            <button class="btn save" id="ep-save">💾 Sauvegarder</button>
+          </header>
+
+          <div class="transport">
+            <button class="t-btn" id="restart" title="Recommencer">⟲</button>
+            <button class="t-btn play" id="playpause" title="Lecture / Pause">▶</button>
+            <button class="t-btn" id="stop" title="Tout arrêter">⏹</button>
+            <div class="wave" id="wave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <label class="speed">Vitesse
+              <input type="range" id="rate" min="0.7" max="1.4" step="0.05" value="1" />
+            </label>
+          </div>
+
+          <div class="transcript" id="transcript"></div>
+        </section>
+      </main>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+  </body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<!-- Boîte à outils Lumen : page intermédiaire (launcher) pour ouvrir les modules.
+     Design Apple-friendly : fond dégradé doux, cartes en verre dégradé + halo. -->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Boîte à outils</title>
+    <!-- Thème : suit le réglage clair/sombre de Lumen Desktop (dtTheme partagé via
+         localStorage), avec repli sur le thème système. Appliqué tôt pour éviter
+         tout flash. -->
+    <script src="/lib/theme-init.js"></script>
+<link rel="stylesheet" href="../lib/tokens.css?v=5" />
+<style>
+      /* ===== Palette : celle du système de conception (lib/tokens.css).
+         La boîte à outils redéclarait la sienne — trois blocs clair/sombre —
+         et ignorait donc la base et l'accent choisis dans les Réglages. Ne
+         restent ici que les valeurs qui lui sont propres. ===== */
+      :root {
+        --text: var(--foreground);
+        --muted: var(--muted-foreground);
+        --surface: color-mix(in oklab, var(--card) 66%, transparent);
+        --surface-hover: color-mix(in oklab, var(--card) 88%, transparent);
+        --border-hover: color-mix(in oklab, var(--foreground) 16%, transparent);
+        --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 10px 30px -18px rgba(0,0,0,0.28);
+        --shadow-hover: 0 2px 6px rgba(0,0,0,0.06), 0 18px 40px -16px rgba(0,0,0,0.34);
+        --bg: var(--background);
+        --badge-bg: color-mix(in oklab, var(--foreground) 12%, transparent);
+        --scroll: color-mix(in oklab, var(--foreground) 30%, transparent);
+      }
+
+      /* ===== Linux / WebKitGTK : backdrop-filter n'est PAS peint de façon fiable
+         (cf. mémoire raspberry-pi-build : couches verre invisibles). On bascule
+         donc sur des surfaces OPAQUES et on désactive le flou. Classe posée en JS
+         d'après platform_flavor (rpi / linux-standard). ===== */
+      :root.flavor-linux { --surface: #ffffff; --surface-hover: #f4f5f8; --border: rgba(0,0,0,0.1); --border-hover: rgba(0,0,0,0.18); }
+      @media (prefers-color-scheme: dark) {
+        :root.flavor-linux:not([data-dt-theme="light"]) { --surface: #232327; --surface-hover: #2b2b31; --border: rgba(255,255,255,0.1); --border-hover: rgba(255,255,255,0.2); }
+      }
+      :root.flavor-linux[data-dt-theme="dark"] { --surface: #232327; --surface-hover: #2b2b31; --border: rgba(255,255,255,0.1); --border-hover: rgba(255,255,255,0.2); }
+      :root.flavor-linux .card { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        font: 14px -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+        color: var(--text); -webkit-font-smoothing: antialiased; user-select: none; overflow: hidden;
+        background: var(--bg);
+      }
+      .wrap { height: 100vh; display: flex; flex-direction: column; padding: 24px 30px 12px; min-height: 0; }
+      .head { display: flex; align-items: center; gap: 12px; margin-bottom: 2px; }
+      .logo { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; color: #fff;
+        background: linear-gradient(150deg, var(--c-a, #6a5cff), var(--c-b, #b65cff));
+        box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--c-a, #6a5cff) 60%, transparent), inset 0 1px 0 rgba(255,255,255,0.4); }
+      .logo svg { width: 20px; height: 20px; }
+      h1 { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+      .sub { color: var(--muted); font-size: 12.5px; margin-top: 1px; }
+      .grid {
+        flex: 1; min-height: 0; overflow: auto; display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 10px;
+        align-content: start; margin-top: 14px; padding: 2px 4px 22px;
+        scrollbar-gutter: stable;
+      }
+      .grid::-webkit-scrollbar { width: 10px; }
+      .grid::-webkit-scrollbar-thumb { border-radius: 999px; background: var(--scroll); border: 3px solid transparent; background-clip: padding-box; }
+      .grid::-webkit-scrollbar-track { background: transparent; }
+      .card {
+        position: relative; cursor: pointer; font: inherit; color: var(--text); text-align: left;
+        grid-column: span 3; min-width: 0;
+        border-radius: 16px; padding: 13px; display: flex; flex-direction: column; gap: 8px; min-height: 96px; overflow: hidden;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        -webkit-backdrop-filter: blur(20px) saturate(160%); backdrop-filter: blur(20px) saturate(160%);
+        transition: transform 0.2s cubic-bezier(0.2,0.8,0.2,1), border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      }
+      .card:hover { transform: translateY(-3px); background: var(--surface-hover); border-color: var(--border-hover); box-shadow: var(--shadow-hover); }
+      .card:active { transform: translateY(-1px) scale(0.99); }
+      /* Carte principale (Lumen Desktop) : surface large avec un léger lavis de sa
+         couleur d'accent, et un bouton « Entrer » teinté. Reste sobre. */
+      .card.hero {
+        grid-column: 1 / -1; min-height: 116px; padding: 17px 20px; gap: 6px;
+        justify-content: flex-end;
+      }
+      .card.hero::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+        background: radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--c1) 16%, transparent), transparent 60%); }
+      .card.hero > * { position: relative; z-index: 1; }
+      .card.hero .ic { width: 50px; height: 50px; border-radius: 15px; }
+      .card.hero .ic svg { width: 28px; height: 28px; }
+      .card.hero .nm { font-size: 20px; line-height: 1.1; }
+      .card.hero .ds { max-width: 520px; font-size: 13px; line-height: 1.4; -webkit-line-clamp: 2; }
+      .card.hero .enter {
+        position: absolute; right: 20px; bottom: 20px; display: inline-flex; align-items: center; gap: 6px;
+        border-radius: 999px; padding: 8px 14px; color: #fff;
+        background: linear-gradient(140deg, var(--c1), var(--c2));
+        font-size: 12px; font-weight: 650; letter-spacing: -0.01em;
+        box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--c1) 65%, transparent);
+      }
+      .card.major, .card.utility, .card.secondary { grid-column: span 3; min-height: 134px; padding: 13px; gap: 8px; }
+      /* Tuile d'icône : seul élément réellement coloré (accent du module). */
+      .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex: none;
+        background: linear-gradient(145deg, var(--c1), var(--c2)); color: #fff;
+        box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--c1) 55%, transparent), inset 0 1px 0 rgba(255,255,255,0.32); }
+      .ic svg { width: 22px; height: 22px; }
+      .nm { font-size: 14px; font-weight: 650; letter-spacing: -0.01em; color: var(--text); display: flex; align-items: center; gap: 7px; flex-wrap: nowrap; white-space: nowrap; min-width: 0; }
+      .nm > :first-child { overflow: hidden; text-overflow: ellipsis; }
+      .beta, .loop { flex: none; }
+      .ds { font-size: 11.5px; line-height: 1.36; color: var(--muted); margin: 0;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .beta, .loop { font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+        background: var(--badge-bg); border-radius: 20px; padding: 2px 8px; }
+      .beta { color: color-mix(in srgb, var(--c1) 70%, var(--text)); }
+      .loop { color: #0a7f57; }
+      /* En-têtes de section (Cœur / Apps) : pleine largeur de la grille. */
+      .section-head { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 10px; margin: 12px 2px 0; flex-wrap: wrap; }
+      .section-head:first-child { margin-top: 0; }
+      .section-title { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); opacity: 0.55; }
+      .section-desc { font-size: 12px; color: var(--muted); }
+      /* En-tête d'un hub : une pastille en dégradé rappelle son identité, la
+         même que celle des cartes en dessous et de l'icône dans le bureau. */
+      .section-head.hub { position: relative; padding-left: 14px; }
+      .section-head.hub::before {
+        content: ""; position: absolute; left: 2px; top: 1px; bottom: 1px; width: 4px;
+        border-radius: 3px; background: linear-gradient(160deg, var(--c1), var(--c2));
+      }
+      .section-head.hub .section-title { opacity: 0.95; }
+      /* Carte mise en avant (boucle agentique) : fin liseré d'accent. */
+      .card.featured { border-color: color-mix(in srgb, var(--c1) 45%, var(--border)); }
+      .foot { margin-top: 14px; text-align: center; color: var(--muted); font-size: 12px; opacity: 0.8; }
+      @media (max-width: 880px) {
+        .wrap { padding: 28px 24px 16px; }
+        .card, .card.utility, .card.secondary { grid-column: span 6; }
+        .card.major { grid-column: span 6; }
+      }
+      @media (max-width: 560px) {
+        .grid { grid-template-columns: 1fr; }
+        .card, .card.hero, .card.major, .card.utility, .card.secondary { grid-column: 1 / -1; }
+        .card.hero { min-height: 180px; padding: 20px; }
+        .card.hero .enter { position: static; align-self: flex-start; margin-top: 2px; }
+      }
+    </style>
+    <script type="module" defer>
+      import { translatePage } from "../apps-i18n.js";
+      const { invoke } = window.__TAURI__.core;
+      // Sections de la boîte à outils, calquées sur les hubs du bureau : un
+      // outil se trouve ici au même endroit et sous la même couleur que dans
+      // Lumen Desktop. « Cœur » reste à part — c'est le moteur, pas un hub.
+      // Chaque section porte le dégradé d'identité de son hub ; les cartes en
+      // héritent, au lieu de la rotation de palette d'avant.
+      const SECTIONS = [
+        { id: "core", title: "Cœur", desc: "Le moteur de Lumen : percevoir, décider, agir, se souvenir." },
+        { id: "crew", title: "Équipage", desc: "Votre équipe d'agents, de bout en bout.", grad: ["#16b8a6", "#0a84ff"] },
+        { id: "fluxo", title: "Fluxo", desc: "Du croquis à l'automatisation qui tourne.", grad: ["#0a84ff", "#5e5ce6"] },
+        { id: "prisme", title: "Prisme", desc: "Des données brutes au modèle entraîné.", grad: ["#168f82", "#5e5ce6"] },
+        { id: "corpus", title: "Corpus", desc: "Ce que Lumen sait de vos documents.", grad: ["#37a87a", "#3a9baa"] },
+        { id: "muse", title: "Muse", desc: "Une idée, plusieurs façons de la faire grandir.", grad: ["#d8a31f", "#d56f9b"] },
+        { id: "tempo", title: "Tempo", desc: "Vos tâches, au tableau ou au calendrier.", grad: ["#7867d8", "#ff5e8a"] },
+        { id: "arcade", title: "Arcade", desc: "De quoi souffler un peu.", grad: ["#ff5e8a", "#7c5cff"] },
+        { id: "apps", title: "Apps autonomes", desc: "Des outils qui ne dépendent d'aucun hub." },
+      ];
+      const APPS = [
+        // ===== Cœur =====
+        { section: "core", name: "Lumen Desktop", desc: "Le bureau immersif : fenêtres, widgets, assistant.", c1: "#6a5cff", c2: "#c75cff", c3: "#ff2d92", tier: "hero", beta: true,
+          icon: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/><path d="M5 6h3M5 8.5h2.2"/><path d="M16.2 5.5h2.6"/><path d="M16 15h3M16 17.3h2.2"/>', cmd: "open_sandbox_explorer", args: { desktop: true } },
+        { section: "core", name: "Sandbox", desc: "Vos espaces fichiers isolés et confinés.", c1: "#f59f35", c2: "#e84d6a", tier: "major",
+          icon: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><path d="M2 11h20"/><circle cx="12" cy="15.5" r="1.1"/>', cmd: "open_sandbox_explorer" },
+        { section: "core", name: "Mémoire", desc: "Les souvenirs de Lumen : 8 types, accès cloisonné.", c1: "#bf5af2", c2: "#0a84ff", tier: "major",
+          icon: '<path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/>', cmd: "open_memory" },
+        // ===== Hub Équipage =====
+        { section: "crew", name: "Équipe", desc: "Créer et régler vos agents autonomes.", tier: "major",
+          icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>', cmd: "open_agents_manager" },
+        { section: "crew", name: "Fil", desc: "Vos agents y rendent compte ; répondez pour créer une tâche.", tier: "secondary",
+          icon: '<path d="M3 12h5l2 3h4l2-3h5"/><path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M8 8.5h8M8 11h5"/>', cmd: "open_inbox" },
+        { section: "crew", name: "Traces", desc: "Appels de modèles, outils et escalades.", tier: "secondary",
+          icon: '<path d="M4 5h16M4 12h10M4 19h7"/><circle cx="18.5" cy="15.5" r="3.5"/><path d="M21 18l2 2"/>', cmd: "open_llm_log" },
+        // ===== Hub Fluxo =====
+        { section: "fluxo", name: "Automatisations", desc: "Vos workflows et leurs exécutions.", tier: "major",
+          icon: '<circle cx="5" cy="6" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="12" r="2.2"/><path d="M7.1 6.8c4.4 1.1 6.6 2.7 9.6 4.5"/><path d="M7.1 17.2c4.4-1.1 6.6-2.7 9.6-4.5"/>', cmd: "open_automations" },
+        { section: "fluxo", name: "Designer", desc: "Composez un workflow bloc à bloc.", tier: "secondary",
+          icon: '<line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>', cmd: "open_fluxo_designer" },
+        // ===== Hub Prisme =====
+        { section: "prisme", name: "Analyse", desc: "Explorer, croiser et visualiser vos données.", tier: "secondary",
+          icon: '<path d="M4 19V5"/><path d="M4 19h16"/><path d="M7 15l3-4 3 2 4-7"/><circle cx="7" cy="15" r="1.2"/><circle cx="10" cy="11" r="1.2"/><circle cx="13" cy="13" r="1.2"/><circle cx="17" cy="6" r="1.2"/>', cmd: "open_data_analysis" },
+        // ===== Hub Corpus =====
+        { section: "corpus", name: "Bibliothèque", desc: "Vos documents indexés (RAG), interrogeables par l'IA.", tier: "secondary",
+          icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/>', cmd: "open_knowledge" },
+        // ===== Hub Muse =====
+        { section: "muse", name: "Planche", desc: "Assemblez une direction visuelle.", tier: "secondary",
+          icon: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>', cmd: "open_moodboard" },
+        // ===== Hub Tempo =====
+        { section: "tempo", name: "Tableau", desc: "Vos tâches en colonnes, avec l'IA.", tier: "secondary",
+          icon: '<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="4" height="13" rx="1.5"/><path d="M4.4 7.5h2.2M4.4 10h2.2M11.4 7.5h2.2"/>', cmd: "open_kanban_board" },
+        { section: "tempo", name: "Agenda", desc: "Rappels datés qui vous notifient à l'échéance.", tier: "secondary",
+          icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><circle cx="8.5" cy="13.5" r="1.1"/><circle cx="12" cy="13.5" r="1.1"/><circle cx="15.5" cy="13.5" r="1.1"/>', cmd: "open_calendar" },
+        // ===== Hub Arcade =====
+        { section: "arcade", name: "Jeux", desc: "Défis fun contre l'IA : tactique, mots, enquête, code.", tier: "secondary", beta: true,
+          icon: '<path d="M6.5 11h3M8 9.5v3M15 10.8h.01M17.5 12.8h.01"/><path d="M7 7h10a5 5 0 0 1 4.6 6.9l-1 2.5a2.6 2.6 0 0 1-4.5.6l-1.4-1.8H9.3L7.9 18a2.6 2.6 0 0 1-4.5-.6l-1-2.5A5 5 0 0 1 7 7z"/>', cmd: "open_games" },
+        // ===== Apps autonomes =====
+        { section: "apps", name: "Studio d'images", desc: "Générez des images en local avec Bonsai.", c1: "#6570c8", c2: "#d79577", tier: "secondary",
+          icon: '<rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="m21 15-5-5L5 21"/>', cmd: "open_image_studio" },
+        { section: "apps", name: "Budget", desc: "Dépenses, objectifs et conseils IA.", c1: "#30d158", c2: "#0a84ff", tier: "secondary",
+          icon: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h3"/>', cmd: "open_budget" },
+        { section: "apps", name: "Domotique", desc: "Objets connectés & firmwares ESP32/Pico.", c1: "#2aa98f", c2: "#2670c9", tier: "secondary", beta: true,
+          icon: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><rect x="10" y="13" width="4" height="4" rx="0.6"/><path d="M12 13v-2"/><path d="M16 5.5V3h2v4"/>', cmd: "open_domotique" },
+        { section: "apps", name: "Documentation", desc: "Le guide complet de Lumen et ses modules.", c1: "#37a87a", c2: "#3a9baa", tier: "secondary",
+          icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 10h5"/>', cmd: "open_docs" },
+      ];
+      const svg = (inner) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+      // Couleurs des cartes : on puise dans la palette de l'orbe (identité Lumen)
+      // au lieu des teintes propres à chaque carte. La hiérarchie visuelle reste
+      // portée par les paliers (taille + désaturation via .utility/.secondary).
+      const ORB_DEFAULT = ['#ff54a3', '#9961ff', '#47a3ff', '#61f2c7', '#ff9e6b'];
+      function orbPalette() {
+        try {
+          const c = JSON.parse(localStorage.getItem('orbColors'));
+          if (Array.isArray(c) && c.length === 5 && c.every((x) => /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(x))) return c;
+        } catch {}
+        return ORB_DEFAULT;
+      }
+      function launch(app) {
+        invoke(app.cmd, app.args || {}).catch(() => {});
+        try { window.__TAURI__.window.getCurrentWindow().close(); } catch {}
+      }
+      // Couleurs d'une carte : le dégradé du hub auquel l'outil appartient, ou
+      // le sien s'il est autonome. C'est ce qui fait qu'une app porte la même
+      // identité colorée ici, dans le launcher du bureau et dans le dock — au
+      // lieu de la rotation de palette d'avant, qui donnait une couleur
+      // différente selon la position dans la grille.
+      function cardGradient(app, section) {
+        if (section?.grad) return [section.grad[0], section.grad[1]];
+        if (app.c1) return [app.c1, app.c2 || app.c1];
+        const pal = orbPalette();
+        return [pal[1], pal[2]];
+      }
+      function makeCard(app, section) {
+        const card = document.createElement("button");
+        card.className = ["card", app.tier || "", app.loop ? "featured" : ""].filter(Boolean).join(" ");
+        let [c1, c2] = cardGradient(app, section);
+        let c3 = c2;
+        // Lumen Desktop (hero) : dégradé rouge dédié, dans le même style que les autres.
+        if (app.tier === "hero") { c1 = "#ff5e3a"; c2 = "#ff2d55"; c3 = "#d11f44"; }
+        card.style.setProperty("--c1", c1); card.style.setProperty("--c2", c2); card.style.setProperty("--c3", c3);
+        const badge = app.loop ? '<span class="loop">Boucle</span>' : (app.beta ? '<span class="beta">Beta</span>' : '');
+        card.innerHTML = `<span class="ic">${svg(app.icon)}</span>`
+          + `<div class="nm">${app.name}${badge}</div>`
+          + `<div class="ds">${app.desc}</div>`
+          + (app.tier === "hero" ? '<span class="enter">Entrer dans Lumen Desktop →</span>' : '');
+        card.addEventListener("click", () => launch(app));
+        return card;
+      }
+      window.addEventListener("DOMContentLoaded", async () => {
+        const grid = document.getElementById("grid");
+        // Linux/WebKitGTK : surfaces opaques (backdrop-filter non peint). cf. CSS.
+        try {
+          const flavor = await invoke("platform_flavor");
+          if (flavor === "rpi" || flavor === "linux-standard") document.documentElement.classList.add("flavor-linux");
+        } catch {}
+        const pal0 = orbPalette();
+        document.documentElement.style.setProperty("--c-a", pal0[1]);
+        document.documentElement.style.setProperty("--c-b", pal0[2]);
+        // (L'Atelier des agents a été retiré des menus : cf. src-tauri/Cargo.toml,
+        // feature `atelier` — le code reste, l'entrée non.)
+        for (const sec of SECTIONS) {
+          const items = APPS.filter((a) => a.section === sec.id);
+          if (!items.length) continue;
+          const head = document.createElement("div");
+          head.className = "section-head" + (sec.grad ? " hub" : "");
+          if (sec.grad) {
+            head.style.setProperty("--c1", sec.grad[0]);
+            head.style.setProperty("--c2", sec.grad[1]);
+          }
+          head.innerHTML = `<span class="section-title">${sec.title}</span><span class="section-desc">${sec.desc}</span>`;
+          grid.appendChild(head);
+          items.forEach((app) => grid.appendChild(makeCard(app, sec)));
+        }
+        translatePage(document);
+      });
+    </script>
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <div class="wrap">
+      <div class="head">
+        <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.3 1 2.1h6c0-.8.4-1.5 1-2.1A6 6 0 0 0 12 3z"/></svg></div>
+        <div>
+          <h1>Boîte à outils</h1>
+          <div class="sub">Tous les modules de Lumen, à portée de clic.</div>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="foot">Lumen · Local · Privé · On-device</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,159 @@
+/* ===== Vue du matin — composants shadcn/ui ================================
+   Un écran par jour, au premier démarrage du bureau (et l'app « Matin ») : ce
+   qui arrive aujourd'hui, ce qui attend, ce que les agents ont fait pendant la
+   nuit, la météo. Cartes, badges, boutons et anneau de focus façon shadcn, tous
+   pilotés par lib/tokens.css : l'écran suit le thème clair/sombre et l'accent
+   du poste, comme le reste de Lumen. */
+
+.mn-ov {
+  position: fixed; inset: 0; z-index: 4000;
+  overflow: auto;
+  background: var(--background);
+  color: var(--foreground);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  animation: mn-fade .22s ease both;
+}
+.mn-ov * { box-sizing: border-box; }
+.mn-ov :is(button, input, a):focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+@keyframes mn-fade { from { opacity: 0; } to { opacity: 1; } }
+.mn-ov.out { animation: mn-out .22s ease both; }
+@keyframes mn-out { to { opacity: 0; } }
+
+.mn-wrap { max-width: 1180px; margin: 0 auto; padding: clamp(24px, 5vh, 56px) clamp(18px, 4vw, 48px) 32px; display: flex; flex-direction: column; gap: 20px; min-height: 100%; }
+
+/* En-tête */
+.mn-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.mn-date { margin: 0; font-size: 13px; font-weight: 500; color: var(--muted-foreground); text-transform: capitalize; }
+.mn-hello { margin: 4px 0 0; font-size: clamp(28px, 4.4vw, 44px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; }
+.mn-hello em { font-style: normal; color: var(--muted-foreground); }
+.mn-line { margin: 8px 0 0; font-size: 15px; color: var(--muted-foreground); max-width: 64ch; }
+.mn-head-act { display: flex; gap: 8px; }
+
+/* Boutons */
+.mn-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 36px; padding: 0 16px; border-radius: var(--radius-md, 8px); border: 1px solid transparent; font: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background-color .15s, border-color .15s, color .15s; }
+.mn-btn svg { width: 15px; height: 15px; }
+.mn-btn.primary { background: var(--primary); color: var(--primary-foreground); }
+.mn-btn.primary:hover { background: color-mix(in oklab, var(--primary) 88%, transparent); }
+.mn-btn.outline { background: var(--background); color: var(--foreground); border-color: var(--border); }
+.mn-btn.outline:hover { background: var(--subtle); }
+.mn-btn.ghost { background: transparent; color: var(--muted-foreground); }
+.mn-btn.ghost:hover { background: var(--subtle); color: var(--foreground); }
+.mn-btn.sm { height: 32px; padding: 0 12px; font-size: 12.5px; }
+.mn-btn.xs { height: 26px; padding: 0 8px; font-size: 12px; gap: 4px; }
+.mn-btn.xs svg { width: 13px; height: 13px; }
+
+/* KPI */
+.mn-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.mn-kpi { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--radius-lg, 12px); border: 1px solid var(--border); background: var(--card); color: var(--card-foreground); box-shadow: var(--shadow-1); min-height: 72px; }
+.mn-kpi-ic { width: 36px; height: 36px; border-radius: var(--radius-md, 8px); display: grid; place-items: center; background: var(--muted); color: var(--muted-foreground); flex: none; }
+.mn-kpi-ic svg { width: 17px; height: 17px; }
+.mn-kpi.info .mn-kpi-ic { background: color-mix(in oklab, var(--primary) 12%, transparent); color: var(--accent-ink, var(--primary)); }
+.mn-kpi.warn .mn-kpi-ic { background: color-mix(in oklab, #f59e0b 16%, transparent); color: #b45309; }
+.mn-kpi-v { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.mn-kpi-l { font-size: 12px; color: var(--muted-foreground); }
+
+/* Cartes */
+.mn-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
+.mn-card { border-radius: var(--radius-lg, 12px); border: 1px solid var(--border); background: var(--card); color: var(--card-foreground); box-shadow: var(--shadow-1); display: flex; flex-direction: column; min-height: 160px; animation: mn-rise .3s ease both; }
+.mn-card.tall { grid-row: span 2; align-self: stretch; }
+.mn-card:nth-child(2) { animation-delay: .03s; } .mn-card:nth-child(3) { animation-delay: .06s; } .mn-card:nth-child(4) { animation-delay: .09s; } .mn-card:nth-child(5) { animation-delay: .12s; }
+@keyframes mn-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.mn-card-head { display: flex; align-items: center; gap: 8px; padding: 14px 16px 10px; }
+.mn-card-head h2 { margin: 0; font-size: 14px; font-weight: 600; flex: 1; }
+.mn-card-ic { display: inline-grid; place-items: center; color: var(--muted-foreground); }
+.mn-card-ic svg { width: 16px; height: 16px; }
+.mn-card-body { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.mn-empty { font-size: 13px; color: var(--muted-foreground); padding: 10px 0; }
+.mn-more { margin: 0; font-size: 12px; color: var(--muted-foreground); }
+
+/* Frise de l'agenda */
+.mn-timeline { list-style: none; margin: 0; padding: 0 0 0 14px; border-left: 2px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
+.mn-ev { position: relative; display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 6px); font-size: 13.5px; }
+.mn-ev::before { content: ""; position: absolute; left: -20px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: var(--card); border: 2px solid var(--border); }
+.mn-ev time { flex: none; min-width: 46px; font-variant-numeric: tabular-nums; font-weight: 600; }
+.mn-ev-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mn-ev.past { color: var(--muted-foreground); }
+.mn-ev.past time { font-weight: 500; }
+.mn-ev.next { background: var(--subtle); }
+.mn-ev.next::before { border-color: var(--primary); background: var(--primary); }
+.mn-now { position: relative; margin: 4px 0; list-style: none; }
+.mn-now::before { content: ""; position: absolute; left: -21px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 0 3px color-mix(in oklab, #ef4444 25%, transparent); }
+.mn-now span { display: inline-block; font-size: 11px; font-weight: 600; color: #ef4444; padding-left: 8px; }
+
+/* Listes */
+.mn-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.mn-list li { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+.mn-list li:last-child { border-bottom: 0; }
+.mn-li-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mn-li-ic { color: var(--muted-foreground); display: inline-grid; }
+.mn-li-ic svg { width: 14px; height: 14px; }
+.mn-dot { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid var(--border); flex: none; }
+.mn-badge { flex: none; max-width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 500; padding: 1px 8px; border-radius: 999px; background: var(--secondary); color: var(--secondary-foreground); border: 1px solid var(--border); }
+.mn-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mn-split > div { padding: 10px 12px; border-radius: var(--radius-md, 8px); background: var(--muted); display: flex; flex-direction: column; }
+.mn-split b { font-size: 20px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.mn-split small { font-size: 11.5px; color: var(--muted-foreground); }
+
+/* Météo */
+.mn-weather { display: flex; align-items: center; gap: 14px; }
+.mn-wglyph { font-size: 40px; line-height: 1; }
+.mn-wtemp { font-size: 30px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.mn-wlabel { font-size: 13px; color: var(--muted-foreground); text-transform: capitalize; }
+.mn-wmeta { display: flex; flex-wrap: wrap; gap: 6px; }
+.mn-wmeta span { font-size: 12px; color: var(--muted-foreground); padding: 3px 8px; border-radius: var(--radius-sm, 6px); background: var(--muted); }
+.mn-wmeta b { color: var(--foreground); font-weight: 600; }
+.mn-wform { display: flex; gap: 6px; }
+.mn-input { flex: 1; min-width: 0; height: 32px; padding: 0 10px; border-radius: var(--radius-md, 8px); border: 1px solid var(--input, var(--border)); background: var(--background); color: var(--foreground); font: inherit; font-size: 13px; }
+.mn-input:focus { outline: none; border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 25%, transparent); }
+
+/* Pied */
+.mn-foot { display: flex; align-items: center; gap: 12px; margin-top: auto; padding-top: 8px; }
+.mn-hint { margin-left: auto; font-size: 12px; color: var(--muted-foreground); }
+.mn-hint kbd { font: 11px ui-monospace, Menlo, monospace; padding: 1px 5px; border-radius: 4px; border: 1px solid var(--border); background: var(--muted); }
+
+/* Squelettes de chargement */
+.mn-skel { background: linear-gradient(90deg, var(--muted) 0%, color-mix(in oklab, var(--muted) 60%, var(--card)) 50%, var(--muted) 100%); background-size: 200% 100%; animation: mn-shimmer 1.2s linear infinite; border-color: transparent; box-shadow: none; }
+.mn-card.mn-skel { min-height: 180px; }
+@keyframes mn-shimmer { to { background-position: -200% 0; } }
+
+@media (max-width: 980px) {
+  .mn-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mn-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .mn-grid { grid-template-columns: 1fr; }
+  .mn-card.tall { grid-row: auto; }
+  .mn-head-act { width: 100%; }
+}
+
+/* Mode performance (Raspberry Pi) et mouvement réduit : pas d'animation. */
+html.perf-mode .mn-ov, html.perf-mode .mn-card, html.perf-mode .mn-skel { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .mn-ov, .mn-card, .mn-skel { animation: none !important; }
+}
+
+/* App « Matin » (paquet) : la vue remplit la fenêtre, sans voile ni sortie. */
+.mn-ov.mn-embedded { position: absolute; min-height: 100%; z-index: auto; }
+
+/* Actualités */
+.mn-news { margin-top: 18px; }
+.mn-news-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.mn-news-head h2 { display: flex; align-items: center; gap: 8px; font-size: 16px; margin: 0 6px 0 0; }
+.mn-news-head h2 svg { width: 18px; height: 18px; }
+.mn-topics { display: flex; gap: 6px; flex-wrap: wrap; }
+.mn-topic { display: inline-flex; align-items: center; gap: 4px; padding: 3px 4px 3px 10px; border-radius: 999px; background: var(--muted); font-size: 12.5px; }
+.mn-topic button { border: 0; background: none; color: var(--muted-foreground); cursor: pointer; font-size: 14px; line-height: 1; padding: 0 4px; }
+.mn-topic-form { display: flex; gap: 6px; margin-left: auto; }
+.mn-topic-form .mn-input { width: 240px; }
+.mn-news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.mn-news-card h3 { margin: 0; font-size: 14px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mn-news-by { font-size: 11px; color: var(--muted-foreground); white-space: nowrap; }
+.mn-news-by.curated { color: var(--primary); }
+.mn-news-items { display: flex; flex-direction: column; padding: 0 10px 10px; gap: 2px; }
+.mn-article { display: flex; flex-direction: column; gap: 2px; text-align: left; border: 0; background: none; color: inherit; font: inherit; padding: 8px 6px; border-radius: 8px; cursor: pointer; }
+.mn-article:hover { background: var(--muted); }
+.mn-article b { font-size: 13px; line-height: 1.35; }
+.mn-article span { font-size: 12.5px; color: var(--muted-foreground); line-height: 1.4; }
+.mn-article small { font-size: 11px; color: var(--muted-foreground); }
+@media (max-width: 640px) { .mn-topic-form { margin-left: 0; width: 100%; } .mn-topic-form .mn-input { flex: 1; width: auto; } }

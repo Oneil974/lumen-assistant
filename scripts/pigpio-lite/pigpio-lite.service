@@ -1,0 +1,14 @@
+[Unit]
+Description=pigpio-lite — remplaçant minimal de pigpiod (Raspberry Pi 5, lgpio)
+After=multi-user.target
+
+[Service]
+Type=simple
+# Tourne en root pour l'accès aux /dev/gpiochip* et au bus I²C/SPI.
+ExecStart=/usr/bin/python3 /opt/pigpio-lite/pigpio_lite.py
+Restart=on-failure
+RestartSec=2
+RuntimeDirectory=pigpio-lite
+
+[Install]
+WantedBy=multi-user.target

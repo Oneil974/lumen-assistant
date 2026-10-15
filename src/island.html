@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lumen — Halo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script src="/lib/theme-init.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./lib/tokens.css?v=5" />
+    <!-- La capsule suit le clair/sombre du bureau (`dtTheme`, clé préfixée par
+         profil) comme toutes les autres fenêtres : sans ce script elle retombait
+         sur la préférence du système et pouvait rester claire pendant que Lumen
+         était en sombre. -->
+<link rel="stylesheet" href="island.css?v=23" />
+      <!-- Peau plate commune (jetons + effets neutralisés) : toujours en dernier. -->
+    <link rel="stylesheet" href="/lib/flat.css?v=4" />
+</head>
+  <body>
+    <!-- La capsule (« Halo ») est construite par island.js : pastille repliée,
+         carte de notification et panneau vivent dans la même coque. -->
+    <div id="island" class="halo" data-state="hidden" aria-live="polite"></div>
+    <script type="module" src="island.js?v=13"></script>
+  </body>
+</html>

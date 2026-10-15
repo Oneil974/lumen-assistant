@@ -1,0 +1,115 @@
+/* Python — complète la coque de l'Éditeur de code (../editor/styles.css) :
+   état de l'interpréteur, console et REPL. */
+
+/* ---- Mise en page propre à Python ----
+   La feuille partagée ../editor/styles.css a été refaite pour l'Éditeur façon
+   VS Code (barre d'activité, groupes d'onglets) : les blocs de Python (.topbar,
+   .body, .files-pane) n'y sont plus décrits, d'où une page effondrée, surtout
+   dans les vues étroites du mode application. On les pose ici. */
+:root {
+  --mk-bg: var(--ed-bg); --mk-fg: var(--ed-fg);
+  --mk-keyword: var(--tok-keyword); --mk-type: var(--tok-type); --mk-comment: var(--tok-comment); --mk-fn: var(--tok-fn);
+}
+.app { display: flex; flex-direction: column; height: 100vh; min-height: 0; }
+.topbar {
+  flex: none; display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 10px;
+  border-bottom: 1px solid var(--border); background: var(--sidebar, var(--background)); min-width: 0; overflow: hidden;
+}
+.topbar .brand { width: auto; min-width: 0; flex: none; }
+.topbar .select { max-width: 180px; min-width: 0; }
+.topbar .path { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted-foreground); font-size: 12px; }
+.topbar .spacer, .files-head .spacer, .console-head .spacer { flex: 1; }
+.body { flex: 1; min-height: 0; display: flex; min-width: 0; }
+.files-pane {
+  width: 220px; flex: none; display: flex; flex-direction: column; min-height: 0;
+  border-right: 1px solid var(--border); background: var(--sidebar, var(--background));
+}
+.files-head { display: flex; align-items: center; gap: 2px; padding: 7px 8px; border-bottom: 1px solid var(--border); }
+.files-title { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted-foreground); }
+.files-head .icon-btn { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); }
+.edit-area { flex: 1; min-width: 0; }
+
+
+.py-status {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--text-muted); font-size: 11.5px;
+  white-space: nowrap;
+}
+.py-status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); }
+.py-status[data-state="loading"] .dot { background: var(--warning); animation: py-pulse 1s infinite alternate; }
+.py-status[data-state="ready"] .dot { background: var(--success); }
+.py-status[data-state="running"] .dot { background: var(--accent); animation: py-pulse .6s infinite alternate; }
+.py-status[data-state="error"] .dot { background: var(--destructive); }
+@keyframes py-pulse { from { opacity: .35; } to { opacity: 1; } }
+
+.btn-soft.danger { color: var(--destructive); border-color: color-mix(in oklab, var(--destructive) 40%, var(--border)); }
+
+/* Console */
+.console-resizer { width: 5px; flex: none; cursor: col-resize; background: transparent; }
+.console-resizer:hover { background: color-mix(in oklab, var(--accent) 35%, transparent); }
+.console {
+  width: min(420px, 42vw); min-width: 220px; max-width: 60vw; flex: none; display: flex; flex-direction: column; min-height: 0;
+  border-left: 1px solid var(--border); background: var(--surface);
+}
+.console-head { display: flex; align-items: center; gap: 4px; padding: 7px 8px; border-bottom: 1px solid var(--border); }
+.console-head .icon-btn { width: 26px; height: 26px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; justify-content: center; }
+.console-head .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+.console-head .icon-btn.on { color: var(--accent-ink); background: var(--sel, rgba(128,128,128,.16)); }
+.console-meta { font-size: 11px; color: var(--text-muted); margin-left: 6px; }
+.console-out {
+  flex: 1; min-height: 0; overflow: auto; padding: 10px 12px; background: var(--mk-bg); color: var(--mk-fg);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; line-height: 1.5;
+}
+.console-hint {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif; font-size: 12px; line-height: 1.5;
+  color: var(--text-muted); border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 10px 12px;
+}
+.console-hint b { color: var(--text); }
+.console-hint code { font-size: 11.5px; }
+.c-line { white-space: pre-wrap; word-break: break-word; }
+.c-stderr { color: var(--mk-keyword); }
+.c-error { color: var(--mk-keyword); border-left: 3px solid var(--mk-keyword); padding-left: 8px; margin: 4px 0; }
+.c-result { color: var(--mk-type); }
+.c-echo { color: var(--mk-comment); }
+.c-echo::before { content: ">>> "; }
+.c-meta { color: var(--mk-comment); font-style: italic; margin: 6px 0 2px; }
+.c-meta.ok::before { content: "✓ "; color: var(--mk-fn); font-style: normal; }
+.c-meta.ko::before { content: "✗ "; color: var(--mk-keyword); font-style: normal; }
+.c-figure { display: block; max-width: 100%; margin: 6px 0; border-radius: var(--radius-md); background: #fff; }
+.c-files { color: var(--mk-comment); font-style: italic; }
+.c-fix { margin: 4px 0 8px; }
+.c-fix .btn-soft { font-size: 12px; padding: 4px 10px; }
+
+.stdin-wrap { border-top: 1px solid var(--border); padding: 8px 10px; display: grid; gap: 4px; }
+.stdin-wrap label { font-size: 11px; color: var(--text-muted); }
+.stdin-wrap textarea {
+  width: 100%; resize: vertical; border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: var(--surface-2); color: var(--text); padding: 6px 8px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px;
+}
+.repl { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-top: 1px solid var(--border); background: var(--mk-bg); }
+.repl-prompt { font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--mk-fn); font-weight: 700; }
+.repl input {
+  flex: 1; border: 0; outline: none; background: transparent; color: var(--mk-fg);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px;
+}
+.repl input::placeholder { color: var(--mk-comment); }
+
+.pkg-help { font-size: 12px; color: var(--text-muted); margin: 0 0 10px; line-height: 1.5; }
+.pkg-help code { font-size: 11.5px; }
+input.ta { height: 34px; }
+
+/* Vue étroite (mode application, fenêtre réduite) : la console passe sous
+   l'éditeur, l'arborescence se resserre, les libellés des boutons tombent. */
+@media (max-width: 1000px) {
+  .files-pane { width: 170px; }
+  .topbar .ic-btn .lbl, .topbar .path { display: none; }
+  .body { flex-wrap: wrap; }
+  .edit-area { flex: 1 1 calc(100% - 170px); height: 58%; }
+  .console-resizer { display: none; }
+  .console { width: 100% !important; max-width: none; flex: 1 1 100%; height: 42%; border-left: 0; border-top: 1px solid var(--border); }
+}
+@media (max-width: 640px) {
+  .files-pane { display: none; }
+  .edit-area { flex-basis: 100%; }
+}

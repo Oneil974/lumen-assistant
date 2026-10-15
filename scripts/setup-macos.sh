@@ -2,9 +2,9 @@
 # Installation runtime « tout-en-un » de Lumen sur macOS.
 #
 # Installe ce dont l'app a besoin pour fonctionner tout de suite :
-#   • Ollama (moteur LLM local) + un modèle par défaut.
-# La VOIX (synthèse) et la DICTÉE sont gérées nativement par macOS (app
-# Raccourcis / synthèse vocale système) : rien à installer côté voix.
+#   • Ollama (moteur LLM local) + un modèle par défaut ;
+#   • optionnellement Piper local et deux voix neuronales locales.
+# La dictée reste gérée nativement par macOS.
 #
 # À lancer UNE FOIS, SANS sudo :
 #   ./scripts/setup-macos.sh
@@ -14,6 +14,7 @@
 #   LUMEN_MODEL="qwen2.5:3b" ./scripts/setup-macos.sh
 set -euo pipefail
 
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 MODEL="${LUMEN_MODEL:-liquidai/lfm2.5-350m:latest}"
 ASSUME_YES=0
 for arg in "$@"; do
@@ -65,16 +66,39 @@ pull_model() {
   ollama pull "$MODEL"
 }
 
+install_piper_voice() {
+  local name="$1" model_url="$2" config_url="$3"
+  local dir="$HOME/Library/Application Support/com.lumen.app/piper-voices"
+  echo "→ Téléchargement de la voix Piper $name"
+  mkdir -p "$dir"
+  curl -fsSL "$model_url" -o "$dir/$name.onnx"
+  curl -fsSL "$config_url" -o "$dir/$name.onnx.json"
+}
+
+install_voices_piper() {
+  "$ROOT/scripts/piper/install.sh"
+  install_piper_voice "fr_FR-siwis-medium" \
+    "https://huggingface.co/rhasspy/piper-voices/resolve/main/fr/fr_FR/siwis/medium/fr_FR-siwis-medium.onnx" \
+    "https://huggingface.co/rhasspy/piper-voices/resolve/main/fr/fr_FR/siwis/medium/fr_FR-siwis-medium.onnx.json"
+  install_piper_voice "en_US-lessac-medium" \
+    "https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx" \
+    "https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx.json"
+}
+
 echo "=== Lumen · installation runtime macOS ==="
 install_ollama
 if ask "Télécharger le modèle Ollama « $MODEL » maintenant ?"; then
   ensure_ollama_running && pull_model
+fi
+if ask "Installer Piper local (+ voix FR & EN par défaut) ?"; then
+  install_voices_piper
 fi
 
 cat <<EOF
 
 ✅ Terminé.
    • Modèle local : $MODEL (modifiable dans Réglages → IA).
-   • Voix & dictée : gérées par macOS (app Raccourcis / synthèse système).
+   • Voix : Piper local si installé, avec les voix système macOS en complément.
+   • Dictée : gérée par macOS (app Raccourcis / système).
    • Cloud optionnel : ajoute une clé API dans Réglages → IA si besoin.
 EOF
