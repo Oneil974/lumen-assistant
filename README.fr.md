@@ -3,7 +3,7 @@
 [English](README.md) · **Français**
 
 <p align="center">
-  <img src="assets/Lumen_screen_win.png" alt="Lumen sous Windows — la barre flottante, l’orbe et une conversation avec un modèle local (llama.cpp, Gemma)" width="690">
+  <img src="assets/Lumen_Bar.png" alt="Lumen — barre de saisie flottante avec un avatar robot animé" width="690">
 </p>
 
 <p align="center">

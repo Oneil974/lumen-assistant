@@ -3,7 +3,7 @@
 **English** · [Français](README.fr.md)
 
 <p align="center">
-  <img src="assets/Lumen_screen_win.png" alt="Lumen on Windows — the floating bar, the orb and a conversation with a local model (llama.cpp, Gemma)" width="690">
+  <img src="assets/Lumen_Bar.png" alt="Lumen — floating prompt bar with an animated robot avatar" width="690">
 </p>
 
 <p align="center">
