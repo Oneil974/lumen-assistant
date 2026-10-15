@@ -21,7 +21,7 @@
   --border: oklch(0.922 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --accent-primary: oklch(0.541 0.281 293.009);   /* violet — accent produit */
+  --accent-primary: oklch(0.586 0.222 17.6);   /* cramoisi — accent de l'app (envoi, bord de la barre) */
   --accent-foreground: oklch(0.985 0 0);
   --ring: oklch(0.708 0 0);
   --success: oklch(0.596 0.145 163.225);
@@ -37,8 +37,8 @@
   --shadow-md: 0 4px 16px oklch(0 0 0 / 8%);
   --shadow-lg: 0 24px 60px oklch(0 0 0 / 12%);
 
-  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  --font: "Geist", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
 }
 
 :root[data-dt-theme="dark"] {
@@ -52,7 +52,7 @@
   --border: oklch(1 0 0 / 10%);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --accent-primary: oklch(0.68 0.19 293.009);
+  --accent-primary: oklch(0.66 0.2 17.6);
   --accent-foreground: oklch(0.145 0 0);
   --ring: oklch(0.556 0 0);
   --success: oklch(0.72 0.15 163.225);
@@ -73,7 +73,7 @@
     --border: oklch(1 0 0 / 10%);
     --primary: oklch(0.922 0 0);
     --primary-foreground: oklch(0.205 0 0);
-    --accent-primary: oklch(0.68 0.19 293.009);
+    --accent-primary: oklch(0.66 0.2 17.6);
     --accent-foreground: oklch(0.145 0 0);
     --ring: oklch(0.556 0 0);
     --success: oklch(0.72 0.15 163.225);
@@ -694,3 +694,129 @@ html.js .reveal:not(.in) { opacity: 0; transform: translateY(14px); }
 /* ── Héro : personnage coloré (soft-sky) à la place de l'orbe de verre ── */
 #orb-wrap .hero-soft { position: relative; z-index: 1; width: 240px; height: 240px; }
 #orb-wrap .hero-soft .lumen-soft { inset: 0; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Charte 0.3 — calquée sur le mode Application et la barre de Lumen :
+   fond blanc, gris de barre latérale très clair, bordures fines, texte noir,
+   UN accent (le cramoisi du bouton d'envoi), barre de saisie en pilule,
+   puces à contour, avatar Robot Head.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root { --sidebar: oklch(0.985 0 0); --accent-soft: color-mix(in oklab, var(--accent-primary) 10%, transparent); }
+:root[data-dt-theme="dark"] { --sidebar: oklch(0.18 0 0); }
+@media (prefers-color-scheme: dark) { :root:not([data-dt-theme="light"]) { --sidebar: oklch(0.18 0 0); } }
+
+body { font-size: 15.5px; letter-spacing: -0.006em; }
+h1 { font-weight: 650; letter-spacing: -0.04em; }
+h2 { font-weight: 650; letter-spacing: -0.032em; }
+h3 { font-weight: 600; }
+section { border-top: 0; padding: 96px 0; }
+.alt { background: var(--sidebar); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.eyebrow { color: var(--muted-foreground); font-weight: 550; letter-spacing: .08em; }
+.eyebrow::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-primary); margin-right: 8px; vertical-align: 2px; }
+
+/* Boutons : noir plein (principal), contour, et l'accent rouge réservé à l'action « envoyer » */
+.btn { border-radius: 999px; font-weight: 550; }
+.btn.lg { border-radius: 999px; height: 48px; padding: 0 26px; }
+.btn.sm { border-radius: 999px; }
+.btn.accent { background: var(--accent-primary); color: #fff; }
+.btn.outline { background: var(--background); }
+
+/* Badges et étiquettes « nouveau » en cramoisi doux */
+.badge.accent { color: var(--accent-primary); background: var(--accent-soft); border-color: color-mix(in oklab, var(--accent-primary) 25%, transparent); }
+.tag-new { color: var(--accent-primary) !important; background: var(--accent-soft) !important; }
+
+/* Cartes : blanches, bordure fine, rayon de l'app, pas d'effet « soulevé » */
+.card { border-radius: 14px; box-shadow: none; background: var(--card); }
+.card:hover { transform: none; box-shadow: var(--shadow-sm); border-color: color-mix(in oklab, var(--foreground) 14%, var(--border)); }
+.card-ic { border-radius: 10px; background: var(--muted) !important; color: var(--foreground) !important; }
+.card-ic svg { stroke-width: 1.8; }
+.pillar li::before { background: var(--accent-primary) !important; }
+
+/* Navigation : barre blanche translucide, marque = mini Robot Head */
+.nav { background: color-mix(in oklab, var(--background) 86%, transparent); border-bottom: 1px solid var(--border); }
+.nav-links a { border-radius: 8px; font-weight: 500; }
+.brand-mark { position: relative; display: inline-grid; place-items: center; width: 24px; height: 20px; border-radius: 6px;
+  background: linear-gradient(180deg, #e8354f, #b8132f); box-shadow: inset 0 -2px 0 rgb(0 0 0 / 18%), 0 1px 2px rgb(0 0 0 / 20%); }
+.brand-mark::before { content: ""; position: absolute; inset: 3.5px 4px; border-radius: 3px; background: #1b1620; }
+.brand-mark::after { content: ""; position: absolute; left: 50%; top: -5px; width: 2px; height: 5px; background: #c9c9cf; transform: translateX(-50%); border-radius: 2px; }
+.brand-mark i { position: relative; z-index: 1; display: inline-block; width: 2.5px; height: 5px; margin: 0 1.3px; border-radius: 1px; background: #f0b6ff; box-shadow: 0 0 4px #e58cff; }
+.brand-mark { grid-auto-flow: column; }
+
+/* ── Héro façon « Sur quoi allons-nous travailler ? » ── */
+.hero { padding: 56px 0 72px; }
+.hero::before { display: none; }
+.hero h1 { max-width: 18ch; margin: 10px auto 14px; font-size: clamp(36px, 5.6vw, 58px); }
+.hero .lead { max-width: 640px; margin: 0 auto 30px; }
+.avatar-stage { position: relative; width: 300px; height: 230px; margin: 0 auto; display: grid; place-items: center; }
+.robot-host { position: relative; width: 150px; height: 150px; margin-top: 30px; cursor: pointer; }
+.avatar-stage .hero-soft { position: absolute; width: 170px; height: 170px; top: 30px; left: 50%; transform: translateX(-50%); }
+.avatar-stage .hero-soft .lumen-soft { inset: 0; }
+.avatar-stage[data-avatar="robot"] .hero-soft { display: none; }
+.avatar-stage[data-avatar="orb"] .robot-host { visibility: hidden; }
+.avatar-switch { display: inline-flex; gap: 2px; padding: 3px; margin: 4px auto 18px; border: 1px solid var(--border); border-radius: 999px; background: var(--muted); }
+.avatar-switch button { border: 0; background: transparent; color: var(--muted-foreground); font: 500 13px/1 var(--font); padding: 7px 14px; border-radius: 999px; cursor: pointer; }
+.avatar-switch button[aria-checked="true"] { background: var(--background); color: var(--foreground); box-shadow: var(--shadow-sm); }
+
+/* Barre de saisie : la pilule de la barre Lumen, bord cramoisi */
+.composer { display: flex; align-items: center; gap: 12px; max-width: 760px; margin: 0 auto; padding: 10px 10px 10px 18px;
+  background: var(--background); border: 1.5px solid var(--accent-primary); border-radius: 999px;
+  box-shadow: 0 10px 30px color-mix(in oklab, var(--accent-primary) 10%, transparent), var(--shadow-sm); text-align: left; }
+.composer svg { width: 20px; height: 20px; color: var(--muted-foreground); flex: none; }
+.composer-icons { display: flex; align-items: center; gap: 14px; }
+.composer-input { flex: 1; min-width: 0; font-size: 16px; color: var(--muted-foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.composer.typing .composer-input { color: var(--foreground); }
+.composer.typing .composer-input::after { content: ""; display: inline-block; width: 1.5px; height: 1.1em; margin-left: 2px; vertical-align: -3px; background: var(--foreground); animation: caretBlink 1s steps(1) infinite; }
+@keyframes caretBlink { 50% { opacity: 0; } }
+.model-pill { flex: none; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--muted); font-size: 14px; font-weight: 500; }
+.composer .send { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--accent-primary); }
+.composer .send svg { color: #fff; width: 19px; height: 19px; stroke-width: 2.2; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 18px auto 34px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--background); color: var(--foreground); font: 500 14.5px/1 var(--font); cursor: pointer; transition: border-color .15s, background .15s; }
+.chip:hover { background: var(--muted); border-color: color-mix(in oklab, var(--foreground) 16%, var(--border)); }
+.chip svg { width: 17px; height: 17px; color: var(--muted-foreground); }
+.stats { margin-top: 48px; border-radius: 14px; }
+@media (max-width: 640px) {
+  .composer { padding-left: 14px; gap: 8px; }
+  .composer > .composer-icons:first-child, .composer > .composer-icons:nth-of-type(2), .model-pill { display: none; }
+  .avatar-stage { height: 200px; }
+}
+
+/* Schéma d'aiguillage et maquettes : l'accent suit la charte */
+.rd-node.d { border-color: color-mix(in oklab, var(--accent-primary) 45%, var(--border)); background: var(--accent-soft); }
+.mode-mock.desk { background: linear-gradient(160deg, #2a2a33, #101015); }
+.mode-mock.bar .o { background: linear-gradient(180deg, #e8354f, #b8132f); border-radius: 9px; box-shadow: 0 6px 14px rgb(214 34 63 / 30%); }
+
+/* ── Maquette du bureau, charte 0.3 : fond neutre, fenêtre façon mode Application ── */
+.desk-mock { background: linear-gradient(180deg, #f4f4f5, #ebebee); box-shadow: var(--shadow-md); }
+:root[data-dt-theme="dark"] .desk-mock { background: linear-gradient(180deg, #1c1c20, #121215); }
+@media (prefers-color-scheme: dark) { :root:not([data-dt-theme="light"]) .desk-mock { background: linear-gradient(180deg, #1c1c20, #121215); } }
+.dm-widget { background: var(--card); border-radius: 12px; box-shadow: var(--shadow-sm); }
+.dm-widget i { background: var(--foreground); opacity: .85; }
+.dm-window { border-radius: 14px; box-shadow: 0 18px 40px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 6%); }
+.dm-titlebar { background: var(--card); }
+.dm-titlebar em { color: var(--foreground); font-weight: 600; }
+.dm-body { grid-template-columns: 30px 118px 1fr 118px; }
+.dm-rail { display: grid; align-content: start; gap: 9px; padding: 10px 7px; border-right: 1px solid var(--border); background: var(--sidebar); }
+.dm-rail i { width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid color-mix(in oklab, var(--foreground) 35%, transparent); }
+.dm-rail i.on { background: var(--muted); border-color: var(--foreground); }
+.dm-side { background: var(--sidebar); gap: 4px; }
+.dm-side b { font-size: 11.5px; font-weight: 650; margin: 0 0 4px 4px; }
+.dm-side span { font-size: 11px; padding: 4px 6px; border-radius: 6px; color: var(--foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dm-side span.on { background: color-mix(in oklab, var(--foreground) 7%, transparent); font-weight: 550; }
+.dm-file { height: auto; padding: 5px 7px; font-size: 10.5px; color: var(--foreground); background: var(--card); border: 1px solid var(--border); border-radius: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dm-file::before { content: ""; display: inline-block; width: 7px; height: 9px; margin-right: 5px; border-radius: 1.5px; background: var(--accent-primary); vertical-align: -1px; }
+.dm-bubble.user { background: var(--muted); }
+.dm-orb { width: 58px; height: 58px; border-radius: 16px; background: none; box-shadow: none; }
+.dm-orb .brand-mark { transform: scale(2.3); filter: drop-shadow(0 3px 3px rgb(0 0 0 / 25%)); }
+.dm-chat { border: 1.5px solid var(--accent-primary); background: var(--card); box-shadow: 0 8px 22px color-mix(in oklab, var(--accent-primary) 14%, transparent); height: 42px; padding-right: 6px; }
+.dm-chat em { font-style: normal; font-size: 11px; font-weight: 500; color: var(--foreground); padding: 4px 9px; border-radius: 999px; background: var(--muted); border: 1px solid var(--border); }
+.dm-chat b { width: 30px; height: 30px; background: var(--accent-primary); color: #fff; }
+.dm-chat b svg { width: 15px; height: 15px; }
+.dm-dock { background: var(--card); box-shadow: var(--shadow-sm); border-radius: 16px; }
+@media (max-width: 860px) { .dm-body { grid-template-columns: 30px 110px 1fr; } .dm-side.kb { display: none; } }
+@media (max-width: 560px) { .dm-body { grid-template-columns: 1fr; } .dm-rail { display: none; } }
+/* L'ancienne règle `.dm-orb span` (yeux blancs de l'orbe) visait aussi la marque. */
+.dm-orb .brand-mark { width: 24px; height: 20px; border-radius: 6px; background: linear-gradient(180deg, #e8354f, #b8132f);
+  box-shadow: inset 0 -2px 0 rgb(0 0 0 / 18%); }
