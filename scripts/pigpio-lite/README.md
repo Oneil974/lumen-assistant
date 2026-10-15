@@ -48,5 +48,5 @@ plutôt qu'un CLI éphémère.
 - Couvre le périmètre des blocs Lumen, pas toute l'API pigpio.
 - 1-Wire n'en dépend pas (lecture directe via `/sys/bus/w1/devices/`).
 - `lgpio` choisit `gpiochip0` puis `gpiochip4` (selon la version de Raspberry Pi OS).
-- Si tu préfères repartir de zéro, le protocole « une ligne `cmd args` → `OK [val]` /
-  `ERR msg` » est trivial à réimplémenter.
+- Le protocole utilise une ligne `cmd args`, avec une réponse `OK [val]` ou
+  `ERR msg`.

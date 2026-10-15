@@ -4,6 +4,12 @@
 
 ## Installation « tout-en-un »
 
+Les commandes suivantes se lancent depuis le dossier `scripts/` :
+
+```bash
+cd scripts
+```
+
 Lancez le script correspondant à votre système, **sans `sudo`** (il demande les droits quand nécessaire). Mode et modèle sont configurables.
 
 ### macOS (Apple Silicon)
@@ -47,7 +53,7 @@ Les scripts « tout-en-un » les appellent déjà. Pour les (ré)installer sépa
 
 | Composant | Commande | Rôle |
 |---|---|---|
-| **Piper** | `sudo ./piper/install.sh` | Synthèse vocale rapide (MIT) |
+| **Piper** | `sudo ./piper/install.sh` | Synthèse vocale rapide (voir les licences du moteur et de ses dépendances) |
 | **Kokoro** | `sudo ./kokoro/install.sh` | Synthèse vocale haute qualité (Apache 2.0, venv dédié) |
 | **whisper.cpp** | `sudo ./whisper/install.sh [base\|small\|tiny]` | Dictée locale hors-ligne (MIT) |
 
@@ -55,4 +61,4 @@ Les scripts « tout-en-un » les appellent déjà. Pour les (ré)installer sépa
 
 ## Prérequis minimal
 
-Aucun. Le moteur d'inférence est intégré ; Ollama, Kokoro et whisper.cpp sont des compléments. En mode local, aucune donnée ne quitte votre machine.
+Aucun. Le moteur d'inférence est intégré ; Ollama, Kokoro et whisper.cpp sont des compléments. L’inférence peut rester locale ; les installations, téléchargements et intégrations réseau utilisent les services correspondants.

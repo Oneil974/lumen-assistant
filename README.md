@@ -53,7 +53,7 @@ Pick at launch — Lumen remembers. The same conversations, files, memory and mo
 
 ## 🧠 An assistant that chooses before it answers *(0.3)*
 
-- **Decision-model router** — a small specialised local model (Tev1, Laya, Clef Flash or LiquidAI Open d1) reads every request first and picks the path in a few hundred milliseconds: direct answer, tools, or orchestration. When it is unsure, Lumen falls back to its rules.
+- **Decision-model router** — a small specialised local model (Kev GGUF, Tev1, Laya, Clef Flash or LiquidAI Open d1) reads every request first and picks the path in a few hundred milliseconds: direct answer, tools, or orchestration. When it is unsure, Lumen falls back to its rules.
 - **Orchestration & harness** — complex requests are split into visible steps (analysis, tools, data, writing, verification) with time and token budgets that keep small models on track.
 - **Hybrid mode** — if the local model fails, Lumen *offers* to retry with your API model. Nothing leaves without your consent.
 
@@ -85,7 +85,7 @@ A complete working environment inside one window: multi-profile sessions, window
 - **Fluxo Designer** — a visual workflow editor: triggers, system actions, AI blocks, notifications.
 - **MCP connectors** — Model Context Protocol servers plug in with one click (official remote servers, HTTPS with a header token).
 - **Toolbox** — you choose which tools are exposed to the model, one by one: a tool you don't need costs context before you've even asked your question.
-- **Opt-in web search** — off by default; nothing goes online until you turn it on. Page and document extraction is more reliable in 0.2.
+- **Opt-in web search** — off by default; enable it to let the assistant search online. Page and document extraction is more reliable in 0.2.
 - **Profiler** — what each call actually costs: context, tools, memory, throughput.
 
 ## 🎨 Forty-odd apps, each in its own window

@@ -3,10 +3,9 @@
 Reproduction physique de l'orbe Lumen (halo qui respire, thèmes de couleur,
 réaction à la voix) sur l'écran rond 240×240 GC9A01.
 
-> **Important — driver.** Ce projet utilise le driver **C compilé `gc9a01`**
-> (`import gc9a01`), le même que ton firmware voiture qui fonctionne
-> (`Backup_ESPROUND`), **pas** le `gc9a01py` pur Python. Le module C est figé
-> dans ton firmware ; garde-le. C'est ce qui expose `fill_circle` en natif.
+> **Pilote requis.** Le firmware MicroPython doit inclure le module C
+> `gc9a01` et sa méthode `fill_circle`. Le pilote Python `gc9a01py` ne fournit
+> pas la même interface.
 
 ## Approche
 
@@ -37,7 +36,7 @@ thème ou d'un changement de connexion Lumen.
 | `test_display.py`  | Test écran minimal (à lancer en premier). |
 | `sender_demo.py`   | **Sur PC** : pousse des états de test vers l'ESP32. |
 
-## Câblage (identique à `Backup_ESPROUND/display/tft_config.py`)
+## Câblage de référence
 
 ```
 SPI host 2 @ 80 MHz, polarity=0
@@ -46,33 +45,36 @@ SCK=10  MOSI=11  DC=8  CS=9  RST=14  BL=2
 
 ## Mise en route
 
-1. **Le module C `gc9a01` doit être présent** (il l'est déjà, ton firmware
-   voiture l'utilise). Ne flashe rien d'autre.
-2. Configure `WIFI_SSID`, `WIFI_PASS` et éventuellement `NET_PORT` dans
-   `config.py`.
-3. Copie les fichiers du dossier sur la carte :
+1. Vérifiez que le firmware MicroPython inclut le module C `gc9a01`.
+2. Préparez une copie locale de `config.py` pour la carte : renseignez
+   `WIFI_SSID`, `WIFI_PASS`, `WIFI_ENABLE` et, si nécessaire, `NET_PORT`.
+   Gardez cette copie hors du dépôt et ne commitez pas vos identifiants.
+   Ce firmware lit directement `config.py` ; il ne charge pas `config_local.py`.
+3. Copiez les fichiers sur la carte. Remplacez `/dev/tty.usbmodemXXXX` par
+   le port retourné par `mpremote connect list`. Dans la commande de copie,
+   remplacez `config.py` par le chemin de votre configuration locale :
    ```bash
    cd esp32-orb
-   mpremote connect /dev/cu.wchusbserial585A0103821 fs cp \
+   mpremote connect /dev/tty.usbmodemXXXX fs cp \
      config.py themes.py orb.py netstate.py main.py sensors.py cst816.py \
      tft_config.py backlight.py :
-   mpremote connect /dev/cu.wchusbserial585A0103821 fs mkdir fonts
-   mpremote connect /dev/cu.wchusbserial585A0103821 fs cp \
+   mpremote connect /dev/tty.usbmodemXXXX fs mkdir fonts
+   mpremote connect /dev/tty.usbmodemXXXX fs cp \
      fonts/__init__.py fonts/Inter16.py fonts/Inter24.py fonts/Inter32.py :fonts/
    ```
-4. **Teste l'écran d'abord** (isole tout souci d'init) :
+4. **Testez l’écran d’abord** pour vérifier son initialisation :
    ```bash
    mpremote connect /dev/tty.usbmodemXXXX run test_display.py
    ```
-   Tu dois voir rouge → vert → bleu, puis deux cercles. Si oui, l'init est bonne.
-5. Lance le firmware avec :
+   Vous devez voir rouge → vert → bleu, puis deux cercles. Si oui, l'init est bonne.
+5. Lancez le firmware avec :
    ```bash
-   mpremote connect /dev/cu.wchusbserial585A0103821 reset
+   mpremote connect /dev/tty.usbmodemXXXX reset
    ```
 
 ## Configuration de Lumen
 
-Dans les paramètres Lumen, renseigne une seule fois l'adresse affichée dans
+Dans les paramètres Lumen, renseignez une seule fois l'adresse affichée dans
 `Réglages > Connexion` sur l'ESP32, port `8787`. L'adresse est mémorisée ; Lumen
 se reconnecte automatiquement au démarrage. La pastille supérieure de l'orbe
 est verte lorsque le socket Lumen est actif et grise sinon.
@@ -85,16 +87,16 @@ firmware seul ne met pas à jour le pont inclus dans une ancienne build Lumen.
 ### « Rien ne s'affiche » — checklist
 
 - `ImportError: no module named 'gc9a01'` → le module C n'est pas dans ce
-  firmware. Reflashe le firmware qui contient `gc9a01` (celui de la voiture).
-- Écran noir mais pas d'erreur → vérifie `SPI_ID=2`, `polarity=0`, et le
-  rétroéclairage (`PIN_BL=2`). Ce sont les valeurs de ton `tft_config.py`.
-- Rien avec `main.py` mais `test_display.py` marche → dis-le moi, c'est côté
-  boucle asyncio.
+  firmware. Installez un firmware MicroPython incluant le module C `gc9a01`.
+- Écran noir mais pas d'erreur → vérifiez `SPI_ID=2`, `polarity=0`, et le
+  rétroéclairage (`PIN_BL=2`). Adaptez ces valeurs au câblage de votre carte.
+- Si `test_display.py` fonctionne mais pas `main.py`, consultez les erreurs
+  de la console série et vérifiez la boucle asyncio.
 
 ## Piloter l'orbe depuis le réseau
 
-Active le WiFi dans `config.py` (`WIFI_ENABLE=True`, SSID/mdp). L'ESP32 imprime
-son IP et écoute en TCP sur `NET_PORT`. Envoie des **lignes JSON** :
+Activez le Wi-Fi dans `config.py` (`WIFI_ENABLE=True`, SSID/mdp). L'ESP32 imprime
+son IP et écoute en TCP sur `NET_PORT`. Envoyez des **lignes JSON** :
 
 ```json
 {"theme": "aurora", "mode": "speaking", "level": 0.7}
@@ -103,7 +105,7 @@ son IP et écoute en TCP sur `NET_PORT`. Envoie des **lignes JSON** :
 
 - `theme` : `aurora | violet | ember | ocean | mono`.
 - `mode`  : `idle` / `listening` (respiration) · `speaking` (éclat piloté par `level`).
-- `level` : `0.0..1.0`, amplitude audio instantanée (pousse-la à ~30 Hz).
+- `level` : `0.0..1.0`, amplitude audio instantanée (envoyez-la à environ 30 Hz).
 
 ### Interface locale et événements Lumen
 
@@ -197,8 +199,8 @@ ne doivent contenir ni marge supplémentaire ni texte.
 Pour installer les icônes sur l'ESP32, un seul fichier est désormais requis :
 
 ```bash
-mpremote connect /dev/cu.wchusbserial585A0103821 fs cp icon_masks.py :
-mpremote connect /dev/cu.wchusbserial585A0103821 reset
+mpremote connect /dev/tty.usbmodemXXXX fs cp icon_masks.py :
+mpremote connect /dev/tty.usbmodemXXXX reset
 ```
 
 Les sources vectorielles sont définies dans `tools/export_icons.py`. Le script
@@ -212,17 +214,17 @@ Test depuis le PC : `python3 sender_demo.py <ip_esp32> 8787`.
 ## Pont Lumen OS → orbe physique
 
 Côté web, l'apparence passe par `LumenOrb.applyAppearance(payload)`
-(`src/orb.js`, thème dupliqué avec `main.js`). Mappe ce payload vers le JSON
+(`src/orb.js`, thème dupliqué avec `main.js`). Convertissez ce payload vers le JSON
 ci-dessus : `payload.orbTheme` → `theme` ; début TTS → `{"mode":"speaking"}` +
 `level` depuis l'`AnalyserNode` (le même signal qui anime l'orbe web) ; fin →
 `{"mode":"idle"}` ; micro actif → `{"mode":"listening"}`.
 
 ⚠️ Les couleurs de `themes.py` sont une **3e copie** (après `orb.js` et
-`main.js`) : garde-les synchronisées.
+`main.js`) : conservez les trois palettes synchronisées.
 
 ## Réglages
 
-- **Dégradé plus fin** : monte `RINGS` (28 → 40). C'est du C, ça reste fluide.
+- **Dégradé plus fin** : augmentez `RINGS` (28 → 40). C'est du C, ça reste fluide.
 - **Respiration** : `BREATHE_PERIOD_MS`, `BREATHE_MIN`.
 - **Reflet / cœur** : voir `orb.render()` (position `hx,hy`, rayon `R//5`).
 - **Taille** : `MARGIN` (marge au bord de l'écran).

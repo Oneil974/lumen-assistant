@@ -11,10 +11,10 @@ sans publier de nouvelle version de l'application.
 https://raw.githubusercontent.com/Oneil974/lumen-app/main/market/manifest.json
 ```
 
-L'URL est définie par `OFFICIAL_MANIFEST_URL` dans `src/market/catalog.js` (dépôt de dev).
-**À corriger le jour où ce dépôt est renommé** (`lumen-app` → `lumen-assistant`) : les URL
-`raw.githubusercontent.com` suivent mal les renommages. Le fichier est aussi servi par la page
-GitHub Pages du dépôt, à `https://oneil974.github.io/lumen-app/market/manifest.json`.
+L’URL utilisée par cette version est définie par `OFFICIAL_MANIFEST_URL`
+dans `src/market/catalog.js`. Pour un fork, configurez cette constante avec
+l’adresse de votre manifeste. Le manifeste de ce dépôt est consultable dans
+[market/manifest.json](manifest.json).
 
 Trois catalogues s'additionnent dans le Market, sans jamais se remplacer :
 

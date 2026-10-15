@@ -31,8 +31,8 @@ de synthèse active, le **badge du mode de discussion** juste en dessous, le
 **débit de la dernière réponse** en tokens/s, et l'**occupation du contexte**
 sous la forme `CTX 2.5k/8k`.
 
-Les jetons sont divisés par 1024, pas par 1000 : une fenêtre de contexte est
-toujours une puissance de deux, et 8192 doit se lire « 8k » et non « 8.2k ».
+Les jetons sont affichés en multiples de 1024 : une fenêtre de 8192 jetons
+apparaît comme « 8k ».
 Au-delà de 10k la décimale est abandonnée (`CTX 117k/128k`), la ligne ne
 faisant que treize caractères.
 
@@ -114,8 +114,8 @@ réglage est en cours sont fusionnées — seule la dernière est appliquée, ce
 1. Vérifier que l'écran porte la mention **V4** et qu'il s'agit de la variante
    noir/blanc, pas des variantes `(B)` ou `(G)`.
 2. Flasher MicroPython (ESP32 ou Pico W), copier `*.py` sur la carte.
-3. Créer `config_local.py` (ou modifier `config.py`) avec SSID/mot de passe et
-   les GPIO de votre carte.
+3. Créer `config_local.py` avec SSID/mot de passe et les GPIO de votre carte.
+   Ce fichier est exclu de Git ; conserver les valeurs neutres dans `config.py`.
 4. Redémarrer : l'écran fait un rafraîchissement complet, puis affiche
    l'adresse IP à saisir dans Réglages (elle est aussi imprimée sur la
    console série).

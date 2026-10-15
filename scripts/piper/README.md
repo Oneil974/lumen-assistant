@@ -2,7 +2,8 @@
 
 Sur Linux et Windows, Lumen utilise la release historique `2023.11.14-2` de
 [`rhasspy/piper`](https://github.com/rhasspy/piper/releases/tag/2023.11.14-2),
-distribuée sous licence MIT. Sur macOS, les archives historiques sont
+dont le code Piper est sous licence MIT. Les dépendances embarquées,
+notamment espeak-ng, conservent leurs propres licences. Sur macOS, les archives historiques sont
 incomplètes et l'archive dite ARM64 contient en réalité un binaire Intel. Le
 script installe donc `piper-tts` maintenu dans un environnement Python isolé ;
 ce runtime est sous GPL-3.0.
@@ -36,7 +37,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\piper\install-windows.ps1
 ```
 
 Le moteur est installé par défaut dans
-`%LOCALAPPDATA%\Lumen\Piper` et ajouté au `PATH` de l'utilisateur. Redémarre
+`%LOCALAPPDATA%\Lumen\Piper` et ajouté au `PATH` de l'utilisateur. Redémarrez
 Lumen après l'installation.
 
 ## Installation complète Lumen
@@ -55,4 +56,5 @@ powershell -ExecutionPolicy Bypass -File .\scripts\setup-windows.ps1
 ```
 
 Les modèles de voix ont leur propre licence, affichée dans le catalogue de voix
-de Lumen ; la licence MIT ci-dessus concerne le moteur Piper historique.
+de Lumen ; la licence MIT ci-dessus concerne le code du moteur Piper historique,
+pas l’ensemble des bibliothèques de ses archives.

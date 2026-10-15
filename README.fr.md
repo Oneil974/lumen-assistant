@@ -53,7 +53,7 @@ Choisissez au lancement — Lumen s'en souvient. Les mêmes discussions, fichier
 
 ## 🧠 Un assistant qui choisit avant de répondre *(0.3)*
 
-- **Routeur par modèle de décision** — un petit modèle local spécialisé (Tev1, Laya, Clef Flash ou LiquidAI Open d1) lit chaque demande en premier et choisit le chemin en quelques centaines de millisecondes : réponse directe, outils ou orchestration. S'il hésite, Lumen retombe sur ses règles.
+- **Routeur par modèle de décision** — un petit modèle local spécialisé (Kev GGUF, Tev1, Laya, Clef Flash ou LiquidAI Open d1) lit chaque demande en premier et choisit le chemin en quelques centaines de millisecondes : réponse directe, outils ou orchestration. S'il hésite, Lumen retombe sur ses règles.
 - **Orchestration et harnais** — les demandes complexes sont découpées en étapes visibles (analyse, outils, données, rédaction, vérification), avec des budgets de temps et de jetons qui gardent les petits modèles sur les rails.
 - **Mode hybride** — si le modèle local échoue, Lumen *propose* de réessayer avec votre modèle API. Rien ne part sans votre accord.
 
@@ -85,7 +85,7 @@ Un environnement de travail complet dans une fenêtre : session multi-profils, f
 - **Designer Fluxo** — éditeur visuel de workflows : déclencheurs, actions système, blocs IA, notifications.
 - **Connecteurs MCP** — les serveurs Model Context Protocol se branchent en un clic (distants officiels, HTTPS avec jeton en en-tête).
 - **Boîte à outils** — vous choisissez les outils publiés au modèle, un par un : un outil inutile coûte du contexte avant même votre question.
-- **Recherche web activable** — désactivée par défaut ; rien ne part en ligne tant que vous ne l'allumez pas. L'extraction des pages et des documents est plus fiable en 0.2.
+- **Recherche web activable** — désactivée par défaut ; activez-la pour autoriser les recherches de l’assistant en ligne. L'extraction des pages et des documents est plus fiable en 0.2.
 - **Profiler** — ce que chaque appel consomme vraiment : contexte, outils, mémoire, débit.
 
 ## 🎨 Une quarantaine d'apps, chacune dans sa fenêtre
@@ -148,7 +148,7 @@ Détails : **[scripts/README.md](scripts/README.md)**.
 
 ## Confidentialité
 
-En mode local, **aucune donnée ne quitte votre machine** : modèle, inférence, mémoire, documents et bases restent sur votre disque. La recherche web et le mode API cloud sont optionnels et désactivés par défaut ; la clé API, quand il y en a une, ne quitte jamais le backend.
+Avec un modèle local, l’inférence et vos données de travail peuvent rester sur votre machine. Les fonctions web, mail, API cloud, téléchargements de modèles, mises à jour et intégrations réseau communiquent avec les services correspondants. Consultez la [politique de confidentialité](docs/privacy-policy.md) et le fournisseur configuré avant d’envoyer des données sensibles.
 
 <p align="center"><img src="docs/assets/readme-divider.svg" alt="" width="700"></p>
 
