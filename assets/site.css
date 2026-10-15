@@ -820,3 +820,5 @@ section { border-top: 0; padding: 96px 0; }
 /* L'ancienne règle `.dm-orb span` (yeux blancs de l'orbe) visait aussi la marque. */
 .dm-orb .brand-mark { width: 24px; height: 20px; border-radius: 6px; background: linear-gradient(180deg, #e8354f, #b8132f);
   box-shadow: inset 0 -2px 0 rgb(0 0 0 / 18%); }
+
+.avatar-stage .hero-soft[hidden] { display: none !important; }

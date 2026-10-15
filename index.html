@@ -12,8 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
-  <link rel="stylesheet" href="assets/site.css" />
-  <link rel="stylesheet" href="assets/soft-orb.css" />
+  <link rel="stylesheet" href="assets/site.css?v=20261015" />
+  <link rel="stylesheet" href="assets/soft-orb.css?v=20261015" />
 </head>
 <body>
 
@@ -51,8 +51,8 @@
     <!-- Avatar : Robot Head (défaut, rendu Canvas de l'app : assets/robot/)
          ou orbe coloré (soft-sky, CSS). Choix mémorisé, cf. assets/avatar.js. -->
     <div class="avatar-stage" id="avatar-stage" data-avatar="robot">
-      <div class="robot-host" id="robot-host" data-state="idle" title="Cliquez-moi" data-en-title="Click me"></div>
-      <div class="hero-soft" data-orb-renderer="soft" data-state="idle" aria-hidden="true">
+      <div class="robot-host" id="robot-host" style="position:relative;width:150px;height:150px;margin:30px auto 0" data-state="idle" title="Cliquez-moi" data-en-title="Click me"></div>
+      <div class="hero-soft" data-orb-renderer="soft" data-state="idle" aria-hidden="true" hidden>
         <div class="lumen-soft" style="--soft-color:#a9ddff;--soft-shade:#4396d4;--soft-eyes:#11253a;--soft-tempo:5s;--soft-tilt:2deg;">
           <div class="lumen-soft-pose"><div class="lumen-soft-body"><span class="lumen-soft-shine"></span><span class="lumen-soft-blush"></span><div class="lumen-soft-face"><i></i><i></i></div><span class="lumen-soft-mouth"></span></div></div>
         </div>
@@ -803,7 +803,7 @@
   </div>
 </footer>
 
-<script src="assets/site.js"></script>
-<script type="module" src="assets/avatar.js"></script>
+<script src="assets/site.js?v=20261015"></script>
+<script type="module" src="assets/avatar.js?v=20261015"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@
 //
 // Les puces sous la barre font une petite démonstration : la question se tape
 // dans la barre, l'avatar réfléchit, puis « parle ».
-import { mountRobotHead } from "./robot/robot-head.js";
+import { mountRobotHead } from "./robot/robot-head.js?v=20261015";
 
 const stage = document.getElementById("avatar-stage");
 const host = document.getElementById("robot-host");
@@ -27,6 +27,7 @@ function pick(kind) {
   const k = kind === "orb" || !robot ? "orb" : "robot";
   stage.dataset.avatar = k;
   robot?.setActive(k === "robot");
+  if (soft) soft.hidden = k !== "orb";
   document.querySelectorAll("[data-avatar-pick]").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.avatarPick === k)));
   try { localStorage.setItem(KEY, k); } catch {}
 }
