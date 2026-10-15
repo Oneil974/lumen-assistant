@@ -23,7 +23,7 @@ usage() {
   awk 'NR>1 && /^#/ { sub(/^# ?/, ""); print; next } NR>1 { exit }' "$0"
   cat <<'USAGE'
 
-Cibles : lumen | server   (aucune = les deux ; pro = alias de lumen)
+Cibles : lumen | server   (aucune = lumen ; pro = alias de lumen)
 
 Options :
   --dry-run       Affiche les commandes sans les exécuter
@@ -42,7 +42,7 @@ while [ $# -gt 0 ]; do
     *) echo "Argument inconnu : $1" >&2; usage >&2; exit 2 ;;
   esac
 done
-[ ${#TARGETS[@]} -eq 0 ] && TARGETS=(lumen server)
+[ ${#TARGETS[@]} -eq 0 ] && TARGETS=(lumen)
 UNIQUE_TARGETS=()
 for target in "${TARGETS[@]}"; do
   found=0

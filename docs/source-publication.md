@@ -12,15 +12,13 @@ npm run source:plan
 npm run source:sync
 ```
 
-Sync Hub propose ces deux opérations dans **Code source**. Pour changer
-la destination, définir `public_source_dir` dans sa configuration locale,
-ou passer `--out` au script. Un dossier extérieur au workspace peut exiger
+Le Sync Hub privé du mainteneur propose aussi ces opérations dans **Code source**, mais son code n’est pas distribué dans ce dépôt. Pour changer la destination publique, passer `--out` au script. Un dossier extérieur au workspace peut exiger
 une autorisation du système ou de l'outil qui lance la commande.
 
 ## Sélection
 
 La liste autorisée est dans `ROOTS` du script. Elle comprend les interfaces,
-backend, firmwares, compagnons, serveur autonome, documentation et outils.
+backend, firmwares sélectionnés, compagnon Apple, documentation et outils publics.
 Le répertoire d'entraînement, les dossiers de création graphique à la racine,
 captures et backups ne sont pas exportés. La sélection n'utilise pas `git`,
 donc fonctionne avant la création du premier dépôt public.
@@ -58,3 +56,7 @@ Voir [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
 Créer et pousser le dépôt constitue une opération distincte. Le script ne fait
 ni `git init`, ni commit, ni push. Les clés et endpoints de signature/catalogue
 doivent être ceux de l'éditeur des binaires distribués.
+
+## Composants privés exclus
+
+Les répertoires `tools/synchub/`, `tools/synchub-app/`, `lumen-server/`, `lumen-robotd/` `m5fire-orb/` et `hardware/pi-case/` sont exclus, y compris des synchronisations suivantes. Les identifiants Wi-Fi des `config.py` publiés sont remplacés par des valeurs neutres, sans modifier les originaux privés. Le contrôle examine aussi les listes et tuples Python de réseaux Wi-Fi et refuse une autre configuration d’identifiants détectée. Les originaux restent uniquement dans le poste de développement.

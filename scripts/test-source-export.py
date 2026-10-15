@@ -69,8 +69,32 @@ class ExportTests(unittest.TestCase):
         self.assertFalse((self.out / "src/user.db").exists())
         self.assertTrue((self.out / "src-tauri/resources/llama-server/README.md").exists())
         self.assertFalse((self.out / "src-tauri/resources/llama-server/macos-arm64").exists())
-        self.assertEqual(json.loads((self.out / "tools/synchub/targets.json").read_text())["targets"], [])
+        self.assertFalse((self.out / "tools/synchub").exists())
         self.assertNotIn("/Volumes", (self.out / "dev.sh").read_text())
+
+    def test_private_projects_are_never_exported(self):
+        for name in ["tools/synchub", "tools/synchub-app", "lumen-server", "lumen-robotd", "m5fire-orb", "hardware/pi-case"]:
+            folder = self.root / name
+            folder.mkdir(parents=True, exist_ok=True)
+            (folder / "private.py").write_text("local only")
+        module.export(self.out)
+        for name in ["tools/synchub", "tools/synchub-app", "lumen-server", "lumen-robotd", "m5fire-orb", "hardware/pi-case"]:
+            self.assertFalse((self.out / name).exists())
+
+    def test_wifi_configs_are_sanitized_and_tuple_credentials_are_refused(self):
+        (self.root / "esp32-orb").mkdir()
+        config = self.root / "esp32-orb/config.py"
+        config.write_text('WIFI_ENABLE = True\nWIFI_SSID = "private-network"\nWIFI_PASS = "private-password"\nWIFI_NETWORKS = [("network", "password")]\n')
+        module.export(self.out)
+        public = (self.out / "esp32-orb/config.py").read_text()
+        self.assertIn("WIFI_ENABLE = False", public)
+        self.assertIn("WIFI_NETWORKS = []", public)
+        self.assertNotIn("private-password", public)
+        self.assertIn("private-password", config.read_text())
+        (self.root / "src/settings.py").write_text('WIFI_NETWORKS = [("private-network", "private-password")]\n')
+        with self.assertRaises(ValueError) as error:
+            module.export(self.out)
+        self.assertNotIn("private-password", str(error.exception))
 
     def test_symlink_and_manifest_traversal_are_refused(self):
         (self.root / "src/link").symlink_to(self.root / ".gitignore")

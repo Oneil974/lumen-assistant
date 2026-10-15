@@ -48,3 +48,12 @@ tools/synchub/targets.local.json
 **/__pycache__/
 
 .lumen-source-export.json
+# Private projects and workstation credentials
+/tools/synchub/
+/tools/synchub-app/
+/lumen-server/
+/lumen-robotd/
+/m5fire-orb/
+/hardware/pi-case/
+**/config_local.py
+**/.cargo/config.toml

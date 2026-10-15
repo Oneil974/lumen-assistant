@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 import os
@@ -14,17 +15,17 @@ import tempfile
 ROOT = Path(__file__).resolve().parent.parent
 MARKER = ".lumen-source-export.json"
 ROOTS = ["src", "src-tauri", "scripts", "config", "docs", ".github", "tools",
-         "ios-companion", "lumen-server", "lumen-controller", "lumen-robotd",
-         "esp32-orb", "m5fire-orb", "hardware", "package.json", "package-lock.json",
+         "ios-companion", "lumen-controller",
+         "esp32-orb", "hardware", "package.json", "package-lock.json",
          "rust-toolchain.toml", "README.md", "README.fr.md", "BUILDING.md", "LICENSE.md", "COPYING", "NOTICE",
          "THIRD_PARTY_NOTICES.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md"]
 SKIP_PARTS = {".git", "node_modules", "target", "gen", "dist", "build", "builds",
               "__pycache__", ".venv", "venv", "models", "outputs", ".DS_Store",
               ".pytest_cache", "DerivedData", "xcuserdata", "reports"}
 SKIP_PATHS = {"src-tauri/.cargo/config.toml", "tools/synchub/targets.json",
-              "scripts/sync-pc.sh", "scripts/slice-packs.mjs", "scripts/pack-kaykit.mjs"}
+              "scripts/test-m5-agent-sprites.py", "scripts/sync-pc.sh", "scripts/slice-packs.mjs", "scripts/pack-kaykit.mjs"}
 SKIP_PREFIXES = ("docs/audits/", "src/village/assets/packs/", "src/lib/avatars/metrocity/",
-                 "tools/synchub-app/src-tauri/ui/", "scripts/orch-eval/report-")
+                 "tools/synchub/", "tools/synchub-app/", "lumen-server/", "lumen-robotd/", "m5fire-orb/", "hardware/pi-case/", "scripts/orch-eval/report-")
 SECRET_NAME = re.compile(r"(?:^\.env(?:\.|$)|\.(?:pem|p12|pfx|p8|key|keystore|db|sqlite|sqlite3|gguf|sparseimage)$|^id_(?:rsa|ed25519)$)", re.I)
 SECRET_CONTENT = re.compile(
     rb"-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----\r?\n[A-Za-z0-9+/]{32,}"
@@ -60,13 +61,62 @@ def excluded(rel: str, directory: bool = False) -> bool:
 def generated() -> dict[str, bytes]:
     return {
         "dev.sh": b'#!/usr/bin/env bash\nset -euo pipefail\ncd "$(dirname "$0")"\nexec npm run tauri dev -- "$@"\n',
-        ".gitignore": (ROOT / ".gitignore").read_bytes() + b"\n" + MARKER.encode() + b"\n",
-        "tools/synchub/targets.json": (ROOT / "tools/synchub/targets.example.json").read_bytes(),
+        ".gitignore": (ROOT / ".gitignore").read_bytes() + b"\n" + MARKER.encode() + b"\n# Private projects and workstation credentials\n/tools/synchub/\n/tools/synchub-app/\n/lumen-server/\n/lumen-robotd/\n/m5fire-orb/\n/hardware/pi-case/\n**/config_local.py\n**/.cargo/config.toml\n",
         "src/village/assets/packs/manifest.json": b"[]\n",
         # Keep the optional asset directory so the shared dependency graph can
         # package it, without redistributing artwork with unverified rights.
         "src/lib/avatars/metrocity/README.md": b"# Optional artwork omitted\n\nMetroCity images are excluded pending source redistribution permission.\nChoose an available Kenney avatar in this source distribution.\n",
     }
+
+
+def sanitize_config(rel: str, data: bytes) -> bytes:
+    """Never export workstation Wi-Fi settings, including tuple/list forms."""
+    if not rel.endswith("/config.py"):
+        return data
+    try:
+        tree = ast.parse(data.decode("utf-8-sig"))
+    except (SyntaxError, UnicodeDecodeError):
+        return data
+    replacements = {"WIFI_ENABLE": "False", "WIFI_SSID": '"CHANGE_ME"',
+                    "WIFI_PASS": '"CHANGE_ME"', "WIFI_PASSWORD": '"CHANGE_ME"',
+                    "WIFI_NETWORKS": "[]"}
+    lines = data.decode("utf-8-sig").splitlines(keepends=True)
+    edits = []
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+            name = node.targets[0].id
+            if name in replacements:
+                edits.append((node.lineno - 1, node.end_lineno, f"{name} = {replacements[name]}\n"))
+    for start, end, replacement in reversed(edits):
+        lines[start:end] = [replacement]
+    return "".join(lines).encode()
+
+
+def check_python_credentials(rel: str, data: bytes) -> None:
+    if not rel.endswith(".py"):
+        return
+    try:
+        tree = ast.parse(data.decode("utf-8-sig"))
+    except (SyntaxError, UnicodeDecodeError):
+        return
+    names = {"WIFI_SSID", "WIFI_PASS", "WIFI_PASSWORD", "WIFI_NETWORKS", "API_KEY", "BOT_TOKEN", "ACCESS_TOKEN", "CLIENT_SECRET"}
+    def configured(value):
+        if isinstance(value, str):
+            return bool(value) and value != "CHANGE_ME" and not value.startswith(("YOUR_", "VOTRE_"))
+        if isinstance(value, dict):
+            return any(configured(v) for v in value.values())
+        if isinstance(value, (list, tuple)):
+            return any(configured(v) for v in value)
+        return False
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Assign) or not any(isinstance(t, ast.Name) and t.id.upper() in names for t in node.targets):
+            continue
+        try:
+            value = ast.literal_eval(node.value)
+        except (ValueError, TypeError):
+            continue
+        if configured(value):
+            raise ValueError(f"Configured credentials in {rel}:{node.lineno}; export stopped (value hidden)")
 
 
 def plan(source: Path | None = None) -> dict[str, bytes]:
@@ -98,7 +148,15 @@ def plan(source: Path | None = None) -> dict[str, bytes]:
                 continue
             if p.is_symlink():
                 raise ValueError(f"Source symlink refused: {rel}")
-            data = p.read_bytes()
+            data = sanitize_config(rel, p.read_bytes())
+            check_python_credentials(rel, data)
+            if rel == "package.json":
+                package = json.loads(data)
+                for private_tool in ("synchub", "build:server"):
+                    package.get("scripts", {}).pop(private_tool, None)
+                data = (json.dumps(package, indent=2, ensure_ascii=False) + "\n").encode()
+            if rel == "scripts/build-all.sh":
+                data = data.replace(b"TARGETS=(lumen server)", b"TARGETS=(lumen)").replace(b"aucune = les deux", b"aucune = lumen")
             if SECRET_CONTENT.search(data):
                 raise ValueError(f"Possible credential in {rel}; export stopped (value hidden)")
             # A historical application ID only locates a developer cache.

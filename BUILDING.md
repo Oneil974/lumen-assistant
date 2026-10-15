@@ -204,7 +204,7 @@ Un correctif local documenté de `object` permet à espflash d'utiliser le
 décompresseur `ruzstd` corrigé : [détails](src-tauri/crates/object/LUMEN-PATCH.md).
 Aucune alerte de sécurité n'est masquée par ce patch.
 
-## Dossier de publication et Sync Hub
+## Dossier de publication
 
 Le dossier de travail du mainteneur conserve sa configuration APFS et ses
 machines de build. Le miroir public se régénère indépendamment :
@@ -214,11 +214,10 @@ npm run source:plan                # aperçu, aucune copie
 npm run source:sync                # synchronise public-source/
 # Autre destination, vide au premier export :
 python3 scripts/export-source.py --out /chemin/vers/lumen-public
-npm run synchub                    # onglet « Code source »
 ```
 
 Le script utilise une liste de répertoires autorisés, filtre les données
-locales et génère un `dev.sh` portable et une configuration Sync Hub d'exemple.
+locales et génère un `dev.sh` portable.
 Il ne copie pas `src-tauri/.cargo/config.toml`, les cibles réseau privées,
 clés, bases locales, caches, modèles, anciennes releases et rapports de travail.
 Les packs Gaming/Cosy et MetroCity, sans preuve de redistribution jointe,
@@ -229,8 +228,7 @@ manifeste. Ils préservent `.git` et les fichiers étrangers ; une modification
 locale d'un fichier exporté provoque un arrêt pour éviter de l'écraser.
 L'export **ne crée aucun commit et ne pousse rien sur Internet**. Le contrôle
 anti-secrets est une défense partielle ; examiner la sélection avant le premier push.
-Voir [docs/source-publication.md](docs/source-publication.md) et
-[tools/synchub/README.md](tools/synchub/README.md).
+Voir [docs/source-publication.md](docs/source-publication.md).
 
 ## Structure
 
@@ -244,9 +242,7 @@ src-tauri/                Backend Rust et configuration Tauri
   crates/object/           Adaptation de dépendance documentée (MIT/Apache)
 scripts/                  Build, catalogue, tests, audit et export source
 config/                   Versions des moteurs embarqués
-tools/synchub/            Pilotage des builds et export public
 ios-companion/            Compagnon Apple ; projet généré avec XcodeGen
-lumen-server/             Serveur autonome et sa console
 docs/                     Architecture, guides et procédures
 ```
 
@@ -261,3 +257,5 @@ Le Catalogue propose **Kev 0.8B Q8, 4B Q4_K_M et 9B Q4_K_M**, au format GGUF pou
 Dans **Catalogue → Modèles → OCR**, téléchargez **GLM-OCR 0.9B Q8** (environ 1,43 Go avec projecteur) ou **PaddleOCR-VL 1.6 0.9B** (environ 1,82 Go). Le téléchargement utilisateur vient de Hugging Face ; les poids et le projecteur GGUF restent séparés du code publié. Dans Études, le sélecteur d’import propose aussi ce téléchargement. Les images PNG/JPEG/WebP/BMP et les pages de PDF sans texte exploitable passent par le modèle local ; le texte natif est conservé. Aucun service OCR distant n’est appelé. Limites : 200 pages, 400 000 caractères et 4 096 tokens de transcription par page ; une page tronquée provoque une erreur explicite. Annuler arrête l’import après la requête courante et ignore son résultat. Relisez la transcription avant de l’utiliser.
 
 **⌘⌥P** (macOS) ou **Ctrl+Alt+P** (Windows/Linux) ouvre une petite fenêtre de question/réponse, avec le modèle de discussion déjà configuré. Si le raccourci est occupé, repli sur **Alt+Maj+P** ; le menu de l’icône Lumen propose aussi « Question rapide… ». Entrée envoie, Maj+Entrée ajoute une ligne, Échap masque et annule la réponse. Le mode n’ajoute pas de conversation à l’historique et ne lance aucun outil. Le fournisseur configuré reste affiché ; une configuration API distante y envoie la question.
+
+Les projets et outils privés Sync Hub, Lumen Server, Lumen Robotd et M5Fire ne font pas partie de cette publication. Les configurations Wi-Fi exportées sont neutralisées ; renseignez vos identifiants uniquement dans une configuration locale exclue de Git.
