@@ -65,7 +65,7 @@ def generated() -> dict[str, bytes]:
         "src/village/assets/packs/manifest.json": b"[]\n",
         # Keep the optional asset directory so the shared dependency graph can
         # package it, without redistributing artwork with unverified rights.
-        "src/lib/avatars/metrocity/README.md": b"# Optional artwork omitted\n\nMetroCity images are excluded pending source redistribution permission.\nChoose an available Kenney avatar in this source distribution.\n",
+        "src/lib/avatars/metrocity/README.md": b"# Optional artwork omitted\n\nMetroCity artwork is not included in this source distribution.\nChoose an available Kenney avatar in this source distribution.\n",
     }
 
 

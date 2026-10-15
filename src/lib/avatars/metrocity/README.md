@@ -1,4 +1,4 @@
 # Optional artwork omitted
 
-MetroCity images are excluded pending source redistribution permission.
+MetroCity artwork is not included in this source distribution.
 Choose an available Kenney avatar in this source distribution.

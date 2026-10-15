@@ -85,7 +85,7 @@ récupèrent séparément. Voir la [politique de confidentialité](docs/privacy-
 - **zip et unzip** pour construire le catalogue avec `apps:package`.
 - **Git et CMake** pour construire llama.cpp et whisper.cpp. Leurs versions
   sont fixées dans `config/llama-cpp.version` et `config/whisper-cpp.version`.
-- **Python 3.11+** pour l'export source et Sync Hub ; il n'est pas requis pour
+- **Python 3.11+** pour les outils d’export source ; il n'est pas requis pour
   la simple interface JavaScript. Les moteurs Python optionnels ont leur runtime propre.
 - Accès réseau pour récupérer les dépendances et les sources des moteurs au
   premier build. Le téléchargement des modèles est distinct et peut être volumineux.
@@ -177,7 +177,7 @@ nécessaires à tous les usages. Leurs scripts d'installation et licences sont
 distincts. Les scripts `setup-*` installent des moteurs et modèles pour
 l'utilisation ; ils ne remplacent pas la compilation de Lumen.
 
-La signature et la publication du catalogue nécessitent **tes propres clés**.
+La signature et la publication du catalogue nécessitent **vos propres clés**.
 Ne pas réutiliser les clés ou endpoints de l'éditeur pour un fork : configurer
 les endpoints catalogue/updater avant de diffuser ses builds. Voir
 [architecture des paquets](docs/ARCHITECTURE-APPS.md) et [release](docs/release.md).
@@ -204,31 +204,11 @@ Un correctif local documenté de `object` permet à espflash d'utiliser le
 décompresseur `ruzstd` corrigé : [détails](src-tauri/crates/object/LUMEN-PATCH.md).
 Aucune alerte de sécurité n'est masquée par ce patch.
 
-## Dossier de publication
+## Export des sources
 
-Le dossier de travail du mainteneur conserve sa configuration APFS et ses
-machines de build. Le miroir public se régénère indépendamment :
-
-```bash
-npm run source:plan                # aperçu, aucune copie
-npm run source:sync                # synchronise public-source/
-# Autre destination, vide au premier export :
-python3 scripts/export-source.py --out /chemin/vers/lumen-public
-```
-
-Le script utilise une liste de répertoires autorisés, filtre les données
-locales et génère un `dev.sh` portable.
-Il ne copie pas `src-tauri/.cargo/config.toml`, les cibles réseau privées,
-clés, bases locales, caches, modèles, anciennes releases et rapports de travail.
-Les packs Gaming/Cosy et MetroCity, sans preuve de redistribution jointe,
-sont exclus du miroir ; les ressources libres identifiées sont conservées.
-
-Les exports suivants retirent uniquement les anciens fichiers gérés par le
-manifeste. Ils préservent `.git` et les fichiers étrangers ; une modification
-locale d'un fichier exporté provoque un arrêt pour éviter de l'écraser.
-L'export **ne crée aucun commit et ne pousse rien sur Internet**. Le contrôle
-anti-secrets est une défense partielle ; examiner la sélection avant le premier push.
-Voir [docs/source-publication.md](docs/source-publication.md).
+Pour créer une copie portable des sources, consultez le
+[guide d’export](docs/source-publication.md). Cette étape est facultative pour
+compiler ou contribuer depuis ce dépôt.
 
 ## Structure
 
@@ -258,4 +238,4 @@ Dans **Catalogue → Modèles → OCR**, téléchargez **GLM-OCR 0.9B Q8** (envi
 
 **⌘⌥P** (macOS) ou **Ctrl+Alt+P** (Windows/Linux) ouvre une petite fenêtre de question/réponse, avec le modèle de discussion déjà configuré. Si le raccourci est occupé, repli sur **Alt+Maj+P** ; le menu de l’icône Lumen propose aussi « Question rapide… ». Entrée envoie, Maj+Entrée ajoute une ligne, Échap masque et annule la réponse. Le mode n’ajoute pas de conversation à l’historique et ne lance aucun outil. Le fournisseur configuré reste affiché ; une configuration API distante y envoie la question.
 
-Les projets et outils privés Sync Hub, Lumen Server, Lumen Robotd et M5Fire ne font pas partie de cette publication. Les configurations Wi-Fi exportées sont neutralisées ; renseignez vos identifiants uniquement dans une configuration locale exclue de Git.
+Pour les firmwares, renseignez vos identifiants Wi-Fi dans une configuration locale exclue de Git, conformément au guide du matériel utilisé.

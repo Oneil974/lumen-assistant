@@ -176,4 +176,4 @@ npm run apps:package
 
 Models and native runtime binaries are downloaded or built separately. The Catalogue offers **Kev GGUF** decision models and **GLM-OCR / PaddleOCR-VL GGUF** for local scanning in Studies. Quick questions use a discreet window: **Cmd+Alt+P** on macOS or **Ctrl+Alt+P** on Windows/Linux (fallback Alt+Shift+P).
 
-Contributions: [CONTRIBUTING.md](CONTRIBUTING.md). Report vulnerabilities privately through [SECURITY.md](SECURITY.md). This source publication is not a new binary release; existing audit limitations and platform validation are documented in [docs/open-source-preparation.md](docs/open-source-preparation.md).
+Contributions: [CONTRIBUTING.md](CONTRIBUTING.md). Report vulnerabilities privately through [SECURITY.md](SECURITY.md). For audit limitations and platform validation, see [docs/open-source-preparation.md](docs/open-source-preparation.md).

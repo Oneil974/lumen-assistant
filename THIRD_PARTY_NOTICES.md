@@ -1,15 +1,14 @@
-# Composants tiers et choix de licence
+# Notices des composants tiers
 
-État de l'inventaire : 15 octobre 2026. Le choix du code original de Lumen est
-**GPL-3.0-or-later**, pour conserver libres les versions dérivées distribuées.
+Inventaire du 15 octobre 2026. Le code original de Lumen est sous
+**GPL-3.0-or-later**.
 Le texte complet figure dans [COPYING](COPYING). La GPL ne remplace pas les
 licences propres aux composants et contenus tiers.
 
 ## Dépendances de l'application de bureau
 
 Le lockfile npm contient **185 paquets**, outils et variantes de plateforme
-compris. L'inventaire Cargo du bureau couvre **765 paquets** après correction
-de sécurité, y compris les cibles non actives. Ces chiffres ne correspondent
+compris. L'inventaire Cargo du bureau couvre **765 paquets** y compris les cibles non actives. Ces chiffres ne correspondent
 pas au nombre de bibliothèques effectivement chargées par l'application.
 
 | Composant direct ou embarqué | Licence identifiée | Mentions |
@@ -50,20 +49,10 @@ Sources : [GNU](https://www.gnu.org/licenses/license-list.html.en),
   [scripts/piper/README.md](scripts/piper/README.md). Les voix ont leurs licences propres.
 - **Bonsai / mflux / runtimes Python, LiteRT, Kokoro** : distributions
   optionnelles à inventorier par archive et par version avant redistribution.
-  Elles ne sont pas recopiées dans le miroir source ; le choix GPL de Lumen
+  Les binaires et poids ne sont pas inclus dans ce dépôt ; la GPL de Lumen
   ne vaut pas autorisation sur leurs modèles, poids ou dépendances natives.
 - **SDK Apple et services distants** : conditions de leurs éditeurs,
   distinctes de la GPL de Lumen.
-
-## Ressources graphiques exclues du miroir public
-
-Les packs Gaming Room Interiors, Minimalist Interiors (Gaming/Cosy découpés)
-et MetroCity n'ont pas de preuve locale suffisante de redistribution des
-fichiers source. Ils restent dans le poste de travail mais sont filtrés par
-l'export ; le manifeste des décors devient vide. Une licence permettant
-l'intégration dans un jeu ne suffit pas automatiquement à republier les PNG
-dans un dépôt de sources. Réintégrer uniquement après vérification explicite
-ou remplacer ces ressources.
 
 ## Collecte et limites de vérification
 
@@ -74,25 +63,22 @@ python3 scripts/collect-rust-licenses.py
 ```
 
 Le premier script collecte les textes des paquets npm installés sur la
-plateforme courante (140 sur le poste macOS de cet inventaire ; variantes
-optionnelles absentes omises). Le second utilise `cargo metadata --locked
+plateforme courante ; les variantes optionnelles non installées sont omises. Le second utilise `cargo metadata --locked
 --offline` et nécessite que les dépendances aient été récupérées. Les
-inventaires ne contiennent pas de chemins privés du poste. Les textes collectés
-dans `src/legal/` sont inclus dans le noyau livré.
+textes collectés dans `src/legal/` sont inclus dans le noyau livré.
 
-**Points à résoudre avant d'affirmer que toutes les redistributions sont
-couvertes :** `buffers@0.1.1` ne déclare pas sa licence dans l'archive npm et
+**Limites de l’inventaire :** `buffers@0.1.1` ne déclare pas sa licence dans l'archive npm et
 n'y joint pas de texte autonome ; plusieurs autres archives ne joignent pas
 non plus de fichier de licence racine, malgré une expression déclarée.
 Les inventaires signalent ces cas sans leur inventer une licence. L'absence
 d'un fichier racine ne prouve pas l'absence de toute mention dans le code.
 La collecte ne remplace pas la revue de ces cas ni l'inventaire des dépendances
-des compagnons, du serveur autonome et des archives natives optionnelles.
+des compagnons et des archives natives optionnelles.
 
 Pour une release binaire GPL, fournir le code source correspondant exact,
 les scripts et modifications nécessaires au build et les mentions tierces,
-pas uniquement un lien vers une branche qui évolue. Cette préparation de
-sources n'est pas une certification de conformité de toutes les archives.
+pas uniquement un lien vers une branche qui évolue. Chaque archive binaire doit être accompagnée des notices et sources
+correspondant aux composants qu’elle contient.
 
 ## Modèles GGUF optionnels : décision et OCR
 

@@ -167,4 +167,4 @@ npm run tauri dev
 
 Les modèles et moteurs binaires sont téléchargés ou construits séparément. Le Catalogue propose **Kev GGUF** pour la décision et **GLM-OCR / PaddleOCR-VL GGUF** pour numériser localement dans Études. La fenêtre de question discrète s’ouvre avec **⌘⌥P** sur macOS ou **Ctrl+Alt+P** sur Windows/Linux (repli Alt+Maj+P).
 
-[Contribuer](CONTRIBUTING.md) · [Signaler une vulnérabilité en privé](SECURITY.md). Cette publication de sources ne constitue pas une nouvelle release binaire ; les limites des audits et validations sont indiquées dans [docs/open-source-preparation.md](docs/open-source-preparation.md).
+[Contribuer](CONTRIBUTING.md) · [Signaler une vulnérabilité en privé](SECURITY.md). Les limites des audits et des validations sont documentées dans [docs/open-source-preparation.md](docs/open-source-preparation.md).
