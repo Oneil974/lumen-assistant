@@ -22,19 +22,16 @@ Please report suspected vulnerabilities privately.
 - Include: affected version, operating system, reproduction steps, expected
   impact, logs or screenshots if useful, and whether the issue is actively
   exploited.
-- Do not publish exploit details until a fix or mitigation is available.
+- Remove passwords, API keys, tokens and personal data from logs or screenshots.
+  Do not send live credentials or unredacted user databases.
+- Coordinate disclosure with the maintainer before publishing exploit details.
 
-## Response Targets
+## Handling Reports
 
-| Severity | Initial response | Target remediation |
-| --- | --- | --- |
-| Critical | 2 business days | 7 calendar days |
-| High | 3 business days | 14 calendar days |
-| Medium | 5 business days | 30 calendar days |
-| Low | 10 business days | Next planned release |
-
-If a vulnerability is already being actively exploited, it is handled as a
-critical incident regardless of its initial score.
+Reports are reviewed on a best-effort basis, with priority given to active
+exploitation and issues with the greatest impact. Response and remediation
+times depend on maintainer availability and the complexity of the issue;
+this project does not commit to fixed response or resolution deadlines.
 
 ## Coordinated Disclosure
 
@@ -42,20 +39,10 @@ We aim to:
 
 1. Acknowledge the report.
 2. Confirm whether the issue is reproducible.
-3. Assign severity using CVSS v4.0 or the closest applicable CVSS version.
+3. Assess severity based on impact and exploitability, using CVSS where useful.
 4. Prepare a fix, mitigation, or documented risk acceptance.
 5. Credit the reporter if requested.
 6. Publish an advisory when users need to take action.
-
-## Cyber Resilience Act Reporting
-
-For products made available on the EU market, actively exploited vulnerabilities
-and severe incidents must be assessed for reporting under Regulation (EU)
-2024/2847, the Cyber Resilience Act. Lumen's internal workflow is documented in
-`docs/vulnerability-management.md`.
-
-The CRA reporting obligation starts on 2026-09-11. Main CRA obligations apply
-from 2027-12-11.
 
 ## Security Scope
 
@@ -85,18 +72,21 @@ npm run security:audit
 npm run security:sbom
 ```
 
-Generated reports are written to `dist/security/` and should be attached to the
-release record.
+Generated reports are written to `dist/security/`. Review and redact them
+before sharing or attaching them to a release. Dependency audits do not
+replace checks for exposed credentials, code review or platform testing.
 
 ## Dependency audit — 2026-10-15
 
-The desktop and standalone server lockfiles report zero known vulnerabilities
-with the RustSec database fetched for this review. SQL Server now uses the
+The desktop Cargo lockfile reported zero known vulnerabilities with the
+RustSec database fetched for the 2026-10-15 review. This is a dated audit
+result, not a guarantee about future advisories. SQL Server now uses the
 official tiberius 0.13.0 TLS stack. A documented local object adaptation
 selects patched ruzstd 0.9.1 for firmware parsing; see
-`src-tauri/crates/object/LUMEN-PATCH.md`. No advisory is suppressed.
+[`LUMEN-PATCH.md`](src-tauri/crates/object/LUMEN-PATCH.md). No advisory is suppressed.
 
 The complete audit still exits nonzero for two moderate npm findings
-(ExcelJS/uuid), reviewed under R-009 in `docs/security-risk-register.md`.
+(ExcelJS/uuid), reviewed under R-009 in the
+[security risk register](docs/security-risk-register.md).
 An accepted risk is not a clean npm audit. Real SQL Server interoperability,
 platform builds and optional native engine archives require separate checks.

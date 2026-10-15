@@ -1,6 +1,6 @@
 # Contribuer à Lumen
 
-Les instructions de compilation par plateforme sont dans [README.md](README.md).
+Les instructions de compilation par plateforme sont dans [BUILDING.md](BUILDING.md).
 Utiliser Node.js 22.12+, Rust stable >= 1.89 et `npm ci`. Les sources originales
 sont sous GPL-3.0-or-later ; garder les licences des composants tiers et
 documenter l'origine de toute nouvelle dépendance ou ressource graphique.
@@ -23,7 +23,8 @@ Exécuter les tests pertinents puis `npm test`, `npm run eval:orch`,
 Les tests HTTP locaux ont besoin d'ouvrir un port loopback.
 
 Une modification des dépendances exige `npm run security:audit` et
-`npm run licenses:collect`. Les rapports d'audit et le SBOM sont sous
+`npm run licenses:collect`. Générer le SBOM avec `npm run security:sbom`.
+Les rapports d'audit et le SBOM sont sous
 `dist/security/`. Les workflows GitHub contrôlent les plateformes natives ;
 ne pas présenter un test macOS comme une validation Windows/Linux.
 
@@ -33,11 +34,14 @@ un bug et des captures pour une modification visible.
 
 ## Données et configuration locale
 
-Ne pas joindre clés, bases utilisateur, modèles ou caches. Un contributeur
-peut définir `CARGO_TARGET_DIR` vers son propre volume ; la configuration
-du mainteneur est exclue de l'export public. Le dossier `public-source/`
-est un miroir géré : effectuer les changements dans le dossier source puis
-relancer `npm run source:sync`.
+Effectuer les modifications dans votre clone du dépôt, sur une branche dédiée,
+puis ouvrir une pull request. Aucun export de sources n’est nécessaire pour
+contribuer.
+
+Ne pas joindre de clés, mots de passe, bases utilisateur, modèles ou caches.
+Masquer les données personnelles dans les captures et les journaux joints.
+Conserver les identifiants dans des configurations locales exclues de Git.
+Vous pouvez définir `CARGO_TARGET_DIR` vers un dossier de build de votre choix.
 
 Pour une vulnérabilité, suivre [SECURITY.md](SECURITY.md) avant de déposer
 des détails d'exploitation dans une issue publique.
